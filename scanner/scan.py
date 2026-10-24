@@ -44,6 +44,9 @@ class State:
 
     def add(self, sid, day, info):
         self.data["sent"][sid] = {"day": day, **info}
+        self.save()
+
+    def save(self):
         self.path.write_text(json.dumps(self.data, ensure_ascii=False, indent=2) + "\n")
 
 
@@ -56,10 +59,14 @@ def setup_id(symbol, tf, s):
     return f"{symbol}|{tf}|{s.direction}|{s.kind}|{s.breakout_time.isoformat()}"
 
 
-def scan_once(cfg, cache, state, dry_run=False, now=None):
+def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
+    """status (dict) se doplní o poslední ceny a chyby – pro zprávu o stavu."""
     now = now or datetime.now(timezone.utc)
     day = now.astimezone(ZoneInfo(cfg.get("timezone", "UTC"))).date().isoformat()
     found = []
+    status = status if status is not None else {}
+    status.setdefault("prices", {})
+    status.setdefault("errors", {})
     for t in cfg["tickers"]:
         symbol, source = t["symbol"], t["source"]
         tf = t.get("timeframe", cfg["timeframe"])
@@ -67,8 +74,12 @@ def scan_once(cfg, cache, state, dry_run=False, now=None):
             df = cache.update(source, symbol, tf, now=now)
         except Exception as exc:  # síť, burza… další ticker
             print(f"[{symbol}] data nedostupná: {exc}", file=sys.stderr)
+            status["errors"][symbol] = f"{exc.__class__.__name__}: {str(exc)[:80]}"
             continue
+        if len(df):
+            status["prices"][symbol] = (float(df["Close"].iloc[-1]), df.index[-1].isoformat())
         if len(df) < cfg["rules"]["range_lookback"] + 3:
+            status["errors"][symbol] = f"málo dat ({len(df)} svíček)"
             continue
         for s in rules.latest_setup(df, t.get("direction", cfg["direction"]), cfg["rules"]):
             sid = setup_id(symbol, tf, s)
@@ -105,6 +116,40 @@ def scan_once(cfg, cache, state, dry_run=False, now=None):
     return found
 
 
+def maybe_heartbeat(cfg, state, status, found, now, send=None):
+    """Zpráva „skener běží“ každých heartbeat_hours (0 = vypnuto), i když nic nenašel.
+
+    Počítadla se drží v state.json, takže to funguje i při --once v GitHub Actions.
+    """
+    hours = cfg.get("heartbeat_hours", 4) if cfg.get("notify", {}).get("telegram", True) or send else 0
+    hb = state.data.setdefault("heartbeat", {"last": None, "scans": 0, "setups": 0, "errors": 0})
+    hb["scans"] += 1
+    hb["setups"] += len(found)
+    hb["errors"] += 1 if status.get("errors") else 0
+    last = datetime.fromisoformat(hb["last"]) if hb["last"] else None
+    due = hours and (last is None or (now - last).total_seconds() >= hours * 3600)
+    if not due:
+        state.save()
+        return None
+    tz = ZoneInfo(cfg.get("timezone", "UTC"))
+    title = "🟢 Skener spuštěn a hledá" if last is None else "🟢 Skener běží"
+    period = "od spuštění" if last is None else f"za posledních {hours} h"
+    lines = [f"{title} ({now.astimezone(tz):%d.%m. %H:%M})",
+             f"{period}: {hb['scans']} průchodů, nových setupů: {hb['setups']}"]
+    if status.get("prices"):
+        lines.append(" · ".join(f"{sym} {notify.fmt(p)}" for sym, (p, _) in status["prices"].items()))
+    if status.get("errors"):
+        lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
+    rules_txt = f"{cfg['timeframe']} · {cfg['direction']} · R:R ≥ {cfg['min_rr']} · breakout → retest → hold"
+    lines.append(f"Hlídám: {rules_txt}. Další zpráva o stavu za {hours} h.")
+    text = "\n".join(lines)
+    ok = (send or notify.telegram)(text)
+    if ok:
+        state.data["heartbeat"] = {"last": now.isoformat(), "scans": 0, "setups": 0, "errors": 0}
+    state.save()
+    return text
+
+
 def _ai_explain(cfg, s, sid):
     """Volitelně: AI vysvětlení AŽ po nalezení setupu."""
     ai = cfg.get("ai_explain") or {}
@@ -136,8 +181,11 @@ def main():
     while True:
         started = time.time()
         try:
-            found = scan_once(cfg, cache, state, dry_run=args.dry_run)
+            status = {}
+            found = scan_once(cfg, cache, state, dry_run=args.dry_run, status=status)
             print(f"{datetime.now():%H:%M:%S} průchod hotov, nových setupů: {len(found)}")
+            if not args.dry_run:
+                maybe_heartbeat(cfg, state, status, found, datetime.now(timezone.utc))
         except Exception:
             traceback.print_exc()
         if args.once:

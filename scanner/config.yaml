@@ -20,6 +20,7 @@ risk_pct: 1.0             # % účtu na obchod
 min_rr: 2.0               # minimální R:R na T1
 max_setups_per_day: 3     # celkem za všechny tickery (den podle timezone)
 timezone: Europe/Prague
+heartbeat_hours: 4        # zpráva „skener běží“ i bez setupů (0 = vypnuto); první hned po spuštění
 cash_only: true           # pozice nesmí přesáhnout velikost účtu
 
 rules:                    # parametry breakout → retest → hold (viz scanner/rules.py)

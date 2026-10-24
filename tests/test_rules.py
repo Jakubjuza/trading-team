@@ -239,3 +239,30 @@ def test_simulate_t2_and_short_mirror():
 def test_simulate_time_exit():
     res = simulate(SETUP, _after([(100, 101, 99, 101)] * 5), max_hold_bars=5)
     assert res["result"] == "time" and res["r"] == pytest.approx(0.5)
+
+
+# --- zpráva o stavu (heartbeat) ---------------------------------------------
+from scanner.scan import maybe_heartbeat  # noqa: E402
+
+
+def test_heartbeat_first_run_then_every_n_hours(tmp_path):
+    state, sent = State(tmp_path / "s.json"), []
+    cfg = _cfg(heartbeat_hours=4)
+    status = {"prices": {"BTC/USDT": (80512.3, "2026-10-24T13:00:00+00:00")}, "errors": {}}
+    t0 = datetime(2026, 10, 24, 12, 0, tzinfo=timezone.utc)
+    send = lambda text: sent.append(text) or True
+    assert "spuštěn" in maybe_heartbeat(cfg, state, status, [], t0, send)          # hned první běh
+    for m in range(5, 240, 5):                                                     # 4 h po 5 min
+        assert maybe_heartbeat(cfg, state, status, [], t0 + pd.Timedelta(minutes=m), send) is None
+    text = maybe_heartbeat(cfg, state, status, [], t0 + pd.Timedelta(hours=4), send)
+    assert "48 průchodů" in text and "nových setupů: 0" in text and "BTC/USDT 80 512" in text
+    assert len(sent) == 2
+
+
+def test_heartbeat_reports_data_errors_and_retries_on_failed_send(tmp_path):
+    state = State(tmp_path / "s.json")
+    status = {"prices": {}, "errors": {"BTC/USDT": "NetworkError: kraken"}}
+    now = datetime(2026, 10, 24, 12, 0, tzinfo=timezone.utc)
+    assert "⚠️" in maybe_heartbeat(_cfg(), state, status, [], now, lambda t: False)
+    assert state.data["heartbeat"]["last"] is None                                 # neodesláno → zkusí znovu
+    assert maybe_heartbeat(_cfg(heartbeat_hours=0), State(tmp_path / "x.json"), status, [], now, lambda t: True) is None
