@@ -44,6 +44,8 @@ def main():
         except json.JSONDecodeError:
             print(f"Neplatný řádek: {line[:80]}", file=sys.stderr)
             continue
+        if v.get("grade") == "SKIPPED":          # zastaralé signály bez analýzy se neposílají
+            continue
         if notify.telegram(format_verdict(v)):
             sent += 1
     print(f"Odesláno verdiktů: {sent}")
