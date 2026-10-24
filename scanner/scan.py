@@ -29,6 +29,7 @@ from scanner.data import CandleCache  # noqa: E402
 
 STATE = HERE / "state.json"
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
+FACTSHEETS = HERE.parent / "research" / "factsheets"   # datové listy k signálům pro AI desk
 
 
 class State:
@@ -132,9 +133,11 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size})
         state.data.setdefault("open", []).append({"id": sid, "symbol": symbol, "timeframe": tf, "setup": s.to_dict()})
         state.save()
-        log_signal(SIGNALS, {"id": sid, "symbol": symbol, "source": source, "timeframe": tf,
-                             "found_at": now.isoformat(), "rules": cfg["rules"], "min_rr": cfg["min_rr"],
-                             "setup": s.to_dict(), "size": size, "telegram": sent})
+        rec = {"id": sid, "symbol": symbol, "source": source, "timeframe": tf,
+               "found_at": now.isoformat(), "rules": cfg["rules"], "min_rr": cfg["min_rr"],
+               "setup": s.to_dict(), "size": size, "telegram": sent}
+        rec["factsheet"] = _write_factsheet(cfg, rec)
+        log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
     return found
 
@@ -201,6 +204,23 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         state.data["heartbeat"] = {"last": now.isoformat(), "scans": 0, "setups": 0, "errors": 0}
     state.save()
     return text
+
+
+def _write_factsheet(cfg, rec):
+    """Datový list k signálu pro AI desk (research/factsheets/). Vrátí relativní cestu, nebo None."""
+    if not cfg.get("factsheet", False) or rec["source"] != "crypto":
+        return None
+    try:
+        from research import factsheet
+        sheet = factsheet.build(rec["symbol"], cfg.get("exchange", "kraken"), signal=rec)
+        name = rec["id"].replace("|", "_").replace("/", "-").replace(":", "")
+        path = FACTSHEETS / f"{name}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(sheet, ensure_ascii=False, indent=1, default=str) + "\n", encoding="utf-8")
+        return str(path.relative_to(HERE.parent))
+    except Exception as exc:
+        print(f"Datový list se nepovedl: {exc}", file=sys.stderr)
+        return None
 
 
 def _ai_explain(cfg, s, sid):

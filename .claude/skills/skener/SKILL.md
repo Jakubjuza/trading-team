@@ -17,7 +17,7 @@ Vyřaď kandidáty, kteří už jsou v `watcher/levels.json` (pravidlo duplicity
 
 ## 2. Plná analýza kandidátů
 
-Pro každého kandidáta postup z `CLAUDE.md` (kroky 2–9: trend/levels/volume, news/sentiment, setup-finder, entry-exit-planner, risk-manager, devils-advocate, time-machine, chart-renderer). Agentům předej pravidla z watchlistu (směr, typy setupů, účet, riziko, min. R:R, náklady).
+Pro každého kandidáta skill `pro-analyza` (datový list, oddělení desku, head-trader). Agentům předej pravidla z watchlistu (směr, typy setupů, účet, riziko, min. R:R, náklady).
 
 ## 3. Filtr
 

@@ -186,6 +186,31 @@ def random_baseline(df, trades, params, cost_pct, k=30, seed=7):
     return float(np.mean(out))
 
 
+def load_verdicts(path):
+    if not path or not Path(path).exists():
+        return {}
+    out = {}
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        try:
+            v = json.loads(line)
+            out[v["signal_id"]] = v
+        except (json.JSONDecodeError, KeyError):
+            continue
+    return out
+
+
+def verdict_groups(sigs, results, verdicts):
+    """Uzavřené výsledky signálů rozdělené podle stupně verdiktu."""
+    groups = {"schváleno (A/B)": [], "zamítnuto (C/NO_TRADE)": [], "bez verdiktu": []}
+    for sg, res in zip(sigs, results):
+        if res["result"] == "open":
+            continue
+        v = verdicts.get(sg["id"])
+        key = "bez verdiktu" if not v else "schváleno (A/B)" if v.get("grade") in ("A", "B") else "zamítnuto (C/NO_TRADE)"
+        groups[key].append(res)
+    return groups
+
+
 def stats(trades):
     if not trades:
         return {"n": 0, "win": 0.0, "avg_r": 0.0, "ci": 0.0, "sum_r": 0.0, "max_dd_r": 0.0}
@@ -239,6 +264,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", type=Path, default=HERE / "config.yaml")
     ap.add_argument("--signals", type=Path, default=HERE / "signals.jsonl")
+    ap.add_argument("--verdicts", type=Path, default=HERE.parent / "research" / "verdicts.jsonl")
     ap.add_argument("--days", type=int, default=730, help="délka historie pro backtest")
     ap.add_argument("--grid", action="store_true", help="otestovat mřížku parametrů")
     ap.add_argument("--top", type=int, default=10)
@@ -258,7 +284,7 @@ def main():
     # 1) skutečné signály
     sigs = [json.loads(x) for x in args.signals.read_text().splitlines() if x.strip()] if args.signals.exists() else []
     out += [f"## Odeslané signály ({len(sigs)})", ""]
-    live = []
+    live, evaluated = [], []
     for sg in sigs:
         df = load_history(sg["symbol"], sg["source"], sg["timeframe"], 30, cfg.get("exchange", "kraken"))
         if df is None:
@@ -267,12 +293,25 @@ def main():
         after = df[df.index > pd.Timestamp(sg["setup"]["hold_time"])]
         res = simulate(sg["setup"], after, cur["max_hold_bars"], cur["split"], cost_pct, cur["trail_atr"])
         live.append(res)
+        evaluated.append(sg)
         stop_pct = abs(sg["setup"]["entry"] - sg["setup"]["stop"]) / sg["setup"]["entry"] * 100
         out.append(f"- {sg['symbol']} {sg['timeframe']} {sg['setup']['direction']} {sg['setup']['hold_time'][:16]} "
                    f"(stop {stop_pct:.2f} %): {res['result']}, {res['r']:+.2f} R za {res['bars']} svíček")
     closed = [r for r in live if r["result"] != "open"]
     result["signals"] = stats(closed)
     out += ["", f"Uzavřené: {stats(closed)}", ""]
+
+    # 1b) přidává AI desk hodnotu? výsledek signálů podle verdiktu head-tradera
+    verdicts = load_verdicts(args.verdicts)
+    if verdicts:
+        groups = verdict_groups(evaluated, live, verdicts)
+        out += ["## Verdikty desku vs. výsledek", "",
+                "| Skupina | Uzavřené obchody | Win % | Ø R | Σ R |", "|---|---|---|---|---|"]
+        for name, rs in groups.items():
+            st = stats(rs)
+            out.append(f"| {name} | {st['n']} | {st['win']} | {st['avg_r']:+.3f} | {st['sum_r']:+.2f} |")
+        out += ["", "Desk přidává hodnotu, jen když „schváleno (A/B)“ dlouhodobě vychází lépe než „zamítnuto“.", ""]
+        result["verdicts"] = {k: stats(v) for k, v in groups.items()}
 
     # 2) historie
     hist = {}
