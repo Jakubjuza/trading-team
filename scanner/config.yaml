@@ -21,7 +21,7 @@ poll_seconds: 60          # jak často kontrolovat
 history_bars: 600         # kolik svíček držet v cache (EMA 200 potřebuje rozjezd)
 
 account_size: 10000       # USD
-risk_pct: 1.0             # % účtu na obchod
+risk_pct: 0.5             # % účtu na obchod (sníženo z 1 % na dobu ověřování; backtest: propad −17 % místo −31 %)
 min_rr: 1.5               # minimální R:R na T1 (před náklady; po nákladech je ve zprávě)
 max_setups_per_day: 3     # celkem za všechny tickery (den podle timezone)
 max_open_per_direction: 1 # max. 1 otevřená (papírová) pozice long a 1 short naráz – krypto se hýbe spolu

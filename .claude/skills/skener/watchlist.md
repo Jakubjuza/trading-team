@@ -17,7 +17,7 @@ Uprav podle sebe; skener čte tento soubor při každém spuštění.
 | Typy setupů | long: breakout, retest, udržení hladiny · short: breakdown, retest zespodu, odmítnutí hladiny |
 | Časové rámce | 4H a denní (swing 1–5 dní) |
 | Účet | 10 000 USD, hotovost (short = přes derivát/CFD, jen informativně) |
-| Riziko na obchod | 1 % (100 USD) |
+| Riziko na obchod | 0,5 % (50 USD) |
 | Min. R:R | 2 (po skluzu 0,05 % a fee 0,1 % na stranu) |
 | Max. vzdálenost spouštěče | 5 % od aktuální ceny (hlídač počká, až cena dorazí) |
 | Min. kvalita | B (devils-advocate nesmí dát „zamítnout“) |
