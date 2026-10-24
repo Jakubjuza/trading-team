@@ -64,5 +64,7 @@ ai_explain:               # AI až PO nalezení setupu (volitelné, výchozí vy
   # příkaz dostane cestu k JSON se setupem v {setup_json}; výstup se pošle na Telegram
   command: "claude -p 'Vysvětli setup v {setup_json} podle CLAUDE.md, max 5 řádků česky.'"
 
+factsheet: true           # ke každému signálu datový list pro AI desk (research/factsheets/)
+
 paper_trading: true       # zapisovat papírové obchody do scanner/paper_trades.json
 live_trading: false       # ostré obchody – NIKDY nezapínat bez výslovného potvrzení

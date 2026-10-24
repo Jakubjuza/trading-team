@@ -1,0 +1,49 @@
+name: Kontroly
+
+# Na každém PR: testy + datový list naživo (ověří přístup k burze, Hyperliquid, Deribit a yfinance).
+on:
+  pull_request:
+  push:
+    branches: ["claude/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      - run: python3 -m pytest tests -q
+
+  factsheet-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      - name: Datový list BTC a SOL naživo
+        run: |
+          for SYM in BTC/USDT SOL/USDT; do
+            python3 research/factsheet.py "$SYM" --out "/tmp/fs_${SYM%/*}.json"
+            python3 - "/tmp/fs_${SYM%/*}.json" <<'PY'
+          import json, sys
+          d = json.load(open(sys.argv[1]))
+          print("==", d["symbol"])
+          for k, v in d.items():
+              if isinstance(v, dict) and k != "signal":
+                  print(f"  {k:12}", "CHYBA: " + v["error"] if "error" in v else "OK " + json.dumps({x: v[x] for x in list(v)[2:7]}, ensure_ascii=False, default=str)[:300])
+          PY
+          done
