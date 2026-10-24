@@ -34,6 +34,8 @@ Do `reports/alerts.md` přidej řádek za každé spuštění (i prázdné):
 
 Commitni `reports/` (alerts.md, JSON, PNG pokud vznikl) a pushni do `main` (`git pull --rebase origin main` před pushem).
 
+Když push selže (např. 403), zkus ho jen jednou, pak pokračuj krokem 5. Selhání pushe **není důvod k notifikaci**; zmiň ho jen jedním řádkem na konci poslední zprávy.
+
 ## 5. Upozornění
 
 Jsou-li příležitosti: pokud je dostupný nástroj PushNotification, pošli krátkou notifikaci (ticker, směr, spouštěč, R:R). Poslední zpráva běhu = upozornění, max. 6 řádků na setup:
