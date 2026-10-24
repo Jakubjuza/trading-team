@@ -57,9 +57,9 @@ Skript potřebuje stroj, který běží pořád a má přístup na burzu (ccxt) 
   journalctl -u trading-scanner -f    # log
   ```
 - **Vlastní počítač**: `python3 scanner/scan.py` v terminálu – běží jen když je počítač zapnutý.
-- **GitHub Actions (zkušební verze)**: `.github/workflows/scanner.yml` spouští `scan.py --once` každých 5 min
-  (častěji GitHub neumí, běhy se navíc zpožďují). Cache svíček a `state.json` drží přes `actions/cache`.
-  Naplánované běhy fungují až po sloučení do `main`; ručně: Actions → „Rychlý skener (zkušební)“ → Run workflow.
+- **GitHub Actions (zkušební verze, běží teď)**: `.github/workflows/scanner.yml` – jeden běh skenuje **každou minutu ~5,5 h**
+  a pak se sám znovu spustí; cron každých 30 min je jen záloha (GitHub naplánované běhy u málo aktivních repozitářů vynechává).
+  Cache svíček a `state.json` drží přes `actions/cache`, nové signály commituje hned. Veřejný repozitář = zdarma.
 
 Burzu pro krypto zvol podle země serveru (`exchange` v configu): Binance blokuje US IP adresy, Kraken/OKX/Bybit bývají v EU v pořádku.
 

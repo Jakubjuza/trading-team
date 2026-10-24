@@ -1,20 +1,21 @@
 name: Rychlý skener (zkušební)
 
-# Zkušební běh rychlého skeneru bez AI na GitHubu. GitHub spouští naplánované
-# úlohy nejvýš každých 5 min (často se zpožděním) – pro běh každou minutu
-# použij server (scanner/README.md).
+# Naplánované spouštění GitHub u málo aktivních repozitářů často vynechává, proto jeden běh
+# skenuje KAŽDOU MINUTU ~5,5 h a na konci se sám znovu spustí (workflow_dispatch).
+# cron je jen záloha, kdyby se řetěz přerušil. Veřejný repozitář = minuty zdarma.
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Jen vypsat, nic neposílat"
+        description: "Jen jeden průchod, nic neposílat"
         type: boolean
         default: false
 
 permissions:
-  contents: write   # commit deníku signálů scanner/signals.jsonl
+  contents: write   # commit deníku signálů a datových listů
+  actions: write    # znovuspuštění sebe sama
 
 concurrency:
   group: scanner
@@ -23,7 +24,7 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -41,11 +42,28 @@ jobs:
             scanner/paper_trades.json
           key: scanner-state-${{ github.run_id }}
           restore-keys: scanner-state-
-      - name: Skenování
+      - name: Skenování každou minutu (~5,5 h)
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python3 scanner/scan.py --once ${{ inputs.dry_run && '--dry-run' || '' }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+        run: |
+          git config user.name "trading-team scanner"
+          git config user.email "scanner@users.noreply.github.com"
+          if [ -n "$DRY_RUN" ]; then python3 scanner/scan.py --once --dry-run; exit 0; fi
+          end=$((SECONDS + 330 * 60))
+          while [ $SECONDS -lt $end ]; do
+            start=$SECONDS
+            python3 scanner/scan.py --once || echo "průchod selhal, pokračuji"
+            # nové signály / datové listy hned do repozitáře (čte je AI desk)
+            if [ -n "$(git status --porcelain scanner/signals.jsonl research/factsheets 2>/dev/null)" ]; then
+              git add scanner/signals.jsonl
+              [ -d research/factsheets ] && git add research/factsheets
+              git commit -q -m "scanner: nové signály"
+              for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done
+            fi
+            sleep $(( 60 - (SECONDS - start) > 1 ? 60 - (SECONDS - start) : 1 ))
+          done
       - uses: actions/cache/save@v4
         if: always()
         with:
@@ -54,13 +72,8 @@ jobs:
             scanner/state.json
             scanner/paper_trades.json
           key: scanner-state-${{ github.run_id }}
-      - name: Uložit deník signálů
-        if: ${{ !inputs.dry_run }}
-        run: |
-          if [ -n "$(git status --porcelain scanner/signals.jsonl)" ]; then
-            git config user.name "trading-team scanner"
-            git config user.email "scanner@users.noreply.github.com"
-            git add scanner/signals.jsonl
-            git commit -m "scanner: nové signály"
-            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}"
-          fi
+      - name: Znovu spustit (navazující běh)
+        if: ${{ always() && !inputs.dry_run && github.ref_name == 'main' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run scanner.yml --ref main
