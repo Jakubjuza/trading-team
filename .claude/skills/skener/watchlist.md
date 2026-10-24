@@ -19,7 +19,7 @@ Uprav podle sebe; skener čte tento soubor při každém spuštění.
 | Účet | 10 000 USD, hotovost (short = přes derivát/CFD, jen informativně) |
 | Riziko na obchod | 1 % (100 USD) |
 | Min. R:R | 2 (po skluzu 0,05 % a fee 0,1 % na stranu) |
-| Max. vzdálenost spouštěče | 2 % od aktuální ceny |
+| Max. vzdálenost spouštěče | 5 % od aktuální ceny (hlídač počká, až cena dorazí) |
 | Min. kvalita | B (devils-advocate nesmí dát „zamítnout“) |
 | Max. kandidátů na plnou analýzu | 2 na jedno spuštění |
-| Duplicita | stejný ticker + směr + spouštěč ±0,5 % za posledních 24 h = neposílat znovu |
+| Duplicita | stejný ticker + směr + spouštěč ±0,5 % už je v watcher/levels.json = nepřidávat znovu |

@@ -1,0 +1,45 @@
+name: Telegram hlídač
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Jen poslat testovací zprávu na Telegram"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: watcher
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: watcher/requirements.txt
+      - run: pip install -q -r watcher/requirements.txt
+      - name: Hlídání úrovní
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 watcher/watch.py ${{ inputs.test && '--test' || '' }}
+      - name: Uložit stav
+        run: |
+          if ! git diff --quiet watcher/state.json 2>/dev/null || [ -n "$(git status --porcelain watcher/state.json)" ]; then
+            git config user.name "trading-team watcher"
+            git config user.email "watcher@users.noreply.github.com"
+            git add watcher/state.json
+            git commit -m "watcher: update state"
+            git pull --rebase origin main && git push origin HEAD:main
+          fi
