@@ -47,4 +47,4 @@ Graf: reports/BTC_2026-10-24.png (nebo „graf bez dat“)
 Nejde o finanční poradenství.
 ```
 
-Bez příležitostí: poslední zpráva je jediný řádek „Skener: bez příležitostí (BTC, ETH, SOL).“ a žádná notifikace.
+Bez příležitostí: poslední zpráva je jediný řádek „Skener: bez příležitostí (všechny tickery z watchlistu).“ a žádná notifikace.

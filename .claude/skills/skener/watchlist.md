@@ -8,6 +8,7 @@ Uprav podle sebe; skener čte tento soubor při každém spuštění.
 | BTC | BTC-USD | spot, 24/7 |
 | ETH | ETH-USD | spot, 24/7 |
 | SOL | SOL-USD | spot, 24/7 |
+| XRP | XRP-USD | spot, 24/7 |
 
 ## Pravidla
 | Pole | Hodnota |
