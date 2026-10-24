@@ -15,4 +15,5 @@ Odpověď drž krátkou: nejdřív obrázek z reports/ (pošli ho uživateli), p
 1. setup a verdikt, 2. vstup / stop / cíle, 3. R:R a velikost pozice, 4. hlavní riziko, 5. scénáře (pravděpodobnosti).
 Podrobnosti jen na vyžádání. Když chart-renderer vrátí DATA_UNAVAILABLE, napiš 5 řádků bez obrázku a požádej o CSV se svíčkami.
 Když uživatel napíše „tabulka“, použij skill tabulka (pošle prázdnou tabulku k vyplnění a po vyplnění ji vyhodnotí). Rychlé zadání: skill obchod.
+Hledání příležitostí bez zadaného tickeru (slovo „skener“ nebo naplánovaná úloha): skill skener, watchlist v .claude/skills/skener/watchlist.md.
 Journal-reviewer použij jen na požádání. Odpovídej česky. Nejde o finanční poradenství.
