@@ -1,2 +1,8 @@
 __pycache__/
 *.pyc
+# rychlý skener – runtime data
+scanner/cache/
+scanner/out/
+scanner/state.json
+scanner/paper_trades.json
+.env

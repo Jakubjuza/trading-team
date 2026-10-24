@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""Rychlý skener bez AI: o vstupu rozhoduje jen kód (scanner/rules.py).
+
+Použití:
+    python3 scanner/scan.py              # běží nepřetržitě, kontrola každých poll_seconds
+    python3 scanner/scan.py --once       # jeden průchod a konec (cron, GitHub Actions)
+    python3 scanner/scan.py --once --dry-run   # nic neposílá, jen vypíše
+"""
+import argparse
+import json
+import shlex
+import subprocess
+import sys
+import time
+import traceback
+from datetime import datetime, timezone
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+import yaml
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))
+
+from scanner import broker, notify, rules  # noqa: E402
+from scanner.data import CandleCache  # noqa: E402
+
+STATE = HERE / "state.json"
+
+
+class State:
+    """Odeslané setupy (deduplikace) a počítadlo za den."""
+
+    def __init__(self, path):
+        self.path = Path(path)
+        self.data = json.loads(self.path.read_text()) if self.path.exists() else {"sent": {}}
+
+    def seen(self, sid):
+        return sid in self.data["sent"]
+
+    def count_on(self, day):
+        return sum(1 for v in self.data["sent"].values() if v.get("day") == day and "setup" in v)
+
+    def add(self, sid, day, info):
+        self.data["sent"][sid] = {"day": day, **info}
+        self.path.write_text(json.dumps(self.data, ensure_ascii=False, indent=2) + "\n")
+
+
+def setup_id(symbol, tf, s):
+    return f"{symbol}|{tf}|{s.direction}|{s.kind}|{s.breakout_time.isoformat()}"
+
+
+def scan_once(cfg, cache, state, dry_run=False, now=None):
+    now = now or datetime.now(timezone.utc)
+    day = now.astimezone(ZoneInfo(cfg.get("timezone", "UTC"))).date().isoformat()
+    found = []
+    for t in cfg["tickers"]:
+        symbol, source = t["symbol"], t["source"]
+        tf = t.get("timeframe", cfg["timeframe"])
+        try:
+            df = cache.update(source, symbol, tf, now=now)
+        except Exception as exc:  # síť, burza… další ticker
+            print(f"[{symbol}] data nedostupná: {exc}", file=sys.stderr)
+            continue
+        if len(df) < cfg["rules"]["range_lookback"] + 3:
+            continue
+        for s in rules.latest_setup(df, t.get("direction", cfg["direction"]), cfg["rules"]):
+            sid = setup_id(symbol, tf, s)
+            if state.seen(sid):
+                continue
+            if s.rr[0] < cfg["min_rr"]:
+                print(f"[{symbol}] {s.direction} setup vyřazen: R:R {s.rr[0]} < {cfg['min_rr']}")
+                state.add(sid, day, {"sent": False, "reason": "rr"})
+                continue
+            if state.count_on(day) >= cfg["max_setups_per_day"]:
+                print(f"[{symbol}] denní limit {cfg['max_setups_per_day']} vyčerpán")
+                continue
+            size = rules.position_size(s, cfg["account_size"], cfg["risk_pct"],
+                                       fractional=source == "crypto", cash_only=cfg.get("cash_only", True))
+            if size["qty"] <= 0:
+                continue
+            lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"])
+            print("\n".join(lines))
+            found.append((sid, s, size))
+            if dry_run:
+                continue
+            chart = None
+            if cfg["notify"].get("chart", True):
+                chart = notify.render_chart(symbol, tf, s, df, lines, HERE / "out", cfg["notify"].get("chart_bars", 80))
+            sent = notify.telegram("\n".join(lines), photo=chart) if cfg["notify"].get("telegram", True) else False
+            if cfg.get("paper_trading", True):
+                broker.place_order({"setup_id": sid, "symbol": symbol, "side": "buy" if s.direction == "long" else "sell",
+                                    "qty": size["qty"], "entry": s.entry, "stop": s.stop, "targets": s.targets}, cfg)
+            state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size})
+            _ai_explain(cfg, s, sid)
+    return found
+
+
+def _ai_explain(cfg, s, sid):
+    """Volitelně: AI vysvětlení AŽ po nalezení setupu."""
+    ai = cfg.get("ai_explain") or {}
+    if not ai.get("enabled"):
+        return
+    path = HERE / "out" / (sid.replace("|", "_").replace("/", "-").replace(":", "") + ".json")
+    path.parent.mkdir(exist_ok=True)
+    path.write_text(json.dumps(s.to_dict(), ensure_ascii=False, indent=2))
+    try:
+        r = subprocess.run(shlex.split(ai["command"].format(setup_json=path)), capture_output=True, text=True, timeout=600)
+        if r.stdout.strip():
+            notify.telegram(r.stdout.strip()[:4000])
+    except Exception as exc:
+        print(f"AI vysvětlení selhalo: {exc}", file=sys.stderr)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", type=Path, default=HERE / "config.yaml")
+    ap.add_argument("--once", action="store_true")
+    ap.add_argument("--dry-run", action="store_true")
+    args = ap.parse_args()
+
+    cfg = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    if cfg.get("live_trading"):
+        print("POZOR: live_trading je zapnuté, ale skener ostré příkazy nikdy neposílá bez potvrzení.", file=sys.stderr)
+    cache = CandleCache(HERE / "cache", cfg.get("history_bars", 300), cfg.get("exchange", "kraken"))
+    state = State(STATE)
+    while True:
+        started = time.time()
+        try:
+            found = scan_once(cfg, cache, state, dry_run=args.dry_run)
+            print(f"{datetime.now():%H:%M:%S} průchod hotov, nových setupů: {len(found)}")
+        except Exception:
+            traceback.print_exc()
+        if args.once:
+            break
+        time.sleep(max(1, cfg.get("poll_seconds", 60) - (time.time() - started)))
+
+
+if __name__ == "__main__":
+    main()
