@@ -16,14 +16,14 @@ class LiveTradingDisabled(RuntimeError):
     pass
 
 
-def place_order(order, config, confirm=False, paper_log=PAPER_LOG):
+def place_order(order, config, confirm=False, paper_log=None):
     """order: {symbol, side ('buy'|'sell'), qty, entry, stop, targets, setup_id}.
 
     Vrací záznam o příkazu. V papírovém režimu jen zapíše do paper_trades.json.
     """
     live = bool(config.get("live_trading", False))
     if not live:
-        return _paper(order, paper_log)
+        return _paper(order, paper_log or PAPER_LOG)
     if not confirm:
         raise LiveTradingDisabled("live_trading je zapnuté, ale chybí výslovné potvrzení (confirm=True). Nic neodesláno.")
     raise NotImplementedError("Ostré obchodování zatím není implementované. Nic neodesláno.")

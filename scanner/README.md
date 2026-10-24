@@ -20,7 +20,16 @@ uloží je do cache, vyhodnotí pravidlo **breakout → retest → hold** (long 
 | Vstup | close hold svíčky | stejné |
 | Stop | min(low retestu, low holdu) − 0,1·ATR, aspoň 0,5·ATR od vstupu | zrcadlově nad high |
 | Cíle | RH + 1× a 2× výška range (nebo násobky R) | RL − 1× a 2× výška range |
-| Filtr | R:R na T1 ≥ `min_rr` | stejné |
+| Stop (min.) | aspoň `min_stop_pct` % od vstupu (ochrana proti poplatkům) | stejné |
+| Trend | close nad EMA(`trend_ema`) | close pod EMA |
+| Objem | breakout svíčka ≥ `breakout_volume_mult` × průměr objemu v range | stejné |
+| Víkend | `skip_weekends`: hold svíčka v so/ne se ignoruje | stejné |
+| Filtr | R:R na T1 ≥ `min_rr`; max. `max_open_per_direction` otevřených papírových pozic stejným směrem | stejné |
+
+Parametry a jejich ověření (2 roky, náklady, náhodný benchmark, coiny mimo optimalizaci): `reports/scanner_improvements.md`.
+
+Skener sleduje i **papírové pozice**: každý průchod je vyhodnotí na nových svíčkách a uzavřený obchod
+(stop / T1 + break-even / T2 / časový výstup, výsledek v R po nákladech) pošle na Telegram.
 
 ## Spuštění
 
@@ -62,8 +71,10 @@ Každý odeslaný signál se zapíše do `scanner/signals.jsonl` (workflow ho co
 python3 scanner/evaluate.py --grid --out reports/scanner_review.md
 ```
 
-- **Signály**: jak dopadly (stop / T1 + BE / T2 / časový výstup) a kolik R.
-- **Backtest** aktuálních pravidel za posledních `--days` dní po tickerech (počet, win %, Ø R, Σ R, max. drawdown).
+- **Signály**: jak dopadly (stop / T1 + BE / T2 / časový výstup) a kolik R po nákladech.
+- **Backtest** aktuálních pravidel za posledních `--days` dní (výchozí 730) po tickerech: počet, win %, Ø R s 95% intervalem,
+  Σ R, max. propad a **srovnání s náhodnými vstupy** (stejné stopy a cíle) – pravidlo má smysl, jen když náhodu poráží.
+- Náklady (`costs` v configu: poplatek + skluz na stranu) jsou ve všech výsledcích započtené.
 - **Mřížka parametrů** (`--grid`): vybírá se podle prvních 70 % historie (in-sample), posuzuje podle posledních 30 % (out-of-sample),
   aby se pravidla „nenaladila“ jen na minulost.
 

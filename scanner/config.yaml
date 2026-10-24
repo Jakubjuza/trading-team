@@ -6,6 +6,11 @@ tickers:
   - {symbol: ETH/USDT, source: crypto}
   - {symbol: SOL/USDT, source: crypto}
   - {symbol: XRP/USDT, source: crypto}
+  # přidáno 10/2026 – stejná pravidla otestovaná na coinech mimo optimalizaci (viz reports/scanner_improvements.md)
+  - {symbol: ADA/USDT, source: crypto}
+  - {symbol: LINK/USDT, source: crypto}
+  - {symbol: AVAX/USDT, source: crypto}
+  - {symbol: DOGE/USDT, source: crypto}
   # akcie přes yfinance, např.:
   # - {symbol: AAPL, source: stock, timeframe: 1h}
 
@@ -13,12 +18,14 @@ exchange: kraken          # ccxt burza pro krypto (kraken, bybit, okx, coinbase�
 timeframe: 1h             # 1m, 5m, 15m, 30m, 1h, 4h, 1d (lze přepsat u tickeru)
 direction: both           # long | short | both
 poll_seconds: 60          # jak často kontrolovat
-history_bars: 300         # kolik svíček držet v cache
+history_bars: 600         # kolik svíček držet v cache (EMA 200 potřebuje rozjezd)
 
 account_size: 10000       # USD
 risk_pct: 1.0             # % účtu na obchod
-min_rr: 2.0               # minimální R:R na T1
+min_rr: 1.5               # minimální R:R na T1 (před náklady; po nákladech je ve zprávě)
 max_setups_per_day: 3     # celkem za všechny tickery (den podle timezone)
+max_open_per_direction: 1 # max. 1 otevřená (papírová) pozice long a 1 short naráz – krypto se hýbe spolu
+                          # backtest: max. propad 96 R → 36 R
 timezone: Europe/Prague
 heartbeat_hours: 4        # zpráva „skener běží“ i bez setupů (0 = vypnuto); první hned po spuštění
 cash_only: true           # pozice nesmí přesáhnout velikost účtu
@@ -31,8 +38,21 @@ rules:                    # parametry breakout → retest → hold (viz scanner/
   tolerance_pct: 0.3
   stop_buffer_atr: 0.1
   min_stop_atr: 0.5
+  min_stop_pct: 1.5            # stop aspoň 1,5 % od vstupu – jinak ho sežerou poplatky
   target_mode: measured_move   # measured_move | r_multiple
   target_multiples: [1.0, 2.0]
+  trend_ema: 200               # long jen nad EMA 200, short jen pod (0 = vypnuto)
+  breakout_volume_mult: 1.5    # objem breakout svíčky >= 1,5× průměr range (0 = vypnuto)
+  skip_weekends: true          # krypto o víkendu: slabá likvidita, víc falešných průrazů
+
+exit:                     # správa obchodu (pro vyhodnocení a plán ve zprávě)
+  split: 0.5              # podíl pozice na T1, zbytek na T2
+  trail_atr: 0            # >0 = po T1 trailing stop k×ATR místo pevného T2
+  max_hold_bars: 48       # časový výstup
+
+costs:                    # poplatek + skluz na JEDNU stranu, v % ceny
+  fee_pct: 0.1            # zkontroluj u své burzy! (Kraken taker až 0,40 % → strategie je pak ztrátová)
+  slippage_pct: 0.05
 
 notify:
   telegram: true
