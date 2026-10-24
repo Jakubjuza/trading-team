@@ -160,7 +160,7 @@ def main():
     extra = {"panel_ratios": (4, 1)} if has_vol else {}
     fig, axes = mpf.plot(
         df, type="candle", style=mstyle, volume=has_vol, returnfig=True, figsize=(14, 8),
-        datetime_format="%d.%m.", xrotation=0, tight_layout=False, ylabel="Cena",
+        datetime_format=spec.get("datetime_format", "%d.%m."), xrotation=0, tight_layout=False, ylabel="Cena",
         ylabel_lower="Objem" if has_vol else "", scale_padding={"left": 0.7, "right": 1.9, "top": 0.7, "bottom": 1.15},
         **extra,
     )
@@ -223,12 +223,14 @@ def main():
                     fontsize=8.3, color=color, fontweight="bold", linespacing=1.25,
                     bbox=dict(boxstyle="round,pad=0.35", fc="white", ec=color, alpha=0.95), zorder=7)
 
-    ax.axvline(last_x + 0.5, color="#8c959f", lw=0.8, ls=":")
-    ax.text(last_x + 0.8, lo - pad * 0.6, "simulace →", va="bottom", fontsize=8, color="#57606a")
+    if scenarios:
+        ax.axvline(last_x + 0.5, color="#8c959f", lw=0.8, ls=":")
+        ax.text(last_x + 0.8, lo - pad * 0.6, "simulace →", va="bottom", fontsize=8, color="#57606a")
 
     caption = spec.get("caption", "")
-    src = f"CSV {Path(args.csv).name}" if args.csv else spec.get("data_source", "yfinance")
-    caption = (caption + " " if caption else "") + f"Data: {src}. Scénáře jsou simulace, ne předpověď. Nejde o finanční poradenství."
+    src = spec.get("data_source") or (f"CSV {Path(args.csv).name}" if args.csv else "yfinance")
+    note = " Scénáře jsou simulace, ne předpověď." if scenarios else ""
+    caption = (caption + ". " if caption else "") + f"Data: {src}.{note} Nejde o finanční poradenství."
     fig.text(0.045, 0.012, "\n".join(textwrap.wrap(caption, 165)), fontsize=10.5, va="bottom", ha="left",
              color="#24292f", linespacing=1.4)
 

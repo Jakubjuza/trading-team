@@ -1,0 +1,66 @@
+name: Rychlý skener (zkušební)
+
+# Zkušební běh rychlého skeneru bez AI na GitHubu. GitHub spouští naplánované
+# úlohy nejvýš každých 5 min (často se zpožděním) – pro běh každou minutu
+# použij server (scanner/README.md).
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Jen vypsat, nic neposílat"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # commit deníku signálů scanner/signals.jsonl
+
+concurrency:
+  group: scanner
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      # cache svíček + state.json mezi běhy (obnoví se poslední uložená verze)
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            scanner/cache
+            scanner/state.json
+            scanner/paper_trades.json
+          key: scanner-state-${{ github.run_id }}
+          restore-keys: scanner-state-
+      - name: Skenování
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 scanner/scan.py --once ${{ inputs.dry_run && '--dry-run' || '' }}
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            scanner/cache
+            scanner/state.json
+            scanner/paper_trades.json
+          key: scanner-state-${{ github.run_id }}
+      - name: Uložit deník signálů
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if [ -n "$(git status --porcelain scanner/signals.jsonl)" ]; then
+            git config user.name "trading-team scanner"
+            git config user.email "scanner@users.noreply.github.com"
+            git add scanner/signals.jsonl
+            git commit -m "scanner: nové signály"
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}"
+          fi
