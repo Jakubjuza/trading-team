@@ -218,7 +218,7 @@ def main():
         txt = f"{SCENARIO_LABELS.get(kind, kind)}{prob}\n" + "\n".join(textwrap.wrap(sc["text"], 28))
         text_items.append((ys[-1], txt, color))
     tx = last_x + path_len + 0.8
-    for (y, txt, color), dy in zip(text_items, spread_labels(ax, text_items, min_gap_px=46)):
+    for (y, txt, color), dy in zip(text_items, spread_labels(ax, text_items, min_gap_px=64)):
         ax.annotate(txt, xy=(tx, y), xytext=(0, dy), textcoords="offset points", ha="left", va="center",
                     fontsize=8.3, color=color, fontweight="bold", linespacing=1.25,
                     bbox=dict(boxstyle="round,pad=0.35", fc="white", ec=color, alpha=0.95), zorder=7)

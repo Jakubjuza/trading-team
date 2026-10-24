@@ -3,7 +3,7 @@
   "yf_symbol": "AAPL",
   "direction": "long",
   "title": "AAPL – long breakout nad ATH 351,73 (setup A)",
-  "bars": 60, "interval": "1d", "period": "6mo", "horizon_bars": 8, "decimals": 2,
+  "bars": 40, "interval": "1d", "period": "6mo", "horizon_bars": 8, "decimals": 2,
   "entry": 352.5,
   "stop": 347.9,
   "targets": [{"label": "T1", "price": 360.4}, {"label": "T2", "price": 365.5}],
