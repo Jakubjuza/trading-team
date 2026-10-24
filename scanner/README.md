@@ -53,3 +53,19 @@ Skript potřebuje stroj, který běží pořád a má přístup na burzu (ccxt) 
   Naplánované běhy fungují až po sloučení do `main`; ručně: Actions → „Rychlý skener (zkušební)“ → Run workflow.
 
 Burzu pro krypto zvol podle země serveru (`exchange` v configu): Binance blokuje US IP adresy, Kraken/OKX/Bybit bývají v EU v pořádku.
+
+## Vyhodnocení a ladění
+
+Každý odeslaný signál se zapíše do `scanner/signals.jsonl` (workflow ho commitne).
+
+```bash
+python3 scanner/evaluate.py --grid --out reports/scanner_review.md
+```
+
+- **Signály**: jak dopadly (stop / T1 + BE / T2 / časový výstup) a kolik R.
+- **Backtest** aktuálních pravidel za posledních `--days` dní po tickerech (počet, win %, Ø R, Σ R, max. drawdown).
+- **Mřížka parametrů** (`--grid`): vybírá se podle prvních 70 % historie (in-sample), posuzuje podle posledních 30 % (out-of-sample),
+  aby se pravidla „nenaladila“ jen na minulost.
+
+Naplánovaná úloha „Kontrola a ladění skeneru“ (Po a Čt) to spustí, a když najde robustní zlepšení,
+pushne návrh změny `config.yaml` na novou větev – do `main` se dostane jen po tvém schválení (PR).

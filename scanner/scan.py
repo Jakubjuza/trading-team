@@ -26,6 +26,7 @@ from scanner import broker, notify, rules  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 
 STATE = HERE / "state.json"
+SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
 
 
 class State:
@@ -44,6 +45,11 @@ class State:
     def add(self, sid, day, info):
         self.data["sent"][sid] = {"day": day, **info}
         self.path.write_text(json.dumps(self.data, ensure_ascii=False, indent=2) + "\n")
+
+
+def log_signal(path, rec):
+    with open(path, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
 def setup_id(symbol, tf, s):
@@ -92,6 +98,9 @@ def scan_once(cfg, cache, state, dry_run=False, now=None):
                 broker.place_order({"setup_id": sid, "symbol": symbol, "side": "buy" if s.direction == "long" else "sell",
                                     "qty": size["qty"], "entry": s.entry, "stop": s.stop, "targets": s.targets}, cfg)
             state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size})
+            log_signal(SIGNALS, {"id": sid, "symbol": symbol, "source": source, "timeframe": tf,
+                                 "found_at": now.isoformat(), "rules": cfg["rules"], "min_rr": cfg["min_rr"],
+                                 "setup": s.to_dict(), "size": size, "telegram": sent})
             _ai_explain(cfg, s, sid)
     return found
 

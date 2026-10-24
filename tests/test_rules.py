@@ -206,3 +206,36 @@ def test_broker_paper_by_default_and_live_blocked(tmp_path):
         broker.place_order(order, {"live_trading": True}, paper_log=tmp_path / "p.json")
     with pytest.raises(NotImplementedError):
         broker.place_order(order, {"live_trading": True}, confirm=True, paper_log=tmp_path / "p.json")
+
+
+# --- simulace výsledku (evaluate.py) ----------------------------------------
+from scanner.evaluate import simulate  # noqa: E402
+
+
+def _after(rows):
+    df = pd.DataFrame(rows, columns=["Open", "High", "Low", "Close"])
+    df.index = pd.date_range("2026-01-02", periods=len(df), freq="1h", tz="UTC")
+    return df
+
+
+SETUP = {"direction": "long", "entry": 100.0, "stop": 98.0, "targets": [104.0, 108.0]}
+
+
+def test_simulate_stop_first():
+    assert simulate(SETUP, _after([(100, 101, 97.5, 98)])) == {"result": "stop", "r": -1.0, "bars": 1}
+
+
+def test_simulate_t1_then_breakeven():
+    res = simulate(SETUP, _after([(100, 104.5, 99, 104), (104, 105, 99.5, 100)]))
+    assert res["result"] == "T1+BE" and res["r"] == pytest.approx(1.0)       # 0,5 × 2R + 0,5 × 0R
+
+
+def test_simulate_t2_and_short_mirror():
+    assert simulate(SETUP, _after([(100, 104.5, 99, 104), (104, 108.5, 103, 108)]))["r"] == pytest.approx(3.0)
+    short = {"direction": "short", "entry": 100.0, "stop": 102.0, "targets": [96.0, 92.0]}
+    assert simulate(short, _after([(100, 101, 95.5, 96), (96, 97, 91.5, 92)]))["r"] == pytest.approx(3.0)
+
+
+def test_simulate_time_exit():
+    res = simulate(SETUP, _after([(100, 101, 99, 101)] * 5), max_hold_bars=5)
+    assert res["result"] == "time" and res["r"] == pytest.approx(0.5)

@@ -14,7 +14,7 @@ on:
         default: false
 
 permissions:
-  contents: read
+  contents: write   # commit deníku signálů scanner/signals.jsonl
 
 concurrency:
   group: scanner
@@ -54,3 +54,13 @@ jobs:
             scanner/state.json
             scanner/paper_trades.json
           key: scanner-state-${{ github.run_id }}
+      - name: Uložit deník signálů
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if [ -n "$(git status --porcelain scanner/signals.jsonl)" ]; then
+            git config user.name "trading-team scanner"
+            git config user.email "scanner@users.noreply.github.com"
+            git add scanner/signals.jsonl
+            git commit -m "scanner: nové signály"
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin HEAD:"${GITHUB_REF_NAME}"
+          fi
