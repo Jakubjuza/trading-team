@@ -17,12 +17,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import pandas as pd
 import yaml
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
 from scanner import broker, notify, rules  # noqa: E402
+from scanner.evaluate import simulate  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 
 STATE = HERE / "state.json"
@@ -67,6 +69,7 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     status = status if status is not None else {}
     status.setdefault("prices", {})
     status.setdefault("errors", {})
+    candidates, frames = [], {}
     for t in cfg["tickers"]:
         symbol, source = t["symbol"], t["source"]
         tf = t.get("timeframe", cfg["timeframe"])
@@ -78,42 +81,89 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
             continue
         if len(df):
             status["prices"][symbol] = (float(df["Close"].iloc[-1]), df.index[-1].isoformat())
+            frames[(symbol, tf)] = df
         if len(df) < cfg["rules"]["range_lookback"] + 3:
             status["errors"][symbol] = f"málo dat ({len(df)} svíček)"
             continue
         for s in rules.latest_setup(df, t.get("direction", cfg["direction"]), cfg["rules"]):
-            sid = setup_id(symbol, tf, s)
-            if state.seen(sid):
-                continue
-            if s.rr[0] < cfg["min_rr"]:
-                print(f"[{symbol}] {s.direction} setup vyřazen: R:R {s.rr[0]} < {cfg['min_rr']}")
-                state.add(sid, day, {"sent": False, "reason": "rr"})
-                continue
-            if state.count_on(day) >= cfg["max_setups_per_day"]:
-                print(f"[{symbol}] denní limit {cfg['max_setups_per_day']} vyčerpán")
-                continue
-            size = rules.position_size(s, cfg["account_size"], cfg["risk_pct"],
-                                       fractional=source == "crypto", cash_only=cfg.get("cash_only", True))
-            if size["qty"] <= 0:
-                continue
-            lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"])
-            print("\n".join(lines))
-            found.append((sid, s, size))
-            if dry_run:
-                continue
-            chart = None
-            if cfg["notify"].get("chart", True):
-                chart = notify.render_chart(symbol, tf, s, df, lines, HERE / "out", cfg["notify"].get("chart_bars", 80))
-            sent = notify.telegram("\n".join(lines), photo=chart) if cfg["notify"].get("telegram", True) else False
-            if cfg.get("paper_trading", True):
-                broker.place_order({"setup_id": sid, "symbol": symbol, "side": "buy" if s.direction == "long" else "sell",
-                                    "qty": size["qty"], "entry": s.entry, "stop": s.stop, "targets": s.targets}, cfg)
-            state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size})
-            log_signal(SIGNALS, {"id": sid, "symbol": symbol, "source": source, "timeframe": tf,
-                                 "found_at": now.isoformat(), "rules": cfg["rules"], "min_rr": cfg["min_rr"],
-                                 "setup": s.to_dict(), "size": size, "telegram": sent})
-            _ai_explain(cfg, s, sid)
+            candidates.append((symbol, source, tf, df, s))
+
+    costs = cfg.get("costs", {})
+    cost_pct = costs.get("fee_pct", 0) + costs.get("slippage_pct", 0)
+    update_paper_positions(cfg, state, frames, cost_pct, dry_run)
+
+    # krypto se hýbe spolu → max. N otevřených (papírových) pozic stejným směrem; přednost má lepší R:R
+    candidates.sort(key=lambda x: x[4].rr[0], reverse=True)
+    per_dir = {}
+    for pos in state.data.get("open", []):
+        per_dir[pos["setup"]["direction"]] = per_dir.get(pos["setup"]["direction"], 0) + 1
+    for symbol, source, tf, df, s in candidates:
+        sid = setup_id(symbol, tf, s)
+        if state.seen(sid):
+            continue
+        if s.rr[0] < cfg["min_rr"]:
+            print(f"[{symbol}] {s.direction} setup vyřazen: R:R {s.rr[0]} < {cfg['min_rr']}")
+            state.add(sid, day, {"sent": False, "reason": "rr"})
+            continue
+        if per_dir.get(s.direction, 0) >= cfg.get("max_open_per_direction", 99):
+            print(f"[{symbol}] {s.direction} setup vyřazen: už je otevřená pozice stejným směrem (korelace)")
+            state.add(sid, day, {"sent": False, "reason": "correlation"})
+            continue
+        if state.count_on(day) >= cfg["max_setups_per_day"]:
+            print(f"[{symbol}] denní limit {cfg['max_setups_per_day']} vyčerpán")
+            continue
+        size = rules.position_size(s, cfg["account_size"], cfg["risk_pct"],
+                                   fractional=source == "crypto", cash_only=cfg.get("cash_only", True))
+        if size["qty"] <= 0:
+            continue
+        per_dir[s.direction] = per_dir.get(s.direction, 0) + 1
+        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct)
+        print("\n".join(lines))
+        found.append((sid, s, size))
+        if dry_run:
+            continue
+        chart = None
+        if cfg["notify"].get("chart", True):
+            chart = notify.render_chart(symbol, tf, s, df, lines, HERE / "out", cfg["notify"].get("chart_bars", 80))
+        sent = notify.telegram("\n".join(lines), photo=chart) if cfg["notify"].get("telegram", True) else False
+        if cfg.get("paper_trading", True):
+            broker.place_order({"setup_id": sid, "symbol": symbol, "side": "buy" if s.direction == "long" else "sell",
+                                "qty": size["qty"], "entry": s.entry, "stop": s.stop, "targets": s.targets}, cfg)
+        state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size})
+        state.data.setdefault("open", []).append({"id": sid, "symbol": symbol, "timeframe": tf, "setup": s.to_dict()})
+        state.save()
+        log_signal(SIGNALS, {"id": sid, "symbol": symbol, "source": source, "timeframe": tf,
+                             "found_at": now.isoformat(), "rules": cfg["rules"], "min_rr": cfg["min_rr"],
+                             "setup": s.to_dict(), "size": size, "telegram": sent})
+        _ai_explain(cfg, s, sid)
     return found
+
+
+def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False):
+    """Vyhodnotí otevřené papírové pozice na nových svíčkách; uzavřené oznámí na Telegram."""
+    ex = cfg.get("exit", {})
+    still_open = []
+    for pos in state.data.get("open", []):
+        df = frames.get((pos["symbol"], pos["timeframe"]))
+        if df is None:
+            still_open.append(pos)
+            continue
+        after = df[df.index > pd.Timestamp(pos["setup"]["hold_time"])]
+        res = simulate(pos["setup"], after, ex.get("max_hold_bars", 48), ex.get("split", 0.5),
+                       cost_pct, ex.get("trail_atr", 0))
+        if res["result"] == "open":
+            still_open.append(pos)
+            continue
+        state.data.setdefault("closed", []).append({"id": pos["id"], "symbol": pos["symbol"],
+                                                    "direction": pos["setup"]["direction"], **res})
+        txt = {"stop": "stop", "T1+BE": "T1, zbytek na break-even", "T2": "T1 i T2", "time": "časový výstup"}[res["result"]]
+        msg = (f"📕 Papírový obchod uzavřen: {pos['symbol']} {pos['setup']['direction'].upper()} – {txt}, "
+               f"{res['r']:+.2f} R po nákladech ({res['bars']} svíček)")
+        print(msg)
+        if not dry_run and cfg.get("notify", {}).get("telegram", True):
+            notify.telegram(msg)
+    state.data["open"] = still_open
+    state.save()
 
 
 def maybe_heartbeat(cfg, state, status, found, now, send=None):
@@ -138,6 +188,9 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
              f"{period}: {hb['scans']} průchodů, nových setupů: {hb['setups']}"]
     if status.get("prices"):
         lines.append(" · ".join(f"{sym} {notify.fmt(p)}" for sym, (p, _) in status["prices"].items()))
+    closed = state.data.get("closed", [])
+    lines.append(f"Papírově: otevřené {len(state.data.get('open', []))}, uzavřené {len(closed)}"
+                 + (f", Σ {sum(c['r'] for c in closed):+.2f} R" if closed else ""))
     if status.get("errors"):
         lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
     rules_txt = f"{cfg['timeframe']} · {cfg['direction']} · R:R ≥ {cfg['min_rr']} · breakout → retest → hold"

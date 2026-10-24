@@ -25,6 +25,7 @@ Plán obchodu:
 from dataclasses import dataclass, field, asdict
 import math
 
+import numpy as np
 import pandas as pd
 
 DEFAULTS = {
@@ -37,6 +38,11 @@ DEFAULTS = {
     "min_stop_atr": 0.5,
     "target_mode": "measured_move",
     "target_multiples": [1.0, 2.0],
+    # filtry (0 / False = vypnuto)
+    "trend_ema": 0,               # long jen nad EMA(n), short jen pod EMA(n)
+    "breakout_volume_mult": 0.0,  # objem breakout svíčky >= k × průměr objemu v range
+    "skip_weekends": False,       # ignorovat setupy s hold svíčkou v so/ne (UTC)
+    "min_stop_pct": 0.0,          # stop aspoň x % od vstupu (ochrana proti poplatkům)
 }
 
 
@@ -69,6 +75,23 @@ def atr(df, n=14):
     return tr.rolling(n, min_periods=1).mean()
 
 
+class _Ctx:
+    """Předpočítané řady pro jedno df (rychlé hledání i na letech dat)."""
+
+    def __init__(self, df, p):
+        L = p["range_lookback"]
+        self.df = df
+        self.c, self.h, self.l = df["Close"].values, df["High"].values, df["Low"].values
+        self.a = atr(df).values
+        self.rh = df["High"].rolling(L).max().shift(1).values      # max high[b-L .. b-1]
+        self.rl = df["Low"].rolling(L).min().shift(1).values
+        self.ema = df["Close"].ewm(span=p["trend_ema"], adjust=False).mean().values if p["trend_ema"] else None
+        vol = df["Volume"] if "Volume" in df else pd.Series(0.0, index=df.index)
+        self.v = vol.values
+        self.vavg = vol.rolling(L).mean().shift(1).values
+        self.weekday = df.index.dayofweek
+
+
 def _targets(direction, entry, stop, rh, rl, p):
     risk = abs(entry - stop)
     height = rh - rl
@@ -82,29 +105,31 @@ def _targets(direction, entry, stop, rh, rl, p):
     return tg, rr
 
 
-def _brh_at(df, b, direction, p, a):
+def _brh_at(x, b, direction, p):
     """Zkusí setup s breakoutem na indexu b. Vrátí Setup, nebo None."""
     L, W, tol = p["range_lookback"], p["retest_window"], p["tolerance_pct"] / 100
+    n = len(x.c)
     if b < L:
         return None
-    win = df.iloc[b - L:b]
-    rh, rl = float(win["High"].max()), float(win["Low"].min())
+    rh, rl = float(x.rh[b]), float(x.rl[b])
     height_pct = (rh - rl) / rh * 100
     if not (p["min_range_pct"] <= height_pct <= p["max_range_pct"]):
         return None
-    c, h, l = df["Close"].values, df["High"].values, df["Low"].values
+    c, h, l = x.c, x.h, x.l
     long = direction == "long"
     lvl = rh if long else rl
 
-    # 2. breakout / breakdown
+    # 2. breakout / breakdown (+ volitelně objem)
     if long and not (c[b] > lvl and c[b - 1] <= lvl):
         return None
     if not long and not (c[b] < lvl and c[b - 1] >= lvl):
         return None
+    if p["breakout_volume_mult"] and not (x.vavg[b] > 0 and x.v[b] >= p["breakout_volume_mult"] * x.vavg[b]):
+        return None
 
     # 3. retest
     r = None
-    for i in range(b + 1, min(b + W, len(df) - 1) + 1):
+    for i in range(b + 1, min(b + W, n - 1) + 1):
         touched = l[i] <= lvl * (1 + tol) if long else h[i] >= lvl * (1 - tol)
         if touched:
             r = i
@@ -112,7 +137,7 @@ def _brh_at(df, b, direction, p, a):
         stayed = c[i] > lvl if long else c[i] < lvl
         if not stayed:
             return None
-    if r is None or r + 1 >= len(df):
+    if r is None or r + 1 >= n:
         return None
     if long and c[r] < lvl * (1 - tol):
         return None
@@ -126,33 +151,55 @@ def _brh_at(df, b, direction, p, a):
     if not long and not (c[hh] < lvl and h[hh] <= lvl * (1 + tol)):
         return None
 
+    # filtry trendu a víkendu
+    if x.ema is not None and ((long and c[hh] <= x.ema[hh]) or (not long and c[hh] >= x.ema[hh])):
+        return None
+    if p["skip_weekends"] and x.weekday[hh] >= 5:
+        return None
+
     entry = float(c[hh])
-    buf = p["stop_buffer_atr"] * float(a.iloc[hh])
+    a = float(x.a[hh])
+    buf = p["stop_buffer_atr"] * a
     stop = min(l[r], l[hh]) - buf if long else max(h[r], h[hh]) + buf
-    # stop ne blíž než min_stop_atr*ATR od vstupu (jinak by R:R bylo uměle vysoké)
-    min_dist = p["min_stop_atr"] * float(a.iloc[hh])
+    # stop ne blíž než min_stop_atr*ATR ani min_stop_pct od vstupu (jinak R:R uměle vysoké / sežerou ho poplatky)
+    min_dist = max(p["min_stop_atr"] * a, entry * p["min_stop_pct"] / 100)
     stop = min(stop, entry - min_dist) if long else max(stop, entry + min_dist)
     if (long and stop >= entry) or (not long and stop <= entry):
         return None
     tg, rr = _targets(direction, entry, float(stop), rh, rl, p)
+    df = x.df
     return Setup(
         kind="breakout_retest_hold", direction=direction,
         breakout_time=df.index[b], retest_time=df.index[r], hold_time=df.index[hh],
         level=lvl, range_high=rh, range_low=rl, entry=entry, stop=float(stop),
         targets=[float(t) for t in tg], rr=rr,
-        meta={"range_pct": round(height_pct, 2), "atr": float(a.iloc[hh]), "hold_index": hh},
+        meta={"range_pct": round(height_pct, 2), "atr": a, "hold_index": hh},
     )
+
+
+def _breakout_candidates(x, dirs, lo, hi):
+    """Indexy b, kde nastal první close nad RH / pod RL (vektorově, pro rychlost)."""
+    c = x.c
+    prev = np.roll(c, 1)
+    idx = np.arange(len(c))
+    mask = np.zeros(len(c), dtype=bool)
+    with np.errstate(invalid="ignore"):
+        if "long" in dirs:
+            mask |= (c > x.rh) & (prev <= x.rh)
+        if "short" in dirs:
+            mask |= (c < x.rl) & (prev >= x.rl)
+    return [int(b) for b in idx[mask] if lo <= b < hi]
 
 
 def find_setups(df, direction="both", params=None):
     """Všechny výskyty BRH v historii (pro testy a backtest)."""
     p = {**DEFAULTS, **(params or {})}
     dirs = ["long", "short"] if direction == "both" else [direction]
-    a = atr(df)
+    x = _Ctx(df, p)
     out = []
-    for b in range(p["range_lookback"], len(df) - 2):
+    for b in _breakout_candidates(x, dirs, p["range_lookback"], len(df) - 2):
         for d in dirs:
-            s = _brh_at(df, b, d, p, a)
+            s = _brh_at(x, b, d, p)
             if s:
                 out.append(s)
     return out
@@ -163,12 +210,12 @@ def latest_setup(df, direction="both", params=None):
     p = {**DEFAULTS, **(params or {})}
     last = len(df) - 1
     dirs = ["long", "short"] if direction == "both" else [direction]
-    a = atr(df)
+    x = _Ctx(df, p)
     out = []
     # hold = last → retest = last-1 → breakout v [last-1-W, last-2]
     for b in range(max(p["range_lookback"], last - 1 - p["retest_window"]), last - 1):
         for d in dirs:
-            s = _brh_at(df, b, d, p, a)
+            s = _brh_at(x, b, d, p)
             if s and s.meta["hold_index"] == last:
                 out.append(s)
     return out

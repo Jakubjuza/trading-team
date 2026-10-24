@@ -266,3 +266,110 @@ def test_heartbeat_reports_data_errors_and_retries_on_failed_send(tmp_path):
     assert "⚠️" in maybe_heartbeat(_cfg(), state, status, [], now, lambda t: False)
     assert state.data["heartbeat"]["last"] is None                                 # neodesláno → zkusí znovu
     assert maybe_heartbeat(_cfg(heartbeat_hours=0), State(tmp_path / "x.json"), status, [], now, lambda t: True) is None
+
+
+# --- nové filtry ------------------------------------------------------------
+def _with_history(df, price, n=40):
+    """Předřadí n svíček na dané ceně (pro test EMA trendu)."""
+    pre = pd.DataFrame({"Open": price, "High": price + 0.5, "Low": price - 0.5, "Close": price, "Volume": 1000.0},
+                       index=pd.date_range(end=df.index[0] - pd.Timedelta(hours=1), periods=n, freq="1h", tz="UTC"))
+    return pd.concat([pre, df])
+
+
+def test_trend_filter_blocks_long_below_ema():
+    df = _with_history(_synthetic("long"), 130.0)             # cena dlouho nad 130 → EMA nad setupem
+    assert [s.direction for s in rules.latest_setup(df, params={"trend_ema": 0})] == ["long"]
+    assert rules.latest_setup(df, params={"trend_ema": 30}) == []
+    df_up = _with_history(_synthetic("long"), 90.0)           # cena přišla zespodu → EMA pod setupem
+    assert [s.direction for s in rules.latest_setup(df_up, params={"trend_ema": 30})] == ["long"]
+
+
+def test_volume_filter_requires_strong_breakout():
+    df = _synthetic("long")
+    assert rules.latest_setup(df, params={"breakout_volume_mult": 1.5}) == []   # objem breakoutu = průměr
+    df.loc[df.index[21], "Volume"] = 2000.0                                       # breakout svíčka 2× průměr
+    assert len(rules.latest_setup(df, params={"breakout_volume_mult": 1.5})) == 1
+
+
+def test_skip_weekends():
+    df = _synthetic("long")
+    df.index = pd.date_range("2026-01-03 00:00", periods=len(df), freq="1h", tz="UTC")   # sobota
+    assert len(rules.latest_setup(df)) == 1
+    assert rules.latest_setup(df, params={"skip_weekends": True}) == []
+
+
+def test_min_stop_pct_widens_stop():
+    s = rules.latest_setup(_synthetic("long"), params={"min_stop_pct": 3.0})[0]
+    assert (s.entry - s.stop) / s.entry * 100 >= 3.0 - 1e-9
+
+
+# --- náklady, trailing, benchmark, backtest ---------------------------------
+from scanner import evaluate as ev  # noqa: E402
+
+
+def test_simulate_costs_in_r():
+    res = simulate(SETUP, _after([(100, 101, 97.5, 98)]), cost_pct=0.15)
+    assert res["r"] == pytest.approx((-2 - 0.0015 * 198) / 2, abs=1e-3)       # -1,149 R
+
+
+def test_simulate_trailing_after_t1():
+    s = {**SETUP, "meta": {"atr": 1.0}}
+    rows = [(100, 104.5, 99.5, 104), (104, 110, 104, 110), (110, 111, 107.5, 108)]
+    res = simulate(s, _after(rows), trail_atr=2.0)
+    # T1 104 (0,5 × 2R), pak trailing z close 110 − 2×ATR = 108 → druhá polovina na 108 = 0,5 × 4R
+    assert res["result"] == "T1+BE" and res["r"] == pytest.approx(3.0)
+
+
+def test_random_baseline_deterministic():
+    df = load(POSITIVE[3][0])
+    trades = [{"direction": "long", "risk_atr": 1.0, "rr": [1.0, 2.0]}]
+    p = {**rules.DEFAULTS, **ev.DEFAULT_EXIT, "max_hold_bars": 5}
+    a = ev.random_baseline(df, trades, p, 0.15, k=10)
+    assert a == ev.random_baseline(df, trades, p, 0.15, k=10)
+    assert -3 < a < 3
+
+
+def test_backtest_one_position_at_a_time():
+    df = load("pos_SPY_1d_short_20250310.csv")
+    p = {**rules.DEFAULTS, **ev.DEFAULT_EXIT, "min_rr": 0.0, "max_hold_bars": 5}
+    tr = ev.backtest(df, p, "both", 0.0)
+    for a, b in zip(tr, tr[1:]):
+        assert b["hold_index"] > a["hold_index"] + a["bars"] - 1
+
+
+def test_scan_limits_signals_per_direction(tmp_path):
+    cache = _FakeCache(load(POSITIVE[3][0]))
+    cfg = _cfg(tickers=[{"symbol": "BTC/USDT", "source": "crypto"}, {"symbol": "ETH/USDT", "source": "crypto"}],
+               max_open_per_direction=1)
+    now = datetime(2026, 8, 27, 12, 5, tzinfo=timezone.utc)
+    assert len(scan_once(cfg, cache, State(tmp_path / "s.json"), now=now)) == 1
+    cfg["max_open_per_direction"] = 2
+    assert len(scan_once(cfg, cache, State(tmp_path / "t.json"), now=now)) == 2
+
+
+def test_summary_shows_rr_after_costs():
+    s = rules.latest_setup(load(POSITIVE[3][0]))[0]
+    lines = __import__("scanner.notify", fromlist=["x"]).summary_lines("BTC/USDT", "1h", s, rules.position_size(s, 10000, 1), 10000, 0.15)
+    assert "po nákladech" in lines[2]
+
+
+def test_paper_position_opens_closes_and_blocks_same_direction(tmp_path):
+    df = load(POSITIVE[3][0])                                                  # BTC long setup na poslední svíčce
+    cfg = _cfg(max_open_per_direction=1, exit={"split": 0.5, "trail_atr": 0, "max_hold_bars": 48},
+               costs={"fee_pct": 0.1, "slippage_pct": 0.05})
+    state = State(tmp_path / "s.json")
+    now = datetime(2026, 8, 27, 12, 5, tzinfo=timezone.utc)
+    assert len(scan_once(cfg, _FakeCache(df), state, now=now)) == 1
+    assert len(state.data["open"]) == 1
+    # jiný ticker, stejný setup a směr → blokováno, dokud je pozice otevřená
+    cfg2 = {**cfg, "tickers": [{"symbol": "ETH/USDT", "source": "crypto"}]}
+    assert scan_once(cfg2, _FakeCache(df), state, now=now) == []
+    # další svíčka propadne pod stop → pozice se uzavře se ztrátou ~ -1 R po nákladech
+    s = state.data["open"][0]["setup"]
+    nxt = pd.DataFrame({"Open": [s["entry"]], "High": [s["entry"]], "Low": [s["stop"] * 0.99], "Close": [s["stop"]],
+                        "Volume": [1.0]}, index=[df.index[-1] + pd.Timedelta(hours=1)])
+    scan_once(cfg, _FakeCache(pd.concat([df, nxt])), state, now=now + pd.Timedelta(hours=1))
+    assert state.data["open"] == [] and state.data["closed"][0]["result"] == "stop"
+    risk = s["entry"] - s["stop"]
+    expected = -(risk + 0.0015 * (s["entry"] + s["stop"])) / risk               # -1 R + náklady (těsný stop → -1,78 R)
+    assert state.data["closed"][0]["r"] == pytest.approx(expected, abs=1e-3)

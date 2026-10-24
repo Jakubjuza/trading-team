@@ -21,17 +21,20 @@ def pct(x):
     return f"{x:.2f}".replace(".", ",")
 
 
-def summary_lines(ticker, tf, s, size, account):
+def summary_lines(ticker, tf, s, size, account, cost_pct=0.0):
     """Pět řádků shrnutí (formát z CLAUDE.md, bez AI)."""
     side = "LONG" if s.direction == "long" else "SHORT"
     tg = " / ".join(f"T{i + 1} {fmt(t)}" for i, t in enumerate(s.targets))
     rr = " / ".join(str(r).replace(".", ",") for r in s.rr)
     stop_pct = abs(s.entry - s.stop) / s.entry * 100
+    risk = abs(s.entry - s.stop)
+    rr_net = " / ".join(pct(abs(t - s.entry) / risk - cost_pct / 100 * (s.entry + t) / risk).rstrip("0").rstrip(",")
+                        for t in s.targets)
     inval = "close pod" if s.direction == "long" else "close nad"
     return [
         f"1. {ticker} {side} {tf} – breakout → retest → hold u {fmt(s.level)} (range {fmt(s.range_low)}–{fmt(s.range_high)})",
         f"2. Vstup {fmt(s.entry)} · Stop {fmt(s.stop)} ({pct(stop_pct)} %) · {tg}",
-        f"3. R:R {rr} · {str(size['qty']).replace('.', ',')} ks ≈ {fmt(size['notional'])} USD · riziko {fmt(size['risk_usd'])} USD ({pct(size['risk_usd'] / account * 100)} % účtu)",
+        f"3. R:R {rr} (po nákladech {rr_net}) · {str(size['qty']).replace('.', ',')} ks ≈ {fmt(size['notional'])} USD · riziko {fmt(size['risk_usd'])} USD ({pct(size['risk_usd'] / account * 100)} % účtu)",
         f"4. Zneplatnění: {inval} {fmt(s.level)} · ATR {fmt(s.meta['atr'])} · range {pct(s.meta['range_pct'])} %",
         "5. Signál z pravidel (kód, ne AI). Papírový režim. Nejde o finanční poradenství.",
     ]
