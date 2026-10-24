@@ -32,7 +32,7 @@ Chybí ticker nebo směr → zeptej se jen na ně, nic dalšího nespouštěj.
 
 ## 3. Spusť tým
 
-Postup podle `CLAUDE.md` (chart-scanner → trend/levels/volume → news/sentiment → setup-finder → entry-exit-planner → risk-manager → devils-advocate → time-machine). Každému agentovi předej:
+Postup podle `CLAUDE.md` (chart-scanner → trend/levels/volume → news/sentiment → setup-finder → entry-exit-planner → risk-manager → devils-advocate → time-machine → chart-renderer). Každému agentovi předej:
 
 - ticker, směr a povolené typy setupů (hledej jen v daném směru),
 - účet, riziko v % i v USD, minimální R:R,
@@ -41,4 +41,4 @@ Postup podle `CLAUDE.md` (chart-scanner → trend/levels/volume → news/sentime
 
 ## 4. Výstup
 
-Jeden přehled: setup, vstup/stop/cíle, R:R, velikost pozice (ks, notional, riziko v USD), rizika, scénáře z time-machine. Odpovídej česky. Nejde o finanční poradenství.
+Formát z `CLAUDE.md`: obrázek z chart-renderer + 5 řádků shrnutí (velikost pozice v ks, notional a riziko v USD patří do řádku 3). Odpovídej česky. Nejde o finanční poradenství.

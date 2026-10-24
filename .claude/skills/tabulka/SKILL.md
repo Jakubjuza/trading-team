@@ -28,4 +28,4 @@ Když uživatel pošle vyplněnou tabulku (nebo řádky `pole: hodnota`):
 4. **Podle pole „Rozsah analýzy“:**
    - `rychlá kontrola`: jen body 1–3 + aktuální cena přes web search (se zdrojem) a krátký verdikt,
    - `plný tým` (výchozí): postup z `CLAUDE.md` s předáním všech hodnot z tabulky. Zadané vstupy/stopy/cíle tým **ověří**, nenahrazuje je bez upozornění, a navrhne alternativy, pokud zadání nesplňuje min. R:R nebo leží ve špatném místě vůči úrovním a volatilitě.
-5. **Výstup:** možnosti pozic seřazené od nejlepší, pro každou vstup / stop / cíle / R:R / ks / notional / riziko v USD a verdikt. Pak rizika a scénáře z time-machine (pokud je zapnutý). Česky, u každé ceny zdroj, odhady označit. Nejde o finanční poradenství.
+5. **Výstup:** u plného týmu formát z `CLAUDE.md` (obrázek z chart-renderer + 5 řádků). U rychlé kontroly jen chyby zadání a 5 řádků. Česky, u každé ceny zdroj, odhady označit. Nejde o finanční poradenství.
