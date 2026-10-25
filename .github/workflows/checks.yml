@@ -61,3 +61,6 @@ jobs:
                   print(f"  {k}: {len(v)}", "|", " || ".join(f"{r['tone'][:3]} {r['title'][:70]}" for r in v[:3]))
           print(ev.context_line(hours=72))
           PY
+      - name: On-chain a sentiment naživo
+        run: |
+          for C in BTC SOL; do python3 research/onchain.py $C | head -60; done

@@ -201,3 +201,25 @@ def test_approach_alert_once_per_day(tmp_path):
     msgs = approach_alerts(cfg, state, frames, cfg["strategies"], datetime(2026, 2, 6, tzinfo=timezone.utc), "2026-02-06", True)
     assert len(msgs) == 1 and "LONG" in msgs[0] and "101" in msgs[0]
     assert approach_alerts(cfg, state, frames, cfg["strategies"], datetime(2026, 2, 6, tzinfo=timezone.utc), "2026-02-06", True) == []
+
+
+def test_closed_position_logged_to_outcomes(tmp_path):
+    import json
+    import scanner.scan as sc
+    d1 = frame(flat(30) + [(100, 103.5, 99.8, 103)], freq="1D")
+    state = State(tmp_path / "s.json")
+    scan_once(cfg_multi(), Cache({"1d": d1, "1h": frame(flat(40))}), state, now=datetime(2026, 2, 6, tzinfo=timezone.utc))
+    stop = state.data["open"][0]["setup"]["stop"]
+    nxt = pd.concat([d1, frame([(103, 103.2, stop - 1, stop - 0.5)], freq="1D", start=d1.index[-1] + pd.Timedelta(days=1))])
+    update_paper_positions(cfg_multi(), state, {("BTC/USDT", "1d"): nxt}, 0.15, dry_run=False)
+    rec = json.loads(sc.OUTCOMES.read_text().splitlines()[-1])
+    assert rec["result"] == "stop" and rec["r"] < -1 and rec["strategy"] == "don_1d" and state.data["open"] == []
+
+
+def test_approach_alert_uses_decimal_comma(tmp_path):
+    d1 = frame(flat(30, half=1.0), freq="1D")
+    h1 = frame(flat(5, mid=100.8, half=0.1))
+    cfg = cfg_multi(approach_alerts={"enabled": True, "atr_distance": 0.5, "max_per_day": 4})
+    msgs = approach_alerts(cfg, State(tmp_path / "s.json"), {("BTC/USDT", "1d"): d1, ("BTC/USDT", "1h"): h1},
+                           cfg["strategies"], datetime(2026, 2, 6, tzinfo=timezone.utc), "2026-02-06", True)
+    assert "0,20 %" in msgs[0]

@@ -110,8 +110,9 @@ def test_build_end_to_end_with_mocks(monkeypatch):
     monkeypatch.setattr(fs, "section_macro", lambda daily: {"source": "mock", "regime": "neutrální"})
     monkeypatch.setattr(fs, "section_history", lambda sym, d, strategy=None: {"source": "mock"})
     monkeypatch.setattr(fs.events, "section_events", lambda coin: {"source": "mock", "calendar": []})
+    monkeypatch.setattr(fs.onchain, "section_onchain", lambda coin: {"source": "mock"})
     sheet = fs.build("BTC/USDT", signal={"setup": {"direction": "long"}}, frames=frames, ex=Ex())
-    for k in ("structure", "levels", "orderflow", "orderbook", "derivatives", "options", "macro", "events", "sessions", "history"):
+    for k in ("structure", "levels", "orderflow", "orderbook", "derivatives", "options", "macro", "onchain", "events", "sessions", "history"):
         assert k in sheet and "error" not in sheet[k], (k, sheet[k])
     assert set(sheet["structure"]) >= {"1h", "4h", "1d"}
     assert sheet["levels"]["volume_profile_7d"]["poc"] is not None

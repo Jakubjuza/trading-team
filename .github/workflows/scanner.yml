@@ -55,11 +55,12 @@ jobs:
           while [ $SECONDS -lt $end ]; do
             start=$SECONDS
             python3 scanner/scan.py --once || echo "průchod selhal, pokračuji"
-            # nové signály / datové listy hned do repozitáře (čte je AI desk)
-            if [ -n "$(git status --porcelain scanner/signals.jsonl research/factsheets 2>/dev/null)" ]; then
+            # nové signály, datové listy a výsledky obchodů hned do repozitáře (čte je AI desk)
+            if [ -n "$(git status --porcelain scanner/signals.jsonl research/factsheets research/outcomes.jsonl 2>/dev/null)" ]; then
               git add scanner/signals.jsonl
               [ -d research/factsheets ] && git add research/factsheets
-              git commit -q -m "scanner: nové signály"
+              [ -f research/outcomes.jsonl ] && git add research/outcomes.jsonl
+              git commit -q -m "scanner: nové signály / výsledky"
               for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done
             fi
             sleep $(( 60 - (SECONDS - start) > 1 ? 60 - (SECONDS - start) : 1 ))
