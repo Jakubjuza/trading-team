@@ -346,7 +346,17 @@ def main():
         print("režim pozic:", "long/short" if b.hedged() else "net")
     bal = b.ex.fetch_balance()
     print("USDT:", (bal.get("USDT") or {}).get("free"), "volné /", (bal.get("USDT") or {}).get("total"), "celkem")
-    print("zůstatky:", {k: v for k, v in (bal.get("total") or {}).items() if v})
+    print("zůstatky (obchodní účet):", {k: v for k, v in (bal.get("total") or {}).items() if v})
+    try:
+        fund = b.ex.fetch_balance({"type": "funding"})
+        print("zůstatky (Funding účet):", {k: v for k, v in (fund.get("total") or {}).items() if v})
+    except Exception as exc:
+        print("Funding účet:", f"{exc.__class__.__name__}: {str(exc)[:120]}")
+    try:
+        cfg_acc = b.ex.private_get_account_config()["data"][0]
+        print("účet:", {k: cfg_acc.get(k) for k in ("acctLv", "posMode", "perm", "level", "type")})
+    except Exception as exc:
+        print("nastavení účtu:", f"{exc.__class__.__name__}: {str(exc)[:120]}")
     b.ex.load_markets()
     for c in ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"]:
         sym = f"{c}/USDT" if spot else f"{c}/USDT:USDT"
