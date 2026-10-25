@@ -5,7 +5,7 @@ Bezpečnost:
     nepošle. Ostrý účet tento modul nikdy nepoužije a `live_trading` v configu se ho netýká.
   • klíče jen z prostředí (GitHub Secrets): OKX_DEMO_API_KEY, OKX_DEMO_API_SECRET, OKX_DEMO_PASSPHRASE.
 Trh podle `demo.market`:
-  • swap (výchozí): perpetual BTC/USDT:USDT…, longy i shorty; izolovaná marže, páka `leverage` (výchozí 2×).
+  • swap (výchozí): perpetual BTC/USDT:USDT… (s `demo.quote: USDC` → BTC/USDC:USDC, OKX EEA nemá USDT), longy i shorty; izolovaná marže, páka `leverage` (výchozí 2×).
     Vstup market + ochranný stop na burze (celá pozice) + reduce-only limit na T1 (polovina pozice).
   • spot: BTC/USDT… bez páky a bez futures oprávnění – JEN LONGY (shorty se na spotu nedají, vynechají se).
     Vstup market + ochranný stop na burze (celé koupené množství); T1 prodá skener marketem (limit na spotu by
@@ -28,9 +28,16 @@ def env_keys():
     return k if all(k.values()) else None
 
 
-def swap_symbol(symbol):
-    base, quote = symbol.split("/")
-    return f"{base}/{quote}:{quote}"
+def swap_symbol(symbol, quote=None):
+    """BTC/USDT → BTC/USDT:USDT; s `quote` (např. USDC na OKX EEA) → BTC/USDC:USDC."""
+    base, q = symbol.split("/")
+    q = quote or q
+    return f"{base}/{q}:{q}"
+
+
+def spot_symbol(symbol, quote=None):
+    base, q = symbol.split("/")
+    return f"{base}/{quote or q}"
 
 
 def make_broker(cfg, ex=None):
@@ -44,6 +51,7 @@ class DemoBroker:
     def __init__(self, cfg, ex=None):
         self.cfg = cfg.get("demo") or {}
         self.leverage = self.cfg.get("leverage", 2)
+        self.quote = self.cfg.get("quote")                       # None = jako signál (USDT); OKX EEA: USDC
         if ex is None:
             keys = env_keys()
             if not keys:
@@ -112,7 +120,7 @@ class DemoBroker:
     # --- životní cyklus pozice ------------------------------------------------------------
     def open(self, pos, size):
         s = pos["setup"]
-        sym = swap_symbol(pos["symbol"])
+        sym = swap_symbol(pos["symbol"], self.quote)
         long = s["direction"] == "long"
         n, cs = self.contracts(sym, size["qty"])
         if n <= 0:
@@ -250,14 +258,14 @@ class SpotDemoBroker(DemoBroker):
 
     def open(self, pos, size):
         s = pos["setup"]
-        sym = pos["symbol"]
+        sym = spot_symbol(pos["symbol"], self.quote)
         if s["direction"] != "long":
             return {"status": "skipped_short", "symbol": sym}
         base = sym.split("/")[0]
         n = self.amount(sym, size["qty"])
         if n <= 0:
             return {"status": "too_small", "symbol": sym}
-        free = float((self.ex.fetch_balance().get("USDT") or {}).get("free") or 0)
+        free = float((self.ex.fetch_balance().get(sym.split("/")[1]) or {}).get("free") or 0)
         if n * s["entry"] > free * 0.98:
             return {"status": "no_funds", "symbol": sym, "free_usdt": free}
         entry = self.ex.create_order(sym, "market", "buy", n, None, {"tgtCcy": "base_ccy"})
@@ -345,7 +353,8 @@ def main():
     if not spot:
         print("režim pozic:", "long/short" if b.hedged() else "net")
     bal = b.ex.fetch_balance()
-    print("USDT:", (bal.get("USDT") or {}).get("free"), "volné /", (bal.get("USDT") or {}).get("total"), "celkem")
+    q = b.quote or "USDT"
+    print(f"{q}:", (bal.get(q) or {}).get("free"), "volné /", (bal.get(q) or {}).get("total"), "celkem")
     if not spot:
         try:
             pos = b.ex.fetch_positions()
@@ -365,7 +374,7 @@ def main():
         print("nastavení účtu:", f"{exc.__class__.__name__}: {str(exc)[:120]}")
     b.ex.load_markets()
     for c in ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"]:
-        sym = f"{c}/USDT" if spot else f"{c}/USDT:USDT"
+        sym = spot_symbol(f"{c}/USDT", b.quote) if spot else swap_symbol(f"{c}/USDT", b.quote)
         try:
             m = b.ex.market(sym)
         except Exception as exc:
@@ -373,7 +382,7 @@ def main():
             continue
         print(f"  {sym}: kontrakt {m.get('contractSize') or 1} {c}, min. {((m.get('limits') or {}).get('amount') or {}).get('min')}")
     if a.test_order:
-        t = b.ex.fetch_ticker("BTC/USDT" if spot else "BTC/USDT:USDT")["last"]
+        t = b.ex.fetch_ticker(spot_symbol("BTC/USDT", b.quote) if spot else swap_symbol("BTC/USDT", b.quote))["last"]
         pos = {"id": "TEST", "symbol": "BTC/USDT", "strategy": "test",
                "setup": {"direction": "long", "entry": t, "stop": t * 0.95, "targets": [t * 1.05, t * 1.1]}}
         rec = b.open(pos, {"qty": 0.001 if spot else 0.02})

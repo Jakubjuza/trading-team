@@ -187,3 +187,10 @@ def test_spot_stop_already_executed_on_exchange():
     ex.algo_gone = True
     out = b.close(POS, rec, "stop")
     assert out["stopped_on_exchange"] and len(ex.orders) == 1 and out["pnl_usdt"] is None
+
+
+def test_quote_override_maps_to_usdc_swap():
+    ex = FakeOKX()
+    rec = demo.DemoBroker({"demo": {"quote": "USDC"}}, ex=ex).open(POS, {"qty": 0.05})
+    assert rec["symbol"] == "BTC/USDC:USDC" and ex.orders[0]["symbol"] == "BTC/USDC:USDC"
+    assert demo.spot_symbol("ETH/USDT", "USDC") == "ETH/USDC" and demo.swap_symbol("ETH/USDT") == "ETH/USDT:USDT"

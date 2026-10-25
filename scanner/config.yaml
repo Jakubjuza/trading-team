@@ -94,7 +94,8 @@ demo:                     # 🧪 zrcadlení papírových obchodů na DEMO účet
   exchange: okx           # server: eea.okx.com (účty z EU) nebo www.okx.com – najde se sám; jde vynutit `hostname:`
                           # vždy demo režim (x-simulated-trading); ostrý účet se nikdy nepoužije
   variant: daily          # daily = vstup na zavření denní svíčky, mtf = vstup z nižších TF (jen jedna – stejný účet)
-  market: spot            # spot = jen longy, bez páky (účet bez futures oprávnění); swap = perpetual, longy i shorty
+  market: swap            # swap = perpetual, longy i shorty; spot = jen longy, bez páky (účet bez futures oprávnění)
+  quote: USDC             # OKX EEA (EU, MiCA) nemá USDT – signál BTC/USDT se zrcadlí na BTC/USDC:USDC
   leverage: 2             # jen pro swap: izolovaná marže
 
 mtf_entry:                # vstup z nižších TF pro denní signály (scanner/mtf.py, reports/mtf_entry.md) – papírově souběžně
