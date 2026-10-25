@@ -52,6 +52,8 @@ Pravidla:
   [Alpha Architect](https://alphaarchitect.com/cross-asset-signals-and-time-series-momentum/)). U nás už riziko na obchod
   = pevné R se stopem podle ATR – podobný efekt.
 
+- **Obrat po prudkém pohybu (≥ 4 ATR za 4 h) s těsným stopem na 15M, cíle 10–50R** – 1 177 pokusů, Ø −0,22 až −0,42 R,
+  horší než náhoda; výzva 100 USD → ztráta účtu ve 100 % simulací – `reports/reversal.md` – 25. 10. 2026.
 - **Chycení kapitulace (long po panice: −30 % od maxima, top 10 % volatility, Fear & Greed < 20, sweep & reclaim)** –
   30 obchodů, Ø +0,30 ± 0,83 R vs. náhoda +0,34; zisk ze 2 obchodů, stop medián 11 % – `reports/capitulation.md` – 25. 10. 2026.
 - **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.

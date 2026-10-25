@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: "Který výzkum: carry, mtf15 nebo capitulation"
+        description: "Který výzkum: carry, mtf15, capitulation nebo reversal"
         type: choice
-        options: [carry, mtf15, capitulation]
+        options: [carry, mtf15, capitulation, reversal]
         default: carry
   push:
     branches: ["claude/**"]
@@ -64,3 +64,18 @@ jobs:
       - run: pip install -q -r scanner/requirements.txt
       - name: Chycení kapitulace – long na dně po panice (Fear & Greed z alternative.me)
         run: python3 research/experiments/capitulation.py /tmp/cache
+
+  reversal:
+    if: github.event_name == 'workflow_dispatch' && inputs.job == 'reversal'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      - name: Obrat po prudkém pohybu s těsným stopem + simulace výzvy (15M z OKX)
+        run: python3 research/experiments/reversal.py /tmp/cache
