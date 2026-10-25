@@ -10,6 +10,7 @@ Vstup: `$ARGUMENTS`
 
 ## 0. Paměť desku
 Přečti `research/lessons.md` (poučení z minulých obchodů) a relevantní poučení předej oddělením i head-traderovi.
+Přečti i sekce ✅ a ❌ ve `research/knowledge.md` (znalostní báze mentora – co je u nás ověřené a co vyvrácené); 🧪 neověřené poznatky nejsou důvod ke změně stupně.
 
 ## 1. Datový list
 - **Signál skeneru**: datový list je v `research/factsheets/<soubor>.json` (cesta je v signálu v poli `factsheet`). Vytvořil ho GitHub Actions s přístupem k burze, Hyperliquid a Deribit.
