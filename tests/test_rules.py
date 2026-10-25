@@ -222,7 +222,7 @@ SETUP = {"direction": "long", "entry": 100.0, "stop": 98.0, "targets": [104.0, 1
 
 
 def test_simulate_stop_first():
-    assert simulate(SETUP, _after([(100, 101, 97.5, 98)])) == {"result": "stop", "r": -1.0, "bars": 1}
+    assert simulate(SETUP, _after([(100, 101, 97.5, 98)])) == {"result": "stop", "r": -1.0, "bars": 1, "t1": False}
 
 
 def test_simulate_t1_then_breakeven():

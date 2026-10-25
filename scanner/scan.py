@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rychlý skener bez AI: o vstupu rozhoduje jen kód (scanner/rules.py).
+"""Rychlý skener bez AI: o vstupu rozhoduje jen kód (scanner/setups.py, strategie v config.yaml).
 
 Použití:
     python3 scanner/scan.py              # běží nepřetržitě, kontrola každých poll_seconds
@@ -23,7 +23,8 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from scanner import broker, notify, rules  # noqa: E402
+from scanner import broker, notify, rules, setups  # noqa: E402
+from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import simulate  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 
@@ -62,6 +63,20 @@ def setup_id(symbol, tf, s):
     return f"{symbol}|{tf}|{s.direction}|{s.kind}|{s.breakout_time.isoformat()}"
 
 
+def load_probabilities(cfg):
+    """Tabulka pravděpodobností (scanner/calibrate.py) → {strategie: {"all", "recent", "after_t1"}}."""
+    path = HERE.parent / cfg.get("probabilities", "scanner/probabilities.json")
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    out = {}
+    for name, v in data.get("strategies", {}).items():
+        t = v.get("table", {})
+        out[name] = {"all": t.get("*|*|*", {}), "recent": v.get("recent", {}), "after_t1": t.get("_after_t1", {})}
+    return out
+
+
 def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     """status (dict) se doplní o poslední ceny a chyby – pro zprávu o stavu."""
     now = now or datetime.now(timezone.utc)
@@ -70,44 +85,54 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     status = status if status is not None else {}
     status.setdefault("prices", {})
     status.setdefault("errors", {})
+    strats = cfg_strategies(cfg)
+    probs = load_probabilities(cfg)
     candidates, frames = [], {}
     for t in cfg["tickers"]:
         symbol, source = t["symbol"], t["source"]
-        tf = t.get("timeframe", cfg["timeframe"])
-        try:
-            df = cache.update(source, symbol, tf, now=now)
-        except Exception as exc:  # síť, burza… další ticker
-            print(f"[{symbol}] data nedostupná: {exc}", file=sys.stderr)
-            status["errors"][symbol] = f"{exc.__class__.__name__}: {str(exc)[:80]}"
-            continue
-        if len(df):
-            status["prices"][symbol] = (float(df["Close"].iloc[-1]), df.index[-1].isoformat())
-            frames[(symbol, tf)] = df
-        if len(df) < cfg["rules"]["range_lookback"] + 3:
-            status["errors"][symbol] = f"málo dat ({len(df)} svíček)"
-            continue
-        for s in rules.latest_setup(df, t.get("direction", cfg["direction"]), cfg["rules"]):
-            candidates.append((symbol, source, tf, df, s))
+        for strat in strats:
+            tf = strat.get("timeframe") or t.get("timeframe", cfg["timeframe"])
+            if (symbol, tf) not in frames:
+                try:
+                    frames[(symbol, tf)] = cache.update(source, symbol, tf, now=now)
+                except Exception as exc:  # síť, burza… další ticker
+                    print(f"[{symbol} {tf}] data nedostupná: {exc}", file=sys.stderr)
+                    status["errors"][symbol] = f"{exc.__class__.__name__}: {str(exc)[:80]}"
+                    frames[(symbol, tf)] = None
+            df = frames[(symbol, tf)]
+            if df is None or len(df) < 23:
+                if df is not None:
+                    status["errors"][symbol] = f"málo dat {tf} ({len(df)} svíček)"
+                continue
+            if tf == cfg.get("timeframe", "1h") or symbol not in status["prices"]:
+                status["prices"][symbol] = (float(df["Close"].iloc[-1]), df.index[-1].isoformat())
+            for s in setups.find(strat["setup"], df, t.get("direction", cfg["direction"]), strat.get("params"),
+                                 last_only=True):
+                candidates.append((symbol, source, tf, df, s, strat))
 
     costs = cfg.get("costs", {})
     cost_pct = costs.get("fee_pct", 0) + costs.get("slippage_pct", 0)
-    update_paper_positions(cfg, state, frames, cost_pct, dry_run)
+    update_paper_positions(cfg, state, frames, cost_pct, dry_run, probs)
+    approach_alerts(cfg, state, frames, strats, now, day, dry_run)
 
-    # krypto se hýbe spolu → max. N otevřených (papírových) pozic stejným směrem; přednost má lepší R:R
+    # krypto se hýbe spolu → max. N otevřených (papírových) pozic stejným směrem na strategii; přednost má lepší R:R
     candidates.sort(key=lambda x: x[4].rr[0], reverse=True)
     per_dir = {}
     for pos in state.data.get("open", []):
-        per_dir[pos["setup"]["direction"]] = per_dir.get(pos["setup"]["direction"], 0) + 1
-    for symbol, source, tf, df, s in candidates:
+        k = (pos.get("strategy", strats[0]["name"]), pos["setup"]["direction"])
+        per_dir[k] = per_dir.get(k, 0) + 1
+    for symbol, source, tf, df, s, strat in candidates:
         sid = setup_id(symbol, tf, s)
         if state.seen(sid):
             continue
-        if s.rr[0] < cfg["min_rr"]:
-            print(f"[{symbol}] {s.direction} setup vyřazen: R:R {s.rr[0]} < {cfg['min_rr']}")
+        min_rr = strat.get("min_rr", cfg.get("min_rr", 1.0))
+        if s.rr[0] < min_rr:
+            print(f"[{symbol}] {strat['name']} {s.direction} vyřazen: R:R {s.rr[0]} < {min_rr}")
             state.add(sid, day, {"sent": False, "reason": "rr"})
             continue
-        if per_dir.get(s.direction, 0) >= cfg.get("max_open_per_direction", 99):
-            print(f"[{symbol}] {s.direction} setup vyřazen: už je otevřená pozice stejným směrem (korelace)")
+        key = (strat["name"], s.direction)
+        if per_dir.get(key, 0) >= strat.get("max_open_per_direction", cfg.get("max_open_per_direction", 99)):
+            print(f"[{symbol}] {strat['name']} {s.direction} vyřazen: plno otevřených pozic stejným směrem (korelace)")
             state.add(sid, day, {"sent": False, "reason": "correlation"})
             continue
         if state.count_on(day) >= cfg["max_setups_per_day"]:
@@ -117,8 +142,9 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
                                    fractional=source == "crypto", cash_only=cfg.get("cash_only", True))
         if size["qty"] <= 0:
             continue
-        per_dir[s.direction] = per_dir.get(s.direction, 0) + 1
-        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct)
+        per_dir[key] = per_dir.get(key, 0) + 1
+        prob = probs.get(strat["name"])
+        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob)
         print("\n".join(lines))
         found.append((sid, s, size))
         if dry_run:
@@ -130,40 +156,101 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         if cfg.get("paper_trading", True):
             broker.place_order({"setup_id": sid, "symbol": symbol, "side": "buy" if s.direction == "long" else "sell",
                                 "qty": size["qty"], "entry": s.entry, "stop": s.stop, "targets": s.targets}, cfg)
-        state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size})
-        state.data.setdefault("open", []).append({"id": sid, "symbol": symbol, "timeframe": tf, "setup": s.to_dict()})
+        state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size, "strategy": strat["name"]})
+        state.data.setdefault("open", []).append({"id": sid, "symbol": symbol, "timeframe": tf, "setup": s.to_dict(),
+                                                  "strategy": strat["name"], "exit": strat.get("exit", {})})
         state.save()
-        rec = {"id": sid, "symbol": symbol, "source": source, "timeframe": tf,
-               "found_at": now.isoformat(), "rules": cfg["rules"], "min_rr": cfg["min_rr"],
-               "setup": s.to_dict(), "size": size, "telegram": sent}
+        rec = {"id": sid, "symbol": symbol, "source": source, "timeframe": tf, "strategy": strat["name"],
+               "found_at": now.isoformat(), "rules": strat.get("params", {}), "exit": strat.get("exit", {}),
+               "min_rr": min_rr, "setup": s.to_dict(), "size": size, "telegram": sent,
+               "probabilities": prob}
         rec["factsheet"] = _write_factsheet(cfg, rec)
         log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
     return found
 
 
-def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False):
-    """Vyhodnotí otevřené papírové pozice na nových svíčkách; uzavřené oznámí na Telegram."""
-    ex = cfg.get("exit", {})
+def approach_alerts(cfg, state, frames, strats, now, day, dry_run=False):
+    """„⏳ setup se blíží“: cena u hladiny Donchian kanálu ve směru trendu (jen informace)."""
+    ac = cfg.get("approach_alerts") or {}
+    if not ac.get("enabled"):
+        return []
+    sent_today = state.data.setdefault("approach", {})
+    sent_today = {k: v for k, v in sent_today.items() if v == day}
+    out = []
+    for strat in strats:
+        if strat["setup"] != "donchian_breakout":
+            continue
+        p = setups.params_for("donchian_breakout", strat.get("params"))
+        for (symbol, tf), df in frames.items():
+            if tf != strat["timeframe"] or df is None or len(df) < max(p["channel"], p.get("trend_ema") or 0) + 2:
+                continue
+            live = frames.get((symbol, cfg.get("timeframe", "1h")))
+            price = float(live["Close"].iloc[-1]) if live is not None and len(live) else float(df["Close"].iloc[-1])
+            x = setups.Ctx(df)
+            hi, lo = float(df["High"].iloc[-p["channel"]:].max()), float(df["Low"].iloc[-p["channel"]:].min())
+            atr = float(x.atr[-1])
+            ema = x.ema(p["trend_ema"])[-1] if p.get("trend_ema") else None
+            for d, lvl in (("long", hi), ("short", lo)):
+                if ema is not None and ((d == "long" and price <= ema) or (d == "short" and price >= ema)):
+                    continue
+                dist = (lvl - price) if d == "long" else (price - lvl)
+                if not (0 < dist <= ac.get("atr_distance", 0.5) * atr):
+                    continue
+                key = f"{symbol}|{strat['name']}|{d}"
+                if key in sent_today or len(sent_today) >= ac.get("max_per_day", 4):
+                    continue
+                word = "nad" if d == "long" else "pod"
+                msg = (f"⏳ Blíží se: {symbol} {d.upper()} – {setups.NAMES_CS['donchian_breakout']} ({tf}). "
+                       f"Signál vznikne, pokud denní svíčka zavře {word} {notify.fmt(lvl)} "
+                       f"(teď {notify.fmt(price)}, {abs(dist) / price * 100:.1f} %). Denní svíčka končí v 00:00 UTC. "
+                       f"Jen informace, ne signál ke vstupu.").replace(".", ",", 0)
+                print(msg)
+                sent_today[key] = day
+                out.append(msg)
+                if not dry_run and cfg.get("notify", {}).get("telegram", True):
+                    notify.telegram(msg)
+    state.data["approach"] = sent_today
+    state.save()
+    return out
+
+
+def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=None):
+    """Vyhodnotí otevřené papírové pozice na nových svíčkách; T1 a uzavření oznámí na Telegram."""
+    probs = probs or {}
     still_open = []
+    tg = (not dry_run) and cfg.get("notify", {}).get("telegram", True)
     for pos in state.data.get("open", []):
         df = frames.get((pos["symbol"], pos["timeframe"]))
         if df is None:
             still_open.append(pos)
             continue
+        ex = {**cfg.get("exit", {}), **pos.get("exit", {})}
         after = df[df.index > pd.Timestamp(pos["setup"]["hold_time"])]
         res = simulate(pos["setup"], after, ex.get("max_hold_bars", 48), ex.get("split", 0.5),
                        cost_pct, ex.get("trail_atr", 0))
+        side = pos["setup"]["direction"].upper()
         if res["result"] == "open":
+            if res.get("t1") and not pos.get("t1_notified"):
+                pos["t1_notified"] = True
+                a = (probs.get(pos.get("strategy")) or {}).get("after_t1", {})
+                hist = (f" Z historie po T1: Ø {a['avg_r']:+.2f} R, ≥2R v {a['p_2r']:.0%} případů ({a['n']} obchodů)."
+                        .replace(".", ",", 0) if a.get("n") else "")
+                msg = (f"🎯 T1 dosažen: {pos['symbol']} {side} – vybrána část pozice, stop zbytku na vstup "
+                       f"(break-even).{hist}")
+                print(msg)
+                if tg:
+                    notify.telegram(msg)
             still_open.append(pos)
             continue
-        state.data.setdefault("closed", []).append({"id": pos["id"], "symbol": pos["symbol"],
+        state.data.setdefault("closed", []).append({"id": pos["id"], "symbol": pos["symbol"], "strategy": pos.get("strategy"),
                                                     "direction": pos["setup"]["direction"], **res})
-        txt = {"stop": "stop", "T1+BE": "T1, zbytek na break-even", "T2": "T1 i T2", "time": "časový výstup"}[res["result"]]
-        msg = (f"📕 Papírový obchod uzavřen: {pos['symbol']} {pos['setup']['direction'].upper()} – {txt}, "
+        txt = {"stop": "stop", "T1+BE": "T1, zbytek na break-even / trailing stop", "T2": "T1 i T2",
+               "time": "časový výstup"}[res["result"]]
+        msg = (f"📕 Papírový obchod uzavřen: {pos['symbol']} {side} – {txt}, "
                f"{res['r']:+.2f} R po nákladech ({res['bars']} svíček)")
         print(msg)
-        if not dry_run and cfg.get("notify", {}).get("telegram", True):
+        if tg:
             notify.telegram(msg)
     state.data["open"] = still_open
     state.save()
@@ -196,7 +283,7 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
                  + (f", Σ {sum(c['r'] for c in closed):+.2f} R" if closed else ""))
     if status.get("errors"):
         lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
-    rules_txt = f"{cfg['timeframe']} · {cfg['direction']} · R:R ≥ {cfg['min_rr']} · breakout → retest → hold"
+    rules_txt = ", ".join(f"{setups.NAMES_CS.get(st['setup'], st['setup'])} {st['timeframe']}" for st in cfg_strategies(cfg))
     lines.append(f"Hlídám: {rules_txt}. Další zpráva o stavu za {hours} h.")
     text = "\n".join(lines)
     ok = (send or notify.telegram)(text)

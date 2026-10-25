@@ -1,5 +1,11 @@
 # Rychlý skener (bez AI)
 
+**Strategie** (config `strategies`): `brh_1h` (breakout → retest → hold, 1h), `donchian_1d` (Donchian breakout, denní),
+`pullback_1d` (pullback v trendu, denní). Setupy jsou v `scanner/setups.py`; ověření v `reports/setup_library.md`,
+pravděpodobnosti v `reports/probabilities.md` (`python3 scanner/calibrate.py --report reports/probabilities.md`).
+Telegram: 🔔 signál s grafem a historickými pravděpodobnostmi · 🎯 T1 dosažen · 📕 obchod uzavřen ·
+⏳ „setup se blíží“ (cena u hladiny Donchian kanálu) · 🟢 stav každé 4 h.
+
 O vstupu rozhoduje jen kód (`rules.py`). Každou minutu stáhne nové svíčky (krypto přes ccxt, akcie přes yfinance),
 uloží je do cache, vyhodnotí pravidlo **breakout → retest → hold** (long i short) a nalezený setup:
 

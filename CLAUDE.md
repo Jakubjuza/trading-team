@@ -16,5 +16,5 @@ Odpověď drž krátkou: nejdřív obrázek z reports/ (pošli ho uživateli), p
 1. setup a verdikt (stupeň, vážené skóre), 2. vstup / stop / cíle, 3. R:R a velikost pozice, 4. hlavní riziko, 5. co je naceněno / scénáře.
 Podrobnosti jen na vyžádání. Když chart-renderer vrátí DATA_UNAVAILABLE, napiš 5 řádků bez obrázku a požádej o CSV se svíčkami.
 Když uživatel napíše „tabulka“, použij skill tabulka (pošle prázdnou tabulku k vyplnění a po vyplnění ji vyhodnotí). Rychlé zadání: skill obchod.
-Signály: rychlý skener bez AI (`scanner/`, GitHub Actions, kontrola každou minutu) najde setup a vytvoří datový list; naplánovaná úloha „Desk verdikty“ nad ním spustí pro-analyzu a verdikt jde na Telegram. Starší AI skener: skill skener.
+Signály: rychlý skener bez AI (`scanner/`, GitHub Actions, kontrola každou minutu; strategie brh_1h, donchian_1d, pullback_1d – viz reports/setup_library.md) najde setup a vytvoří datový list; naplánovaná úloha „Desk verdikty“ nad ním spustí pro-analyzu a verdikt jde na Telegram. Starší AI skener: skill skener.
 Journal-reviewer použij jen na požádání. Odpovídej česky. Fakta jen se zdrojem, nic nevymýšlej. Nejde o finanční poradenství.
