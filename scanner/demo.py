@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 LOG = Path(__file__).resolve().parent.parent / "research" / "demo_trades.jsonl"
+HOSTS = ["eea.okx.com", "www.okx.com"]                  # EEA (účty registrované v EU), globální OKX
 
 
 def env_keys():
@@ -47,14 +48,27 @@ class DemoBroker:
             keys = env_keys()
             if not keys:
                 raise RuntimeError("chybí OKX_DEMO_API_KEY / OKX_DEMO_API_SECRET / OKX_DEMO_PASSPHRASE")
-            import ccxt
-            ex = ccxt.okx({"apiKey": keys["API_KEY"], "secret": keys["API_SECRET"], "password": keys["PASSPHRASE"],
-                           "enableRateLimit": True, "options": {"defaultType": self.market_type}})
-            ex.set_sandbox_mode(True)
+            ex = self.connect(keys)
         if (getattr(ex, "headers", None) or {}).get("x-simulated-trading") != "1":
             raise RuntimeError("OKX není v demo režimu – nic se neposílá")
         self.ex = ex
         self._hedged = None
+
+    def connect(self, keys):
+        """Najde server, kde klíč existuje: `demo.hostname`, jinak EEA (my.okx.com – účty z EU) a globální OKX."""
+        import ccxt
+        hosts = [self.cfg["hostname"]] if self.cfg.get("hostname") else HOSTS
+        errors = []
+        for host in hosts:
+            ex = ccxt.okx({"apiKey": keys["API_KEY"], "secret": keys["API_SECRET"], "password": keys["PASSPHRASE"],
+                           "enableRateLimit": True, "hostname": host, "options": {"defaultType": self.market_type}})
+            ex.set_sandbox_mode(True)
+            try:
+                ex.private_get_account_config()
+                return ex
+            except Exception as exc:
+                errors.append(f"{host}: {str(exc)[:120]}")
+        raise RuntimeError("klíč nepřijat na žádném serveru OKX – " + " | ".join(errors))
 
     # --- pomocné ------------------------------------------------------------------------
     def hedged(self):
@@ -327,11 +341,12 @@ def main():
     dc = {**(cfg.get("demo") or {}), **({"market": a.market} if a.market else {})}
     b = make_broker({"demo": dc})
     spot = b.market_type == "spot"
-    print("demo režim:", b.ex.headers.get("x-simulated-trading") == "1", "· trh:", b.market_type)
+    print("demo režim:", b.ex.headers.get("x-simulated-trading") == "1", "· trh:", b.market_type, "· server:", b.ex.hostname)
     if not spot:
         print("režim pozic:", "long/short" if b.hedged() else "net")
     bal = b.ex.fetch_balance()
     print("USDT:", (bal.get("USDT") or {}).get("free"), "volné /", (bal.get("USDT") or {}).get("total"), "celkem")
+    print("zůstatky:", {k: v for k, v in (bal.get("total") or {}).items() if v})
     b.ex.load_markets()
     for c in ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"]:
         sym = f"{c}/USDT" if spot else f"{c}/USDT:USDT"
