@@ -23,7 +23,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from scanner import broker, notify, rules, setups  # noqa: E402
+from scanner import broker, mtf, notify, rules, setups  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import backtest, simulate  # noqa: E402
 from scanner.calibrate import strategy_params  # noqa: E402
@@ -122,6 +122,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     cost_pct = costs.get("fee_pct", 0) + costs.get("slippage_pct", 0)
     status["frames"] = frames                                          # pro zdraví strategií ve zprávě o stavu
     update_paper_positions(cfg, state, frames, cost_pct, dry_run, probs)
+    try:
+        mtf_entries(cfg, state, frames, now, dry_run)
+    except Exception as exc:                                          # vstup z nižších TF nesmí shodit skener
+        print(f"vstup z nižších TF selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     approach_alerts(cfg, state, frames, strats, now, day, dry_run)
     try:
         event_alerts(cfg, state, now, dry_run)
@@ -175,6 +179,11 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         ctx = " · ".join(c for c in ctx if c)
         lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob, context=ctx,
                                      outlook=scenario_note(s, frames.get((symbol, "1d"))))
+        mc = cfg.get("mtf_entry") or {}
+        use_mtf = mc.get("enabled") and strat["name"] in mc.get("strategies", [])
+        if use_mtf:
+            lines.append(f"6. Vstup z nižších TF (papírově souběžně): čekám max. {mc.get('wait_hours', 72)} h na 4H ve směru, "
+                         f"návrat k EMA20 na 1H a obratovou 1H svíčku – pak pošlu 📍 vstup se stopem za swingem.")
         print("\n".join(lines))
         found.append((sid, s, size))
         if dry_run:
@@ -189,6 +198,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size, "strategy": strat["name"]})
         state.data.setdefault("open", []).append({"id": sid, "symbol": symbol, "timeframe": tf, "setup": s.to_dict(),
                                                   "strategy": strat["name"], "exit": strat.get("exit", {})})
+        if use_mtf:
+            state.data.setdefault("mtf_pending", []).append({
+                "id": sid, "symbol": symbol, "strategy": strat["name"], "setup": s.to_dict(), "exit": strat.get("exit", {}),
+                "t0": (s.hold_time + pd.Timedelta(tf)).isoformat()})
         state.save()
         rec = {"id": sid, "symbol": symbol, "source": source, "timeframe": tf, "strategy": strat["name"],
                "found_at": now.isoformat(), "rules": strat.get("params", {}), "exit": strat.get("exit", {}),
@@ -431,6 +444,61 @@ def approach_alerts(cfg, state, frames, strats, now, day, dry_run=False):
     return out
 
 
+def mtf_entries(cfg, state, frames, now, dry_run=False, send=None):
+    """Pro čekající denní signály hledá vstup na nižších TF (scanner/mtf.py); po spouštěči otevře papírovou
+    pozici „+mtf“ (hodinové svíčky, stejné výstupy jako denní strategie) vedle denní varianty."""
+    mc = cfg.get("mtf_entry") or {}
+    if not mc.get("enabled"):
+        return []
+    base_tf = cfg.get("timeframe", "1h")
+    wait = mc.get("wait_hours", 72)
+    keep, msgs = [], []
+    for p in state.data.get("mtf_pending", []):
+        s, sym = p["setup"], p["symbol"]
+        side = s["direction"].upper()
+        t0 = pd.Timestamp(p["t0"])
+        h1 = frames.get((sym, base_tf))
+        if h1 is None or len(h1) < 60:
+            keep.append(p)
+            continue
+        r = mtf.find_trigger(s["direction"], h1, t0, s["stop"], s["targets"], s["meta"]["atr"], wait,
+                             mc.get("ema", 20), mc.get("swing_bars", 6), mc.get("min_stop_pct", 1.5))
+        if r is None:
+            if pd.Timestamp(now) >= t0 + pd.Timedelta(hours=wait):
+                msgs.append(f"⌛ Vstup z nižších TF nenastal: {sym} {side} – do {wait} h se nepotvrdil, varianta „+mtf“ "
+                            f"se neotevírá (denní varianta běží dál).")
+            else:
+                keep.append(p)
+            continue
+        if r["status"] == "entry":
+            entry, stop = r["entry"], r["stop"]
+            risk = abs(entry - stop)
+            rr = [round(abs(t - entry) / risk, 2) for t in s["targets"]]
+            setup = {**s, "entry": entry, "stop": stop, "hold_time": r["time"].isoformat(), "rr": rr}
+            ex = {**cfg.get("exit", {}), **p.get("exit", {})}
+            state.data.setdefault("open", []).append({
+                "id": p["id"] + "|mtf", "symbol": sym, "timeframe": base_tf, "setup": setup, "strategy": p["strategy"] + "+mtf",
+                "mtf": True, "exit": {"split": ex.get("split", 0.5), "trail_atr": ex.get("trail_atr", 0),
+                                      "max_hold_bars": ex.get("max_hold_bars", 20) * 24}})
+            tg = " / ".join(f"T{i + 1} {notify.fmt(t)}" for i, t in enumerate(s["targets"]))
+            msgs.append(f"📍 Vstup z nižších TF (papírově): {sym} {side} – 4H ve směru, 1H návrat k EMA20 a obratová svíčka.\n"
+                        f"Vstup {notify.fmt(entry)} · Stop {notify.fmt(stop)} ({notify.pct(risk / entry * 100)} %) · {tg} · "
+                        f"R:R {' / '.join(str(x).replace('.', ',') for x in rr)} (denní vstup: "
+                        f"{' / '.join(str(x).replace('.', ',') for x in s['rr'])}). Nejde o finanční poradenství.")
+        elif r["status"] == "stopped":
+            msgs.append(f"❌ Vstup z nižších TF zrušen: {sym} {side} – cena zasáhla denní stop dřív, než se vstup potvrdil.")
+        else:
+            msgs.append(f"⏭ Vstup z nižších TF vynechán: {sym} {side} – cena už je za T1.")
+    state.data["mtf_pending"] = keep
+    state.save()
+    tgf = send or (notify.telegram if cfg.get("notify", {}).get("telegram", True) else None)
+    for m in msgs:
+        print(m)
+        if not dry_run and tgf:
+            tgf(m)
+    return msgs
+
+
 def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=None):
     """Vyhodnotí otevřené papírové pozice na nových svíčkách; T1 a uzavření oznámí na Telegram."""
     probs = probs or {}
@@ -445,7 +513,7 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
         after = df[df.index > pd.Timestamp(pos["setup"]["hold_time"])]
         res = simulate(pos["setup"], after, ex.get("max_hold_bars", 48), ex.get("split", 0.5),
                        cost_pct, ex.get("trail_atr", 0))
-        side = pos["setup"]["direction"].upper()
+        side = pos["setup"]["direction"].upper() + (" (vstup z 1H)" if pos.get("mtf") else "")
         if res["result"] == "open":
             if res.get("t1") and not pos.get("t1_notified"):
                 pos["t1_notified"] = True

@@ -89,6 +89,14 @@ strategies:
     exit: {split: 0.5, trail_atr: 0.0, max_hold_bars: 7}
     min_rr: 1.0
 
+mtf_entry:                # vstup z nižších TF pro denní signály (scanner/mtf.py, reports/mtf_entry.md) – papírově souběžně
+  enabled: true
+  strategies: [donchian_1d, pullback_1d]
+  wait_hours: 72          # jak dlouho čekat na potvrzení
+  ema: 20                 # EMA na 1H (zóna) i 4H (směr)
+  swing_bars: 6           # stop za swingem posledních 6 hodinových svíček
+  min_stop_pct: 1.5
+
 approach_alerts:          # „⏳ setup se blíží“ – jen informace, ne signál ke vstupu
   enabled: true
   atr_distance: 0.5       # cena do 0,5 ATR od hladiny Donchian kanálu ve směru trendu

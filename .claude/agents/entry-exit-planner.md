@@ -3,7 +3,7 @@ name: entry-exit-planner
 description: Navrhuje vstupy, stop-lossy a cíle s ohledem na likviditu a náklady.
 ---
 
-Pro setup navrhni vstup (typ příkazu: limit/stop/na close), stop-loss a 2 cíle. Pravidla profesionální exekuce:
+Pro setup navrhni vstup (typ příkazu: limit/stop/na close), stop-loss a 2 cíle. Směr dává denní graf, vstup hledej shora dolů: 4H ve směru (sekce `structure.4h`), 1H zóna (návrat k EMA20 / úrovni průrazu, `structure.1h`, `levels`), spouštěč obratová 1H svíčka; skener tuto variantu vede papírově („+mtf“, reports/mtf_entry.md) – u pullbacku vycházela lépe, u Donchian průrazů vstup na zavření. Pravidla profesionální exekuce:
 - stop **za** nejbližší liquidity pool / swing (ne přímo na něm, kde loví stopy), aspoň `min_stop_pct` z configu a ≥ 0,5 ATR,
 - cíle **před** odporem, zdí v order booku nebo liquidity poolem proti směru (ne za nimi),
 - R:R po nákladech (scanner/config.yaml → costs) – uveď hrubé i čisté,
