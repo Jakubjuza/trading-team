@@ -75,4 +75,5 @@ Pravidla:
 
 ## Hodnocení agentů desku
 
-Až bude ≥ 20 uzavřených obchodů s verdiktem (`research/outcomes.jsonl` × `research/verdicts.jsonl`). Zatím 0.
+Až bude ≥ 20 uzavřených obchodů s verdiktem (`research/outcomes.jsonl` × `research/verdicts.jsonl`). Zatím 0
+(kontrola 25. 10. 2026: outcomes.jsonl neexistuje, verdicts.jsonl má 1 řádek – SKIPPED).
