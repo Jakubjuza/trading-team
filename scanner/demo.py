@@ -276,6 +276,9 @@ class SpotDemoBroker(DemoBroker):
         sym = spot_symbol(pos["symbol"], self.quote)
         if s["direction"] != "long":
             return {"status": "skipped_short", "symbol": sym}
+        self.ex.load_markets()
+        if sym not in (self.ex.markets or {}):
+            return {"status": "no_market", "symbol": sym}
         base = sym.split("/")[0]
         n = self.amount(sym, size["qty"])
         if n <= 0:
@@ -390,8 +393,10 @@ def main():
     b.ex.load_markets()
     for c in ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"]:
         sym = spot_symbol(f"{c}/USDT", b.quote) if spot else b.resolve(f"{c}/USDT")
+        if spot and sym not in b.ex.markets:
+            sym = None
         if sym is None:
-            print(f"  {c}: žádný futures kontrakt – na demu se vynechá")
+            print(f"  {c}: na demu není trh – vynechá se")
             continue
         try:
             m = b.ex.market(sym)
