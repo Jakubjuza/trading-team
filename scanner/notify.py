@@ -35,7 +35,7 @@ def prob_line(prob):
     return out
 
 
-def summary_lines(ticker, tf, s, size, account, cost_pct=0.0, setup_name=None, prob=None):
+def summary_lines(ticker, tf, s, size, account, cost_pct=0.0, setup_name=None, prob=None, context=""):
     """Pět řádků shrnutí (formát z CLAUDE.md, bez AI)."""
     from scanner.setups import NAMES_CS
     side = "LONG" if s.direction == "long" else "SHORT"
@@ -52,7 +52,7 @@ def summary_lines(ticker, tf, s, size, account, cost_pct=0.0, setup_name=None, p
         f"1. {ticker} {side} {tf} – {name}{level}",
         f"2. Vstup {fmt(s.entry)} · Stop {fmt(s.stop)} ({pct(stop_pct)} %) · {tg}",
         f"3. R:R {rr} (po nákladech {rr_net}) · {str(size['qty']).replace('.', ',')} ks ≈ {fmt(size['notional'])} USD · riziko {fmt(size['risk_usd'])} USD ({pct(size['risk_usd'] / account * 100)} % účtu)",
-        f"4. Zneplatnění: {inval} stop {fmt(s.stop)} · ATR {fmt(s.meta['atr'])}",
+        f"4. Zneplatnění: {inval} stop {fmt(s.stop)} · ATR {fmt(s.meta['atr'])}" + (f" · {context}" if context else ""),
         f"5. {prob_line(prob)} · papírově · nejde o finanční poradenství",
     ]
 
