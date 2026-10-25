@@ -8,6 +8,7 @@ Použití:
 """
 import argparse
 import json
+import re
 import shlex
 import subprocess
 import sys
@@ -27,6 +28,7 @@ from scanner import broker, notify, rules, setups  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import simulate  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
+from research import events as events_mod  # noqa: E402
 from research import sessions  # noqa: E402
 
 STATE = HERE / "state.json"
@@ -115,6 +117,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     cost_pct = costs.get("fee_pct", 0) + costs.get("slippage_pct", 0)
     update_paper_positions(cfg, state, frames, cost_pct, dry_run, probs)
     approach_alerts(cfg, state, frames, strats, now, day, dry_run)
+    try:
+        event_alerts(cfg, state, now, dry_run)
+    except Exception as exc:                                          # zprávy a kalendář nesmí shodit skener
+        print(f"kalendář/zprávy selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
 
     # krypto se hýbe spolu → max. N otevřených (papírových) pozic stejným směrem na strategii; přednost má lepší R:R
     candidates.sort(key=lambda x: x[4].rr[0], reverse=True)
@@ -145,11 +151,14 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
             continue
         per_dir[key] = per_dir.get(key, 0) + 1
         prob = probs.get(strat["name"])
+        ctx = []
         try:
-            ctx = sessions.context_line(now, symbol.split("/")[0])
+            ctx.append(sessions.context_line(now, symbol.split("/")[0]))
+            if (cfg.get("events") or {}).get("enabled"):
+                ctx.append(events_mod.context_line(now, cfg["events"].get("signal_hours", 24)))
         except Exception as exc:                                      # kontext nesmí shodit signál
-            ctx = ""
-            print(f"[{symbol}] kontext burz selhal: {exc}", file=sys.stderr)
+            print(f"[{symbol}] kontext burz/událostí selhal: {exc}", file=sys.stderr)
+        ctx = " · ".join(c for c in ctx if c)
         lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob, context=ctx)
         print("\n".join(lines))
         found.append((sid, s, size))
@@ -174,6 +183,65 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
     return found
+
+
+def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=None):
+    """📅 ranní kalendář, ⚠️ upozornění před důležitou událostí, 📰 důležité titulky k mincím (bez AI)."""
+    ec = cfg.get("events") or {}
+    if not ec.get("enabled"):
+        return []
+    tz = ZoneInfo(cfg.get("timezone", "UTC"))
+    loc = now.astimezone(tz)
+    day = loc.date().isoformat()
+    st = state.data.setdefault("events", {})
+    sent = {k: v for k, v in st.get("sent", {}).items() if v >= (loc.date() - pd.Timedelta(days=3)).isoformat()}
+    st["sent"] = sent
+    evs = events if events is not None else events_mod.upcoming(now, 2)[0]
+    stats = events_mod.load_stats()
+    high = [e for e in evs if e["impact"] == "High"]
+    msgs = []
+    if loc.hour >= ec.get("digest_hour", 8) and st.get("digest") != day:
+        st["digest"] = day
+        soon = [e for e in high if e["time"].astimezone(tz).date() <= loc.date() + pd.Timedelta(days=1)]
+        if soon:
+            msgs.append("📅 Kalendář dnes a zítra:\n" + "\n".join("• " + events_mod.event_line(e, stats) for e in soon)
+                        + "\nKolem těchto časů počítej s většími knoty. Jen informace.")
+    for e in high:
+        mins = (e["time"] - now).total_seconds() / 60
+        key = f"pre|{e['title']}|{e['time'].isoformat()}"
+        if 0 < mins <= ec.get("pre_alert_minutes", 60) and key not in sent:
+            sent[key] = day
+            n_open = len(state.data.get("open", []))
+            msgs.append(f"⚠️ Za {round(mins)} min: {events_mod.event_line(e, stats)}. "
+                        f"Otevřené papírové pozice: {n_open}" + (" – stop může zasáhnout knot." if n_open else "."))
+    if ec.get("news_alerts", True):
+        coins = [t["symbol"].split("/")[0] for t in cfg["tickers"] if t.get("source") == "crypto"]
+        raw = news if news is not None else events_mod.cached("news_watch", 30 * 60, lambda: events_mod.fetch_news(coins))
+        per_day = st.setdefault("news_count", {})
+        per_day = st["news_count"] = {day: per_day.get(day, 0)}
+        important = set(ec.get("news_tags", ["regulace", "etf", "bezpečnost", "burzy"]))
+        for x in raw.get("items", []):
+            if per_day[day] >= ec.get("news_max_per_day", 4):
+                break
+            ts = datetime.fromisoformat(x["time"]) if x.get("time") else None
+            if ts is None or (now - ts).total_seconds() > ec.get("news_max_age_min", 120) * 60 or ts > now:
+                continue
+            coin = next((c for c in coins if events_mod.mentions(x["title"], c)), None)
+            tags, tone = events_mod.tag(x["title"])
+            key = "news|" + events_mod.title_key(x["title"])
+            if not coin or not important & set(tags) or tone == "neutrální" or key in sent:
+                continue
+            sent[key] = day
+            per_day[day] += 1
+            icon = "🟢" if tone == "pozitivní" else "🔴"
+            msgs.append(f"📰 {icon} {coin}: {x['title']} ({x.get('source')}, {events_mod.prague(ts)})\n"
+                        f"Klíčová slova: {', '.join(tags)} · jen titulek, ne analýza · {x.get('link', '')}")
+    for m in msgs:
+        print(m)
+        if not dry_run:
+            (send or notify.telegram)(m)
+    state.save()
+    return msgs
 
 
 def approach_alerts(cfg, state, frames, strats, now, day, dry_run=False):
@@ -293,6 +361,10 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         up = sessions.upcoming_line(now, hours)
         if up:
             lines.append(up)
+        if (cfg.get("events") or {}).get("enabled"):
+            nxt = [e for e in events_mod.upcoming(now, 2)[0] if e["impact"] == "High"]
+            if nxt:
+                lines.append("📅 Nejbližší: " + events_mod.event_line(nxt[0], events_mod.load_stats()))
     except Exception as exc:
         print(f"kontext burz selhal: {exc}", file=sys.stderr)
     rules_txt = ", ".join(f"{setups.NAMES_CS.get(st['setup'], st['setup'])} {st['timeframe']}" for st in cfg_strategies(cfg))

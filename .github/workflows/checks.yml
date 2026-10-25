@@ -47,3 +47,17 @@ jobs:
                   print(f"  {k:12}", "CHYBA: " + v["error"] if "error" in v else "OK " + json.dumps({x: v[x] for x in list(v)[2:7]}, ensure_ascii=False, default=str)[:300])
           PY
           done
+      - name: Kalendář a zprávy naživo
+        run: |
+          python3 - <<'PY'
+          from research import events as ev
+          s = ev.section_events("BTC", coins=["BTC", "SOL"])
+          print("kalendář:", len(s["calendar"]), "událostí, chyby:", s["calendar_errors"])
+          for e in s["calendar"][:12]:
+              print("  ", e["prague"], e["impact"], e["title"], e["country"], e.get("forecast"), e.get("previous"))
+          print("zprávy chyby:", s["news_errors"])
+          for k, v in s["news"].items():
+              if isinstance(v, list):
+                  print(f"  {k}: {len(v)}", "|", " || ".join(f"{r['tone'][:3]} {r['title'][:70]}" for r in v[:3]))
+          print(ev.context_line(hours=72))
+          PY

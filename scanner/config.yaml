@@ -84,6 +84,16 @@ approach_alerts:          # „⏳ setup se blíží“ – jen informace, ne si
   atr_distance: 0.5       # cena do 0,5 ATR od hladiny Donchian kanálu ve směru trendu
   max_per_day: 4
 
+events:                   # kalendář (Fed, CPI, NFP …) a zprávy – research/events.py, bez AI
+  enabled: true
+  digest_hour: 8          # ranní „📅 Kalendář dnes a zítra“ (čas Prahy), jen když něco je
+  pre_alert_minutes: 60   # „⚠️ Za 60 min: CPI …“ u událostí s vysokým dopadem
+  signal_hours: 24        # v signálu zmínit událost do 24 h
+  news_alerts: true       # „📰“ titulek k minci z watchlistu s klíčovými slovy (regulace, ETF, hack, listing)
+  news_tags: [regulace, etf, bezpečnost, burzy]
+  news_max_per_day: 4
+  news_max_age_min: 120
+
 probabilities: scanner/probabilities.json   # tabulka z scanner/calibrate.py
 
 costs:                    # poplatek + skluz na JEDNU stranu, v % ceny
