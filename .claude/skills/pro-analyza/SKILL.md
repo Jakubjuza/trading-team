@@ -16,6 +16,7 @@ Vstup: `$ARGUMENTS`
 market-structure · orderflow-analyst · derivatives-analyst · macro-analyst · news-analyst · sentiment-analyst · quant-analyst
 
 Každé vrátí SKÓRE −2..+2 pro směr obchodu, JISTOTU, FAKTA se zdroji a CO BY ZMĚNILO NÁZOR.
+Světové burzy (otevírání Asie/Evropy/USA, víkend, CME gap) hodnotí macro-analyst ze sekce `sessions`; entry-exit-planner a devils-advocate je berou jako riziko časování.
 
 ## 3. Exekuce a riziko
 entry-exit-planner (ověří stop/cíle vůči likviditě a nákladům) → risk-manager (velikost, korelace, gap riziko).

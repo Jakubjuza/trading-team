@@ -27,6 +27,7 @@ from scanner import broker, notify, rules, setups  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import simulate  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
+from research import sessions  # noqa: E402
 
 STATE = HERE / "state.json"
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
@@ -144,7 +145,12 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
             continue
         per_dir[key] = per_dir.get(key, 0) + 1
         prob = probs.get(strat["name"])
-        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob)
+        try:
+            ctx = sessions.context_line(now, symbol.split("/")[0])
+        except Exception as exc:                                      # kontext nesmí shodit signál
+            ctx = ""
+            print(f"[{symbol}] kontext burz selhal: {exc}", file=sys.stderr)
+        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob, context=ctx)
         print("\n".join(lines))
         found.append((sid, s, size))
         if dry_run:
@@ -283,6 +289,12 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
                  + (f", Σ {sum(c['r'] for c in closed):+.2f} R" if closed else ""))
     if status.get("errors"):
         lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
+    try:
+        up = sessions.upcoming_line(now, hours)
+        if up:
+            lines.append(up)
+    except Exception as exc:
+        print(f"kontext burz selhal: {exc}", file=sys.stderr)
     rules_txt = ", ".join(f"{setups.NAMES_CS.get(st['setup'], st['setup'])} {st['timeframe']}" for st in cfg_strategies(cfg))
     lines.append(f"Hlídám: {rules_txt}. Další zpráva o stavu za {hours} h.")
     text = "\n".join(lines)
