@@ -346,6 +346,12 @@ def main():
         print("režim pozic:", "long/short" if b.hedged() else "net")
     bal = b.ex.fetch_balance()
     print("USDT:", (bal.get("USDT") or {}).get("free"), "volné /", (bal.get("USDT") or {}).get("total"), "celkem")
+    if not spot:
+        try:
+            pos = b.ex.fetch_positions()
+            print("otevřené futures pozice:", len(pos), "(čtení swap pozic OK)")
+        except Exception as exc:
+            print("futures pozice:", f"{exc.__class__.__name__}: {str(exc)[:160]}")
     print("zůstatky (obchodní účet):", {k: v for k, v in (bal.get("total") or {}).items() if v})
     try:
         fund = b.ex.fetch_balance({"type": "funding"})

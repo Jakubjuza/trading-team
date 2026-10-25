@@ -8,6 +8,10 @@ on:
         description: "Malý testovací obchod na demo účtu (spot 0,001 BTC vč. stopu a T1 / swap 2 kontrakty) a hned zavřít"
         type: boolean
         default: false
+      market:
+        description: "Trh: spot nebo swap (prázdné = podle config.yaml)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -29,4 +33,4 @@ jobs:
           OKX_DEMO_API_KEY: ${{ secrets.OKX_DEMO_API_KEY }}
           OKX_DEMO_API_SECRET: ${{ secrets.OKX_DEMO_API_SECRET }}
           OKX_DEMO_PASSPHRASE: ${{ secrets.OKX_DEMO_PASSPHRASE }}
-        run: python3 scanner/demo.py ${{ inputs.test_order && '--test-order' || '' }}
+        run: python3 scanner/demo.py ${{ inputs.test_order && '--test-order' || '' }} ${{ inputs.market && format('--market {0}', inputs.market) || '' }}
