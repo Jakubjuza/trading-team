@@ -30,7 +30,7 @@ timezone: Europe/Prague
 heartbeat_hours: 4        # zpráva „skener běží“ i bez setupů (0 = vypnuto); první hned po spuštění
 cash_only: true           # pozice nesmí přesáhnout velikost účtu
 
-rules:                    # parametry breakout → retest → hold (viz scanner/rules.py)
+rules: &brh_rules          # parametry breakout → retest → hold (viz scanner/rules.py)
   range_lookback: 20
   min_range_pct: 0.5
   max_range_pct: 8.0
@@ -45,10 +45,46 @@ rules:                    # parametry breakout → retest → hold (viz scanner/
   breakout_volume_mult: 1.5    # objem breakout svíčky >= 1,5× průměr range (0 = vypnuto)
   skip_weekends: true          # krypto o víkendu: slabá likvidita, víc falešných průrazů
 
-exit:                     # správa obchodu (pro vyhodnocení a plán ve zprávě)
+exit: &brh_exit            # správa obchodu (pro vyhodnocení a plán ve zprávě)
   split: 0.5              # podíl pozice na T1, zbytek na T2
   trail_atr: 0            # >0 = po T1 trailing stop k×ATR místo pevného T2
   max_hold_bars: 48       # časový výstup
+
+# Strategie = setup + časový rámec. Každá ověřená na historii (reports/setup_library.md):
+# 2 roky 1h / 9 let 1d, po nákladech, out-of-sample, coiny mimo optimalizaci, proti náhodným vstupům.
+# Na 1h a 4h NEOBSTÁLY: pullback, sweep_reclaim, squeeze_breakout, donchian_breakout, range_fade (enabled: false).
+strategies:
+  - name: brh_1h
+    setup: breakout_retest_hold
+    timeframe: 1h
+    params: *brh_rules
+    exit: *brh_exit
+    min_rr: 1.5
+    max_open_per_direction: 1
+  - name: donchian_1d            # průraz 20denního max/min ve směru EMA 200; 9 coinů 2015–2026: +0,37 R/obchod
+    setup: donchian_breakout
+    timeframe: 1d
+    params: {channel: 20, stop_atr: 2.0, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0]}
+    exit: {split: 0.5, trail_atr: 3.0, max_hold_bars: 20}
+    min_rr: 1.0
+    max_open_per_direction: 2
+  - name: pullback_1d            # trend + návrat k EMA20 + obratová svíčka; 9 coinů 2015–2026: +0,27 R/obchod
+    setup: pullback
+    timeframe: 1d
+    params: {lookback: 3, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0]}
+    exit: {split: 0.5, trail_atr: 3.0, max_hold_bars: 20}
+    min_rr: 1.0
+    max_open_per_direction: 2
+  - {name: sweep_reclaim_4h, setup: sweep_reclaim, timeframe: 4h, enabled: false}
+  - {name: squeeze_breakout_1d, setup: squeeze_breakout, timeframe: 1d, enabled: false}
+  - {name: range_fade_1h, setup: range_fade, timeframe: 1h, enabled: false}
+
+approach_alerts:          # „⏳ setup se blíží“ – jen informace, ne signál ke vstupu
+  enabled: true
+  atr_distance: 0.5       # cena do 0,5 ATR od hladiny Donchian kanálu ve směru trendu
+  max_per_day: 4
+
+probabilities: scanner/probabilities.json   # tabulka z scanner/calibrate.py
 
 costs:                    # poplatek + skluz na JEDNU stranu, v % ceny
   fee_pct: 0.1            # zkontroluj u své burzy! (Kraken taker až 0,40 % → strategie je pak ztrátová)

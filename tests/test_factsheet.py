@@ -108,7 +108,7 @@ def test_build_end_to_end_with_mocks(monkeypatch):
     monkeypatch.setattr(fs, "section_derivatives", lambda coin: {"source": "mock", "funding_annual_pct": 5.0})
     monkeypatch.setattr(fs, "section_options", lambda coin: {"source": "mock"})
     monkeypatch.setattr(fs, "section_macro", lambda daily: {"source": "mock", "regime": "neutrální"})
-    monkeypatch.setattr(fs, "section_history", lambda sym, d: {"source": "mock"})
+    monkeypatch.setattr(fs, "section_history", lambda sym, d, strategy=None: {"source": "mock"})
     sheet = fs.build("BTC/USDT", signal={"setup": {"direction": "long"}}, frames=frames, ex=Ex())
     for k in ("structure", "levels", "orderflow", "orderbook", "derivatives", "options", "macro", "history"):
         assert k in sheet and "error" not in sheet[k], (k, sheet[k])

@@ -334,15 +334,20 @@ def section_macro(coin_daily=None, download=None):
 
 # --- historie setupu ---------------------------------------------------------------------
 @safe
-def section_history(symbol, direction=None, cfg=None, days=365):
+def section_history(symbol, direction=None, cfg=None, days=None, strategy=None):
     import yaml
     from scanner import evaluate as ev
+    from scanner.calibrate import HISTORY_DAYS, strategies, strategy_params
     cfg = cfg or yaml.safe_load((ROOT / "scanner" / "config.yaml").read_text())
     costs = cfg.get("costs", {})
     cost = costs.get("fee_pct", 0.1) + costs.get("slippage_pct", 0.05)
-    df = ev.load_history(symbol, "crypto", cfg.get("timeframe", "1h"), days)
-    tr = ev.backtest(df, ev.current_params(cfg), "both", cost)
-    out = {"source": f"backtest aktuálních pravidel, {days} dní, po nákladech", "as_of": now_iso(), "all": ev.stats(tr)}
+    strats = strategies(cfg)
+    strat = next((s for s in strats if s["name"] == strategy), strats[0])
+    days = days or min(HISTORY_DAYS.get(strat["timeframe"], 365), 365 if strat["timeframe"] == "1h" else 3650)
+    df = ev.load_history(symbol, "crypto", strat["timeframe"], days)
+    tr = ev.backtest(df, strategy_params(strat), "both", cost, setup=strat["setup"])
+    out = {"source": f"backtest strategie {strat['name']} ({strat['setup']}, {strat['timeframe']}), {days} dní, po nákladech",
+           "as_of": now_iso(), "all": ev.stats(tr)}
     for d in ("long", "short"):
         out[d] = ev.stats([t for t in tr if t["direction"] == d])
     sel = [t for t in tr if not direction or t["direction"] == direction][-10:]
@@ -384,7 +389,8 @@ def build(symbol, exchange="kraken", signal=None, frames=None, ex=None):
     sheet["derivatives"] = section_derivatives(coin)
     sheet["options"] = section_options(coin) if coin in ("BTC", "ETH") else {"note": "Deribit opce jen pro BTC a ETH"}
     sheet["macro"] = section_macro(frames.get("1d", pd.DataFrame()).get("Close") if frames else None)
-    sheet["history"] = section_history(symbol, (signal or {}).get("setup", {}).get("direction"))
+    sheet["history"] = section_history(symbol, (signal or {}).get("setup", {}).get("direction"),
+                                       strategy=(signal or {}).get("strategy"))
     return sheet
 
 

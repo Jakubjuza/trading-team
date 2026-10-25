@@ -69,7 +69,8 @@ def simulate(setup, after, max_hold_bars=48, split=0.5, cost_pct=0.0, trail_atr=
     best = entry
     for i in range(n):
         if (lo[i] <= cur_stop) if long else (hi[i] >= cur_stop):
-            return {"result": "T1+BE" if got1 else "stop", "r": round(realized + leg(rem, cur_stop), 3), "bars": i + 1}
+            return {"result": "T1+BE" if got1 else "stop", "r": round(realized + leg(rem, cur_stop), 3), "bars": i + 1,
+                    "t1": got1}
         if not got1 and ((hi[i] >= t1) if long else (lo[i] <= t1)):
             got1, realized, rem, cur_stop = True, leg(split, t1), 1 - split, entry
         if got1:
@@ -78,11 +79,11 @@ def simulate(setup, after, max_hold_bars=48, split=0.5, cost_pct=0.0, trail_atr=
                 trail = best - sign * trail_atr * atr
                 cur_stop = max(cur_stop, trail) if long else min(cur_stop, trail)
             elif (hi[i] >= t2) if long else (lo[i] <= t2):
-                return {"result": "T2", "r": round(realized + leg(rem, t2), 3), "bars": i + 1}
+                return {"result": "T2", "r": round(realized + leg(rem, t2), 3), "bars": i + 1, "t1": True}
     if n == 0:
-        return {"result": "open", "r": 0.0, "bars": 0}
+        return {"result": "open", "r": 0.0, "bars": 0, "t1": False}
     res = "time" if n >= max_hold_bars else "open"
-    return {"result": res, "r": round(realized + leg(rem, cl[n - 1]), 3), "bars": n}
+    return {"result": res, "r": round(realized + leg(rem, cl[n - 1]), 3), "bars": n, "t1": got1}
 
 
 # --- data ---------------------------------------------------------------------
@@ -138,19 +139,23 @@ def load_history(symbol, source, tf, days, exchange="kraken", cache_dir=None):
 
 
 # --- backtest -----------------------------------------------------------------
-def split_params(p):
-    """Rozdělí slovník na pravidla, výstupy a min_rr."""
-    rule_p = {k: v for k, v in p.items() if k in rules.DEFAULTS or k == "range_lookback"}
+def split_params(p, setup="breakout_retest_hold"):
+    """Rozdělí slovník na pravidla setupu, výstupy a min_rr."""
+    from scanner import setups as st
+    keys = set(rules.DEFAULTS) if setup == "breakout_retest_hold" else set(st.COMMON) | set(st.DEFAULTS[setup])
+    rule_p = {k: v for k, v in p.items() if k in keys}
     exit_p = {**DEFAULT_EXIT, **{k: v for k, v in p.items() if k in DEFAULT_EXIT}}
     return rule_p, exit_p, p.get("min_rr", 2.0)
 
 
-def backtest(df, params, direction, cost_pct, start=0, end=None):
+def backtest(df, params, direction, cost_pct, start=0, end=None, setup="breakout_retest_hold", with_features=False):
     """Obchody, jejichž hold svíčka leží v [start, end). Výstup může pokračovat za end."""
-    rule_p, exit_p, min_rr = split_params(params)
+    from scanner import setups as st
+    rule_p, exit_p, min_rr = split_params(params, setup)
     end = len(df) if end is None else end
+    x = st.Ctx(df) if with_features else None
     trades, busy_until = [], -1
-    for s in rules.find_setups(df, direction, rule_p):
+    for s in sorted(st.find(setup, df, direction, rule_p), key=lambda s: s.meta["hold_index"]):
         h = s.meta["hold_index"]
         if not (start <= h < end) or s.rr[0] < min_rr or h <= busy_until:
             continue  # jedna pozice na ticker naráz
@@ -158,8 +163,11 @@ def backtest(df, params, direction, cost_pct, start=0, end=None):
         if res["result"] == "open":
             continue
         busy_until = h + res["bars"]
-        trades.append({"time": s.hold_time, "direction": s.direction, "hold_index": h,
-                       "risk_atr": abs(s.entry - s.stop) / s.meta["atr"], "rr": s.rr, **res})
+        t = {"time": s.hold_time, "direction": s.direction, "hold_index": h, "setup": setup,
+             "risk_atr": abs(s.entry - s.stop) / s.meta["atr"], "rr": s.rr, **res}
+        if with_features:
+            t.update(st.features(x, h, s.direction))
+        trades.append(t)
     return trades
 
 
@@ -231,7 +239,7 @@ def evaluate_params(hist, params, cost_pct, split_at=None, with_random=False):
         cut = len(df) if split_at is None else int(len(df) * split_at)
         ranges = {"all": (0, len(df))} if split_at is None else {"is": (0, cut), "oos": (cut, len(df))}
         for k, (a, b) in ranges.items():
-            tr = backtest(df, params, d, cost_pct, a, b)
+            tr = backtest(df, params, d, cost_pct, a, b, setup=params.get("_setup", "breakout_retest_hold"))
             parts[k] += tr
             if with_random and tr:
                 rand[k].append((len(tr), random_baseline(df.iloc[a:b] if k != "all" else df, tr, params, cost_pct)))
@@ -286,12 +294,14 @@ def main():
     out += [f"## Odeslané signály ({len(sigs)})", ""]
     live, evaluated = [], []
     for sg in sigs:
-        df = load_history(sg["symbol"], sg["source"], sg["timeframe"], 30, cfg.get("exchange", "kraken"))
+        df = load_history(sg["symbol"], sg["source"], sg["timeframe"], 30 if sg["timeframe"] != "1d" else 120,
+                          cfg.get("exchange", "kraken"))
         if df is None:
             out.append(f"- {sg['id']}: data nedostupná")
             continue
         after = df[df.index > pd.Timestamp(sg["setup"]["hold_time"])]
-        res = simulate(sg["setup"], after, cur["max_hold_bars"], cur["split"], cost_pct, cur["trail_atr"])
+        ex = {**cur, **sg.get("exit", {})}
+        res = simulate(sg["setup"], after, ex["max_hold_bars"], ex["split"], cost_pct, ex["trail_atr"])
         live.append(res)
         evaluated.append(sg)
         stop_pct = abs(sg["setup"]["entry"] - sg["setup"]["stop"]) / sg["setup"]["entry"] * 100
@@ -330,6 +340,27 @@ def main():
     allst = evaluate_params(hist, cur, cost_pct, with_random=True)["all"]
     out += [fmt_row("**celkem**", allst), fmt_row("in-sample 70 %", tot["is"]), fmt_row("out-of-sample 30 %", tot["oos"]), ""]
     result["current"] = {"all": allst, **tot, "per_ticker": per}
+
+    # 2b) všechny zapnuté strategie (setup + časový rámec)
+    from scanner.calibrate import HISTORY_DAYS, strategies, strategy_params
+    out += ["## Strategie (celá historie, in-sample 70 % / out-of-sample 30 %)", "",
+            "| Strategie | Obchody | Ø R celkem | IS Ø R | OOS Ø R (95% CI) | Náhodné (OOS) |", "|---|---|---|---|---|---|"]
+    result["strategies"] = {}
+    for strat in strategies(cfg):
+        sh = {}
+        for t in cfg["tickers"]:
+            d = load_history(t["symbol"], t["source"], strat["timeframe"], HISTORY_DAYS.get(strat["timeframe"], 730),
+                             cfg.get("exchange", "kraken"), args.cache_dir)
+            if d is not None and len(d) > 300:
+                sh[t["symbol"]] = (d, t.get("direction", cfg["direction"]))
+        sp = {**strategy_params(strat), "_setup": strat["setup"]}
+        r_all = evaluate_params(sh, sp, cost_pct)["all"]
+        r_split = evaluate_params(sh, sp, cost_pct, split_at=0.7, with_random=True)
+        o = r_split["oos"]
+        out.append(f"| {strat['name']} | {r_all['n']} | {r_all['avg_r']:+.3f} | {r_split['is']['avg_r']:+.3f} | "
+                   f"{o['avg_r']:+.3f} ± {o['ci']:.3f} | {o.get('random_r', float('nan')):+.3f} |")
+        result["strategies"][strat["name"]] = {"all": r_all, **r_split}
+    out.append("")
 
     # 3) mřížka
     if args.grid and hist:
