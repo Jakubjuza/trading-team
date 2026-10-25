@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       test_order:
-        description: "Otevřít a hned zavřít 2 kontrakty BTC na demo účtu"
+        description: "Malý testovací obchod na demo účtu (spot 0,001 BTC vč. stopu a T1 / swap 2 kontrakty) a hned zavřít"
         type: boolean
         default: false
 

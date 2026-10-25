@@ -46,8 +46,8 @@ def demo_broker(cfg):
     if _DEMO["error"] and time.time() - _DEMO["error"][0] < 1800:
         return None
     try:
-        from scanner.demo import DemoBroker
-        _DEMO["broker"] = DemoBroker(cfg)
+        from scanner.demo import make_broker
+        _DEMO["broker"] = make_broker(cfg)
         return _DEMO["broker"]
     except Exception as exc:
         _DEMO["error"] = (time.time(), f"{exc.__class__.__name__}: {str(exc)[:120]}")
@@ -72,11 +72,16 @@ def demo_open(cfg, pos, size, dry_run=False):
         return f"⚠️ Demo OKX: {pos['symbol']} {side} se nepodařilo otevřít ({exc.__class__.__name__}: {str(exc)[:120]})."
     pos["demo"] = rec
     if rec["status"] != "open":
-        return f"🧪 Demo OKX: {pos['symbol']} {side} vynecháno – pozice je menší než minimum burzy."
+        why = {"skipped_short": "spotový demo účet umí jen longy",
+               "no_funds": "na demo účtu není dost USDT"}.get(rec["status"], "pozice je menší než minimum burzy")
+        return f"🧪 Demo OKX: {pos['symbol']} {side} vynecháno – {why}."
+    spot = rec.get("mode") == "spot"
     slip = f", skluz {notify.pct(rec['slippage_pct'])} %" if rec.get("slippage_pct") is not None else ""
-    return (f"🧪 Demo OKX: {rec['symbol']} {side} otevřeno {str(rec['contracts']).replace('.', ',')} kontr. @ "
+    unit = pos["symbol"].split("/")[0] if spot else "kontr."
+    note = ("stop je na burze, polovinu na T1 prodá skener" if rec.get("sl_id") else "⚠️ stop se nepodařilo zadat")
+    return (f"🧪 Demo OKX{' spot' if spot else ''}: {rec['symbol']} {side} otevřeno {str(rec['contracts']).replace('.', ',')} {unit} @ "
             f"{notify.fmt(rec['entry']) if rec.get('entry') else '?'} (plán {notify.fmt(rec['planned_entry'])}{slip}), "
-            f"poplatek {notify.pct(rec.get('entry_fee') or 0)} USDT · stop i T1 jsou na burze.")
+            f"poplatek {notify.pct(rec.get('entry_fee') or 0)} USDT · {note if spot else 'stop i T1 jsou na burze'}.")
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
 FACTSHEETS = HERE.parent / "research" / "factsheets"   # datové listy k signálům pro AI desk
 OUTCOMES = HERE.parent / "research" / "outcomes.jsonl"  # výsledky uzavřených papírových obchodů (reflexe desku)

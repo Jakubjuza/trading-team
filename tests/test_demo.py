@@ -105,3 +105,85 @@ def test_scanner_mirrors_signal_to_demo(tmp_path):
                                                  start=d1.index[-1] + __import__("pandas").Timedelta(days=1))])
     sc.update_paper_positions(cfg, state, {("BTC/USDT", "1d"): nxt}, 0.15)
     assert state.data["open"] == [] and any(e["event"] == "close" for e in map(json.loads, demo.LOG.read_text().splitlines()))
+
+
+class FakeOKXSpot(FakeOKX):
+    """Spot: nákup market (poplatek v BTC), stopy přes algo endpoint."""
+
+    def __init__(self, usdt=5000.0, **kw):
+        super().__init__(**kw)
+        self.algos, self.cancelled_algos, self.usdt = [], [], usdt
+        self.algo_gone = False
+
+    def market(self, sym):
+        return {"id": sym.replace("/", "-"), "limits": {"amount": {"min": 0.00001}}}
+
+    def amount_to_precision(self, sym, x):
+        return f"{int(x * 1e5) / 1e5:.5f}"
+
+    def price_to_precision(self, sym, x):
+        return f"{x:.1f}"
+
+    def fetch_balance(self):
+        return {"USDT": {"free": self.usdt}}
+
+    def create_order(self, sym, typ, side, amount, price, params):
+        oid = f"o{len(self.orders) + 1}"
+        self.orders.append({"id": oid, "symbol": sym, "type": typ, "side": side, "amount": amount, "params": params})
+        if side == "buy":
+            return {"id": oid, "average": 101.0, "filled": amount, "fee": {"cost": 0.0001, "currency": "BTC"}}
+        return {"id": oid, "average": 110.0, "filled": amount, "fee": {"cost": 0.05, "currency": "USDT"}}
+
+    def private_post_trade_order_algo(self, req):
+        self.algos.append(req)
+        return {"data": [{"algoId": f"a{len(self.algos)}", "sCode": "0"}]}
+
+    def private_post_trade_cancel_algos(self, reqs):
+        self.cancelled_algos.append(reqs[0]["algoId"])
+        return {"data": [{"sCode": "51000" if self.algo_gone else "0"}]}
+
+
+SPOT = {"demo": {"market": "spot"}}
+
+
+def test_spot_long_buys_and_places_cash_stop():
+    ex = FakeOKXSpot()
+    b = demo.make_broker(SPOT, ex=ex)
+    assert isinstance(b, demo.SpotDemoBroker)
+    rec = b.open(POS, {"qty": 0.01})
+    buy = ex.orders[0]
+    assert buy["symbol"] == "BTC/USDT" and buy["side"] == "buy" and buy["params"]["tgtCcy"] == "base_ccy"
+    assert len(ex.orders) == 1 and not ex.leverage                      # žádný limit T1, žádná páka
+    assert rec["contracts"] == pytest.approx(0.0099)                     # poplatek stržen v BTC
+    algo = ex.algos[0]
+    assert algo["tdMode"] == "cash" and algo["side"] == "sell" and algo["slTriggerPx"] == "95.0" and algo["sz"] == "0.00990"
+    assert rec["entry_fee"] == pytest.approx(0.0101)
+
+
+def test_spot_skips_shorts_and_missing_funds():
+    ex = FakeOKXSpot(usdt=50)
+    b = demo.make_broker(SPOT, ex=ex)
+    short = {**POS, "setup": {**POS["setup"], "direction": "short", "stop": 105.0, "targets": [90.0, 80.0]}}
+    assert b.open(short, {"qty": 0.01})["status"] == "skipped_short"
+    assert b.open(POS, {"qty": 1.0})["status"] == "no_funds" and not ex.orders
+
+
+def test_spot_t1_sells_half_and_close_computes_pnl():
+    ex = FakeOKXSpot()
+    b = demo.make_broker(SPOT, ex=ex)
+    rec = b.open(POS, {"qty": 0.01})
+    rec = b.move_stop(POS, rec, 100.0)
+    assert ex.cancelled_algos == ["a1"] and ex.orders[1]["side"] == "sell" and ex.orders[1]["amount"] == pytest.approx(0.00495)
+    assert ex.algos[1]["slTriggerPx"] == "100.0" and ex.algos[1]["sz"] == "0.00495"
+    out = b.close(POS, rec, "time")
+    assert ex.orders[2]["amount"] == pytest.approx(0.00495) and ex.cancelled_algos[-1] == "a2"
+    assert out["pnl_usdt"] == pytest.approx(0.0099 * 9 - 0.0101 - 0.05 - 0.05, abs=0.01)
+
+
+def test_spot_stop_already_executed_on_exchange():
+    ex = FakeOKXSpot()
+    b = demo.make_broker(SPOT, ex=ex)
+    rec = b.open(POS, {"qty": 0.01})
+    ex.algo_gone = True
+    out = b.close(POS, rec, "stop")
+    assert out["stopped_on_exchange"] and len(ex.orders) == 1 and out["pnl_usdt"] is None

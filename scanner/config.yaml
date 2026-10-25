@@ -93,7 +93,8 @@ demo:                     # 🧪 zrcadlení papírových obchodů na DEMO účet
   enabled: true           # klíče jen v GitHub Secrets: OKX_DEMO_API_KEY, OKX_DEMO_API_SECRET, OKX_DEMO_PASSPHRASE
   exchange: okx           # vždy demo režim (x-simulated-trading); ostrý účet se nikdy nepoužije
   variant: daily          # daily = vstup na zavření denní svíčky, mtf = vstup z nižších TF (jen jedna – stejný účet)
-  leverage: 2             # izolovaná marže na perpetual swapu (shorty potřebují swap)
+  market: spot            # spot = jen longy, bez páky (účet bez futures oprávnění); swap = perpetual, longy i shorty
+  leverage: 2             # jen pro swap: izolovaná marže
 
 mtf_entry:                # vstup z nižších TF pro denní signály (scanner/mtf.py, reports/mtf_entry.md) – papírově souběžně
   enabled: true
