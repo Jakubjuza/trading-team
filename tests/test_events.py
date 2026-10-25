@@ -99,3 +99,12 @@ def test_event_alerts_digest_pre_and_news(tmp_path):
 
 def test_event_alerts_disabled(tmp_path):
     assert event_alerts({"tickers": [], "events": {"enabled": False}}, State(tmp_path / "s.json"), NOW, True) == []
+
+
+def test_ff_fomc_duplicates_and_tone_words():
+    rows = {"rows": [{"title": "Federal Funds Rate", "country": "USD", "date": "2026-10-28T14:00:00-04:00", "impact": "High"},
+                     {"title": "FOMC Press Conference", "country": "USD", "date": "2026-10-28T14:30:00-04:00", "impact": "High"}]}
+    evs, _ = ev.upcoming(NOW, 7, ff=rows)
+    assert [e["kind"] for e in evs if "Fed" in e["title"] or "FOMC" in e["title"]] == ["fomc"]
+    assert ev.tag("Bitcoin Falls Below $80,000 as U.S. Pulls Staff")[1] == "negativní"
+    assert ev.tag("Solana jumps 8% after upgrade")[1] == "pozitivní"

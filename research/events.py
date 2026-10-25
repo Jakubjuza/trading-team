@@ -51,9 +51,9 @@ FF_COUNTRIES = {"USD": "USA", "EUR": "eurozóna", "CNY": "Čína", "JPY": "Japon
 COIN_NAMES = {"BTC": "bitcoin", "ETH": "ethereum", "SOL": "solana", "XRP": "XRP Ripple", "ADA": "cardano",
               "LINK": "chainlink", "AVAX": "avalanche crypto", "DOGE": "dogecoin", "BNB": "BNB binance coin"}
 NEWS_TOPICS = {
-    "geopolitika": "tariffs OR sanctions OR war OR ceasefire OR missile OR geopolitical markets",
-    "regulace a hlasování": "crypto bill vote OR SEC crypto OR crypto regulation OR stablecoin law OR crypto ETF approval",
-    "Fed a inflace": "Federal Reserve OR Powell OR inflation CPI OR rate cut",
+    "geopolitika": "markets (war OR tariffs OR sanctions OR ceasefire OR missile OR escalation)",
+    "regulace a hlasování": "crypto (SEC OR CFTC OR bill OR Senate OR Congress OR stablecoin OR \"ETF approval\" OR regulation)",
+    "Fed a inflace": "(\"Federal Reserve\" OR Powell OR FOMC OR inflation OR CPI OR \"rate cut\") markets",
 }
 RSS_FEEDS = {"CoinDesk": "https://www.coindesk.com/arc/outboundfeeds/rss/",
              "Cointelegraph": "https://cointelegraph.com/rss"}
@@ -67,8 +67,10 @@ TAGS = {
     "bezpečnost": r"\b(hack\w*|exploit\w*|stolen|drain\w*|breach)\b",
     "burzy": r"\b(listing|lists|delist\w*|coinbase|binance|kraken|robinhood)\b",
 }
-POSITIVE = r"\b(approv\w*|surge\w*|soar\w*|rall\w*|record|inflows?|adopt\w*|partnership|launch\w*|upgrade|bullish|wins?|passes|passed|cut)\b"
-NEGATIVE = r"\b(reject\w*|plunge\w*|crash\w*|slump\w*|outflows?|hack\w*|exploit\w*|lawsuit|sue[sd]?|ban\w*|delist\w*|bearish|fraud|probe|selloff|sell-off)\b"
+POSITIVE = (r"\b(approv\w*|surge\w*|soar\w*|rall\w*|record|inflows?|adopt\w*|partnership|launch\w*|upgrade\w*|bullish|"
+            r"wins?|passes|passed|rises?|rising|jumps?|gains?|climbs?|rebound\w*|breaks? above)\b")
+NEGATIVE = (r"\b(reject\w*|plunge\w*|crash\w*|slump\w*|outflows?|hack\w*|exploit\w*|lawsuit|sue[sd]?|ban\w*|delist\w*|"
+            r"bearish|fraud|probe|selloff|sell-off|falls?|drops?|tumbles?|slides?|sinks?|liquidat\w*|falls? below)\b")
 
 
 def prague(ts):
@@ -137,7 +139,8 @@ def parse_ff(rows, start, end, impacts=("High",)):
             ts = datetime.fromisoformat(r["date"]).astimezone(timezone.utc)
         except (KeyError, ValueError):
             continue
-        if not (start <= ts < end) or "FOMC" in r.get("title", "") and "Statement" in r.get("title", ""):
+        title = r.get("title", "")
+        if not (start <= ts < end) or r["country"] == "USD" and re.search(r"FOMC|Federal Funds Rate", title):
             continue                                                      # FOMC máme z kalendáře Fedu
         out.append({"time": ts, "title": r.get("title", ""), "country": FF_COUNTRIES[r["country"]],
                     "impact": r["impact"], "kind": "macro", "forecast": r.get("forecast") or None,
