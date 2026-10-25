@@ -3,9 +3,9 @@
   {
    "horizon": "4 týdny",
    "n_train": 10096,
-   "n_test": 13840,
+   "n_test": 13832,
    "below_q10": 0.121,
-   "above_median": 0.416,
+   "above_median": 0.417,
    "above_q90": 0.062,
    "coverage_10_90": 0.817,
    "z": {
@@ -17,12 +17,12 @@
     "týden ↑ · měsíc ↑": {
      "pred_p_up": 0.546,
      "actual_p_up": 0.415,
-     "n_test": 4045
+     "n_test": 4041
     },
     "týden ↑ · měsíc ↓": {
      "pred_p_up": 0.539,
-     "actual_p_up": 0.52,
-     "n_test": 1147
+     "actual_p_up": 0.521,
+     "n_test": 1143
     },
     "týden ↓ · měsíc ↑": {
      "pred_p_up": 0.554,
@@ -39,9 +39,9 @@
   {
    "horizon": "13 týdnů",
    "n_train": 9592,
-   "n_test": 13336,
+   "n_test": 13328,
    "below_q10": 0.189,
-   "above_median": 0.356,
+   "above_median": 0.355,
    "above_q90": 0.049,
    "coverage_10_90": 0.762,
    "z": {
@@ -67,15 +67,15 @@
     },
     "týden ↓ · měsíc ↓": {
      "pred_p_up": 0.561,
-     "actual_p_up": 0.452,
-     "n_test": 6840
+     "actual_p_up": 0.451,
+     "n_test": 6832
     }
    }
   },
   {
    "horizon": "26 týdnů",
    "n_train": 8864,
-   "n_test": 12608,
+   "n_test": 12600,
    "below_q10": 0.217,
    "above_median": 0.292,
    "above_q90": 0.047,
@@ -104,7 +104,7 @@
     "týden ↓ · měsíc ↓": {
      "pred_p_up": 0.648,
      "actual_p_up": 0.485,
-     "n_test": 6140
+     "n_test": 6132
     }
    }
   }
@@ -113,15 +113,15 @@
   "empirický střed": [
    {
     "horizon": "4 týdny",
-    "n_test": 13840,
+    "n_test": 13832,
     "below_q10": 0.114,
-    "above_median": 0.457,
+    "above_median": 0.458,
     "above_q90": 0.073,
     "coverage_10_90": 0.813
    },
    {
     "horizon": "13 týdnů",
-    "n_test": 13336,
+    "n_test": 13328,
     "below_q10": 0.141,
     "above_median": 0.426,
     "above_q90": 0.066,
@@ -129,25 +129,25 @@
    },
    {
     "horizon": "26 týdnů",
-    "n_test": 12608,
+    "n_test": 12600,
     "below_q10": 0.164,
     "above_median": 0.393,
     "above_q90": 0.063,
-    "coverage_10_90": 0.773
+    "coverage_10_90": 0.772
    }
   ],
   "neutrální střed": [
    {
     "horizon": "4 týdny",
-    "n_test": 13840,
+    "n_test": 13832,
     "below_q10": 0.11,
     "above_median": 0.466,
     "above_q90": 0.073,
-    "coverage_10_90": 0.818
+    "coverage_10_90": 0.817
    },
    {
     "horizon": "13 týdnů",
-    "n_test": 13336,
+    "n_test": 13328,
     "below_q10": 0.126,
     "above_median": 0.442,
     "above_q90": 0.064,
@@ -155,7 +155,7 @@
    },
    {
     "horizon": "26 týdnů",
-    "n_test": 12608,
+    "n_test": 12600,
     "below_q10": 0.104,
     "above_median": 0.468,
     "above_q90": 0.065,

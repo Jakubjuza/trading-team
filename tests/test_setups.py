@@ -258,3 +258,16 @@ def test_scenario_note_and_weekly_outlook(tmp_path, monkeypatch):
     assert sc_mod.weekly_outlook(cfg, state, {("BTC/USDT", "1d"): d1}, mon, send=sent.append) is None   # jednou týdně
     tue = datetime(2026, 10, 27, 8, 30, tzinfo=timezone.utc)
     assert sc_mod.weekly_outlook(cfg, State(tmp_path / "s2.json"), {("BTC/USDT", "1d"): d1}, tue) is None
+
+
+def test_mean_reversion_signals_and_strategy_health():
+    import scanner.scan as sc_mod
+    rows = [(100 + i * 0.5, 101 + i * 0.5, 99.5 + i * 0.5, 100.5 + i * 0.5) for i in range(240)]   # trend nahoru
+    rows += [(220, 220.5, 214, 215), (215, 215.5, 209, 210)]                                       # prudký pokles
+    df = frame(rows, freq="1D")
+    s = setups.find("mean_reversion", df, params={**NOFILTER, "trend_ema": 200}, last_only=True)
+    assert [x.direction for x in s] == ["long"] and s[0].stop < s[0].entry
+    assert setups.find("mean_reversion", mirror(df), params={**NOFILTER, "trend_ema": 200}, last_only=True)[0].direction == "short"
+    cfg = cfg_multi()
+    line = sc_mod.strategy_health(cfg, {("BTC/USDT", "1d"): df}, df.index[-1].to_pydatetime())
+    assert line.startswith("Zdraví strategií (6 měs., na živých datech): Donchian") and "obch." in line

@@ -1,5 +1,5 @@
 """Testy datového listu – výpočty na syntetických datech, odpovědi API napodobené (sandbox je blokuje)."""
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 import numpy as np
 import pandas as pd

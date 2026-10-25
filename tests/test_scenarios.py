@@ -1,5 +1,4 @@
 """Scénáře na delších timeframech – bez sítě, syntetická data."""
-from datetime import datetime, timezone
 
 import numpy as np
 import pandas as pd
