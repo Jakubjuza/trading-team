@@ -15,3 +15,7 @@ Pravidla zápisu:
 ## Vyvrácené
 
 - (zatím žádná)
+
+## Zpracované výsledky
+
+Počet zpracovaných řádků z research/outcomes.jsonl: 0
