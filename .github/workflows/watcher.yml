@@ -1,8 +1,7 @@
 name: Telegram hlídač
 
+# VYPNUTO 25. 10. 2026: nahrazeno rychlým skenerem (scanner.yml). Ruční spuštění zůstává.
 on:
-  schedule:
-    - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
       test:
