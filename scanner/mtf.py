@@ -17,8 +17,9 @@ def resample_4h(h1):
 
 
 def find_trigger(direction, h1, t0, daily_stop, targets, atr, wait_hours=72, ema_len=20, swing_bars=6,
-                 min_stop_pct=1.5, ema1=None, h4=None, ema4=None):
+                 min_stop_pct=1.5, ema1=None, h4=None, ema4=None, upper_hours=4):
     """h1 = uzavřené hodinové svíčky (index = začátek svíčky). t0 = uzavření denní svíčky signálu.
+    Obecně: h1 = timeframe spouštěče, h4 = vyšší timeframe potvrzení s délkou svíčky `upper_hours` (výchozí 4H/1H).
     Vrací {"status": "entry", "time", "entry", "stop"} | {"status": "stopped"} | {"status": "skipped"} | None (čeká)."""
     long = direction == "long"
     ema1 = ema1 if ema1 is not None else h1["Close"].ewm(span=ema_len, adjust=False).mean()
@@ -35,7 +36,7 @@ def find_trigger(direction, h1, t0, daily_stop, targets, atr, wait_hours=72, ema
             continue
         if (long and row["Low"] <= e) or (not long and row["High"] >= e):
             touched = True
-        closed4 = ema4[ema4.index <= t - pd.Timedelta(hours=4)]                 # poslední UZAVŘENÁ 4h svíčka
+        closed4 = ema4[ema4.index <= t - pd.Timedelta(hours=upper_hours)]       # poslední UZAVŘENÁ svíčka vyššího TF
         trend_ok = False
         if len(closed4):
             c4 = h4["Close"].get(closed4.index[-1])
