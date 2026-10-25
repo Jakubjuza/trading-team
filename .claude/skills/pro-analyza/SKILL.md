@@ -1,6 +1,6 @@
 ---
 name: pro-analyza
-description: Profesionální analýza obchodu desk-stylem – datový list + 7 oddělení (struktura, order flow, deriváty, makro, katalyzátory/naceněno, sentiment, kvant) + devils-advocate + head-trader verdikt A/B/C/NO_TRADE. Použij pro signály skeneru i ruční analýzu tickeru.
+description: Profesionální analýza obchodu desk-stylem – datový list + 8 oddělení (struktura, order flow, deriváty, makro, události a geopolitika, zprávy k minci, sentiment, kvant) + devils-advocate + head-trader verdikt A/B/C/NO_TRADE. Použij pro signály skeneru i ruční analýzu tickeru.
 argument-hint: signál (id ze scanner/signals.jsonl) nebo TICKER long|short
 ---
 
@@ -13,7 +13,7 @@ Vstup: `$ARGUMENTS`
 - **Ruční ticker**: zkus `python3 research/factsheet.py BTC/USDT --out research/factsheets/manual_<COIN>_<YYYYMMDD_HHMM>.json`. Sekce, kterým síť nedovolí data (`error`), doplní oddělení web searchem – nebo spusť GitHub workflow „Datový list“ (workflow_dispatch, vstup symbol), který list vygeneruje a commitne, a pak `git pull`.
 
 ## 2. Oddělení – paralelně, každé dostane signál + cestu k datovému listu
-market-structure · orderflow-analyst · derivatives-analyst · macro-analyst · news-analyst · sentiment-analyst · quant-analyst
+market-structure · orderflow-analyst · derivatives-analyst · macro-analyst · events-analyst · news-analyst · sentiment-analyst · quant-analyst
 
 Každé vrátí SKÓRE −2..+2 pro směr obchodu, JISTOTU, FAKTA se zdroji a CO BY ZMĚNILO NÁZOR.
 Světové burzy (otevírání Asie/Evropy/USA, víkend, CME gap) hodnotí macro-analyst ze sekce `sessions`; entry-exit-planner a devils-advocate je berou jako riziko časování.
