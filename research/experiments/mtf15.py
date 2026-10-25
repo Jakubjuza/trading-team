@@ -62,7 +62,7 @@ def okx_15m(coin, days=DAYS):
         since = nxt
     df = pd.DataFrame(rows, columns=["ts", "Open", "High", "Low", "Close", "Volume"]).drop_duplicates("ts")
     df.index = pd.to_datetime(df.pop("ts"), unit="ms", utc=True)
-    df = df.sort_index()[["Open", "High", "Low", "Close"]].astype(float)
+    df = df.sort_index()[["Open", "High", "Low", "Close", "Volume"]].astype(float)
     df = df[df.index < pd.Timestamp.now(tz="UTC").floor("15min")]          # jen uzavřené
     SP.mkdir(parents=True, exist_ok=True)
     df.to_csv(path)
