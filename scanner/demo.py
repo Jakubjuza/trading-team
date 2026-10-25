@@ -128,10 +128,8 @@ class DemoBroker:
                          and m.get("linear") is not False and m.get("active") is not False), key=lambda m: m["id"])
             if xp:
                 return xp[0]["symbol"]
-        for cand in (swap_symbol(symbol, self.quote), swap_symbol(symbol)):
-            if cand in self.ex.markets:
-                return cand
-        return None
+        cand = swap_symbol(symbol, self.quote)                   # s `quote` jen v té měně (na USDT účet nemá peníze)
+        return cand if cand in self.ex.markets else None
 
     def open(self, pos, size):
         s = pos["setup"]

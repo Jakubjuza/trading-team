@@ -203,7 +203,8 @@ def test_resolve_prefers_eea_xperp_then_quote_swap():
     ex = FakeOKX()
     ex.markets = {"BTC/USD:USD-310328": {"symbol": "BTC/USD:USD-310328", "base": "BTC", "id": "BTC-USD_UM_XPERP-310328", "linear": True},
                   "BTC/USDT:USDT": {"symbol": "BTC/USDT:USDT", "base": "BTC", "id": "BTC-USDT-SWAP"},
-                  "ADA/USDC:USDC": {"symbol": "ADA/USDC:USDC", "base": "ADA", "id": "ADA-USDC-SWAP"}}
+                  "ADA/USDC:USDC": {"symbol": "ADA/USDC:USDC", "base": "ADA", "id": "ADA-USDC-SWAP"},
+                  "SOL/USDT:USDT": {"symbol": "SOL/USDT:USDT", "base": "SOL", "id": "SOL-USDT-SWAP"}}
     b = demo.DemoBroker({"demo": {"quote": "USDC"}}, ex=ex)
     assert b.resolve("BTC/USDT") == "BTC/USD:USD-310328"
     assert b.resolve("ADA/USDT") == "ADA/USDC:USDC"
