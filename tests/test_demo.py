@@ -236,3 +236,21 @@ def test_spot_fetches_fill_price_when_market_response_is_bare():
     rec = b.move_stop(POS, b.open(POS, {"qty": 0.01}), 100.0)
     assert rec["entry"] == 101.0 and rec["t1_price"] == 110.0
     assert b.close(POS, rec, "time")["pnl_usdt"] == pytest.approx(0.0099 * 9 - 0.0101 - 0.05 - 0.05, abs=0.01)
+
+
+def test_positions_overview_lists_open_and_recent_closed():
+    import scanner.scan as sc
+    state = type("S", (), {"data": {
+        "open": [{"symbol": "BTC/USDT", "strategy": "donchian_1d", "setup": {"direction": "long", "entry": 100.0, "stop": 95.0},
+                  "demo": {"status": "open"}},
+                 {"symbol": "ETH/USDT", "strategy": "pullback_1d+mtf", "mtf": True, "t1_notified": True,
+                  "setup": {"direction": "short", "entry": 50.0, "stop": 52.0}}],
+        "closed": [{"symbol": "SOL/USDT", "direction": "long", "r": -1.0, "result": "stop", "closed_at": "2026-10-25T10:00:00+00:00"},
+                   {"symbol": "LINK/USDT", "direction": "long", "r": 1.4, "result": "T2", "closed_at": "2026-10-25T13:00:00+00:00",
+                    "demo_pnl": 12.5, "demo_ccy": "USDC"}]}})()
+    lines = sc.positions_overview(state, {"BTC/USDT": (105.0, "")}, since="2026-10-25T12:00:00+00:00")
+    text = "\n".join(lines)
+    assert "📋 Otevřené (2)" in text and "BTC/USDT LONG (donchian_1d) vstup" in text and "(+1,00 R)" in text and "🧪 demo" in text
+    assert "ETH/USDT SHORT 1H" in text and "stop vstup (po T1)" in text
+    assert "📕 Uzavřené od minulé zprávy (1)" in text and "LINK/USDT LONG +1,40 R (T2) · 🧪 demo +12,50 USDC" in text
+    assert "SOL/USDT" not in text
