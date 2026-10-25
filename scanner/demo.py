@@ -381,6 +381,10 @@ def main():
             print(f"  {sym}: není dostupné ({exc.__class__.__name__})")
             continue
         print(f"  {sym}: kontrakt {m.get('contractSize') or 1} {c}, min. {((m.get('limits') or {}).get('amount') or {}).get('min')}")
+    coins = {"BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"}
+    avail = sorted(f"{m['symbol']} ({m['id']})" for m in b.ex.markets.values()
+                   if m.get("base") in coins and (m.get("swap") or m.get("future") or m.get("spot")))
+    print("dostupné trhy pro naše mince:", ", ".join(avail) or "žádné")
     if a.test_order:
         t = b.ex.fetch_ticker(spot_symbol("BTC/USDT", b.quote) if spot else swap_symbol("BTC/USDT", b.quote))["last"]
         pos = {"id": "TEST", "symbol": "BTC/USDT", "strategy": "test",
