@@ -52,6 +52,8 @@ Pravidla:
   [Alpha Architect](https://alphaarchitect.com/cross-asset-signals-and-time-series-momentum/)). U nás už riziko na obchod
   = pevné R se stopem podle ATR – podobný efekt.
 
+- **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.
+  Na 8 tech akciích +0,27 R, ale náhodné vstupy +0,22 R (výběr vítězů) – výhoda strategie malá.
 - **Optimalizace výstupů a filtrů denních strategií (72 nastavení × 5 vah)** – walk-forward MAR 0,77 vs. dnešní 0,83,
   odložený rok bez rozdílu – `reports/optimize.md` – 25. 10. 2026. Výběr „nejlepšího“ z historie je přeladěný.
 - **Spouštěč vstupu na 15M (1H potvrzení → 15M obrat)** – za 2 roky +0,28 ± 0,25 R/signál nad dnešním 1H vstupem, kladný
