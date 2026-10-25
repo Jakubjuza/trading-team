@@ -178,7 +178,8 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         print(f"vstup z nižších TF selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     approach_alerts(cfg, state, frames, strats, now, day, dry_run)
     try:
-        event_alerts(cfg, state, now, dry_run)
+        event_alerts(cfg, state, now, dry_run,
+                     prices={sym.split("/")[0]: p for sym, (p, _) in status["prices"].items()})
     except Exception as exc:                                          # zprávy a kalendář nesmí shodit skener
         print(f"kalendář/zprávy selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
@@ -389,7 +390,7 @@ def weekly_outlook(cfg, state, frames, now, dry_run=False, send=None):
     return msg
 
 
-def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=None):
+def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=None, prices=None):
     """📅 ranní kalendář, ⚠️ upozornění před důležitou událostí, 📰 důležité titulky k mincím (bez AI)."""
     ec = cfg.get("events") or {}
     if not ec.get("enabled"):
@@ -440,10 +441,18 @@ def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=No
             key = "news|" + events_mod.title_key(x["title"])
             if not coin or not important & set(tags) or tone == "neutrální" or key in sent:
                 continue
+            price = (prices or {}).get(coin)
+            if events_mod.stale_price(x["title"], price, ec.get("news_price_tol_pct", 6.0)):
+                print(f"📰 vynecháno (ceny v titulku daleko od aktuální {price}): {x['title']}")
+                continue
+            if events_mod.is_rehash(x, raw.get("items", []), coin, ec.get("news_rehash_hours", 12)):
+                print(f"📰 vynecháno (stejné téma už dřív): {x['title']}")
+                continue
             sent[key] = day
             per_day[day] += 1
             icon = "🟢" if tone == "pozitivní" else "🔴"
-            msgs.append(f"📰 {icon} {coin}: {x['title']} ({x.get('source')}, {events_mod.prague(ts)})\n"
+            msgs.append(f"📰 {icon} {coin}: {x['title']} ({x.get('source')}, {events_mod.prague(ts)}"
+                        + (f"; cena teď {notify.fmt(price)}" if price else "") + ")\n"
                         f"Klíčová slova: {', '.join(tags)} · jen titulek, ne analýza · {x.get('link', '')}")
     tg = send or (notify.telegram if cfg.get("notify", {}).get("telegram", True) else None)
     for m in msgs:

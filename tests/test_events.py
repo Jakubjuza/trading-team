@@ -149,3 +149,26 @@ def test_cached_failure_backoff(tmp_path, monkeypatch):
     ok = {"rows": [1], "errors": []}
     monkeypatch.setattr(ev, "FAIL_TTL", 0)
     assert ev.cached("x", 60, lambda: ok) == ok and ev.cached("x", 60, boom) == ok        # úspěch se drží v cache
+
+
+def test_price_levels_and_staleness():
+    t = "XRP Sees $45 Million Net Inflows as Price Tests Resistance at $1.40 - CoinGape"
+    assert ev.price_levels(t) == [1.4]                                       # $45 million = objem, ne cena
+    assert ev.stale_price(t, 1.25) and not ev.stale_price(t, 1.38)
+    assert ev.price_levels("Bitcoin tops $85K as inflows hit $1.2 billion") == [85000.0]
+    assert ev.price_levels("SEC approves ETF in 2026 with 3 issuers") == [] and not ev.stale_price("SEC approves ETF", 1.3)
+
+
+def test_stale_and_rehashed_news_are_not_sent(tmp_path):
+    cfg = _cfg(tickers=[{"symbol": "XRP/USDT", "source": "crypto"}])
+    cfg["events"]["news_max_per_day"] = 5
+    t = lambda m: (NOW - timedelta(minutes=m)).isoformat()                       # noqa: E731
+    news = {"items": [
+        {"title": "XRP ETF sees $45 million net inflows as price tests $1.40 resistance", "time": t(30), "source": "A"},
+        {"title": "Ripple XRP ETF inflows top $45 million in a week - CoinGape", "time": t(20), "source": "B"},
+        {"title": "XRP ETF inflows top $45 million in a week - Old", "time": t(60 * 50), "source": "C"},
+        {"title": "SEC approves new XRP ETF from BlackRock", "time": t(10), "source": "D"},
+    ]}
+    msgs = event_alerts(cfg, State(tmp_path / "s.json"), NOW, True, events=[], news=news, prices={"XRP": 1.25})
+    news_msgs = [m for m in msgs if m.startswith("📰")]
+    assert len(news_msgs) == 1 and "BlackRock" in news_msgs[0] and "cena teď" in news_msgs[0]
