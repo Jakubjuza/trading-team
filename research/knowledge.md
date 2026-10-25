@@ -30,7 +30,7 @@ Pravidla:
 
 - **Přikupování do vydělávající pozice (pyramiding, P2)** – start 0,5 R, +1 kus za každý +1 ATR (max. 4), stop po přidání
   − 2 ATR, trailing 3 ATR, max. 20 dní: Ø +0,70 vs. +0,33 R, MAR 2,04 vs. 0,89, odložený rok +28,7 vs. +2,4 R, robustní
-  v sousedních nastaveních – `reports/pyramid.md` – 25. 10. 2026. Čeká na rozhodnutí uživatele (nezapnuto).
+  v sousedních nastaveních – `reports/pyramid.md` – 25. 10. 2026. Od 25. 10. 2026 běží jako samostatná papírová část 🔺 Pyramida (scanner/pyramid.py) – ověření naživo.
 
 ## ❌ U nás vyvráceno (neopakovat naslepo)
 

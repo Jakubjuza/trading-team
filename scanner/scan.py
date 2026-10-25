@@ -23,7 +23,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from scanner import broker, mtf, notify, rules, setups  # noqa: E402
+from scanner import broker, mtf, notify, pyramid, rules, setups  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import backtest, simulate  # noqa: E402
 from scanner.calibrate import strategy_params  # noqa: E402
@@ -173,6 +173,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     status["frames"] = frames                                          # pro zdraví strategií ve zprávě o stavu
     update_paper_positions(cfg, state, frames, cost_pct, dry_run, probs)
     try:
+        pyramid.update(cfg, state, frames, cost_pct, dry_run)
+    except Exception as exc:                                          # samostatná papírová část nesmí shodit skener
+        print(f"pyramida selhala: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
         mtf_entries(cfg, state, frames, now, dry_run)
     except Exception as exc:                                          # vstup z nižších TF nesmí shodit skener
         print(f"vstup z nižších TF selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
@@ -193,6 +197,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
 
     # krypto se hýbe spolu → max. N otevřených (papírových) pozic stejným směrem na strategii; přednost má lepší R:R
     candidates.sort(key=lambda x: x[4].rr[0], reverse=True)
+    try:
+        pyramid.open_new(cfg, state, [c for c in candidates if c[2] == "1d"], day, setup_id, dry_run)
+    except Exception as exc:
+        print(f"pyramida (otevření) selhala: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     per_dir = {}
     for pos in state.data.get("open", []):
         k = (pos.get("strategy", strats[0]["name"]), pos["setup"]["direction"])
@@ -729,6 +737,9 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         cl = carry_line(state)
         if cl:
             lines.append(cl)
+        pl = pyramid.heartbeat_line(state)
+        if pl:
+            lines.append(pl)
         if (cfg.get("demo") or {}).get("enabled"):
             n_demo = sum(1 for p in state.data.get("open", []) if (p.get("demo") or {}).get("status") == "open")
             lines.append(f"Demo OKX: {'připojeno' if demo_broker(cfg) else 'nepřipojeno (' + ((_DEMO['error'] or (0, 'chybí klíče'))[1]) + ')'}"
