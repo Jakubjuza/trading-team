@@ -14,5 +14,6 @@ python3 research/experiments/htf_robust.py scanner/cache       # týdenní filtr
 python3 research/experiments/mean_reversion.py scanner/cache          # mean reversion RSI(2)
 python3 research/experiments/rotation.py scanner/cache    # rotace dual momentum
 python3 research/experiments/tsmom.py scanner/cache       # držet nad SMA200, jinak hotovost
+python3 research/experiments/styles.py scanner/cache      # styly: poziční 1W a swing 4H (reports/styles.md)
 python3 research/carry.py --report                             # carry z fundingu (potřebuje Hyperliquid → GitHub Actions)
 ```
