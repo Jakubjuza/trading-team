@@ -1,0 +1,23 @@
+name: Test dostupnosti Bybit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/bybit-check.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Veřejné endpointy (bez klíčů)
+        run: |
+          for host in api.bybit.com api-demo.bybit.com api-testnet.bybit.com api.bytick.com; do
+            code=$(curl -s -o /tmp/r.txt -w "%{http_code}" -m 15 "https://$host/v5/market/time")
+            echo "$host HTTP $code: $(head -c 160 /tmp/r.txt | tr '\n' ' ')"
+          done
+          curl -s -m 10 https://ipinfo.io/json | grep -E '"(country|region|org)"' || true
