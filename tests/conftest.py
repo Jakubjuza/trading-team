@@ -13,4 +13,5 @@ def _isolate_runtime_files(tmp_path, monkeypatch):
     import scanner.scan
     monkeypatch.setattr(scanner.scan, "SIGNALS", tmp_path / "signals.jsonl")
     monkeypatch.setattr(scanner.scan, "FACTSHEETS", tmp_path / "factsheets")
+    monkeypatch.setattr(scanner.scan, "OUTCOMES", tmp_path / "outcomes.jsonl")
     monkeypatch.setattr(scanner.broker, "PAPER_LOG", tmp_path / "paper_trades.json")

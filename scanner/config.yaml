@@ -54,7 +54,8 @@ exit: &brh_exit            # správa obchodu (pro vyhodnocení a plán ve zpráv
 # 2 roky 1h / 9 let 1d, po nákladech, out-of-sample, coiny mimo optimalizaci, proti náhodným vstupům.
 # Na 1h a 4h NEOBSTÁLY: pullback, sweep_reclaim, squeeze_breakout, donchian_breakout, range_fade (enabled: false).
 strategies:
-  - name: brh_1h
+  - name: brh_1h                 # VYPNUTO 25. 10. 2026: OOS +0,01 ± 0,21 R (bez výhody), DD ~99 R přes 8 mincí
+    enabled: false               # (reports/setup_library.md); zapnout = smazat tento řádek
     setup: breakout_retest_hold
     timeframe: 1h
     params: *brh_rules

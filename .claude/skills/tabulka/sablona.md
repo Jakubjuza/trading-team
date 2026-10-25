@@ -22,7 +22,7 @@
 | 15 | Posun stopu | | BE po T1 / trailing / žádný (výchozí: BE po T1) |
 | **Účet a riziko** ||||
 | 16 | Velikost účtu (USD) | | 10 000 |
-| 17 | Riziko na obchod (%) | | 1 |
+| 17 | Riziko na obchod (%) | | 0,5 |
 | 18 | Minimální R:R | | 2 (= 1:2) |
 | 19 | Typ účtu | | hotovost / marže + páka (výchozí: hotovost) |
 | 20 | Max. velikost pozice (% účtu) | | 100 |

@@ -8,6 +8,9 @@ argument-hint: signál (id ze scanner/signals.jsonl) nebo TICKER long|short
 
 Vstup: `$ARGUMENTS`
 
+## 0. Paměť desku
+Přečti `research/lessons.md` (poučení z minulých obchodů) a relevantní poučení předej oddělením i head-traderovi.
+
 ## 1. Datový list
 - **Signál skeneru**: datový list je v `research/factsheets/<soubor>.json` (cesta je v signálu v poli `factsheet`). Vytvořil ho GitHub Actions s přístupem k burze, Hyperliquid a Deribit.
 - **Ruční ticker**: zkus `python3 research/factsheet.py BTC/USDT --out research/factsheets/manual_<COIN>_<YYYYMMDD_HHMM>.json`. Sekce, kterým síť nedovolí data (`error`), doplní oddělení web searchem – nebo spusť GitHub workflow „Datový list“ (workflow_dispatch, vstup symbol), který list vygeneruje a commitne, a pak `git pull`.
@@ -22,12 +25,16 @@ Světové burzy (otevírání Asie/Evropy/USA, víkend, CME gap) hodnotí macro-
 entry-exit-planner (ověří stop/cíle vůči likviditě a nákladům) → risk-manager (velikost, korelace, gap riziko).
 U signálu skeneru vstup/stop/cíle NEMĚŇ – planner jen řekne, zda jsou rozumné.
 
-## 4. devils-advocate (pre-mortem) → head-trader
-head-trader dostane vše a vrátí JSON verdikt + 5 řádků.
+## 4. Debata býk × medvěd → head-trader
+1. Paralelně: **bull-advocate** (nejsilnější case pro směr obchodu) a **devils-advocate** (pre-mortem, proč selže).
+2. Jedno kolo odpovědí: každý dostane argumenty druhého a odpoví max. 3 odrážkami (vyvrátit daty, nebo přiznat).
+3. head-trader dostane výstupy oddělení, exekuce, rizika, celou debatu a poučení z kroku 0 a vrátí JSON verdikt + 5 řádků.
 
 ## 5. Záznam
 - Přidej JSON verdikt jako řádek do `research/verdicts.jsonl` (jeden řádek, `signal_id` = id signálu, u ručního `manual:<ticker>:<čas>`).
 - Commitni `research/` a pushni do `main` (`git pull --rebase origin main` před pushem). Workflow „Verdikty na Telegram“ pak verdikt pošle.
 - Odpověď uživateli: obrázek z chart-renderer (u ruční analýzy), pak 5 řádků z verdiktu.
+
+Reflexe: když skener uzavře papírový obchod, zapíše výsledek do `research/outcomes.jsonl`; journal-reviewer z něj aktualizuje `research/lessons.md`.
 
 Měření: `python3 scanner/evaluate.py` porovnává výsledky signálů podle stupně A/B vs C/NO_TRADE – tak se ukáže, jestli desk přidává hodnotu. Nejde o finanční poradenství.

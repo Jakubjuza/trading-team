@@ -33,6 +33,7 @@ NY = ZoneInfo("America/New_York")
 PRAGUE = ZoneInfo("Europe/Prague")
 DAYS_CS = ["po", "út", "st", "čt", "pá", "so", "ne"]
 UA = {"User-Agent": "Mozilla/5.0 (trading-team research)"}
+FAIL_TTL = 600                                                            # po výpadku zdroje další pokus za 10 min
 
 # Den rozhodnutí FOMC (druhý den zasedání), prohlášení 14:00 New York, tisková konference 14:30.
 FOMC_SOURCE = "federalreserve.gov/monetarypolicy/fomccalendars.htm (2027: tisková zpráva Fedu 5. 9. 2025; termíny jsou předběžné)"
@@ -93,9 +94,20 @@ def cached(name, ttl_s, fetch):
             return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         pass
+    fail = CACHE / f"events_{name}.fail"
+    try:
+        if fail.exists() and _time.time() - fail.stat().st_mtime < FAIL_TTL:
+            return {"rows": [], "items": [], "errors": ["zdroj nedostupný – další pokus do 10 min"]}
+    except Exception:
+        pass
     data = fetch()
     if data.get("errors") and not (data.get("rows") or data.get("items")):
-        return data                                                       # úplné selhání neukládat – zkusí se znovu
+        try:                                                              # výpadek: nezkoušet každou minutu znovu
+            CACHE.mkdir(parents=True, exist_ok=True)
+            fail.write_text(datetime.now(timezone.utc).isoformat())
+        except Exception:
+            pass
+        return data
     try:
         CACHE.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False, default=str), encoding="utf-8")

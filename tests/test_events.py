@@ -112,3 +112,40 @@ def test_ff_fomc_duplicates_and_tone_words():
 
 def test_title_key_ignores_source_suffix():
     assert ev.title_key("Bitcoin or Gold: Which Is Better? - 24/7 Wall St.") == ev.title_key("Bitcoin or Gold: Which Is Better? - Yahoo Finance")
+
+
+def test_same_time_events_one_alert_and_telegram_flag(tmp_path):
+    ff = {"rows": [{"title": "Advance GDP q/q", "country": "USD", "date": "2026-10-29T08:30:00-04:00", "impact": "High"},
+                   {"title": "Core PCE Price Index m/m", "country": "USD", "date": "2026-10-29T08:30:00-04:00", "impact": "High"}]}
+    now = datetime(2026, 10, 29, 12, 0, tzinfo=UTC)
+    evs, _ = ev.upcoming(now, 2, ff=ff)
+    sent = []
+    cfg = _cfg(notify={"telegram": True})
+    cfg["events"]["digest_hour"] = 25                                                  # bez ranního přehledu
+    msgs = event_alerts(cfg, State(tmp_path / "s.json"), now, False, events=evs, news={"items": []}, send=sent.append)
+    assert len(msgs) == 1 and "GDP" in msgs[0] and "PCE" in msgs[0] and sent == msgs
+    cfg2 = _cfg(notify={"telegram": False})
+    cfg2["events"]["digest_hour"] = 25
+    import scanner.notify as nt
+    called = []
+    orig = nt.telegram
+    nt.telegram = lambda m, photo=None: called.append(m)
+    try:
+        event_alerts(cfg2, State(tmp_path / "s2.json"), now, False, events=evs, news={"items": []})
+    finally:
+        nt.telegram = orig
+    assert called == []
+
+
+def test_cached_failure_backoff(tmp_path, monkeypatch):
+    monkeypatch.setattr(ev, "CACHE", tmp_path)
+    calls = []
+    def boom():
+        calls.append(1)
+        return {"rows": [], "errors": ["down"]}
+    ev.cached("x", 60, boom)
+    out = ev.cached("x", 60, boom)
+    assert len(calls) == 1 and "nedostupný" in out["errors"][0]
+    ok = {"rows": [1], "errors": []}
+    monkeypatch.setattr(ev, "FAIL_TTL", 0)
+    assert ev.cached("x", 60, lambda: ok) == ok and ev.cached("x", 60, boom) == ok        # úspěch se drží v cache

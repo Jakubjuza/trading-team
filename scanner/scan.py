@@ -8,7 +8,6 @@ Použití:
 """
 import argparse
 import json
-import re
 import shlex
 import subprocess
 import sys
@@ -34,6 +33,7 @@ from research import sessions  # noqa: E402
 STATE = HERE / "state.json"
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
 FACTSHEETS = HERE.parent / "research" / "factsheets"   # datové listy k signálům pro AI desk
+OUTCOMES = HERE.parent / "research" / "outcomes.jsonl"  # výsledky uzavřených papírových obchodů (reflexe desku)
 
 
 class State:
@@ -91,9 +91,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     strats = cfg_strategies(cfg)
     probs = load_probabilities(cfg)
     candidates, frames = [], {}
+    base_tf = cfg.get("timeframe", "1h")                                # aktuální cena (zpráva o stavu, „blíží se“)
     for t in cfg["tickers"]:
         symbol, source = t["symbol"], t["source"]
-        for strat in strats:
+        for strat in [{"timeframe": base_tf, "_price_only": True}] + strats:
             tf = strat.get("timeframe") or t.get("timeframe", cfg["timeframe"])
             if (symbol, tf) not in frames:
                 try:
@@ -107,8 +108,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
                 if df is not None:
                     status["errors"][symbol] = f"málo dat {tf} ({len(df)} svíček)"
                 continue
-            if tf == cfg.get("timeframe", "1h") or symbol not in status["prices"]:
+            if tf == base_tf or symbol not in status["prices"]:
                 status["prices"][symbol] = (float(df["Close"].iloc[-1]), df.index[-1].isoformat())
+            if strat.get("_price_only"):
+                continue
             for s in setups.find(strat["setup"], df, t.get("direction", cfg["direction"]), strat.get("params"),
                                  last_only=True):
                 candidates.append((symbol, source, tf, df, s, strat))
@@ -206,14 +209,19 @@ def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=No
         if soon:
             msgs.append("📅 Kalendář dnes a zítra:\n" + "\n".join("• " + events_mod.event_line(e, stats) for e in soon)
                         + "\nKolem těchto časů počítej s většími knoty. Jen informace.")
+    due = {}
     for e in high:
         mins = (e["time"] - now).total_seconds() / 60
         key = f"pre|{e['title']}|{e['time'].isoformat()}"
         if 0 < mins <= ec.get("pre_alert_minutes", 60) and key not in sent:
             sent[key] = day
-            n_open = len(state.data.get("open", []))
-            msgs.append(f"⚠️ Za {round(mins)} min: {events_mod.event_line(e, stats)}. "
-                        f"Otevřené papírové pozice: {n_open}" + (" – stop může zasáhnout knot." if n_open else "."))
+            due.setdefault(e["time"], []).append(e)
+    for ts, group in sorted(due.items()):
+        mins = round((ts - now).total_seconds() / 60)
+        n_open = len(state.data.get("open", []))
+        what = "; ".join(events_mod.event_line(e, stats) for e in group)
+        msgs.append(f"⚠️ Za {mins} min: {what}. Otevřené papírové pozice: {n_open}"
+                    + (" – stop může zasáhnout knot." if n_open else "."))
     if ec.get("news_alerts", True):
         coins = [t["symbol"].split("/")[0] for t in cfg["tickers"] if t.get("source") == "crypto"]
         raw = news if news is not None else events_mod.cached("news_watch", 30 * 60, lambda: events_mod.fetch_news(coins))
@@ -236,10 +244,11 @@ def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=No
             icon = "🟢" if tone == "pozitivní" else "🔴"
             msgs.append(f"📰 {icon} {coin}: {x['title']} ({x.get('source')}, {events_mod.prague(ts)})\n"
                         f"Klíčová slova: {', '.join(tags)} · jen titulek, ne analýza · {x.get('link', '')}")
+    tg = send or (notify.telegram if cfg.get("notify", {}).get("telegram", True) else None)
     for m in msgs:
         print(m)
-        if not dry_run:
-            (send or notify.telegram)(m)
+        if not dry_run and tg:
+            tg(m)
     state.save()
     return msgs
 
@@ -277,8 +286,8 @@ def approach_alerts(cfg, state, frames, strats, now, day, dry_run=False):
                 word = "nad" if d == "long" else "pod"
                 msg = (f"⏳ Blíží se: {symbol} {d.upper()} – {setups.NAMES_CS['donchian_breakout']} ({tf}). "
                        f"Signál vznikne, pokud denní svíčka zavře {word} {notify.fmt(lvl)} "
-                       f"(teď {notify.fmt(price)}, {abs(dist) / price * 100:.1f} %). Denní svíčka končí v 00:00 UTC. "
-                       f"Jen informace, ne signál ke vstupu.").replace(".", ",", 0)
+                       f"(teď {notify.fmt(price)}, {notify.pct(abs(dist) / price * 100)} %). Denní svíčka končí v 00:00 UTC. "
+                       f"Jen informace, ne signál ke vstupu.")
                 print(msg)
                 sent_today[key] = day
                 out.append(msg)
@@ -308,8 +317,9 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
             if res.get("t1") and not pos.get("t1_notified"):
                 pos["t1_notified"] = True
                 a = (probs.get(pos.get("strategy")) or {}).get("after_t1", {})
-                hist = (f" Z historie po T1: Ø {a['avg_r']:+.2f} R, ≥2R v {a['p_2r']:.0%} případů ({a['n']} obchodů)."
-                        .replace(".", ",", 0) if a.get("n") else "")
+                avg = f"{a.get('avg_r', 0):+.2f}".replace(".", ",")
+                hist = (f" Z historie po T1: Ø {avg} R, ≥2R v {a.get('p_2r', 0) * 100:.0f} % případů ({a['n']} obchodů)."
+                        if a.get("n") else "")
                 msg = (f"🎯 T1 dosažen: {pos['symbol']} {side} – vybrána část pozice, stop zbytku na vstup "
                        f"(break-even).{hist}")
                 print(msg)
@@ -317,12 +327,17 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
                     notify.telegram(msg)
             still_open.append(pos)
             continue
-        state.data.setdefault("closed", []).append({"id": pos["id"], "symbol": pos["symbol"], "strategy": pos.get("strategy"),
-                                                    "direction": pos["setup"]["direction"], **res})
+        closed = {"id": pos["id"], "symbol": pos["symbol"], "strategy": pos.get("strategy"),
+                  "direction": pos["setup"]["direction"], **res}
+        state.data.setdefault("closed", []).append(closed)
+        if not dry_run:
+            log_signal(OUTCOMES, {**closed, "timeframe": pos["timeframe"], "entry": pos["setup"]["entry"],
+                                  "stop": pos["setup"]["stop"], "targets": pos["setup"]["targets"],
+                                  "closed_at": df.index[-1].isoformat()})
         txt = {"stop": "stop", "T1+BE": "T1, zbytek na break-even / trailing stop", "T2": "T1 i T2",
                "time": "časový výstup"}[res["result"]]
         msg = (f"📕 Papírový obchod uzavřen: {pos['symbol']} {side} – {txt}, "
-               f"{res['r']:+.2f} R po nákladech ({res['bars']} svíček)")
+               f"{res['r']:+.2f} R po nákladech ({res['bars']} svíček)".replace(f"{res['r']:+.2f}", f"{res['r']:+.2f}".replace(".", ",")))
         print(msg)
         if tg:
             notify.telegram(msg)

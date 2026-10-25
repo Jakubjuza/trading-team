@@ -1,7 +1,7 @@
 ---
 name: obchod
 description: Preset pro rychlé zadání obchodu – ticker, směr (long/short) a stop-loss. Spustí celý tým agentů s výchozím nastavením účtu a rizika. Použij, když uživatel napíše /obchod nebo zadá ticker se směrem a stopem.
-argument-hint: TICKER long|short [STOP] [vstup=X] [riziko=1] [ucet=10000] [rr=2] [typy=breakout,retest,hold]
+argument-hint: TICKER long|short [STOP] [vstup=X] [riziko=0.5] [ucet=10000] [rr=2] [typy=breakout,retest,hold]
 ---
 
 # Preset: obchod
@@ -18,7 +18,7 @@ Pořadí: `TICKER SMĚR STOP`, pak volitelné `klíč=hodnota`. Desetinná čár
 | směr | ano | – | `long` / `short` (také `l` / `s`) |
 | stop | ne | navrhne tým | cena stop-lossu |
 | vstup | ne | navrhne tým | plánovaná vstupní cena |
-| riziko | ne | 1 | % účtu na obchod |
+| riziko | ne | 0,5 | % účtu na obchod (jako `risk_pct` v scanner/config.yaml) |
 | ucet | ne | 10000 | velikost účtu v USD, hotovostní účet |
 | rr | ne | 2 | minimální R:R (1:rr) |
 | typy | ne | long: `breakout,retest,hold`; short: `breakdown,retest,odmitnuti` | povolené typy setupů |
@@ -32,7 +32,7 @@ Chybí ticker nebo směr → zeptej se jen na ně, nic dalšího nespouštěj.
 
 ## 3. Spusť tým
 
-Postup podle `CLAUDE.md` (chart-scanner → trend/levels/volume → news/sentiment → setup-finder → entry-exit-planner → risk-manager → devils-advocate → time-machine → chart-renderer). Každému agentovi předej:
+Skill `pro-analyza` v režimu ruční analýzy (datový list → 8 oddělení → setup-finder → entry-exit-planner → risk-manager → debata bull-advocate × devils-advocate → head-trader), pak skill `time-machine` a chart-renderer. Každému agentovi předej:
 
 - ticker, směr a povolené typy setupů (hledej jen v daném směru),
 - účet, riziko v % i v USD, minimální R:R,
