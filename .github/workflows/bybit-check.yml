@@ -20,7 +20,7 @@ jobs:
             code=$(curl -s -o /tmp/r.txt -w "%{http_code}" -m 15 "https://$host/v5/market/time")
             echo "$host HTTP $code: $(head -c 160 /tmp/r.txt | tr '\n' ' ')"
           done
-          for url in https://demo-futures.kraken.com/derivatives/api/v3/tickers https://testnet.binance.vision/api/v3/time https://testnet.binancefuture.com/fapi/v1/time https://www.okx.com/api/v5/public/time https://api.hyperliquid-testnet.xyz/info https://api-public.sandbox.exchange.coinbase.com/time https://api.sandbox.gemini.com/v1/symbols; do
+          for url in https://demo-fapi.binance.com/fapi/v1/time https://demo-api.binance.com/api/v3/time https://demo-fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT https://fapi.binance.com/fapi/v1/time https://demo-futures.kraken.com/derivatives/api/v3/tickers https://testnet.binance.vision/api/v3/time https://testnet.binancefuture.com/fapi/v1/time https://www.okx.com/api/v5/public/time https://api.hyperliquid-testnet.xyz/info https://api-public.sandbox.exchange.coinbase.com/time https://api.sandbox.gemini.com/v1/symbols; do
             if [[ $url == *hyperliquid* ]]; then code=$(curl -s -o /tmp/r.txt -w "%{http_code}" -m 15 -X POST -H 'Content-Type: application/json' -d '{"type":"meta"}' "$url");
             else code=$(curl -s -o /tmp/r.txt -w "%{http_code}" -m 15 "$url"); fi
             echo "$url HTTP $code: $(head -c 120 /tmp/r.txt | tr '\n' ' ')"
