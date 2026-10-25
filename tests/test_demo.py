@@ -16,6 +16,8 @@ class FakeOKX:
     def private_get_account_config(self):
         return {"data": [{"posMode": self.pos_mode}]}
 
+    markets = {"BTC/USDT:USDT": {"symbol": "BTC/USDT:USDT", "base": "BTC", "id": "BTC-USDT-SWAP"}}
+
     def load_markets(self):
         return {}
 
@@ -191,6 +193,18 @@ def test_spot_stop_already_executed_on_exchange():
 
 def test_quote_override_maps_to_usdc_swap():
     ex = FakeOKX()
+    ex.markets = {"BTC/USDC:USDC": {"symbol": "BTC/USDC:USDC", "base": "BTC", "id": "BTC-USDC-SWAP"}}
     rec = demo.DemoBroker({"demo": {"quote": "USDC"}}, ex=ex).open(POS, {"qty": 0.05})
     assert rec["symbol"] == "BTC/USDC:USDC" and ex.orders[0]["symbol"] == "BTC/USDC:USDC"
     assert demo.spot_symbol("ETH/USDT", "USDC") == "ETH/USDC" and demo.swap_symbol("ETH/USDT") == "ETH/USDT:USDT"
+
+
+def test_resolve_prefers_eea_xperp_then_quote_swap():
+    ex = FakeOKX()
+    ex.markets = {"BTC/USD:USD-310328": {"symbol": "BTC/USD:USD-310328", "base": "BTC", "id": "BTC-USD_UM_XPERP-310328", "linear": True},
+                  "BTC/USDT:USDT": {"symbol": "BTC/USDT:USDT", "base": "BTC", "id": "BTC-USDT-SWAP"},
+                  "ADA/USDC:USDC": {"symbol": "ADA/USDC:USDC", "base": "ADA", "id": "ADA-USDC-SWAP"}}
+    b = demo.DemoBroker({"demo": {"quote": "USDC"}}, ex=ex)
+    assert b.resolve("BTC/USDT") == "BTC/USD:USD-310328"
+    assert b.resolve("ADA/USDT") == "ADA/USDC:USDC"
+    assert b.resolve("SOL/USDT") is None and b.open({**POS, "symbol": "SOL/USDT"}, {"qty": 1})["status"] == "no_market"

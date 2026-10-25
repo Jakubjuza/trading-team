@@ -118,9 +118,26 @@ class DemoBroker:
             print(f"demo deník: {exc}", file=sys.stderr)
 
     # --- životní cyklus pozice ------------------------------------------------------------
+    def resolve(self, symbol):
+        """Kontrakt pro signál: OKX EEA X-Perp (lineární, vypořádání v USD, např. BTC-USD_UM_XPERP-310328), jinak
+        perpetual v `quote` (USDC) / v kotaci signálu (USDT). None = mince na účtu nemá futures."""
+        self.ex.load_markets()
+        base = symbol.split("/")[0]
+        if self.cfg.get("xperp", True):
+            xp = sorted((m for m in self.ex.markets.values() if m.get("base") == base and "_UM_XPERP" in str(m.get("id"))
+                         and m.get("linear") is not False and m.get("active") is not False), key=lambda m: m["id"])
+            if xp:
+                return xp[0]["symbol"]
+        for cand in (swap_symbol(symbol, self.quote), swap_symbol(symbol)):
+            if cand in self.ex.markets:
+                return cand
+        return None
+
     def open(self, pos, size):
         s = pos["setup"]
-        sym = swap_symbol(pos["symbol"], self.quote)
+        sym = self.resolve(pos["symbol"])
+        if sym is None:
+            return {"status": "no_market", "symbol": pos["symbol"]}
         long = s["direction"] == "long"
         n, cs = self.contracts(sym, size["qty"])
         if n <= 0:
@@ -374,19 +391,22 @@ def main():
         print("nastavení účtu:", f"{exc.__class__.__name__}: {str(exc)[:120]}")
     b.ex.load_markets()
     for c in ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"]:
-        sym = spot_symbol(f"{c}/USDT", b.quote) if spot else swap_symbol(f"{c}/USDT", b.quote)
+        sym = spot_symbol(f"{c}/USDT", b.quote) if spot else b.resolve(f"{c}/USDT")
+        if sym is None:
+            print(f"  {c}: žádný futures kontrakt – na demu se vynechá")
+            continue
         try:
             m = b.ex.market(sym)
         except Exception as exc:
             print(f"  {sym}: není dostupné ({exc.__class__.__name__})")
             continue
-        print(f"  {sym}: kontrakt {m.get('contractSize') or 1} {c}, min. {((m.get('limits') or {}).get('amount') or {}).get('min')}")
+        print(f"  {sym} ({m.get('id')}, vypořádání {m.get('settle')}): kontrakt {m.get('contractSize') or 1} {c}, min. {((m.get('limits') or {}).get('amount') or {}).get('min')}")
     coins = {"BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"}
     avail = sorted(f"{m['symbol']} ({m['id']})" for m in b.ex.markets.values()
                    if m.get("base") in coins and (m.get("swap") or m.get("future") or m.get("spot")))
     print("dostupné trhy pro naše mince:", ", ".join(avail) or "žádné")
     if a.test_order:
-        t = b.ex.fetch_ticker(spot_symbol("BTC/USDT", b.quote) if spot else swap_symbol("BTC/USDT", b.quote))["last"]
+        t = b.ex.fetch_ticker(spot_symbol("BTC/USDT", b.quote) if spot else b.resolve("BTC/USDT"))["last"]
         pos = {"id": "TEST", "symbol": "BTC/USDT", "strategy": "test",
                "setup": {"direction": "long", "entry": t, "stop": t * 0.95, "targets": [t * 1.05, t * 1.1]}}
         rec = b.open(pos, {"qty": 0.001 if spot else 0.02})

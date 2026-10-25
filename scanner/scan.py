@@ -73,7 +73,8 @@ def demo_open(cfg, pos, size, dry_run=False):
     pos["demo"] = rec
     if rec["status"] != "open":
         why = {"skipped_short": "spotový demo účet umí jen longy",
-               "no_funds": "na demo účtu není dost USDT"}.get(rec["status"], "pozice je menší než minimum burzy")
+               "no_funds": "na demo účtu není dost peněz",
+               "no_market": "pro tuto minci nemá demo účet futures kontrakt"}.get(rec["status"], "pozice je menší než minimum burzy")
         return f"🧪 Demo OKX: {pos['symbol']} {side} vynecháno – {why}."
     spot = rec.get("mode") == "spot"
     slip = f", skluz {notify.pct(rec['slippage_pct'])} %" if rec.get("slippage_pct") is not None else ""
