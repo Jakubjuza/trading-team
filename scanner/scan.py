@@ -593,7 +593,7 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
             still_open.append(pos)
             continue
         closed = {"id": pos["id"], "symbol": pos["symbol"], "strategy": pos.get("strategy"),
-                  "direction": pos["setup"]["direction"], **res}
+                  "direction": pos["setup"]["direction"], **res, "closed_at": datetime.now(timezone.utc).isoformat()}
         state.data.setdefault("closed", []).append(closed)
         if not dry_run:
             log_signal(OUTCOMES, {**closed, "timeframe": pos["timeframe"], "entry": pos["setup"]["entry"],
@@ -610,6 +610,8 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
             try:
                 out = demo_broker(cfg).close(pos, pos["demo"], res["result"], round(res["r"], 3))
                 pnl = out.get("pnl_usdt")
+                closed["demo_pnl"] = pnl
+                closed["demo_ccy"] = out["symbol"].split("/")[1].split(":")[0]
                 dmsg = (f"🧪 Demo OKX: {pos['symbol']} {side} uzavřeno ({txt})"
                         + (f" – výsledek {pnl:+.2f} {out['symbol'].split('/')[1].split(':')[0]} po poplatcích".replace(".", ",") if pnl is not None else
                            " – stop se vykonal na burze, výsledek v deníku demo obchodů"))
@@ -649,6 +651,37 @@ def strategy_health(cfg, frames, now, days=182):
     return ("Zdraví strategií (6 měs., na živých datech): " + " · ".join(parts)) if parts else ""
 
 
+def positions_overview(state, prices, since=None, max_lines=8):
+    """📋 Otevřené papírové pozice (aktuální R, stop, zrcadlo na demu) a uzavřené od `since` (R, výsledek na demu)."""
+    def num(x):
+        return f"{x:+.2f}".replace(".", ",")
+    lines = []
+    opened = state.data.get("open", [])
+    if opened:
+        lines.append(f"📋 Otevřené ({len(opened)}):")
+        for pos in opened[:max_lines]:
+            s = pos["setup"]
+            sign = 1 if s["direction"] == "long" else -1
+            risk = abs(s["entry"] - s["stop"]) or None
+            px = (prices.get(pos["symbol"]) or (None,))[0]
+            now_r = f", teď {notify.fmt(px)} ({num(sign * (px - s['entry']) / risk)} R)" if px and risk else ""
+            stop = "vstup (po T1)" if pos.get("t1_notified") else notify.fmt(s["stop"])
+            demo = " · 🧪 demo" if (pos.get("demo") or {}).get("status") == "open" else ""
+            lines.append(f"• {pos['symbol']} {s['direction'].upper()}{' 1H' if pos.get('mtf') else ''} "
+                         f"({pos.get('strategy')}) "
+                         f"vstup {notify.fmt(s['entry'])}{now_r}, stop {stop}{demo}")
+        if len(opened) > max_lines:
+            lines.append(f"• … a dalších {len(opened) - max_lines}")
+    recent = [c for c in state.data.get("closed", []) if c.get("closed_at") and (since is None or c["closed_at"] >= since)]
+    if recent:
+        lines.append(f"📕 Uzavřené od minulé zprávy ({len(recent)}):")
+        for c in recent[-max_lines:]:
+            demo = (f" · 🧪 demo {num(c['demo_pnl'])} {c.get('demo_ccy', '')}".rstrip()
+                    if c.get("demo_pnl") is not None else "")
+            lines.append(f"• {c['symbol']} {c['direction'].upper()} {num(c['r'])} R ({c['result']}){demo}")
+    return lines
+
+
 def maybe_heartbeat(cfg, state, status, found, now, send=None):
     """Zpráva „skener běží“ každých heartbeat_hours (0 = vypnuto), i když nic nenašel.
 
@@ -674,6 +707,10 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
     closed = state.data.get("closed", [])
     lines.append(f"Papírově: otevřené {len(state.data.get('open', []))}, uzavřené {len(closed)}"
                  + (f", Σ {sum(c['r'] for c in closed):+.2f} R" if closed else ""))
+    try:
+        lines += positions_overview(state, status.get("prices") or {}, hb["last"])
+    except Exception as exc:
+        print(f"přehled pozic selhal: {exc}", file=sys.stderr)
     if status.get("errors"):
         lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
     try:
