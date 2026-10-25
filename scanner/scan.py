@@ -25,10 +25,12 @@ sys.path.insert(0, str(HERE.parent))
 
 from scanner import broker, notify, rules, setups  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
-from scanner.evaluate import simulate  # noqa: E402
+from scanner.evaluate import backtest, simulate  # noqa: E402
+from scanner.calibrate import strategy_params  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 from research import events as events_mod  # noqa: E402
-from research import sessions  # noqa: E402
+from research import carry as carry_mod  # noqa: E402
+from research import scenarios, sessions  # noqa: E402
 
 STATE = HERE / "state.json"
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
@@ -118,12 +120,21 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
 
     costs = cfg.get("costs", {})
     cost_pct = costs.get("fee_pct", 0) + costs.get("slippage_pct", 0)
+    status["frames"] = frames                                          # pro zdraví strategií ve zprávě o stavu
     update_paper_positions(cfg, state, frames, cost_pct, dry_run, probs)
     approach_alerts(cfg, state, frames, strats, now, day, dry_run)
     try:
         event_alerts(cfg, state, now, dry_run)
     except Exception as exc:                                          # zprávy a kalendář nesmí shodit skener
         print(f"kalendář/zprávy selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
+        weekly_outlook(cfg, state, frames, now, dry_run)
+    except Exception as exc:
+        print(f"týdenní výhled selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
+        carry_update(cfg, state, now, dry_run)
+    except Exception as exc:
+        print(f"carry selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
 
     # krypto se hýbe spolu → max. N otevřených (papírových) pozic stejným směrem na strategii; přednost má lepší R:R
     candidates.sort(key=lambda x: x[4].rr[0], reverse=True)
@@ -162,7 +173,8 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         except Exception as exc:                                      # kontext nesmí shodit signál
             print(f"[{symbol}] kontext burz/událostí selhal: {exc}", file=sys.stderr)
         ctx = " · ".join(c for c in ctx if c)
-        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob, context=ctx)
+        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob, context=ctx,
+                                     outlook=scenario_note(s, frames.get((symbol, "1d"))))
         print("\n".join(lines))
         found.append((sid, s, size))
         if dry_run:
@@ -186,6 +198,127 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
     return found
+
+
+def carry_update(cfg, state, now, dry_run=False, current=None, history=None, send=None):
+    """💰 Papírový carry z fundingu (long spot + short perp): jednou denně po 00:00 UTC podle 7denního fundingu.
+    Vstup > enter_apr, výstup < exit_apr; výnos v % kapitálu (1,5 × pozice) po nákladech. Nic se neposílá na burzu."""
+    cc = cfg.get("carry") or {}
+    if not cc.get("enabled"):
+        return []
+    st = state.data.setdefault("carry", {"positions": {}, "closed": []})
+    day = now.astimezone(timezone.utc).date().isoformat()
+    if st.get("last_day") == day:
+        return []
+    last_try = st.get("last_try")
+    if last_try and (now - datetime.fromisoformat(last_try)).total_seconds() < 1800:
+        return []
+    st["last_try"] = now.isoformat()
+    coins = cc.get("coins", carry_mod.COINS)
+    cur = current if current is not None else carry_mod.current(coins)
+    hist = history or (lambda c, since: carry_mod.funding_history(c, since, pause=0.2))
+    if all("error" in (cur.get(c) or {"error": 1}) for c in coins):
+        state.save()
+        return []
+    enter, exit_ = cc.get("enter_apr", carry_mod.ENTER_APR), cc.get("exit_apr", carry_mod.EXIT_APR)
+    cost = carry_mod.COST_ROUND_TRIP / 2 / carry_mod.CAPITAL_PER_NOTIONAL * 100          # % kapitálu za vstup / výstup
+    msgs = []
+    for c in coins:
+        info = cur.get(c) or {}
+        if "error" in info:
+            continue
+        pos = st["positions"].get(c)
+        if pos:                                                     # připsat funding od poslední kontroly
+            since = datetime.fromisoformat(pos["checked"])
+            try:
+                f = hist(c, since)
+                f = f[f.index > pd.Timestamp(since)]
+                pos["accrued_pct"] += float(f.sum()) / carry_mod.CAPITAL_PER_NOTIONAL * 100
+                if len(f):
+                    pos["checked"] = f.index[-1].to_pydatetime().isoformat()
+            except Exception as exc:
+                print(f"[carry {c}] funding nedostupný: {exc}", file=sys.stderr)
+        apr = info["apr_7d_pct"]
+        if not pos and apr > enter:
+            st["positions"][c] = {"since": now.isoformat(), "checked": now.isoformat(), "accrued_pct": -cost, "apr_in": apr}
+            msgs.append(f"💰 Carry (papírově): vstup {c} – 7denní funding {apr:.1f} % p.a. (long spot + short perp, "
+                        f"bez směrového rizika; výnos ≈ funding).".replace(".", ",", 1))
+        elif pos and apr < exit_:
+            res = pos["accrued_pct"] - cost
+            days = max(1, (now - datetime.fromisoformat(pos["since"])).days)
+            st["closed"].append({"coin": c, "since": pos["since"], "until": now.isoformat(), "ret_pct": round(res, 3), "days": days})
+            del st["positions"][c]
+            msgs.append(f"💰 Carry (papírově): výstup {c} – funding klesl na {apr:.1f} % p.a.; výsledek {res:+.2f} % kapitálu "
+                        f"za {days} dní (≈ {res / days * 365:+.1f} % p.a.).".replace(".", ","))
+    st["last_day"] = day
+    state.save()
+    tg = send or (notify.telegram if cfg.get("notify", {}).get("telegram", True) else None)
+    for m in msgs:
+        print(m)
+        if not dry_run and tg:
+            tg(m)
+    return msgs
+
+
+def carry_line(state):
+    st = state.data.get("carry") or {}
+    pos, closed = st.get("positions", {}), st.get("closed", [])
+    if not pos and not closed:
+        return ""
+    acc = sum(p["accrued_pct"] for p in pos.values()) / max(1, len(pos)) if pos else 0.0
+    done = sum(c["ret_pct"] for c in closed)
+    return (f"Carry (papírově): otevřeno {', '.join(pos) or 'nic'}"
+            + (f", Ø nasbíráno {acc:+.2f} % kapitálu" if pos else "")
+            + (f" · uzavřené {len(closed)}× Σ {done:+.2f} %" if closed else "")).replace(".", ",")
+
+
+def scenario_note(s, daily, horizon="4 týdny"):
+    """„4 týdny 80 %: a – b“ z historických scénářů při dnešní volatilitě; upozorní, když T2 leží mimo pásmo."""
+    try:
+        rng = scenarios.quick_range(daily, horizon)
+    except Exception as exc:
+        print(f"scénáře selhaly: {exc}", file=sys.stderr)
+        return ""
+    if not rng:
+        return ""
+    lo, hi = rng["medvědí (10 %)"], rng["býčí (90 %)"]
+    t2 = s.targets[-1]
+    out = f"{horizon} 80 %: {notify.fmt(lo)} – {notify.fmt(hi)}"
+    if (s.direction == "long" and t2 > hi) or (s.direction == "short" and t2 < lo):
+        out += " (T2 mimo pásmo)"
+    return out
+
+
+def weekly_outlook(cfg, state, frames, now, dry_run=False, send=None):
+    """📆 týdenní výhled (pondělí ráno): stav týden/měsíc a rozpětí scénářů pro každou minci."""
+    oc = cfg.get("outlook") or {}
+    if not oc.get("enabled"):
+        return None
+    loc = now.astimezone(ZoneInfo(cfg.get("timezone", "UTC")))
+    week = f"{loc.isocalendar()[0]}-W{loc.isocalendar()[1]:02d}"
+    st = state.data.setdefault("outlook", {})
+    if loc.weekday() != oc.get("weekday", 0) or loc.hour < oc.get("hour", 8) or st.get("last") == week:
+        return None
+    daily = {sym.split("/")[0]: df for (sym, tf), df in frames.items() if tf == "1d" and df is not None and len(df) > 300}
+    if not daily:
+        return None
+    horizon = oc.get("horizon", "13 týdnů")
+    lines = [f"📆 Týdenní výhled – {horizon}, pásmo 10–90 % z historie při dnešní volatilitě"]
+    lines += scenarios.outlook_lines(daily, list(daily), horizon)
+    halv = pd.Timestamp(scenarios.HALVINGS[-1], tz="UTC")
+    months = (pd.Timestamp(now) - halv).days / 30.44
+    peaks = [p["peak_after_months"] for p in (scenarios.load_stats().get("btc_cycle_peaks") or [])]
+    lines.append(f"BTC cyklus: {months:.0f} měsíců po halvingu"
+                 + (f" (vrcholy minulých cyklů {min(peaks):.0f}–{max(peaks):.0f} měsíců po halvingu, jen {len(peaks)} případy)"
+                    if peaks else "") + ".")
+    lines.append("Rozpětí je v testu od roku 2022 kalibrované, směr podle trendu ne (reports/scenarios.md). Jen informace.")
+    msg = "\n".join(lines)
+    st["last"] = week
+    state.save()
+    print(msg)
+    if not dry_run and cfg.get("notify", {}).get("telegram", True):
+        (send or notify.telegram)(msg)
+    return msg
 
 
 def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=None):
@@ -345,6 +478,31 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
     state.save()
 
 
+def strategy_health(cfg, frames, now, days=182):
+    """Jak by strategie dopadly za posledních `days` dní na živých datech (backtest po nákladech) vs. dlouhodobý průměr."""
+    costs = cfg.get("costs", {})
+    cost_pct = costs.get("fee_pct", 0) + costs.get("slippage_pct", 0)
+    probs = load_probabilities(cfg)
+    since = pd.Timestamp(now) - pd.Timedelta(days=days)
+    parts = []
+    for strat in cfg_strategies(cfg):
+        p = strategy_params(strat)
+        rs = []
+        for (sym, tf), df in (frames or {}).items():
+            if tf != strat["timeframe"] or df is None or len(df) < 250:
+                continue
+            rs += [t["r"] for t in backtest(df, p, "both", cost_pct, setup=strat["setup"]) if t["time"] >= since]
+        if not rs and not frames:
+            continue
+        long_run = (probs.get(strat["name"]) or {}).get("all", {}).get("avg_r")
+        s = sum(rs)
+        warn = " ⚠️" if len(rs) >= 8 and s / len(rs) < 0 else ""
+        lr = f", dlouhodobě Ø {long_run:+.2f} R/obch.".replace(".", ",", 1) if long_run is not None else ""
+        name = setups.NAMES_CS.get(strat["setup"], strat["setup"]).split(" (")[0]
+        parts.append(f"{name} {s:+.1f} R / {len(rs)} obch.".replace(".", ",", 1) + lr + warn)
+    return ("Zdraví strategií (6 měs., na živých datech): " + " · ".join(parts)) if parts else ""
+
+
 def maybe_heartbeat(cfg, state, status, found, now, send=None):
     """Zpráva „skener běží“ každých heartbeat_hours (0 = vypnuto), i když nic nenašel.
 
@@ -372,6 +530,15 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
                  + (f", Σ {sum(c['r'] for c in closed):+.2f} R" if closed else ""))
     if status.get("errors"):
         lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
+    try:
+        health = strategy_health(cfg, status.get("frames"), now)
+        if health:
+            lines.append(health)
+        cl = carry_line(state)
+        if cl:
+            lines.append(cl)
+    except Exception as exc:
+        print(f"zdraví strategií selhalo: {exc}", file=sys.stderr)
     try:
         up = sessions.upcoming_line(now, hours)
         if up:

@@ -12,6 +12,7 @@ Sekce:
   derivatives – funding (aktuální, 24h, 7d, anualizovaný), open interest, prémie (Hyperliquid)
   options     – DVOL, ATM IV, skew, put/call OI, max pain, implikovaný pohyb (Deribit; jen BTC/ETH)
   macro       – VIX, DXY, US10Y, QQQ, zlato; korelace s QQQ a DXY (yfinance)
+  scenarios   – týden/měsíc (EMA21 týdnů, SMA10 měsíců, 52t rozpětí, propad od maxima), rozpětí 4/13/26 týdnů, BTC cyklus
   onchain     – Fear & Greed, stablecoiny (7/30 d), TVL sítě mince, síť BTC (hashrate, transakce, poplatky)
   events      – kalendář 7 dní (FOMC, CPI, NFP, ECB … s očekáváním), titulky 48 h (mince, geopolitika, regulace, Fed)
   sessions    – světové burzy: co je otevřené, co se otevírá v 24 h (+ historická volatilita po otevření), CME gap
@@ -34,7 +35,7 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from research import events, onchain, sessions  # noqa: E402
+from research import events, onchain, scenarios, sessions  # noqa: E402
 
 HL_URL = "https://api.hyperliquid.xyz/info"
 DERIBIT = "https://www.deribit.com/api/v2/public"
@@ -394,6 +395,7 @@ def build(symbol, exchange="kraken", signal=None, frames=None, ex=None):
     sheet["derivatives"] = section_derivatives(coin)
     sheet["options"] = section_options(coin) if coin in ("BTC", "ETH") else {"note": "Deribit opce jen pro BTC a ETH"}
     sheet["macro"] = section_macro(frames.get("1d", pd.DataFrame()).get("Close") if frames else None)
+    sheet["scenarios"] = safe(scenarios.section_scenarios)(coin)
     sheet["onchain"] = safe(onchain.section_onchain)(coin)
     sheet["events"] = safe(events.section_events)(coin)
     sheet["sessions"] = safe(sessions.section_sessions)(h1, coin=coin)

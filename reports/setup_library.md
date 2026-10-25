@@ -44,3 +44,10 @@ Jemnější dělení podle režimu trhu (trend, volatilita, objem) kalibraci na 
 
 10 000 USD → 12 164 USD za 2 roky, max. propad −19 % (při 1 %: 14 235 USD, −35 %).
 Poslední 2 roky jsou pro denní strategie slabší než dlouhodobý průměr – počítej spíš s tímto.
+
+## Aktualizace 25. 10. 2026
+
+- Denní strategie mají **filtr paniky** (`panic_vol_rank: 0.8`, `panic_window: 365`): žádný vstup, když je ATR % mince
+  v horních 20 % za poslední rok. OOS: donchian_1d +0,158 → +0,180 R, pullback_1d +0,101 → +0,145 R.
+- brh_1h vypnutá (OOS +0,01 ± 0,21 R). Mean reversion RSI(2) na denních datech neprošla (`mr_1d`, −0,10 R).
+- Testy přizpůsobení trhu, rotace, carry z fundingu: `reports/adaptive.md`, `reports/carry.md`.

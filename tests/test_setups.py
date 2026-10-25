@@ -223,3 +223,51 @@ def test_approach_alert_uses_decimal_comma(tmp_path):
     msgs = approach_alerts(cfg, State(tmp_path / "s.json"), {("BTC/USDT", "1d"): d1, ("BTC/USDT", "1h"): h1},
                            cfg["strategies"], datetime(2026, 2, 6, tzinfo=timezone.utc), "2026-02-06", True)
     assert "0,20 %" in msgs[0]
+
+
+def test_panic_filter_skips_high_volatility():
+    rows = flat(260, half=1.0) + [(100, 108.0, 92.0, 100)] * 5 + [(100, 109.5, 99.8, 109)]   # panika: ATR vyletí
+    df = frame(rows, freq="1D")
+    assert setups.find("donchian_breakout", df, params=NOFILTER, last_only=True)                      # bez filtru signál
+    p = {**NOFILTER, "panic_vol_rank": 0.8, "panic_window": 365}
+    assert setups.find("donchian_breakout", df, params=p, last_only=True) == []
+    calm = frame(flat(100) + flat(60, half=4.0) + flat(100) + [(100, 103.5, 99.8, 103)], freq="1D")  # dřív bouře, teď klid
+    assert setups.find("donchian_breakout", calm, params=p, last_only=True)
+
+
+def test_scenario_note_and_weekly_outlook(tmp_path, monkeypatch):
+    import scanner.scan as sc_mod
+    stats = {"z": {"4 týdny": {"q10": -1.3, "q50": 0.0, "q90": 1.8}, "13 týdnů": {"q10": -1.2, "q50": 0.0, "q90": 1.9}},
+             "btc_cycle_peaks": [{"peak_after_months": 17.2}, {"peak_after_months": 18.0}]}
+    monkeypatch.setattr(sc_mod.scenarios, "load_stats", lambda path=None: stats)
+    rng = np.random.default_rng(1)
+    c = 100 * np.exp(np.cumsum(rng.normal(0, 0.02, 600)))
+    d1 = pd.DataFrame({"Open": c, "High": c * 1.01, "Low": c * 0.99, "Close": c, "Volume": 1.0},
+                      index=pd.date_range("2025-03-01", periods=600, freq="1D", tz="UTC"))
+    s = setups.Setup(kind="donchian_breakout", direction="long", breakout_time=d1.index[-1], retest_time=d1.index[-1],
+                     hold_time=d1.index[-1], level=c[-1], range_high=c[-1], range_low=c[-1] * 0.9, entry=c[-1],
+                     stop=c[-1] * 0.95, targets=[c[-1] * 1.1, c[-1] * 5], rr=[2.0, 80.0], meta={"atr": 1.0})
+    note = sc_mod.scenario_note(s, d1)
+    assert note.startswith("4 týdny 80 %:") and note.endswith("(T2 mimo pásmo)")
+    cfg = {"timezone": "Europe/Prague", "outlook": {"enabled": True, "weekday": 0, "hour": 8}, "notify": {"telegram": True}}
+    state = State(tmp_path / "s.json")
+    sent = []
+    mon = datetime(2026, 10, 26, 8, 30, tzinfo=timezone.utc)           # po 9:30 Praha
+    msg = sc_mod.weekly_outlook(cfg, state, {("BTC/USDT", "1d"): d1}, mon, send=sent.append)
+    assert msg.startswith("📆 Týdenní výhled") and "BTC " in msg and "měsíců po halvingu" in msg and sent == [msg]
+    assert sc_mod.weekly_outlook(cfg, state, {("BTC/USDT", "1d"): d1}, mon, send=sent.append) is None   # jednou týdně
+    tue = datetime(2026, 10, 27, 8, 30, tzinfo=timezone.utc)
+    assert sc_mod.weekly_outlook(cfg, State(tmp_path / "s2.json"), {("BTC/USDT", "1d"): d1}, tue) is None
+
+
+def test_mean_reversion_signals_and_strategy_health():
+    import scanner.scan as sc_mod
+    rows = [(100 + i * 0.5, 101 + i * 0.5, 99.5 + i * 0.5, 100.5 + i * 0.5) for i in range(240)]   # trend nahoru
+    rows += [(220, 220.5, 214, 215), (215, 215.5, 209, 210)]                                       # prudký pokles
+    df = frame(rows, freq="1D")
+    s = setups.find("mean_reversion", df, params={**NOFILTER, "trend_ema": 200}, last_only=True)
+    assert [x.direction for x in s] == ["long"] and s[0].stop < s[0].entry
+    assert setups.find("mean_reversion", mirror(df), params={**NOFILTER, "trend_ema": 200}, last_only=True)[0].direction == "short"
+    cfg = cfg_multi()
+    line = sc_mod.strategy_health(cfg, {("BTC/USDT", "1d"): df}, df.index[-1].to_pydatetime())
+    assert line.startswith("Zdraví strategií (6 měs., na živých datech): Donchian") and "obch." in line

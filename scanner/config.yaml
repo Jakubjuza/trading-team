@@ -65,20 +65,29 @@ strategies:
   - name: donchian_1d            # průraz 20denního max/min ve směru EMA 200; 9 coinů 2015–2026: +0,37 R/obchod
     setup: donchian_breakout
     timeframe: 1d
-    params: {channel: 20, stop_atr: 2.0, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0]}
+    params: {channel: 20, stop_atr: 2.0, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0],
+             panic_vol_rank: 0.8, panic_window: 365}   # bez vstupu v panice (reports/adaptive.md)
     exit: {split: 0.5, trail_atr: 3.0, max_hold_bars: 20}
     min_rr: 1.0
     max_open_per_direction: 2
   - name: pullback_1d            # trend + návrat k EMA20 + obratová svíčka; 9 coinů 2015–2026: +0,27 R/obchod
     setup: pullback
     timeframe: 1d
-    params: {lookback: 3, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0]}
+    params: {lookback: 3, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0],
+             panic_vol_rank: 0.8, panic_window: 365}
     exit: {split: 0.5, trail_atr: 3.0, max_hold_bars: 20}
     min_rr: 1.0
     max_open_per_direction: 2
   - {name: sweep_reclaim_4h, setup: sweep_reclaim, timeframe: 4h, enabled: false}
   - {name: squeeze_breakout_1d, setup: squeeze_breakout, timeframe: 1d, enabled: false}
   - {name: range_fade_1h, setup: range_fade, timeframe: 1h, enabled: false}
+  - name: mr_1d                  # NEOBSTÁLO 25. 10. 2026: RSI(2) mean reversion −0,10 ± 0,04 R (OOS −0,03, náhoda −0,01)
+    enabled: false               # reports/adaptive.md
+    setup: mean_reversion
+    timeframe: 1d
+    params: {rsi_len: 2, rsi_low: 10, rsi_high: 90, stop_atr: 2.5, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [1.0, 2.0]}
+    exit: {split: 0.5, trail_atr: 0.0, max_hold_bars: 7}
+    min_rr: 1.0
 
 approach_alerts:          # „⏳ setup se blíží“ – jen informace, ne signál ke vstupu
   enabled: true
@@ -94,6 +103,18 @@ events:                   # kalendář (Fed, CPI, NFP …) a zprávy – researc
   news_tags: [regulace, etf, bezpečnost, burzy]
   news_max_per_day: 4
   news_max_age_min: 120
+
+outlook:                  # 📆 týdenní výhled – research/scenarios.py (rozpětí z historie při dnešní volatilitě)
+  enabled: true
+  weekday: 0              # 0 = pondělí
+  hour: 8                 # čas Prahy
+  horizon: 13 týdnů
+
+carry:                    # 💰 papírový carry z fundingu (research/carry.py, reports/carry.md) – NIC se neposílá na burzu
+  enabled: true
+  coins: [BTC, ETH, SOL, XRP, DOGE, AVAX, LINK, ADA]
+  enter_apr: 10           # vstup, když 7denní funding > 10 % p.a.
+  exit_apr: 0             # výstup pod 0 %
 
 probabilities: scanner/probabilities.json   # tabulka z scanner/calibrate.py
 

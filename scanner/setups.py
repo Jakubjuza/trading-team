@@ -28,6 +28,8 @@ COMMON = {
     "skip_weekends": False,
     "target_mode": "r_multiple",
     "target_multiples": [1.5, 3.0],
+    "panic_vol_rank": 0.0,     # > 0: nevstupovat, když je ATR % mince v horních (1 − x) za panic_window svíček (panika)
+    "panic_window": 365,
 }
 
 DEFAULTS = {
@@ -37,6 +39,7 @@ DEFAULTS = {
     "squeeze_breakout": {"bb_len": 20, "bb_std": 2.0, "squeeze_lookback": 100, "squeeze_tol": 1.1, "volume_mult": 1.2},
     "donchian_breakout": {"channel": 20, "stop_atr": 2.0},
     "range_fade": {"range_bars": 40, "adx_max": 20, "rsi_low": 30, "rsi_high": 70, "touch_tol_pct": 0.3},
+    "mean_reversion": {"rsi_len": 2, "rsi_low": 10, "rsi_high": 90, "stop_atr": 2.5},
 }
 
 NAMES_CS = {
@@ -46,6 +49,7 @@ NAMES_CS = {
     "squeeze_breakout": "squeeze breakout",
     "donchian_breakout": "Donchian breakout",
     "range_fade": "range fade (odraz od hrany)",
+    "mean_reversion": "mean reversion (RSI 2 v trendu)",
 }
 
 
@@ -102,6 +106,13 @@ class Ctx:
     def adx(self, n=14):
         return self.get(("adx", n), lambda: adx(self.df, n).values)
 
+    def vol_rank(self, window):
+        """Pořadí ATR % mezi posledními `window` svíčkami (0–1, 1 = nejvyšší volatilita); jen minulost."""
+        def calc():
+            ap = pd.Series(self.atr / self.c, index=self.idx)
+            return ap.rolling(window, min_periods=min(200, window)).apply(lambda w: (w[-1] >= w).mean(), raw=True).values
+        return self.get(("vol_rank", window), calc)
+
     def roll_max(self, n):  # max high[i-n .. i-1]
         return self.get(("hmax", n), lambda: self.df["High"].rolling(n).max().shift(1).values)
 
@@ -125,6 +136,10 @@ def finalize(x, i, direction, kind, p, entry, stop, level, rng=None, targets=Non
     if p.get("trend_ema"):
         e = x.ema(p["trend_ema"])[i]
         if np.isnan(e) or (long and x.c[i] <= e) or (not long and x.c[i] >= e):
+            return None
+    if p.get("panic_vol_rank"):
+        rk = x.vol_rank(p.get("panic_window", 365))[i]
+        if not np.isnan(rk) and rk >= p["panic_vol_rank"]:
             return None
     a = float(x.atr[i])
     stop = stop - p["stop_buffer_atr"] * a if long else stop + p["stop_buffer_atr"] * a
@@ -255,8 +270,24 @@ def range_fade(x, p, direction, idxs):
     return out
 
 
+def mean_reversion(x, p, direction, idxs):
+    """Krátkodobé přeprodání/překoupení proti dlouhodobému trendu (RSI 2): long při RSI(2) < rsi_low nad EMA trendu,
+    short při RSI(2) > rsi_high pod ní (trend hlídá trend_ema ve finalize). Vstup na close, stop stop_atr × ATR."""
+    rs = x.rsi(p["rsi_len"])
+    out = []
+    for i in idxs:
+        if i < 30 or np.isnan(rs[i]):
+            continue
+        for d in _dirs(direction):
+            if (d == "long" and rs[i] < p["rsi_low"]) or (d == "short" and rs[i] > p["rsi_high"]):
+                sign = 1 if d == "long" else -1
+                s = finalize(x, i, d, "mean_reversion", p, x.c[i], x.c[i] - sign * p["stop_atr"] * x.atr[i], x.c[i])
+                out.append(s) if s else None
+    return out
+
+
 FUNCS = {"pullback": pullback, "sweep_reclaim": sweep_reclaim, "squeeze_breakout": squeeze_breakout,
-         "donchian_breakout": donchian_breakout, "range_fade": range_fade}
+         "donchian_breakout": donchian_breakout, "range_fade": range_fade, "mean_reversion": mean_reversion}
 
 
 def params_for(name, params=None):

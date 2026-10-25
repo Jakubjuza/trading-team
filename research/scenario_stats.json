@@ -1,0 +1,51 @@
+{
+ "generated": "2026-10-25T08:31:59+00:00",
+ "center": true,
+ "coins": [
+  "BTC",
+  "ETH",
+  "SOL",
+  "XRP",
+  "ADA",
+  "LINK",
+  "AVAX",
+  "DOGE"
+ ],
+ "z": {
+  "4 týdny": {
+   "q10": -1.3042,
+   "q50": 0.0,
+   "q90": 1.7772,
+   "n_days": 24152
+  },
+  "13 týdnů": {
+   "q10": -1.2432,
+   "q50": 0.0,
+   "q90": 1.9301,
+   "n_days": 23648
+  },
+  "26 týdnů": {
+   "q10": -1.3374,
+   "q50": 0.0,
+   "q90": 2.0352,
+   "n_days": 22920
+  }
+ },
+ "btc_cycle_peaks": [
+  {
+   "halving": "2016-07-09",
+   "peak_after_months": 17.2,
+   "peak_date": "2017-12-16"
+  },
+  {
+   "halving": "2020-05-11",
+   "peak_after_months": 17.9,
+   "peak_date": "2021-11-08"
+  },
+  {
+   "halving": "2024-04-20",
+   "peak_after_months": 17.5,
+   "peak_date": "2025-10-06"
+  }
+ ]
+}
