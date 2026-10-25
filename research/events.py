@@ -223,6 +223,53 @@ def mentions(title, coin):
     return any(re.search(rf"\b{re.escape(n)}\b", t) for n in names if n)
 
 
+_AMOUNT = r"(?:\s*(?:million|billion|trillion|mln|bn|m|b)\b|\s*%)"
+
+
+def price_levels(title):
+    """Cenové úrovně v titulku: „$1.40“, „$85K“, „1.4 resistance“ – ne objemy ($500 million) ani procenta."""
+    out = []
+    for m in re.finditer(r"(\$)?\s?(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)\s?([kK])?(?!\d)", title):
+        dollar, num, k = m.group(1), m.group(2), m.group(3)
+        rest = title[m.end():m.end() + 12]
+        if re.match(_AMOUNT, rest, re.I) or (not dollar and "." not in num and not k):
+            continue                                      # objem, procento, nebo holé celé číslo (rok, počet)
+        v = float(num.replace(",", "")) * (1000 if k else 1)
+        if v > 0:
+            out.append(v)
+    return out
+
+
+def stale_price(title, price, tol_pct=6.0):
+    """True = titulek mluví o cenách, které jsou všechny daleko od aktuální ceny (stará zpráva nebo spekulace)."""
+    lv = [v for v in price_levels(title) if 0.2 < v / price < 5] if price else []
+    return bool(lv) and all(abs(v / price - 1) * 100 > tol_pct for v in lv)
+
+
+_STOP = {"the", "and", "for", "with", "after", "amid", "as", "to", "of", "in", "on", "at", "is", "are", "its", "this",
+         "that", "from", "by", "price", "crypto", "news", "today", "why", "how", "what", "will", "could", "may"}
+
+
+def _words(title):
+    t = re.sub(r"\s+[-–|]\s+[^-–|]{2,40}$", "", title.lower())
+    return {w for w in re.findall(r"[a-z]{3,}", t) if w not in _STOP}
+
+
+def is_rehash(item, items, coin, min_gap_h=12, min_sim=0.5):
+    """True = stejné téma k minci vyšlo už aspoň `min_gap_h` hodin dřív (přepis staré zprávy s novým datem)."""
+    ts = datetime.fromisoformat(item["time"])
+    w = _words(item["title"])
+    for o in items:
+        if o is item or not o.get("time") or not mentions(o["title"], coin):
+            continue
+        if datetime.fromisoformat(o["time"]) > ts - timedelta(hours=min_gap_h):
+            continue
+        ow = _words(o["title"])
+        if w and ow and len(w & ow) / len(w | ow) >= min_sim:
+            return True
+    return False
+
+
 def google_news(query):
     return f"https://news.google.com/rss/search?q={quote_plus(query + ' when:2d')}&hl=en-US&gl=US&ceid=US:en"
 
