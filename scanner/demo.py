@@ -110,6 +110,16 @@ class DemoBroker:
         return {"id": o.get("id"), "price": o.get("average") or o.get("price"), "filled": o.get("filled"),
                 "fee": abs(float(fee.get("cost") or 0)) if fee else 0.0}
 
+    def settled(self, order, sym):
+        """Market příkaz: OKX v odpovědi často nevrací cenu plnění – dotáhne se z detailu příkazu."""
+        o = order or {}
+        if o.get("id") and not (o.get("average") and o.get("filled")):
+            try:
+                o = {**o, **{k: v for k, v in self.ex.fetch_order(o["id"], sym).items() if v is not None}}
+            except Exception as exc:
+                print(f"[demo {sym}] detail příkazu: {exc}", file=sys.stderr)
+        return o
+
     def log(self, rec):
         try:
             with open(LOG, "a", encoding="utf-8") as fh:
@@ -146,13 +156,7 @@ class DemoBroker:
         except Exception as exc:
             print(f"[demo {sym}] páka: {exc}", file=sys.stderr)
         side, close_side = ("buy", "sell") if long else ("sell", "buy")
-        entry = self.ex.create_order(sym, "market", side, n, None, self.params())
-        f = self.fill(entry)
-        if not f["price"]:
-            try:
-                f = self.fill(self.ex.fetch_order(entry["id"], sym))
-            except Exception:
-                pass
+        f = self.fill(self.settled(self.ex.create_order(sym, "market", side, n, None, self.params()), sym))
         sl = self.ex.create_order(sym, "market", close_side, n, None, self.params(stopLossPrice=s["stop"], reduceOnly=True))
         half = float(self.ex.amount_to_precision(sym, n / 2))
         tp = None
@@ -212,8 +216,8 @@ class DemoBroker:
         rest = 0.0 if stopped else float(self.ex.amount_to_precision(sym, max(0.0, rec["contracts"] - tp_filled)))
         exit_fill = {}
         if rest > 0:
-            exit_fill = self.fill(self.ex.create_order(sym, "market", "sell" if long else "buy", rest, None,
-                                                       self.params(reduceOnly=True)))
+            exit_fill = self.fill(self.settled(self.ex.create_order(sym, "market", "sell" if long else "buy", rest, None,
+                                                                    self.params(reduceOnly=True)), sym))
         sign = 1 if long else -1
         cs = rec.get("contract_size") or 1
         pnl = None
@@ -286,12 +290,7 @@ class SpotDemoBroker(DemoBroker):
         free = float((self.ex.fetch_balance().get(sym.split("/")[1]) or {}).get("free") or 0)
         if n * s["entry"] > free * 0.98:
             return {"status": "no_funds", "symbol": sym, "free_usdt": free}
-        entry = self.ex.create_order(sym, "market", "buy", n, None, {"tgtCcy": "base_ccy"})
-        if not (entry.get("average") and entry.get("filled")):
-            try:
-                entry = self.ex.fetch_order(entry["id"], sym)
-            except Exception:
-                pass
+        entry = self.settled(self.ex.create_order(sym, "market", "buy", n, None, {"tgtCcy": "base_ccy"}), sym)
         px, filled = entry.get("average") or entry.get("price"), float(entry.get("filled") or n)
         fee = entry.get("fee") or {}
         held = filled - (abs(float(fee.get("cost") or 0)) if fee.get("currency") == base else 0)
@@ -320,7 +319,7 @@ class SpotDemoBroker(DemoBroker):
         half = float(self.ex.amount_to_precision(sym, rec["contracts"] / 2))
         rec = dict(rec)
         if half > 0 and not rec.get("t1_qty"):
-            o = self.ex.create_order(sym, "market", "sell", half, None, {})
+            o = self.settled(self.ex.create_order(sym, "market", "sell", half, None, {}), sym)
             rec.update(t1_qty=half, t1_price=o.get("average") or o.get("price"), t1_fee=round(self.fee_usdt(o, base, 0), 4))
         rest = self.remaining(rec)
         rec["sl_id"] = self.place_stop(sym, rest, new_stop) if rest > 0 else None
@@ -337,7 +336,7 @@ class SpotDemoBroker(DemoBroker):
         rest = 0.0 if stopped else self.remaining(rec)
         exit_fill, exit_fee = {}, 0.0
         if rest > 0:
-            o = self.ex.create_order(sym, "market", "sell", rest, None, {})
+            o = self.settled(self.ex.create_order(sym, "market", "sell", rest, None, {}), sym)
             exit_fill, exit_fee = self.fill(o), self.fee_usdt(o, base, 0)
         pnl = None
         if rec.get("entry") and (exit_fill.get("price") or rec.get("t1_price")):
