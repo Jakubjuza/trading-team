@@ -192,6 +192,11 @@ def parse_rss(xml_text, source, max_items=40):
     return items
 
 
+def title_key(title):
+    """Klíč pro deduplikaci – bez „ - Zdroj“ na konci (Google News) a bez interpunkce."""
+    return re.sub(r"\W+", "", re.sub(r"\s+[-–|]\s+[^-–|]{2,40}$", "", title).lower())[:80]
+
+
 def tag(title):
     t = title.lower()
     tags = [k for k, rx in TAGS.items() if re.search(rx, t)]
@@ -232,7 +237,7 @@ def news_digest(raw, coin=None, now=None, hours=48, limit=12):
     now = now or datetime.now(timezone.utc)
     seen, out = set(), {"coin": [], "geopolitika": [], "regulace a hlasování": [], "Fed a inflace": [], "krypto": []}
     for x in raw.get("items", []):
-        key = re.sub(r"\W+", "", x["title"].lower())[:80]
+        key = title_key(x["title"])
         if key in seen:
             continue
         if x.get("time") and datetime.fromisoformat(x["time"]) < now - timedelta(hours=hours):

@@ -228,7 +228,7 @@ def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=No
                 continue
             coin = next((c for c in coins if events_mod.mentions(x["title"], c)), None)
             tags, tone = events_mod.tag(x["title"])
-            key = "news|" + re.sub(r"\W+", "", x["title"].lower())[:80]
+            key = "news|" + events_mod.title_key(x["title"])
             if not coin or not important & set(tags) or tone == "neutrální" or key in sent:
                 continue
             sent[key] = day

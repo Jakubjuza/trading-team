@@ -108,3 +108,7 @@ def test_ff_fomc_duplicates_and_tone_words():
     assert [e["kind"] for e in evs if "Fed" in e["title"] or "FOMC" in e["title"]] == ["fomc"]
     assert ev.tag("Bitcoin Falls Below $80,000 as U.S. Pulls Staff")[1] == "negativní"
     assert ev.tag("Solana jumps 8% after upgrade")[1] == "pozitivní"
+
+
+def test_title_key_ignores_source_suffix():
+    assert ev.title_key("Bitcoin or Gold: Which Is Better? - 24/7 Wall St.") == ev.title_key("Bitcoin or Gold: Which Is Better? - Yahoo Finance")
