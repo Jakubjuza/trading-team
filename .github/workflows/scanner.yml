@@ -46,6 +46,9 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          OKX_DEMO_API_KEY: ${{ secrets.OKX_DEMO_API_KEY }}
+          OKX_DEMO_API_SECRET: ${{ secrets.OKX_DEMO_API_SECRET }}
+          OKX_DEMO_PASSPHRASE: ${{ secrets.OKX_DEMO_PASSPHRASE }}
           DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
         run: |
           git config user.name "trading-team scanner"
@@ -56,10 +59,11 @@ jobs:
             start=$SECONDS
             python3 scanner/scan.py --once || echo "průchod selhal, pokračuji"
             # nové signály, datové listy a výsledky obchodů hned do repozitáře (čte je AI desk)
-            if [ -n "$(git status --porcelain scanner/signals.jsonl research/factsheets research/outcomes.jsonl 2>/dev/null)" ]; then
+            if [ -n "$(git status --porcelain scanner/signals.jsonl research/factsheets research/outcomes.jsonl research/demo_trades.jsonl 2>/dev/null)" ]; then
               git add scanner/signals.jsonl
               [ -d research/factsheets ] && git add research/factsheets
               [ -f research/outcomes.jsonl ] && git add research/outcomes.jsonl
+              [ -f research/demo_trades.jsonl ] && git add research/demo_trades.jsonl
               git commit -q -m "scanner: nové signály / výsledky"
               for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done
             fi

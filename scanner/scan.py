@@ -33,6 +33,50 @@ from research import carry as carry_mod  # noqa: E402
 from research import scenarios, sessions  # noqa: E402
 
 STATE = HERE / "state.json"
+_DEMO = {"broker": None, "error": None}
+
+
+def demo_broker(cfg):
+    """DemoBroker (OKX demo), nebo None – vypnuto, chybí klíče, nebo se nepodařilo připojit (zkusí se znovu za 30 min)."""
+    dc = cfg.get("demo") or {}
+    if not dc.get("enabled"):
+        return None
+    if _DEMO["broker"] is not None:
+        return _DEMO["broker"]
+    if _DEMO["error"] and time.time() - _DEMO["error"][0] < 1800:
+        return None
+    try:
+        from scanner.demo import DemoBroker
+        _DEMO["broker"] = DemoBroker(cfg)
+        return _DEMO["broker"]
+    except Exception as exc:
+        _DEMO["error"] = (time.time(), f"{exc.__class__.__name__}: {str(exc)[:120]}")
+        print(f"demo OKX nedostupné: {_DEMO['error'][1]}", file=sys.stderr)
+        return None
+
+
+def demo_open(cfg, pos, size, dry_run=False):
+    """Otevře zrcadlo papírové pozice na demo účtu; vrátí zprávu pro Telegram nebo None."""
+    dc = cfg.get("demo") or {}
+    variant = "mtf" if pos.get("mtf") else "daily"
+    if dry_run or dc.get("variant", "daily") != variant:
+        return None
+    b = demo_broker(cfg)
+    if b is None:
+        return None
+    side = pos["setup"]["direction"].upper()
+    try:
+        rec = b.open(pos, size)
+    except Exception as exc:
+        pos["demo"] = {"status": "error", "error": str(exc)[:200]}
+        return f"⚠️ Demo OKX: {pos['symbol']} {side} se nepodařilo otevřít ({exc.__class__.__name__}: {str(exc)[:120]})."
+    pos["demo"] = rec
+    if rec["status"] != "open":
+        return f"🧪 Demo OKX: {pos['symbol']} {side} vynecháno – pozice je menší než minimum burzy."
+    slip = f", skluz {notify.pct(rec['slippage_pct'])} %" if rec.get("slippage_pct") is not None else ""
+    return (f"🧪 Demo OKX: {rec['symbol']} {side} otevřeno {str(rec['contracts']).replace('.', ',')} kontr. @ "
+            f"{notify.fmt(rec['entry']) if rec.get('entry') else '?'} (plán {notify.fmt(rec['planned_entry'])}{slip}), "
+            f"poplatek {notify.pct(rec.get('entry_fee') or 0)} USDT · stop i T1 jsou na burze.")
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
 FACTSHEETS = HERE.parent / "research" / "factsheets"   # datové listy k signálům pro AI desk
 OUTCOMES = HERE.parent / "research" / "outcomes.jsonl"  # výsledky uzavřených papírových obchodů (reflexe desku)
@@ -198,6 +242,11 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size, "strategy": strat["name"]})
         state.data.setdefault("open", []).append({"id": sid, "symbol": symbol, "timeframe": tf, "setup": s.to_dict(),
                                                   "strategy": strat["name"], "exit": strat.get("exit", {})})
+        dm = demo_open(cfg, state.data["open"][-1], size, dry_run)
+        if dm:
+            print(dm)
+            if cfg["notify"].get("telegram", True):
+                notify.telegram(dm)
         if use_mtf:
             state.data.setdefault("mtf_pending", []).append({
                 "id": sid, "symbol": symbol, "strategy": strat["name"], "setup": s.to_dict(), "exit": strat.get("exit", {}),
@@ -480,6 +529,10 @@ def mtf_entries(cfg, state, frames, now, dry_run=False, send=None):
                 "id": p["id"] + "|mtf", "symbol": sym, "timeframe": base_tf, "setup": setup, "strategy": p["strategy"] + "+mtf",
                 "mtf": True, "exit": {"split": ex.get("split", 0.5), "trail_atr": ex.get("trail_atr", 0),
                                       "max_hold_bars": ex.get("max_hold_bars", 20) * 24}})
+            risk_usd = cfg.get("account_size", 0) * cfg.get("risk_pct", 0) / 100
+            dm = demo_open(cfg, state.data["open"][-1], {"qty": risk_usd / risk if risk else 0}, dry_run)
+            if dm:
+                msgs.append(dm)
             tg = " / ".join(f"T{i + 1} {notify.fmt(t)}" for i, t in enumerate(s["targets"]))
             msgs.append(f"📍 Vstup z nižších TF (papírově): {sym} {side} – 4H ve směru, 1H návrat k EMA20 a obratová svíčka.\n"
                         f"Vstup {notify.fmt(entry)} · Stop {notify.fmt(stop)} ({notify.pct(risk / entry * 100)} %) · {tg} · "
@@ -526,6 +579,11 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
                 print(msg)
                 if tg:
                     notify.telegram(msg)
+                if (pos.get("demo") or {}).get("status") == "open" and not dry_run and demo_broker(cfg):
+                    try:
+                        pos["demo"] = demo_broker(cfg).move_stop(pos, pos["demo"], pos["setup"]["entry"])
+                    except Exception as exc:
+                        print(f"demo posun stopu selhal: {exc}", file=sys.stderr)
             still_open.append(pos)
             continue
         closed = {"id": pos["id"], "symbol": pos["symbol"], "strategy": pos.get("strategy"),
@@ -542,6 +600,20 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
         print(msg)
         if tg:
             notify.telegram(msg)
+        if (pos.get("demo") or {}).get("status") == "open" and not dry_run and demo_broker(cfg):
+            try:
+                out = demo_broker(cfg).close(pos, pos["demo"], res["result"], round(res["r"], 3))
+                pnl = out.get("pnl_usdt")
+                dmsg = (f"🧪 Demo OKX: {pos['symbol']} {side} uzavřeno ({txt})"
+                        + (f" – výsledek {pnl:+.2f} USDT po poplatcích".replace(".", ",") if pnl is not None else
+                           " – stop se vykonal na burze, výsledek v deníku demo obchodů"))
+                print(dmsg)
+                if tg:
+                    notify.telegram(dmsg)
+            except Exception as exc:
+                print(f"demo uzavření selhalo: {exc}", file=sys.stderr)
+                if tg:
+                    notify.telegram(f"⚠️ Demo OKX: {pos['symbol']} {side} se nepodařilo uzavřít ({exc.__class__.__name__}) – zkontroluj demo účet.")
     state.data["open"] = still_open
     state.save()
 
@@ -605,6 +677,10 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         cl = carry_line(state)
         if cl:
             lines.append(cl)
+        if (cfg.get("demo") or {}).get("enabled"):
+            n_demo = sum(1 for p in state.data.get("open", []) if (p.get("demo") or {}).get("status") == "open")
+            lines.append(f"Demo OKX: {'připojeno' if demo_broker(cfg) else 'nepřipojeno (' + ((_DEMO['error'] or (0, 'chybí klíče'))[1]) + ')'}"
+                         f", otevřené pozice {n_demo}")
     except Exception as exc:
         print(f"zdraví strategií selhalo: {exc}", file=sys.stderr)
     try:
