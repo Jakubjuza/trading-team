@@ -63,6 +63,7 @@ Pravidla:
 | ID | Hypotéza (předem stanovená) | Zdroj | Data | Stav |
 |---|---|---|---|---|
 | H1 | Long signál při 7denním fundingu > 30 % p.a. dopadá hůř než ostatní longy (→ snížit stupeň / vynechat) | BIS WP 1087 | funding Hyperliquid ~1 rok – málo signálů | čeká na data |
+| H3 | Vstupy ze sobotní/nedělní denní svíčky (UTC) dopadají hůř; varianta `skip_weekends: true` zvlášť pro pullback_1d a donchian_1d (jiné parametry se nemění) zlepší OOS Ø R o ≥ 0,05 R při ≥ 100 OOS obchodech a výhodě nad náhodou | vlastní pohled 25. 10. 2026: pullback OOS všední +0,11 vs. víkend −0,22 ± 0,25 R (n=122), Donchian +0,28 vs. +0,07 ± 0,31 (n=75); za 10 let bez rozdílu (víkend +0,44 / +0,22) – jen podezření, ne důkaz | denní data 8 mincí 2016–2026 (`scanner/evaluate.py`) | k testu v rutině „Kontrola a ladění skeneru“ |
 | H2 | Prudký nárůst pozornosti (Google Trends / Wikipedie) před signálem zhoršuje výsledek longu | Liu & Tsyvinski 2021 | chybí zdroj dat | čeká na data |
 
 ## Hodnocení agentů desku
