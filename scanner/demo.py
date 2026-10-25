@@ -5,7 +5,7 @@ Bezpečnost:
     nepošle. Ostrý účet tento modul nikdy nepoužije a `live_trading` v configu se ho netýká.
   • klíče jen z prostředí (GitHub Secrets): OKX_DEMO_API_KEY, OKX_DEMO_API_SECRET, OKX_DEMO_PASSPHRASE.
 Trh podle `demo.market`:
-  • swap (výchozí): perpetual BTC/USDT:USDT…, longy i shorty; izolovaná marže, páka `leverage` (výchozí 2×).
+  • swap (výchozí): perpetual BTC/USDT:USDT… (s `demo.quote: USDC` → BTC/USDC:USDC, OKX EEA nemá USDT), longy i shorty; izolovaná marže, páka `leverage` (výchozí 2×).
     Vstup market + ochranný stop na burze (celá pozice) + reduce-only limit na T1 (polovina pozice).
   • spot: BTC/USDT… bez páky a bez futures oprávnění – JEN LONGY (shorty se na spotu nedají, vynechají se).
     Vstup market + ochranný stop na burze (celé koupené množství); T1 prodá skener marketem (limit na spotu by
@@ -28,9 +28,16 @@ def env_keys():
     return k if all(k.values()) else None
 
 
-def swap_symbol(symbol):
-    base, quote = symbol.split("/")
-    return f"{base}/{quote}:{quote}"
+def swap_symbol(symbol, quote=None):
+    """BTC/USDT → BTC/USDT:USDT; s `quote` (např. USDC na OKX EEA) → BTC/USDC:USDC."""
+    base, q = symbol.split("/")
+    q = quote or q
+    return f"{base}/{q}:{q}"
+
+
+def spot_symbol(symbol, quote=None):
+    base, q = symbol.split("/")
+    return f"{base}/{quote or q}"
 
 
 def make_broker(cfg, ex=None):
@@ -44,6 +51,7 @@ class DemoBroker:
     def __init__(self, cfg, ex=None):
         self.cfg = cfg.get("demo") or {}
         self.leverage = self.cfg.get("leverage", 2)
+        self.quote = self.cfg.get("quote")                       # None = jako signál (USDT); OKX EEA: USDC
         if ex is None:
             keys = env_keys()
             if not keys:
@@ -102,6 +110,16 @@ class DemoBroker:
         return {"id": o.get("id"), "price": o.get("average") or o.get("price"), "filled": o.get("filled"),
                 "fee": abs(float(fee.get("cost") or 0)) if fee else 0.0}
 
+    def settled(self, order, sym):
+        """Market příkaz: OKX v odpovědi často nevrací cenu plnění – dotáhne se z detailu příkazu."""
+        o = order or {}
+        if o.get("id") and not (o.get("average") and o.get("filled")):
+            try:
+                o = {**o, **{k: v for k, v in self.ex.fetch_order(o["id"], sym).items() if v is not None}}
+            except Exception as exc:
+                print(f"[demo {sym}] detail příkazu: {exc}", file=sys.stderr)
+        return o
+
     def log(self, rec):
         try:
             with open(LOG, "a", encoding="utf-8") as fh:
@@ -110,9 +128,24 @@ class DemoBroker:
             print(f"demo deník: {exc}", file=sys.stderr)
 
     # --- životní cyklus pozice ------------------------------------------------------------
+    def resolve(self, symbol):
+        """Kontrakt pro signál: OKX EEA X-Perp (lineární, vypořádání v USD, např. BTC-USD_UM_XPERP-310328), jinak
+        perpetual v `quote` (USDC) / v kotaci signálu (USDT). None = mince na účtu nemá futures."""
+        self.ex.load_markets()
+        base = symbol.split("/")[0]
+        if self.cfg.get("xperp", True):
+            xp = sorted((m for m in self.ex.markets.values() if m.get("base") == base and "_UM_XPERP" in str(m.get("id"))
+                         and m.get("linear") is not False and m.get("active") is not False), key=lambda m: m["id"])
+            if xp:
+                return xp[0]["symbol"]
+        cand = swap_symbol(symbol, self.quote)                   # s `quote` jen v té měně (na USDT účet nemá peníze)
+        return cand if cand in self.ex.markets else None
+
     def open(self, pos, size):
         s = pos["setup"]
-        sym = swap_symbol(pos["symbol"])
+        sym = self.resolve(pos["symbol"])
+        if sym is None:
+            return {"status": "no_market", "symbol": pos["symbol"]}
         long = s["direction"] == "long"
         n, cs = self.contracts(sym, size["qty"])
         if n <= 0:
@@ -123,13 +156,7 @@ class DemoBroker:
         except Exception as exc:
             print(f"[demo {sym}] páka: {exc}", file=sys.stderr)
         side, close_side = ("buy", "sell") if long else ("sell", "buy")
-        entry = self.ex.create_order(sym, "market", side, n, None, self.params())
-        f = self.fill(entry)
-        if not f["price"]:
-            try:
-                f = self.fill(self.ex.fetch_order(entry["id"], sym))
-            except Exception:
-                pass
+        f = self.fill(self.settled(self.ex.create_order(sym, "market", side, n, None, self.params()), sym))
         sl = self.ex.create_order(sym, "market", close_side, n, None, self.params(stopLossPrice=s["stop"], reduceOnly=True))
         half = float(self.ex.amount_to_precision(sym, n / 2))
         tp = None
@@ -189,8 +216,8 @@ class DemoBroker:
         rest = 0.0 if stopped else float(self.ex.amount_to_precision(sym, max(0.0, rec["contracts"] - tp_filled)))
         exit_fill = {}
         if rest > 0:
-            exit_fill = self.fill(self.ex.create_order(sym, "market", "sell" if long else "buy", rest, None,
-                                                       self.params(reduceOnly=True)))
+            exit_fill = self.fill(self.settled(self.ex.create_order(sym, "market", "sell" if long else "buy", rest, None,
+                                                                    self.params(reduceOnly=True)), sym))
         sign = 1 if long else -1
         cs = rec.get("contract_size") or 1
         pnl = None
@@ -250,22 +277,20 @@ class SpotDemoBroker(DemoBroker):
 
     def open(self, pos, size):
         s = pos["setup"]
-        sym = pos["symbol"]
+        sym = spot_symbol(pos["symbol"], self.quote)
         if s["direction"] != "long":
             return {"status": "skipped_short", "symbol": sym}
+        self.ex.load_markets()
+        if sym not in (self.ex.markets or {}):
+            return {"status": "no_market", "symbol": sym}
         base = sym.split("/")[0]
         n = self.amount(sym, size["qty"])
         if n <= 0:
             return {"status": "too_small", "symbol": sym}
-        free = float((self.ex.fetch_balance().get("USDT") or {}).get("free") or 0)
+        free = float((self.ex.fetch_balance().get(sym.split("/")[1]) or {}).get("free") or 0)
         if n * s["entry"] > free * 0.98:
             return {"status": "no_funds", "symbol": sym, "free_usdt": free}
-        entry = self.ex.create_order(sym, "market", "buy", n, None, {"tgtCcy": "base_ccy"})
-        if not (entry.get("average") and entry.get("filled")):
-            try:
-                entry = self.ex.fetch_order(entry["id"], sym)
-            except Exception:
-                pass
+        entry = self.settled(self.ex.create_order(sym, "market", "buy", n, None, {"tgtCcy": "base_ccy"}), sym)
         px, filled = entry.get("average") or entry.get("price"), float(entry.get("filled") or n)
         fee = entry.get("fee") or {}
         held = filled - (abs(float(fee.get("cost") or 0)) if fee.get("currency") == base else 0)
@@ -294,7 +319,7 @@ class SpotDemoBroker(DemoBroker):
         half = float(self.ex.amount_to_precision(sym, rec["contracts"] / 2))
         rec = dict(rec)
         if half > 0 and not rec.get("t1_qty"):
-            o = self.ex.create_order(sym, "market", "sell", half, None, {})
+            o = self.settled(self.ex.create_order(sym, "market", "sell", half, None, {}), sym)
             rec.update(t1_qty=half, t1_price=o.get("average") or o.get("price"), t1_fee=round(self.fee_usdt(o, base, 0), 4))
         rest = self.remaining(rec)
         rec["sl_id"] = self.place_stop(sym, rest, new_stop) if rest > 0 else None
@@ -311,7 +336,7 @@ class SpotDemoBroker(DemoBroker):
         rest = 0.0 if stopped else self.remaining(rec)
         exit_fill, exit_fee = {}, 0.0
         if rest > 0:
-            o = self.ex.create_order(sym, "market", "sell", rest, None, {})
+            o = self.settled(self.ex.create_order(sym, "market", "sell", rest, None, {}), sym)
             exit_fill, exit_fee = self.fill(o), self.fee_usdt(o, base, 0)
         pnl = None
         if rec.get("entry") and (exit_fill.get("price") or rec.get("t1_price")):
@@ -345,19 +370,45 @@ def main():
     if not spot:
         print("režim pozic:", "long/short" if b.hedged() else "net")
     bal = b.ex.fetch_balance()
-    print("USDT:", (bal.get("USDT") or {}).get("free"), "volné /", (bal.get("USDT") or {}).get("total"), "celkem")
-    print("zůstatky:", {k: v for k, v in (bal.get("total") or {}).items() if v})
+    q = b.quote or "USDT"
+    print(f"{q}:", (bal.get(q) or {}).get("free"), "volné /", (bal.get(q) or {}).get("total"), "celkem")
+    if not spot:
+        try:
+            pos = b.ex.fetch_positions()
+            print("otevřené futures pozice:", len(pos), "(čtení swap pozic OK)")
+        except Exception as exc:
+            print("futures pozice:", f"{exc.__class__.__name__}: {str(exc)[:160]}")
+    print("zůstatky (obchodní účet):", {k: v for k, v in (bal.get("total") or {}).items() if v})
+    try:
+        fund = b.ex.fetch_balance({"type": "funding"})
+        print("zůstatky (Funding účet):", {k: v for k, v in (fund.get("total") or {}).items() if v})
+    except Exception as exc:
+        print("Funding účet:", f"{exc.__class__.__name__}: {str(exc)[:120]}")
+    try:
+        cfg_acc = b.ex.private_get_account_config()["data"][0]
+        print("účet:", {k: cfg_acc.get(k) for k in ("acctLv", "posMode", "perm", "level", "type")})
+    except Exception as exc:
+        print("nastavení účtu:", f"{exc.__class__.__name__}: {str(exc)[:120]}")
     b.ex.load_markets()
     for c in ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"]:
-        sym = f"{c}/USDT" if spot else f"{c}/USDT:USDT"
+        sym = spot_symbol(f"{c}/USDT", b.quote) if spot else b.resolve(f"{c}/USDT")
+        if spot and sym not in b.ex.markets:
+            sym = None
+        if sym is None:
+            print(f"  {c}: na demu není trh – vynechá se")
+            continue
         try:
             m = b.ex.market(sym)
         except Exception as exc:
             print(f"  {sym}: není dostupné ({exc.__class__.__name__})")
             continue
-        print(f"  {sym}: kontrakt {m.get('contractSize') or 1} {c}, min. {((m.get('limits') or {}).get('amount') or {}).get('min')}")
+        print(f"  {sym} ({m.get('id')}, vypořádání {m.get('settle')}): kontrakt {m.get('contractSize') or 1} {c}, min. {((m.get('limits') or {}).get('amount') or {}).get('min')}")
+    coins = {"BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"}
+    avail = sorted(f"{m['symbol']} ({m['id']})" for m in b.ex.markets.values()
+                   if m.get("base") in coins and (m.get("swap") or m.get("future") or m.get("spot")))
+    print("dostupné trhy pro naše mince:", ", ".join(avail) or "žádné")
     if a.test_order:
-        t = b.ex.fetch_ticker("BTC/USDT" if spot else "BTC/USDT:USDT")["last"]
+        t = b.ex.fetch_ticker(spot_symbol("BTC/USDT", b.quote) if spot else b.resolve("BTC/USDT"))["last"]
         pos = {"id": "TEST", "symbol": "BTC/USDT", "strategy": "test",
                "setup": {"direction": "long", "entry": t, "stop": t * 0.95, "targets": [t * 1.05, t * 1.1]}}
         rec = b.open(pos, {"qty": 0.001 if spot else 0.02})

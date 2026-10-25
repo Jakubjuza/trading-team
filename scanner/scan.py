@@ -73,7 +73,8 @@ def demo_open(cfg, pos, size, dry_run=False):
     pos["demo"] = rec
     if rec["status"] != "open":
         why = {"skipped_short": "spotový demo účet umí jen longy",
-               "no_funds": "na demo účtu není dost USDT"}.get(rec["status"], "pozice je menší než minimum burzy")
+               "no_funds": "na demo účtu není dost peněz",
+               "no_market": "pro tuto minci nemá demo účet futures kontrakt"}.get(rec["status"], "pozice je menší než minimum burzy")
         return f"🧪 Demo OKX: {pos['symbol']} {side} vynecháno – {why}."
     spot = rec.get("mode") == "spot"
     slip = f", skluz {notify.pct(rec['slippage_pct'])} %" if rec.get("slippage_pct") is not None else ""
@@ -81,7 +82,7 @@ def demo_open(cfg, pos, size, dry_run=False):
     note = ("stop je na burze, polovinu na T1 prodá skener" if rec.get("sl_id") else "⚠️ stop se nepodařilo zadat")
     return (f"🧪 Demo OKX{' spot' if spot else ''}: {rec['symbol']} {side} otevřeno {str(rec['contracts']).replace('.', ',')} {unit} @ "
             f"{notify.fmt(rec['entry']) if rec.get('entry') else '?'} (plán {notify.fmt(rec['planned_entry'])}{slip}), "
-            f"poplatek {notify.pct(rec.get('entry_fee') or 0)} USDT · {note if spot else 'stop i T1 jsou na burze'}.")
+            f"poplatek {notify.pct(rec.get('entry_fee') or 0)} {rec['symbol'].split('/')[1].split(':')[0]} · {note if spot else 'stop i T1 jsou na burze'}.")
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
 FACTSHEETS = HERE.parent / "research" / "factsheets"   # datové listy k signálům pro AI desk
 OUTCOMES = HERE.parent / "research" / "outcomes.jsonl"  # výsledky uzavřených papírových obchodů (reflexe desku)
@@ -610,7 +611,7 @@ def update_paper_positions(cfg, state, frames, cost_pct, dry_run=False, probs=No
                 out = demo_broker(cfg).close(pos, pos["demo"], res["result"], round(res["r"], 3))
                 pnl = out.get("pnl_usdt")
                 dmsg = (f"🧪 Demo OKX: {pos['symbol']} {side} uzavřeno ({txt})"
-                        + (f" – výsledek {pnl:+.2f} USDT po poplatcích".replace(".", ",") if pnl is not None else
+                        + (f" – výsledek {pnl:+.2f} {out['symbol'].split('/')[1].split(':')[0]} po poplatcích".replace(".", ",") if pnl is not None else
                            " – stop se vykonal na burze, výsledek v deníku demo obchodů"))
                 print(dmsg)
                 if tg:

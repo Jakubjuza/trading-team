@@ -16,6 +16,8 @@ class FakeOKX:
     def private_get_account_config(self):
         return {"data": [{"posMode": self.pos_mode}]}
 
+    markets = {"BTC/USDT:USDT": {"symbol": "BTC/USDT:USDT", "base": "BTC", "id": "BTC-USDT-SWAP"}}
+
     def load_markets(self):
         return {}
 
@@ -115,6 +117,8 @@ class FakeOKXSpot(FakeOKX):
         self.algos, self.cancelled_algos, self.usdt = [], [], usdt
         self.algo_gone = False
 
+    markets = {"BTC/USDT": {}, "BTC/USDC": {}}
+
     def market(self, sym):
         return {"id": sym.replace("/", "-"), "limits": {"amount": {"min": 0.00001}}}
 
@@ -125,7 +129,7 @@ class FakeOKXSpot(FakeOKX):
         return f"{x:.1f}"
 
     def fetch_balance(self):
-        return {"USDT": {"free": self.usdt}}
+        return {"USDT": {"free": self.usdt}, "USDC": {"free": self.usdt}}
 
     def create_order(self, sym, typ, side, amount, price, params):
         oid = f"o{len(self.orders) + 1}"
@@ -187,3 +191,48 @@ def test_spot_stop_already_executed_on_exchange():
     ex.algo_gone = True
     out = b.close(POS, rec, "stop")
     assert out["stopped_on_exchange"] and len(ex.orders) == 1 and out["pnl_usdt"] is None
+
+
+def test_quote_override_maps_to_usdc_swap():
+    ex = FakeOKX()
+    ex.markets = {"BTC/USDC:USDC": {"symbol": "BTC/USDC:USDC", "base": "BTC", "id": "BTC-USDC-SWAP"}}
+    rec = demo.DemoBroker({"demo": {"quote": "USDC"}}, ex=ex).open(POS, {"qty": 0.05})
+    assert rec["symbol"] == "BTC/USDC:USDC" and ex.orders[0]["symbol"] == "BTC/USDC:USDC"
+    assert demo.spot_symbol("ETH/USDT", "USDC") == "ETH/USDC" and demo.swap_symbol("ETH/USDT") == "ETH/USDT:USDT"
+
+
+def test_resolve_prefers_eea_xperp_then_quote_swap():
+    ex = FakeOKX()
+    ex.markets = {"BTC/USD:USD-310328": {"symbol": "BTC/USD:USD-310328", "base": "BTC", "id": "BTC-USD_UM_XPERP-310328", "linear": True},
+                  "BTC/USDT:USDT": {"symbol": "BTC/USDT:USDT", "base": "BTC", "id": "BTC-USDT-SWAP"},
+                  "ADA/USDC:USDC": {"symbol": "ADA/USDC:USDC", "base": "ADA", "id": "ADA-USDC-SWAP"},
+                  "SOL/USDT:USDT": {"symbol": "SOL/USDT:USDT", "base": "SOL", "id": "SOL-USDT-SWAP"}}
+    b = demo.DemoBroker({"demo": {"quote": "USDC"}}, ex=ex)
+    assert b.resolve("BTC/USDT") == "BTC/USD:USD-310328"
+    assert b.resolve("ADA/USDT") == "ADA/USDC:USDC"
+    assert b.resolve("SOL/USDT") is None and b.open({**POS, "symbol": "SOL/USDT"}, {"qty": 1})["status"] == "no_market"
+
+
+def test_spot_usdc_quote_and_missing_pair():
+    ex = FakeOKXSpot()
+    b = demo.make_broker({"demo": {"market": "spot", "quote": "USDC"}}, ex=ex)
+    assert b.open(POS, {"qty": 0.01})["symbol"] == "BTC/USDC" and ex.orders[0]["symbol"] == "BTC/USDC"
+    assert b.open({**POS, "symbol": "ADA/USDT"}, {"qty": 10})["status"] == "no_market"
+
+
+def test_spot_fetches_fill_price_when_market_response_is_bare():
+    class Bare(FakeOKXSpot):
+        def create_order(self, sym, typ, side, amount, price, params):
+            full = super().create_order(sym, typ, side, amount, price, params)
+            self.full = getattr(self, "full", {})
+            self.full[full["id"]] = full
+            return {"id": full["id"]}
+
+        def fetch_order(self, oid, sym):
+            return self.full[oid]
+
+    ex = Bare()
+    b = demo.make_broker(SPOT, ex=ex)
+    rec = b.move_stop(POS, b.open(POS, {"qty": 0.01}), 100.0)
+    assert rec["entry"] == 101.0 and rec["t1_price"] == 110.0
+    assert b.close(POS, rec, "time")["pnl_usdt"] == pytest.approx(0.0099 * 9 - 0.0101 - 0.05 - 0.05, abs=0.01)
