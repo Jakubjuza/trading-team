@@ -346,6 +346,7 @@ def main():
         print("režim pozic:", "long/short" if b.hedged() else "net")
     bal = b.ex.fetch_balance()
     print("USDT:", (bal.get("USDT") or {}).get("free"), "volné /", (bal.get("USDT") or {}).get("total"), "celkem")
+    print("zůstatky:", {k: v for k, v in (bal.get("total") or {}).items() if v})
     b.ex.load_markets()
     for c in ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "AVAX", "DOGE"]:
         sym = f"{c}/USDT" if spot else f"{c}/USDT:USDT"
