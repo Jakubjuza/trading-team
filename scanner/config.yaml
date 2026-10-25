@@ -65,14 +65,16 @@ strategies:
   - name: donchian_1d            # průraz 20denního max/min ve směru EMA 200; 9 coinů 2015–2026: +0,37 R/obchod
     setup: donchian_breakout
     timeframe: 1d
-    params: {channel: 20, stop_atr: 2.0, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0]}
+    params: {channel: 20, stop_atr: 2.0, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0],
+             panic_vol_rank: 0.8, panic_window: 365}   # bez vstupu v panice (reports/adaptive.md)
     exit: {split: 0.5, trail_atr: 3.0, max_hold_bars: 20}
     min_rr: 1.0
     max_open_per_direction: 2
   - name: pullback_1d            # trend + návrat k EMA20 + obratová svíčka; 9 coinů 2015–2026: +0,27 R/obchod
     setup: pullback
     timeframe: 1d
-    params: {lookback: 3, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0]}
+    params: {lookback: 3, trend_ema: 200, min_stop_pct: 1.5, target_multiples: [2.0, 4.0],
+             panic_vol_rank: 0.8, panic_window: 365}
     exit: {split: 0.5, trail_atr: 3.0, max_hold_bars: 20}
     min_rr: 1.0
     max_open_per_direction: 2
@@ -94,6 +96,12 @@ events:                   # kalendář (Fed, CPI, NFP …) a zprávy – researc
   news_tags: [regulace, etf, bezpečnost, burzy]
   news_max_per_day: 4
   news_max_age_min: 120
+
+outlook:                  # 📆 týdenní výhled – research/scenarios.py (rozpětí z historie při dnešní volatilitě)
+  enabled: true
+  weekday: 0              # 0 = pondělí
+  hour: 8                 # čas Prahy
+  horizon: 13 týdnů
 
 probabilities: scanner/probabilities.json   # tabulka z scanner/calibrate.py
 

@@ -28,7 +28,7 @@ from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import simulate  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 from research import events as events_mod  # noqa: E402
-from research import sessions  # noqa: E402
+from research import scenarios, sessions  # noqa: E402
 
 STATE = HERE / "state.json"
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
@@ -124,6 +124,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         event_alerts(cfg, state, now, dry_run)
     except Exception as exc:                                          # zprávy a kalendář nesmí shodit skener
         print(f"kalendář/zprávy selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
+        weekly_outlook(cfg, state, frames, now, dry_run)
+    except Exception as exc:
+        print(f"týdenní výhled selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
 
     # krypto se hýbe spolu → max. N otevřených (papírových) pozic stejným směrem na strategii; přednost má lepší R:R
     candidates.sort(key=lambda x: x[4].rr[0], reverse=True)
@@ -162,7 +166,8 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         except Exception as exc:                                      # kontext nesmí shodit signál
             print(f"[{symbol}] kontext burz/událostí selhal: {exc}", file=sys.stderr)
         ctx = " · ".join(c for c in ctx if c)
-        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob, context=ctx)
+        lines = notify.summary_lines(symbol, tf, s, size, cfg["account_size"], cost_pct, prob=prob, context=ctx,
+                                     outlook=scenario_note(s, frames.get((symbol, "1d"))))
         print("\n".join(lines))
         found.append((sid, s, size))
         if dry_run:
@@ -186,6 +191,55 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
     return found
+
+
+def scenario_note(s, daily, horizon="4 týdny"):
+    """„4 týdny 80 %: a – b“ z historických scénářů při dnešní volatilitě; upozorní, když T2 leží mimo pásmo."""
+    try:
+        rng = scenarios.quick_range(daily, horizon)
+    except Exception as exc:
+        print(f"scénáře selhaly: {exc}", file=sys.stderr)
+        return ""
+    if not rng:
+        return ""
+    lo, hi = rng["medvědí (10 %)"], rng["býčí (90 %)"]
+    t2 = s.targets[-1]
+    out = f"{horizon} 80 %: {notify.fmt(lo)} – {notify.fmt(hi)}"
+    if (s.direction == "long" and t2 > hi) or (s.direction == "short" and t2 < lo):
+        out += " (T2 mimo pásmo)"
+    return out
+
+
+def weekly_outlook(cfg, state, frames, now, dry_run=False, send=None):
+    """📆 týdenní výhled (pondělí ráno): stav týden/měsíc a rozpětí scénářů pro každou minci."""
+    oc = cfg.get("outlook") or {}
+    if not oc.get("enabled"):
+        return None
+    loc = now.astimezone(ZoneInfo(cfg.get("timezone", "UTC")))
+    week = f"{loc.isocalendar()[0]}-W{loc.isocalendar()[1]:02d}"
+    st = state.data.setdefault("outlook", {})
+    if loc.weekday() != oc.get("weekday", 0) or loc.hour < oc.get("hour", 8) or st.get("last") == week:
+        return None
+    daily = {sym.split("/")[0]: df for (sym, tf), df in frames.items() if tf == "1d" and df is not None and len(df) > 300}
+    if not daily:
+        return None
+    horizon = oc.get("horizon", "13 týdnů")
+    lines = [f"📆 Týdenní výhled – {horizon}, pásmo 10–90 % z historie při dnešní volatilitě"]
+    lines += scenarios.outlook_lines(daily, list(daily), horizon)
+    halv = pd.Timestamp(scenarios.HALVINGS[-1], tz="UTC")
+    months = (pd.Timestamp(now) - halv).days / 30.44
+    peaks = [p["peak_after_months"] for p in (scenarios.load_stats().get("btc_cycle_peaks") or [])]
+    lines.append(f"BTC cyklus: {months:.0f} měsíců po halvingu"
+                 + (f" (vrcholy minulých cyklů {min(peaks):.0f}–{max(peaks):.0f} měsíců po halvingu, jen {len(peaks)} případy)"
+                    if peaks else "") + ".")
+    lines.append("Rozpětí je v testu od roku 2022 kalibrované, směr podle trendu ne (reports/scenarios.md). Jen informace.")
+    msg = "\n".join(lines)
+    st["last"] = week
+    state.save()
+    print(msg)
+    if not dry_run and cfg.get("notify", {}).get("telegram", True):
+        (send or notify.telegram)(msg)
+    return msg
 
 
 def event_alerts(cfg, state, now, dry_run=False, events=None, news=None, send=None):
