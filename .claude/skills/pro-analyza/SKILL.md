@@ -20,10 +20,11 @@ Přečti i sekce ✅ a ❌ ve `research/knowledge.md` (znalostní báze mentora 
 market-structure · orderflow-analyst · derivatives-analyst · macro-analyst · events-analyst · news-analyst · sentiment-analyst · quant-analyst
 
 Každé vrátí SKÓRE −2..+2 pro směr obchodu, JISTOTU, FAKTA se zdroji a CO BY ZMĚNILO NÁZOR.
+Oddělení se nesoustředí jen na jeden směr: záporné skóre = data mluví pro opačný směr; u ruční analýzy bez signálu hodnotí long i short zvlášť (skóre pro každý směr).
 Světové burzy (otevírání Asie/Evropy/USA, víkend, CME gap) hodnotí macro-analyst ze sekce `sessions`; entry-exit-planner a devils-advocate je berou jako riziko časování.
 
 ## 3. Exekuce a riziko
-entry-exit-planner (ověří stop/cíle vůči likviditě a nákladům) → risk-manager (velikost, korelace, gap riziko).
+entry-exit-planner (ověří stop/cíle vůči likviditě a nákladům a připraví plán pro OBA směry – long i short – se vzdálenostmi podle očekávaného rozsahu pohybu) → risk-manager (velikost podle pravděpodobnosti a rozsahu, korelace, gap riziko).
 U signálu skeneru vstup/stop/cíle NEMĚŇ – planner jen řekne, zda jsou rozumné.
 
 ## 4. Debata býk × medvěd → head-trader

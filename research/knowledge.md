@@ -60,6 +60,8 @@ Pravidla:
   Ø −0,04 ± 0,42 R ≈ náhoda; nízký objem −0,36 R, cíle 10–20R se netrefí – `reports/recovery.md` – 25. 10. 2026.
 - **Obrat po prudkém pohybu (≥ 4 ATR za 4 h) s těsným stopem na 15M, cíle 10–50R** – 1 177 pokusů, Ø −0,22 až −0,42 R,
   horší než náhoda; výzva 100 USD → ztráta účtu ve 100 % simulací – `reports/reversal.md` – 25. 10. 2026.
+- **1H vstupy oběma směry bez denního směru** a **pevné cíle 2R/4R s držením 5 dní** – Ø −0,05 / −0,04 R –
+  `reports/bias_entry.md` – 26. 10. 2026. Denní směr a nechat obchod běžet jsou podstatné.
 - **Chycení kapitulace (long po panice: −30 % od maxima, top 10 % volatility, Fear & Greed < 20, sweep & reclaim)** –
   30 obchodů, Ø +0,30 ± 0,83 R vs. náhoda +0,34; zisk ze 2 obchodů, stop medián 11 % – `reports/capitulation.md` – 25. 10. 2026.
 - **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.
@@ -87,6 +89,7 @@ Pravidla:
 | H4 | Sweep & reclaim na 1H (propíchnutí min/max 12 h a zavření zpět do 2 h) jako vstup pro denní signál je lepší než dnešní 1H vstup | video „timeframe ladder“ (raventraders) – jen tip | 15M OKX 11/2024–10/2026 | **neprošla** 25. 10. 2026: −0,03 ± 0,19 R/signál vs. C, IS −0,06 – `reports/mtf15.md` |
 | H5 | Spouštěč na 15M (1H close vs EMA20 → 15M dotek EMA20 → 15M obratová svíčka) je lepší než dnešní 1H vstup | test 25. 10. 2026 (`reports/mtf15.md`) | nová data od 26. 10. 2026 | nerozhodnuto: celé období +0,28 R/signál, OOS −0,15 vs. +0,12 – rozhodnout na nových datech (papírově) |
 | H6 | Donchian: celá pozice bez výběru na T1, držení až 60 dní, trailing 4 ATR, bez víkendových vstupů (pullback beze změny) má lepší poměr zisku k propadu než dnešní výstup | optimalizace 25. 10. 2026 (`reports/optimize.md`) – vzorec vybraný ve všech 5 krocích walk-forwardu, ale celý postup výběru dnešek neporazil | nová data od 26. 10. 2026 | nerozhodnuto – rozhodnout na nových datech (papírově) |
+| H7 | Směr z denního grafu (Close vs. EMA200 + sklon EMA50) a průběžné vstupy na 1H (návrat k EMA20 + obratová svíčka), trailing 3 denní ATR, max. 20 dní – vydělá víc R za rok než čekání na denní signál | test 26. 10. 2026 (`reports/bias_entry.md`): +0,10 ± 0,16 R, +45 vs. +30 R/rok, neprůkazné | nová data od 26. 10. 2026 | nerozhodnuto – kandidát na papírové ověření |
 
 ## Hodnocení agentů desku
 
