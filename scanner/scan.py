@@ -23,14 +23,14 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from scanner import broker, ensemble, mtf, notify, pyramid, rules, setups, weekly  # noqa: E402
+from scanner import broker, commands, ensemble, mtf, notify, pyramid, rules, setups, weekly  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import backtest, simulate  # noqa: E402
 from scanner.calibrate import strategy_params  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 from research import events as events_mod  # noqa: E402
 from research import carry as carry_mod  # noqa: E402
-from research import scenarios, sessions  # noqa: E402
+from research import mood, scenarios, sessions  # noqa: E402
 
 STATE = HERE / "state.json"
 _DEMO = {"broker": None, "error": None}
@@ -192,6 +192,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     except Exception as exc:                                          # zprávy a kalendář nesmí shodit skener
         print(f"kalendář/zprávy selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
+        mood.daily_update(cfg, state, frames, now, dry_run)
+    except Exception as exc:                                          # index nálady nesmí shodit skener
+        print(f"index nálady selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
         weekly_outlook(cfg, state, frames, now, dry_run)
     except Exception as exc:
         print(f"týdenní výhled selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
@@ -289,6 +293,12 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         rec["factsheet"] = _write_factsheet(cfg, rec)
         log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
+    if not dry_run and (cfg.get("telegram_commands") or {}).get("enabled", True):
+        try:                                                          # /pozice z Telegramu (odpověď do minuty)
+            from scanner.demo import LOG as DEMO_LOG
+            commands.poll(cfg, state, status["prices"], demo=demo_broker(cfg), demo_log=DEMO_LOG)
+        except Exception as exc:
+            print(f"příkazy z Telegramu selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     return found
 
 
@@ -403,6 +413,9 @@ def weekly_outlook(cfg, state, frames, now, dry_run=False, send=None):
     lines.append(f"BTC cyklus: {months:.0f} měsíců po halvingu"
                  + (f" (vrcholy minulých cyklů {min(peaks):.0f}–{max(peaks):.0f} měsíců po halvingu, jen {len(peaks)} případy)"
                     if peaks else "") + ".")
+    mo = (state.data.get("mood") or {}).get("last")
+    if mo:
+        lines.append(f"🌡️ Nálada trhu {mo['index']}/100 – {mo['zone']}. {mood.history_line(state)} Podrobnosti /nalada.")
     lines.append("Rozpětí je v testu od roku 2022 kalibrované, směr podle trendu ne (reports/scenarios.md). Jen informace.")
     msg = "\n".join(lines)
     st["last"] = week

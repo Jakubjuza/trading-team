@@ -148,6 +148,11 @@ events:                   # kalendář (Fed, CPI, NFP …) a zprávy – researc
   news_price_tol_pct: 6     # titulek s cenami daleko (> 6 %) od aktuální ceny = stará zpráva / spekulace → neposílat
   news_rehash_hours: 12     # stejné téma k minci už o ≥ 12 h dřív = přepis staré zprávy → neposílat
 
+mood:                     # 🌡️ index nálady trhu 1–100 (research/mood.py, reports/mood.md) – jen popis, ne signál
+  enabled: true
+  hour: 8                 # čas Prahy, jednou denně
+  alert_on_zone_change: true   # zpráva jen při změně pásma (medvědí ↔ neutrální …); jinak /nalada
+
 outlook:                  # 📆 týdenní výhled – research/scenarios.py (rozpětí z historie při dnešní volatilitě)
   enabled: true
   weekday: 0              # 0 = pondělí
