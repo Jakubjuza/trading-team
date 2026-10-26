@@ -202,6 +202,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     except Exception as exc:
         print(f"týdenní přehled selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
+        equity.snapshot(cfg, state, status["prices"], now, demo=demo_broker(cfg) if not dry_run else None, dry_run=dry_run)
+    except Exception as exc:                                          # denní snímek účtu nesmí shodit skener
+        print(f"snímek účtu selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
         carry_update(cfg, state, now, dry_run)
     except Exception as exc:
         print(f"carry selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)

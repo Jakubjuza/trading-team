@@ -18,5 +18,7 @@ def _isolate_runtime_files(tmp_path, monkeypatch):
     import scanner.pyramid
     monkeypatch.setattr(scanner.demo, "LOG", tmp_path / "demo_trades.jsonl")
     monkeypatch.setattr(scanner.pyramid, "OUTCOMES", tmp_path / "pyramid_outcomes.jsonl")
+    import scanner.equity
+    monkeypatch.setattr(scanner.equity, "LOG", tmp_path / "equity_log.jsonl")
     monkeypatch.setattr(scanner.scan, "_DEMO", {"broker": None, "error": None})
     monkeypatch.setattr(scanner.broker, "PAPER_LOG", tmp_path / "paper_trades.json")
