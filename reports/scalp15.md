@@ -17,6 +17,20 @@ Potřebná páka při riziku 1 % účtu: medián 1,0×, 90. percentil 1,8×. Př
 
 S náklady 0,10 % ještě hůř (Ø −0,14 až −0,19 R). Úspěšnost 27–42 %, Ø držení 5–7 h. Záporné na všech 8 mincích.
 
+## Long × short zvlášť (doplněno 26. 10. 2026, stejné obchody, náklady 0,07 %)
+
+| Filtr | Výstup | Long n | Long Ø R | Long OOS | Short n | Short Ø R | Short 1. / 2. polovina | Short OOS |
+|---|---|---|---|---|---|---|---|---|
+| F0 | BE+trail | 2 693 | −0,13 | −0,13 | 2 854 | −0,11 | −0,16 / −0,06 | −0,10 |
+| F0 | schody | 2 508 | −0,09 | −0,08 | 2 684 | −0,08 | −0,12 / −0,05 | −0,12 |
+| F0 | cíl 2R | 2 457 | −0,12 | −0,17 | 2 609 | −0,08 | −0,14 / −0,03 | −0,09 |
+| F1 | BE+trail | 1 166 | −0,12 | −0,14 | 1 853 | −0,08 | −0,17 / +0,02 | −0,09 |
+| F1 | schody | 1 080 | −0,07 | −0,02 | 1 750 | −0,07 | −0,15 / +0,02 | −0,16 |
+| F1 | chandelier | 1 172 | −0,08 | +0,02 | 1 832 | −0,11 | −0,21 / −0,01 | −0,13 |
+
+Žádná kombinace směru a výstupu neprošla kritériem. Oba směry ztrácejí podobně (−0,07 až −0,13 R) – problém je
+v nákladech na krátkém timeframu, ne ve volbě long/short.
+
 ## Účet 1 000 USD (náklady 0,07 %, jedna pozice naráz, 935–1 659 obchodů za 2 roky)
 
 | Riziko / obchod | Nejlepší varianta (F1 schody) – konec | Max. propad | Nejhorší varianta (F0 BE+trail) – konec | Max. propad |

@@ -37,4 +37,30 @@ o něco menší než u buy & hold (73–77 % vs. 88 %), ale konečný stav 5–8
 a v dlouhém propadu (2018, 2022) se řeže a kupuje znovu opakovaně (až 6 řezů v jedné kampani).
 Pro srovnání: přikupování do **zisku** testem prošlo (`reports/pyramid.md`) – směr dokupování je podstatný.
 
+## Short a long/short podle trendu (doplněno 26. 10. 2026)
+
+SHORT = zrcadlo: short po růstu ≥ 20 % od 30denního minima, dokup shortu každých +5 %, řez při +15 % nad průměrem,
+znovu výš / na místě, trailing 3 ATR nad cenou, půjčka mince 10 % p.a. LS = long kampaně jen nad SMA200, short jen pod.
+
+| Režim | Varianta | Stop | Kampaní | Ø kampaň | IS / OOS | Náhodné starty | Portfolio konec (z 8 000) | Max. propad |
+|---|---|---|---|---|---|---|---|---|
+| SHORT | B1 jeden short | bez | 465 | −11,8 % | −14,6 / −5,3 % | −6,0 % | 0 (61 likvidací) | 100 % |
+| SHORT | V0 jen dokupovat | bez | 553 | −9,5 % | −11,6 / −4,6 % | −4,3 % | 0 (52 likvidací) | 100 % |
+| SHORT | V1 řez + znovu výš | bez | 553 | −7,7 % | −9,0 / −4,6 % | −4,3 % | 1 (29 likvidací) | 100 % |
+| SHORT | V1 | −20 % | 668 | −4,3 % | −4,6 / −3,5 % | −2,7 % | 125 | 99 % |
+| SHORT | V1 | −35 % | 616 | −6,1 % | −7,1 / −3,8 % | −2,6 % | 20 | 100 % |
+| LS | B1 jeden vstup | bez | 318 | +5,0 % | +10,6 / −7,9 % | +6,6 % | 5 312 | 80 % |
+| LS | V1 řez + znovu | bez | 356 | +2,1 % | +5,0 / −4,6 % | +4,9 % | 3 535 | 73 % |
+| LS | B1 | −20 % | 413 | +5,1 % | +9,4 / −5,0 % | +7,3 % | 13 558 | 59 % |
+| LS | V1 | −20 % | 390 | +2,6 % | +5,5 / −4,3 % | +3,5 % | 12 025 | 54 % |
+| LS | V2 | −35 % | 371 | +3,0 % | +6,7 / −5,6 % | +5,2 % | 7 971 | 69 % |
+
+LS podle směru (V1 bez stopu): long nad SMA200 +9,1 % (n = 156), **short pod SMA200 −3,3 % (n = 200)**.
+Short po letech (V1): kladný jen 2018 (+6 %) a 2022 (+10 %), jinak −8 až −32 %. Nejhorší short kampaně končí likvidací
+(−88 %): BTC 10/2020, SOL 2/2021, AVAX 1/2021 – prudký růst po „přehnaném“ růstu je v kryptu běžný.
+(V2 short bez stopu: podúčty spadly na nulu, další kampaně už nešlo spočítat – v tabulce vynecháno.)
+
+❌ **Neprošlo žádné z 27 nastavení (long, short, LS).** Short ztrácí i pod SMA200; long/short podle trendu je horší
+než jeden vstup ve stejném směru a v OOS záporný. Dokupování do ztráty nezachrání ani obrácení směru.
+
 Nejde o finanční poradenství.

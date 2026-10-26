@@ -70,6 +70,8 @@ Pravidla:
 - **Dokupování při poklesu ≥ 20 % (kus 0,25 účtu, max. 1,5×), řez poloviny při −15 % a znovuotevření níž / na místě** –
   Ø +10 % na kampaň vs. jeden nákup +18,7 % a náhodné starty +10,3 %; OOS ≈ 0; portfolio 45–87 tis. vs. buy & hold
   345 tis. USD – `reports/scale_in.md` – 26. 10. 2026. Dokupovat do zisku (pyramid) ano, do ztráty ne.
+  Zrcadlový short (dokupování shortu při růstu) Ø −4 až −12 % na kampaň, likvidace; long nad / short pod SMA200
+  horší než jeden vstup, OOS záporné; short pod SMA200 Ø −3 %. 15M průraz: long i short zvlášť −0,07 až −0,13 R.
 - **1H vstupy oběma směry bez denního směru** a **pevné cíle 2R/4R s držením 5 dní** – Ø −0,05 / −0,04 R –
   `reports/bias_entry.md` – 26. 10. 2026. Denní směr a nechat obchod běžet jsou podstatné.
 - **Long BTC 21:00–23:00 UTC** – před náklady +0,04 %/den, po nákladech −0,10 až −0,26 % – `reports/portfolio_review.md`.
