@@ -22,7 +22,7 @@ Srovnání: náhodné vstupy (stejná mince, směr, stop v %, ATR v %, výstup; 
 Páka: potřebná páka = riziko účtu / vzdálenost stopu (celý účet jako marže, cross). Reportuje se rozdělení pro riziko
   1 % a podíl obchodů, kde by izolovaná pozice s pákou 20× / 50× byla likvidována dřív, než ji zavře stop
   (likvidace ≈ 1 / páka − 0,5 % udržovací marže).
-Účet: 1 000 USD, riziko 1 % a 2 % na obchod, chronologicky a jen jedna pozice naráz přes všechny mince,
+Účet: 1 000 USD, riziko 1 / 2 / 5 / 10 % na obchod, chronologicky a jen jedna pozice naráz přes všechny mince,
   + 10 000 náhodných pořadí (konec na pořadí nezávisí, propad ano): medián max. propadu, P(propad ≥ 30 % / 50 %).
 Kritérium (předem): výstup projde, jen když při 0,07 % je Ø R > 0 v obou polovinách i v OOS (posledních 30 %)
   a poráží náhodu o ≥ 0,05 R. Pak teprve papírově na nových datech, ne naostro.
@@ -254,7 +254,7 @@ def main():
                 seq.append(t["r"])
                 free = t["time"] + pd.Timedelta(minutes=15 * t["bars"])
         seq = np.array(seq)
-        for f in (0.01, 0.02):
+        for f in (0.01, 0.02, 0.05, 0.10):
             end, dd = account(tr, f)
             sims = np.array([path_stats(rng.permutation(seq), f) for _ in range(10000)])
             print(f"| {fk} | {ex} | {f * 100:.0f} % | {len(seq)} | {end:,.0f} | {dd * 100:.0f} % | {np.median(sims[:, 1]) * 100:.0f} % | "
