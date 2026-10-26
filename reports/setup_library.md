@@ -27,6 +27,10 @@ Citlivost na náklady (donchian / pullback): 0,07 % → +0,39 / +0,29 R · 0,30 
 
 Na 1h/4h krypto tyto setupy po poplatcích výhodu nemají; denní sledování trendu ano.
 
+Dále neprošlo (26. 10. 2026): průraz ve směru pohybu na 15M s těsným stopem a posouváním stopu – Ø −0,07 až −0,12 R
+(`reports/scalp15.md`); dokupování při poklesu s řezem a znovuotevřením – horší než jeden nákup i než náhoda
+(`reports/scale_in.md`).
+
 ## Pravděpodobnosti
 
 `scanner/probabilities.json` (generuje `scanner/calibrate.py`), detail v `reports/probabilities.md`.
