@@ -153,6 +153,17 @@ mood:                     # 🌡️ index nálady trhu 1–100 (research/mood.py
   hour: 8                 # čas Prahy, jednou denně
   alert_on_zone_change: true   # zpráva jen při změně pásma (medvědí ↔ neutrální …); jinak /nalada
 
+narrative:                # 📡 radar vyprávění – research/narrative.py: shoda zdrojů (bear/bull) + potvrzení cenou BTC 1H→4H→1D
+  enabled: true           # jen popis a měření dopředu, ne vstupní signál; /radar v Telegramu
+  fetch_minutes: 60
+  window_hours: 72        # okno shody
+  baseline_days: 14       # srovnání: sílí vyprávění proti posledním 14 dnům?
+  min_sources: 4          # shoda = aspoň 4 různé zdroje na jedné straně
+  net_threshold: 0.25     # vážený poměr (býčí − medvědí) / celkem
+  rising: 0.15            # „sílí“ = net o ≥ 0,15 dál od základu
+  max_alerts_per_day: 2
+  telegram_channels: []   # veřejné kanály (t.me/s/<kanál>); ověřené doplní běh „radar“ ve Výzkumu naživo
+
 outlook:                  # 📆 týdenní výhled – research/scenarios.py (rozpětí z historie při dnešní volatilitě)
   enabled: true
   weekday: 0              # 0 = pondělí

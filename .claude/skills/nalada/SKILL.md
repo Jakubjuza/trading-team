@@ -28,6 +28,9 @@ Každé tvrzení s odkazem (URL). Co nejde ověřit, nepiš.
 - **Index desku** = měřitelný index + 5 × AI skóre (tj. max. ±10 bodů), oříznutý na 1–100. Vždy ukaž obě čísla
   zvlášť, ať je vidět, co je měřené a co je úsudek.
 - Pásma: 1–20 silně medvědí, 21–40 medvědí, 41–60 neutrální, 61–80 býčí, 81–100 silně býčí.
+- 📡 Radar vyprávění: z `research/narrative_log.jsonl` (posledních 7 dní) shrň, které vyprávění sílí (bear / bull), kolik
+  různých zdrojů ho nese a jestli ho potvrzuje cena; z `research/narrative_calls.jsonl` a `research/narrative_sources.json`
+  uveď, jak dopadly dřívější signály radaru a které zdroje mají zatím nejlepší úspěšnost (jen při n ≥ 10).
 - Připiš řádek do `research/mood_ai.jsonl`:
   `{"date", "index", "ai_score", "ai_confidence", "desk_index", "zone"}` – po ≥ 26 týdnech mentor ověří,
   jestli AI úprava něco přidává (jinak se z reportu vypustí).

@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: "Který výzkum: carry, mtf15, capitulation, reversal nebo recovery"
+        description: "Který výzkum: carry, mtf15, capitulation, reversal, recovery nebo radar"
         type: choice
-        options: [carry, mtf15, capitulation, reversal, recovery]
+        options: [carry, mtf15, capitulation, reversal, recovery, radar]
         default: carry
   push:
     branches: ["claude/**"]
@@ -94,3 +94,18 @@ jobs:
       - run: pip install -q -r scanner/requirements.txt
       - name: Vstup na 15M při začínajícím uptrendu po propadu a panice (15M z OKX)
         run: python3 research/experiments/recovery.py /tmp/cache
+
+  radar:
+    if: github.event_name == 'workflow_dispatch' && inputs.job == 'radar'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      - name: Radar vyprávění – dostupnost zdrojů a aktuální shoda
+        run: python3 research/narrative.py --check

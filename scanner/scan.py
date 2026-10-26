@@ -30,7 +30,7 @@ from scanner.calibrate import strategy_params  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 from research import events as events_mod  # noqa: E402
 from research import carry as carry_mod  # noqa: E402
-from research import mood, scenarios, sessions  # noqa: E402
+from research import mood, narrative, scenarios, sessions  # noqa: E402
 
 STATE = HERE / "state.json"
 _DEMO = {"broker": None, "error": None}
@@ -195,6 +195,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         mood.daily_update(cfg, state, frames, now, dry_run)
     except Exception as exc:                                          # index nálady nesmí shodit skener
         print(f"index nálady selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
+        narrative.update(cfg, state, frames, now, dry_run)
+    except Exception as exc:                                          # radar vyprávění nesmí shodit skener
+        print(f"radar vyprávění selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
         weekly_outlook(cfg, state, frames, now, dry_run)
     except Exception as exc:

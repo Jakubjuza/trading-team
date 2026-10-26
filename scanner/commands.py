@@ -14,7 +14,7 @@ import requests
 from scanner import notify
 
 HELP = ("Příkazy: /pozice – stav otevřených pozic (jádro, pyramida, ensemble, demo OKX) · /nalada – index nálady trhu "
-        "1–100 se složkami · /pomoc – tento seznam. "
+        "1–100 se složkami · /radar – radar vyprávění (sílí bear, nebo bull? potvrzuje to cena?) · /pomoc – tento seznam. "
         "Odpověď přijde do minuty.")
 
 
@@ -151,6 +151,9 @@ def poll(cfg, state, prices, demo=None, demo_log=None, dry_run=False, get=None, 
             replies.append(positions_report(cfg, state, prices, demo, demo_log))
         elif cmd in ("/nalada", "/nálada", "nalada", "nálada"):
             replies.append(mood_report(state))
+        elif cmd in ("/radar", "radar"):
+            from research import narrative
+            replies.append(narrative.report(state))
         elif cmd in ("/pomoc", "/help", "/start"):
             replies.append(HELP)
     state.save()
