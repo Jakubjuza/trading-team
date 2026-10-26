@@ -98,6 +98,19 @@ demo:                     # 🧪 zrcadlení papírových obchodů na DEMO účet
   quote: USDC             # OKX EEA (EU, MiCA) nemá USDT; futures = X-Perps v USD (BTC-USD_UM_XPERP…), jinak USDC perpetual
   leverage: 2             # jen pro swap: izolovaná marže
 
+ensemble:                 # 🧭 trendová alokace – Donchian ensemble s cílovou volatilitou, jen long (reports/portfolio_review.md)
+  enabled: true
+  windows: [10, 20, 40, 80, 160]
+  target_vol: 0.40        # cílová roční volatilita na minci
+  capital_frac: 0.5       # papírová kniha = 50 % account_size
+  min_rebalance: 0.01     # obchodovat jen při změně váhy ≥ 1 % kapitálu
+  demo: true              # zrcadlit na spotovém DEMO účtu OKX (jen mince s párem v demo.quote)
+
+weekly_report:            # 📊 jedna týdenní zpráva s výsledky všech částí (scanner/weekly.py)
+  enabled: true
+  weekday: 0              # pondělí
+  hour: 8
+
 pyramid:                  # 🔺 samostatná papírová část: přikupování do vydělávající pozice (reports/pyramid.md, P2)
   enabled: true           # stejné denní signály, vlastní limity a deník research/pyramid_outcomes.jsonl; na burzu nic
   strategies: [donchian_1d, pullback_1d]

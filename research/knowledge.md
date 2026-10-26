@@ -34,7 +34,7 @@ Pravidla:
 
 - **Donchian ensemble s cílovou volatilitou** (5 kanálů 10–160 dní, jen long, 40 % vol na minci) – +19 %/rok, Sharpe 1,24,
   IS/OOS 1,42/1,47; s jádrem korelace −0,03, kombinace Sharpe 1,86 – `reports/portfolio_review.md` – 26. 10. 2026.
-  Shoda se studií Zarattini a kol. Čeká na rozhodnutí uživatele.
+  Shoda se studií Zarattini a kol. Od 26. 10. 2026 běží jako 🧭 Ensemble (papír + spotové demo).
 
 ## ❌ U nás vyvráceno (neopakovat naslepo)
 
