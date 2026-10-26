@@ -23,7 +23,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from scanner import broker, ensemble, mtf, notify, pyramid, rules, setups, weekly  # noqa: E402
+from scanner import broker, commands, ensemble, mtf, notify, pyramid, rules, setups, weekly  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import backtest, simulate  # noqa: E402
 from scanner.calibrate import strategy_params  # noqa: E402
@@ -285,6 +285,12 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         rec["factsheet"] = _write_factsheet(cfg, rec)
         log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
+    if not dry_run and (cfg.get("telegram_commands") or {}).get("enabled", True):
+        try:                                                          # /pozice z Telegramu (odpověď do minuty)
+            from scanner.demo import LOG as DEMO_LOG
+            commands.poll(cfg, state, status["prices"], demo=demo_broker(cfg), demo_log=DEMO_LOG)
+        except Exception as exc:
+            print(f"příkazy z Telegramu selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     return found
 
 
