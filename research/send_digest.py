@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Pošle týdenní shrnutí na Telegram: mentor (research/mentor_digest.md) nebo nálada trhu (research/mood_digest.md).
+"""Pošle týdenní shrnutí na Telegram: mentor (research/mentor_digest.md), nálada trhu (research/mood_digest.md)
+nebo AI průzkumník (research/ai_digest.md).
 
-Spouští workflow „Mentor na Telegram“ a „Nálada trhu na Telegram“:  python3 research/send_digest.py mentor|mood
+Spouští workflow „Mentor na Telegram“, „Nálada trhu na Telegram“ a „AI průzkumník na Telegram“:
+    python3 research/send_digest.py mentor|mood|ai
 """
 import sys
 from pathlib import Path
@@ -12,7 +14,8 @@ sys.path.insert(0, str(ROOT))
 from scanner import notify  # noqa: E402
 
 DIGESTS = {"mentor": (ROOT / "research" / "mentor_digest.md", "🎓 Mentor desku – týdenní shrnutí"),
-           "mood": (ROOT / "research" / "mood_digest.md", "🌡️ Nálada trhu – týdenní report")}
+           "mood": (ROOT / "research" / "mood_digest.md", "🌡️ Nálada trhu – týdenní report"),
+           "ai": (ROOT / "research" / "ai_digest.md", "🤖 AI průzkumník – novinky a vylepšení týmu")}
 
 
 def main():
