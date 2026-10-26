@@ -1,4 +1,4 @@
-# Pravděpodobnosti strategií (2026-10-25)
+# Pravděpodobnosti strategií (2026-10-26)
 
 Po nákladech 0.15 % na stranu. P(T1) = cena došla na T1 dřív než na stop.
 
@@ -29,7 +29,7 @@ Kalibrace na posledních 30 % (n=171): předpověď P(T1) 33% → skutečnost 29
 
 Celkem 646 obchodů: P(T1) 27%, P(zisk) 44%, P(≥2R) 15%, Ø +0.29 R ± 0.14
 
-Kalibrace na posledních 30 % (n=220): předpověď P(T1) 29% → skutečnost 25%; Ø R předpověď +0.33 → skutečnost +0.14; Brier 0.1909 (bez modelu 0.1875)
+Kalibrace na posledních 30 % (n=220): předpověď P(T1) 29% → skutečnost 25%; Ø R předpověď +0.33 → skutečnost +0.14; Brier 0.1908 (bez modelu 0.1875)
 
 | Předpověď P(T1) | Obchodů | Ø předpověď | Skutečnost |
 |---|---|---|---|
@@ -37,9 +37,9 @@ Kalibrace na posledních 30 % (n=220): předpověď P(T1) 29% → skutečnost 25
 
 | Režim (trend · volatilita · objem) | n | P(T1) | P(zisk) | Ø R |
 |---|---|---|---|---|
-| with · low · normal | 289 | 30% | 45% | +0.36 |
+| with · low · normal | 288 | 31% | 45% | +0.36 |
 | with · mid · normal | 207 | 27% | 42% | +0.21 |
 | with · high · normal | 72 | 21% | 33% | -0.04 |
-| with · low · high | 33 | 21% | 52% | +0.28 |
+| with · low · high | 34 | 21% | 53% | +0.30 |
 | with · mid · high | 30 | 30% | 50% | +0.99 |
 

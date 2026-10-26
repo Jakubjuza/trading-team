@@ -1,4 +1,4 @@
-# Kalendář událostí a krypto (2026-10-25)
+# Kalendář událostí a krypto (2026-10-26)
 
 ## FOMC (rozhodnutí Fedu, 14:00 New York)
 

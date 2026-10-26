@@ -2,27 +2,27 @@
  "split_2022": [
   {
    "horizon": "4 týdny",
-   "n_train": 10096,
-   "n_test": 13832,
+   "n_train": 10095,
+   "n_test": 13848,
    "below_q10": 0.121,
-   "above_median": 0.417,
+   "above_median": 0.416,
    "above_q90": 0.062,
    "coverage_10_90": 0.817,
    "z": {
     "0.1": -1.228,
     "0.5": 0.103,
-    "0.9": 2.105
+    "0.9": 2.102
    },
    "regimes": {
     "týden ↑ · měsíc ↑": {
      "pred_p_up": 0.546,
      "actual_p_up": 0.415,
-     "n_test": 4041
+     "n_test": 4049
     },
     "týden ↑ · měsíc ↓": {
      "pred_p_up": 0.539,
-     "actual_p_up": 0.521,
-     "n_test": 1143
+     "actual_p_up": 0.518,
+     "n_test": 1151
     },
     "týden ↓ · měsíc ↑": {
      "pred_p_up": 0.554,
@@ -38,16 +38,16 @@
   },
   {
    "horizon": "13 týdnů",
-   "n_train": 9592,
-   "n_test": 13328,
+   "n_train": 9591,
+   "n_test": 13344,
    "below_q10": 0.189,
-   "above_median": 0.355,
+   "above_median": 0.356,
    "above_q90": 0.049,
    "coverage_10_90": 0.762,
    "z": {
-    "0.1": -1.009,
+    "0.1": -1.01,
     "0.5": 0.241,
-    "0.9": 2.405
+    "0.9": 2.404
    },
    "regimes": {
     "týden ↑ · měsíc ↑": {
@@ -67,15 +67,15 @@
     },
     "týden ↓ · měsíc ↓": {
      "pred_p_up": 0.561,
-     "actual_p_up": 0.451,
-     "n_test": 6832
+     "actual_p_up": 0.453,
+     "n_test": 6848
     }
    }
   },
   {
    "horizon": "26 týdnů",
-   "n_train": 8864,
-   "n_test": 12600,
+   "n_train": 8863,
+   "n_test": 12616,
    "below_q10": 0.217,
    "above_median": 0.292,
    "above_q90": 0.047,
@@ -83,7 +83,7 @@
    "z": {
     "0.1": -0.882,
     "0.5": 0.454,
-    "0.9": 2.767
+    "0.9": 2.762
    },
    "regimes": {
     "týden ↑ · měsíc ↑": {
@@ -104,7 +104,7 @@
     "týden ↓ · měsíc ↓": {
      "pred_p_up": 0.648,
      "actual_p_up": 0.485,
-     "n_test": 6132
+     "n_test": 6148
     }
    }
   }
@@ -113,49 +113,49 @@
   "empirický střed": [
    {
     "horizon": "4 týdny",
-    "n_test": 13832,
+    "n_test": 13848,
     "below_q10": 0.114,
-    "above_median": 0.458,
+    "above_median": 0.457,
     "above_q90": 0.073,
     "coverage_10_90": 0.813
    },
    {
     "horizon": "13 týdnů",
-    "n_test": 13328,
+    "n_test": 13344,
     "below_q10": 0.141,
-    "above_median": 0.426,
+    "above_median": 0.427,
     "above_q90": 0.066,
     "coverage_10_90": 0.793
    },
    {
     "horizon": "26 týdnů",
-    "n_test": 12600,
+    "n_test": 12616,
     "below_q10": 0.164,
     "above_median": 0.393,
     "above_q90": 0.063,
-    "coverage_10_90": 0.772
+    "coverage_10_90": 0.773
    }
   ],
   "neutrální střed": [
    {
     "horizon": "4 týdny",
-    "n_test": 13832,
+    "n_test": 13848,
     "below_q10": 0.11,
-    "above_median": 0.466,
+    "above_median": 0.465,
     "above_q90": 0.073,
-    "coverage_10_90": 0.817
+    "coverage_10_90": 0.818
    },
    {
     "horizon": "13 týdnů",
-    "n_test": 13328,
+    "n_test": 13344,
     "below_q10": 0.126,
-    "above_median": 0.442,
+    "above_median": 0.443,
     "above_q90": 0.064,
     "coverage_10_90": 0.81
    },
    {
     "horizon": "26 týdnů",
-    "n_test": 12600,
+    "n_test": 12616,
     "below_q10": 0.104,
     "above_median": 0.468,
     "above_q90": 0.065,
