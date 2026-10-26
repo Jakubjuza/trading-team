@@ -77,11 +77,16 @@ def update(cfg, state, frames, cost_pct, dry_run=False, send=None, demo=None):
         if abs(tgt - cur) < p["min_rebalance"] * equity and not (tgt == 0 and cur > 0):
             continue
         dq = (tgt - cur) / prices[c]
-        st["qty"][c] = st["qty"].get(c, 0.0) + dq
+        q0 = st["qty"].get(c, 0.0)
+        if dq > 0:                                                     # průměrná nákupní cena vč. nákladů
+            avg = st.setdefault("avg", {})
+            avg[c] = (q0 * avg.get(c, prices[c]) + dq * prices[c] * (1 + cost)) / (q0 + dq)
+        st["qty"][c] = q0 + dq
         st["cash"] -= dq * prices[c] + abs(dq) * prices[c] * cost
         trades.append((c, dq))
     for c in [c for c, q in st["qty"].items() if abs(q) < 1e-12]:
         del st["qty"][c]
+        st.get("avg", {}).pop(c, None)
     equity = st["cash"] + sum(q * prices.get(c, 0) for c, q in st["qty"].items())
     old_w = st.get("weights", {})
     st["weights"] = {c: round(w, 4) for c, w in tw.items()}
