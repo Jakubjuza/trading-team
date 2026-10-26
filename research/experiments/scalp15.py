@@ -242,6 +242,24 @@ def main():
         ok = rs[:half].mean() > 0 and rs[half:].mean() > 0 and rs[cut:].mean() > 0 and rs.mean() - rnd >= 0.05
         print(f"  {fk} {ex}: {'✅ prošlo' if ok else '❌ neprošlo'} (Ø {rs.mean():+.3f}, náhoda {rnd:+.3f})")
 
+    print("\n=== Long × short zvlášť (náklady 0,07 %; doplněno 26. 10. 2026, stejné obchody, stejné kritérium) ===")
+    print("| Filtr | Výstup | Směr | Obchodů | Úspěšnost | Ø R ± CI | 1. / 2. polovina | OOS ± CI | Náhoda Ø R | Kritérium |")
+    print("|---|---|---|---|---|---|---|---|---|---|")
+    for (fk, cost, ex), (tr, rs, rnd) in keep.items():
+        if cost != 0.07:
+            continue
+        for d in ("long", "short"):
+            sub = [t for t in tr if t["dir"] == d]
+            r = np.array([t["r"] for t in sub])
+            if len(r) < 2:
+                continue
+            half, cut = len(r) // 2, int(len(r) * 0.7)
+            rd = random_r(sub, data, ex, cost, rng)
+            ok = r[:half].mean() > 0 and r[half:].mean() > 0 and r[cut:].mean() > 0 and r.mean() - rd >= 0.05
+            print(f"| {fk} | {ex} | {d} | {len(r)} | {(r > 0).mean() * 100:.0f} % | {r.mean():+.3f} ± {ci(r):.2f} | "
+                  f"{r[:half].mean():+.3f} / {r[half:].mean():+.3f} | {r[cut:].mean():+.3f} ± {ci(r[cut:]):.2f} | "
+                  f"{rd:+.3f} | {'✅' if ok else '❌'} |")
+
     print("\n=== Účet 1 000 USD, náklady 0,07 %, jedna pozice naráz přes všechny mince ===")
     print("| Filtr | Výstup | Riziko | Obchodů | Konec | Max. propad (skutečné pořadí) | Medián max. propadu (10 000 pořadí) | P(propad ≥ 30 %) | P(propad ≥ 50 %) |")
     print("|---|---|---|---|---|---|---|---|---|")
