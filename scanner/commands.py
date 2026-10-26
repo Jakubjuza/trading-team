@@ -13,7 +13,8 @@ import requests
 
 from scanner import notify
 
-HELP = ("Příkazy: /pozice – stav otevřených pozic (jádro, pyramida, ensemble, demo OKX) · /pomoc – tento seznam. "
+HELP = ("Příkazy: /pozice – stav otevřených pozic (jádro, pyramida, ensemble, demo OKX) · /nalada – index nálady trhu "
+        "1–100 se složkami · /pomoc – tento seznam. "
         "Odpověď přijde do minuty.")
 
 
@@ -79,6 +80,17 @@ def positions_report(cfg, state, prices, demo=None, demo_log=None):
     return "\n".join(lines)
 
 
+def mood_report(state):
+    """🌡️ Poslední denní index nálady (počítá skener jednou denně ráno) se složkami a vývojem."""
+    from research import mood
+    st = state.data.get("mood") or {}
+    if not st.get("last"):
+        return "🌡️ Index nálady ještě není spočítaný (skener ho počítá jednou denně ráno)."
+    text = mood.message(st["last"])
+    hist = mood.history_line(state)
+    return text.replace("\nPopis nálady", (f"\n{hist}" if hist else "") + f"\nSpočítáno {st['last']['as_of'][:10]}. Popis nálady", 1)
+
+
 def _paper_prices(demo_log):
     """Průměrná cena nákupů ensemblu z deníku dema (záloha pro starší knihu bez průměrné ceny)."""
     out = {}
@@ -137,6 +149,8 @@ def poll(cfg, state, prices, demo=None, demo_log=None, dry_run=False, get=None, 
         cmd = text.split()[0].split("@")[0] if text else ""
         if cmd in ("/pozice", "pozice", "/stav"):
             replies.append(positions_report(cfg, state, prices, demo, demo_log))
+        elif cmd in ("/nalada", "/nálada", "nalada", "nálada"):
+            replies.append(mood_report(state))
         elif cmd in ("/pomoc", "/help", "/start"):
             replies.append(HELP)
     state.save()

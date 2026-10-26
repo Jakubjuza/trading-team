@@ -84,6 +84,11 @@ Pravidla:
 - **Při mnoha testech je potřeba vyšší laťka** (t > 3 místo 2) – [Harvey, Liu, Zhu 2016, RFS](https://www.nber.org/papers/w20592).
   → u nás: změna jen při OOS zlepšení ≥ 0,05 R, ≥ 100 OOS obchodů a výhodě nad náhodou.
 
+- **Index nálady (trend, šíře trhu, volatilita, makro) jako předpověď směru BTC** – od 2022 korelace s výnosem
+  7/30/90 dní +0,03 až +0,09, pásma neseřazená; slouží jen jako popis nálady – `reports/mood.md` – 26. 10. 2026.
+- **Smart DCA (pool na propady) a lotový DCA bot (TP/SL na každý nákup)** – horší než obyčejné DCA na BTC/ETH/SOL ve
+  všech variantách (rolling 3 roky: smart DCA vyhrál v 0–20 % období) – test v chatu 26. 10. 2026.
+
 ## Hypotézy k testu (fronta pro rutinu „Kontrola a ladění skeneru“)
 
 | ID | Hypotéza (předem stanovená) | Zdroj | Data | Stav |
@@ -95,6 +100,7 @@ Pravidla:
 | H5 | Spouštěč na 15M (1H close vs EMA20 → 15M dotek EMA20 → 15M obratová svíčka) je lepší než dnešní 1H vstup | test 25. 10. 2026 (`reports/mtf15.md`) | nová data od 26. 10. 2026 | nerozhodnuto: celé období +0,28 R/signál, OOS −0,15 vs. +0,12 – rozhodnout na nových datech (papírově) |
 | H6 | Donchian: celá pozice bez výběru na T1, držení až 60 dní, trailing 4 ATR, bez víkendových vstupů (pullback beze změny) má lepší poměr zisku k propadu než dnešní výstup | optimalizace 25. 10. 2026 (`reports/optimize.md`) – vzorec vybraný ve všech 5 krocích walk-forwardu, ale celý postup výběru dnešek neporazil | nová data od 26. 10. 2026 | nerozhodnuto – rozhodnout na nových datech (papírově) |
 | H7 | Směr z denního grafu (Close vs. EMA200 + sklon EMA50) a průběžné vstupy na 1H (návrat k EMA20 + obratová svíčka), trailing 3 denní ATR, max. 20 dní – vydělá víc R za rok než čekání na denní signál | test 26. 10. 2026 (`reports/bias_entry.md`): +0,10 ± 0,16 R, +45 vs. +30 R/rok, neprůkazné | nová data od 26. 10. 2026 | nerozhodnuto – kandidát na papírové ověření |
+| H8 | AI úprava týdenního indexu nálady (události a geopolitika, ±10 bodů) zlepší vztah indexu k výnosu BTC za další 4 týdny (korelace AI skóre s výnosem > 0,2 a vyšší než u měřeného indexu) | vlastní, 26. 10. 2026 | `research/mood_ai.jsonl` – týdenně | čeká na data (≥ 26 týdnů) |
 
 ## Hodnocení agentů desku
 
