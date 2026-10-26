@@ -64,6 +64,12 @@ Pravidla:
   Ø −0,04 ± 0,42 R ≈ náhoda; nízký objem −0,36 R, cíle 10–20R se netrefí – `reports/recovery.md` – 25. 10. 2026.
 - **Obrat po prudkém pohybu (≥ 4 ATR za 4 h) s těsným stopem na 15M, cíle 10–50R** – 1 177 pokusů, Ø −0,22 až −0,42 R,
   horší než náhoda; výzva 100 USD → ztráta účtu ve 100 % simulací – `reports/reversal.md` – 25. 10. 2026.
+- **Průraz ve směru pohybu na 15M s těsným stopem (0,3–1,5 %) a posouváním stopu (BE + trailing, schody, chandelier)** –
+  10 280 spouštěčů, Ø −0,07 až −0,12 R po nákladech 0,07 %, o 0,02–0,05 R lepší než náhoda, ale záporné; účet 1 000 USD
+  při riziku 1 % → 103–421 USD, při **5–10 % → 0–2 USD** – `reports/scalp15.md` – 26. 10. 2026.
+- **Dokupování při poklesu ≥ 20 % (kus 0,25 účtu, max. 1,5×), řez poloviny při −15 % a znovuotevření níž / na místě** –
+  Ø +10 % na kampaň vs. jeden nákup +18,7 % a náhodné starty +10,3 %; OOS ≈ 0; portfolio 45–87 tis. vs. buy & hold
+  345 tis. USD – `reports/scale_in.md` – 26. 10. 2026. Dokupovat do zisku (pyramid) ano, do ztráty ne.
 - **1H vstupy oběma směry bez denního směru** a **pevné cíle 2R/4R s držením 5 dní** – Ø −0,05 / −0,04 R –
   `reports/bias_entry.md` – 26. 10. 2026. Denní směr a nechat obchod běžet jsou podstatné.
 - **Long BTC 21:00–23:00 UTC** – před náklady +0,04 %/den, po nákladech −0,10 až −0,26 % – `reports/portfolio_review.md`.
