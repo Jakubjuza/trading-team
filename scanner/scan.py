@@ -23,7 +23,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from scanner import broker, mtf, notify, pyramid, rules, setups  # noqa: E402
+from scanner import broker, ensemble, mtf, notify, pyramid, rules, setups, weekly  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import backtest, simulate  # noqa: E402
 from scanner.calibrate import strategy_params  # noqa: E402
@@ -177,6 +177,11 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     except Exception as exc:                                          # samostatná papírová část nesmí shodit skener
         print(f"pyramida selhala: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
+        ens_demo = demo_broker(cfg) if (cfg.get("ensemble") or {}).get("demo") and not dry_run else None
+        ensemble.update(cfg, state, frames, cost_pct, dry_run, demo=ens_demo)
+    except Exception as exc:                                          # samostatná část nesmí shodit skener
+        print(f"ensemble selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
         mtf_entries(cfg, state, frames, now, dry_run)
     except Exception as exc:                                          # vstup z nižších TF nesmí shodit skener
         print(f"vstup z nižších TF selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
@@ -190,6 +195,12 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         weekly_outlook(cfg, state, frames, now, dry_run)
     except Exception as exc:
         print(f"týdenní výhled selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
+        from scanner.demo import LOG as DEMO_LOG
+        weekly.maybe_send(cfg, state, now, health_fn=lambda: strategy_health(cfg, frames, now), demo_log=DEMO_LOG,
+                          dry_run=dry_run)
+    except Exception as exc:
+        print(f"týdenní přehled selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
         carry_update(cfg, state, now, dry_run)
     except Exception as exc:
@@ -730,22 +741,13 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         print(f"přehled pozic selhal: {exc}", file=sys.stderr)
     if status.get("errors"):
         lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
-    try:
-        health = strategy_health(cfg, status.get("frames"), now)
-        if health:
-            lines.append(health)
-        cl = carry_line(state)
-        if cl:
-            lines.append(cl)
-        pl = pyramid.heartbeat_line(state)
-        if pl:
-            lines.append(pl)
+    try:                                                              # výkon částí je v 📊 týdenním přehledu (scanner/weekly.py)
         if (cfg.get("demo") or {}).get("enabled"):
             n_demo = sum(1 for p in state.data.get("open", []) if (p.get("demo") or {}).get("status") == "open")
             lines.append(f"Demo OKX: {'připojeno' if demo_broker(cfg) else 'nepřipojeno (' + ((_DEMO['error'] or (0, 'chybí klíče'))[1]) + ')'}"
                          f", otevřené pozice {n_demo}")
     except Exception as exc:
-        print(f"zdraví strategií selhalo: {exc}", file=sys.stderr)
+        print(f"stav dema selhal: {exc}", file=sys.stderr)
     try:
         up = sessions.upcoming_line(now, hours)
         if up:
