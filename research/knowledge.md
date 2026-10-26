@@ -32,6 +32,10 @@ Pravidla:
   − 2 ATR, trailing 3 ATR, max. 20 dní: Ø +0,70 vs. +0,33 R, MAR 2,04 vs. 0,89, odložený rok +28,7 vs. +2,4 R, robustní
   v sousedních nastaveních – `reports/pyramid.md` – 25. 10. 2026. Od 25. 10. 2026 běží jako samostatná papírová část 🔺 Pyramida (scanner/pyramid.py) – ověření naživo.
 
+- **Donchian ensemble s cílovou volatilitou** (5 kanálů 10–160 dní, jen long, 40 % vol na minci) – +19 %/rok, Sharpe 1,24,
+  IS/OOS 1,42/1,47; s jádrem korelace −0,03, kombinace Sharpe 1,86 – `reports/portfolio_review.md` – 26. 10. 2026.
+  Shoda se studií Zarattini a kol. Čeká na rozhodnutí uživatele.
+
 ## ❌ U nás vyvráceno (neopakovat naslepo)
 
 - **Mean reversion RSI(2) v trendu, denní** – Ø −0,10 R, horší než náhoda – `reports/adaptive.md`.
@@ -62,6 +66,7 @@ Pravidla:
   horší než náhoda; výzva 100 USD → ztráta účtu ve 100 % simulací – `reports/reversal.md` – 25. 10. 2026.
 - **1H vstupy oběma směry bez denního směru** a **pevné cíle 2R/4R s držením 5 dní** – Ø −0,05 / −0,04 R –
   `reports/bias_entry.md` – 26. 10. 2026. Denní směr a nechat obchod běžet jsou podstatné.
+- **Long BTC 21:00–23:00 UTC** – před náklady +0,04 %/den, po nákladech −0,10 až −0,26 % – `reports/portfolio_review.md`.
 - **Chycení kapitulace (long po panice: −30 % od maxima, top 10 % volatility, Fear & Greed < 20, sweep & reclaim)** –
   30 obchodů, Ø +0,30 ± 0,83 R vs. náhoda +0,34; zisk ze 2 obchodů, stop medián 11 % – `reports/capitulation.md` – 25. 10. 2026.
 - **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.
