@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: "Který výzkum: carry, mtf15, capitulation, reversal, recovery nebo scalp15"
+        description: "Který výzkum: carry, mtf15, capitulation, reversal, recovery, scalp15 nebo scale_in"
         type: choice
-        options: [carry, mtf15, capitulation, reversal, recovery, scalp15]
+        options: [carry, mtf15, capitulation, reversal, recovery, scalp15, scale_in]
         default: carry
   push:
     branches: ["claude/**"]
@@ -109,3 +109,18 @@ jobs:
       - run: pip install -q -r scanner/requirements.txt
       - name: Průraz ve směru pohybu na 15M, těsný stop a posouvání stopu + páka a účet (15M z OKX)
         run: python3 research/experiments/scalp15.py /tmp/cache
+
+  scale_in:
+    if: github.event_name == 'workflow_dispatch' && inputs.job == 'scale_in'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      - name: Dokupování při poklesu, řez části ztráty, znovuotevření a držení po obratu (denní data ~10 let)
+        run: python3 research/experiments/scale_in.py /tmp/cache
