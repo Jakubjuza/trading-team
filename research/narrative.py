@@ -37,7 +37,8 @@ LOG = ROOT / "research" / "narrative_log.jsonl"          # zatříděné zprávy
 CALLS = ROOT / "research" / "narrative_calls.jsonl"      # signály radaru a jejich vyhodnocení
 SOURCES_OUT = ROOT / "research" / "narrative_sources.json"  # úspěšnost zdrojů (čte AI desk a mentor)
 
-# název → (druh, URL, váha). Váha: analytici a výzkum 1,5 · média 1 · burzy 0,5 · komunita 0,5 · Telegram 1.
+# název → (druh, URL, váha). Váha: analytici 1,5 · média 1 · komunita 0,5 · Telegram 1. Ověřeno během „radar“
+# 26. 10. 2026 z GitHub Actions; nefungovaly (HTTP chyba): Glassnode Insights RSS, Bybit API oznámení, r/CryptoCurrency.
 SOURCES = {
     "CoinDesk": ("rss", "https://www.coindesk.com/arc/outboundfeeds/rss/", 1.0),
     "Cointelegraph": ("rss", "https://cointelegraph.com/rss", 1.0),
@@ -46,24 +47,24 @@ SOURCES = {
     "Bitcoin Magazine": ("rss", "https://bitcoinmagazine.com/feed", 1.0),
     "CryptoSlate": ("rss", "https://cryptoslate.com/feed/", 1.0),
     "Blockworks": ("rss", "https://blockworks.co/feed", 1.0),
-    "Glassnode Insights": ("rss", "https://insights.glassnode.com/rss/", 1.5),
     "Analytici (Google News)": ("rss", ev.google_news("bitcoin (analyst OR analysts OR trader OR strategist) "
                                                       "(bear OR bull OR bottom OR top OR rally OR crash)"), 1.5),
-    "Bybit oznámení": ("bybit", "https://api.bybit.com/v5/announcements/index?locale=en-US&limit=30", 0.5),
     "Reddit r/BitcoinMarkets": ("rss", "https://www.reddit.com/r/BitcoinMarkets/.rss", 0.5),
-    "Reddit r/CryptoCurrency": ("rss", "https://www.reddit.com/r/CryptoCurrency/.rss", 0.5),
 }
 # kandidáti veřejných kanálů Telegramu pro --check (do configu jen ty, které se ověří)
-TG_CANDIDATES = ["WatcherGuru", "wublockchainenglish", "cointelegraph", "coindesk", "glassnode", "whale_alert_io"]
+TG_CANDIDATES = ["WatcherGuru", "wublockchainenglish", "cointelegraph", "glassnode"]
 TG_WEIGHT = 1.0
 
 # fráze vyprávění: (regex, váha). Celé fráze mají přednost před jednotlivými slovy (počítají se první a vymažou se).
-FLIPS = [  # „konec bear marketu“ = býčí, „konec bull runu“ = medvědí
-    (r"\b(bear market|crypto winter|bear trend|downtrend)\s+(is\s+)?(over|ending|ended|done)\b", +2),
+FLIPS = [  # „konec bear marketu“ = býčí, „konec bull runu“ = medvědí, „konec odlivů“ = býčí
+    (r"\b(bear market|crypto winter|bear trend|downtrend)\W+(\w+\W+){0,2}?(over|ending|ended|done)\b", +2),
     (r"\bend of (the )?(bear market|crypto winter|downtrend)\b", +2),
-    (r"\b(bull (market|run)|uptrend|rally)\s+(is\s+)?(over|ending|ended|done|dead)\b", -2),
+    (r"\b(bull (market|run)|uptrend|rally)\W+(\w+\W+){0,2}?(over|ending|ended|done|dead)\b", -2),
     (r"\bend of (the )?(bull (market|run)|uptrend|rally)\b", -2),
+    (r"\b(break|breaks|broke|end|ends|ended|snap|snaps|snapped)\b[^.]{0,25}\boutflow streak\b", +1),
+    (r"\b(break|breaks|broke|end|ends|ended|snap|snaps|snapped)\b[^.]{0,25}\binflow streak\b", -1),
 ]
+NEGATION = r"\b(not|no|never|won'?t|unlikely to|may not|could not|cannot|can'?t)\s+(\w+\s+)?\w+"
 BULL = [
     (r"\b(the )?bottom (is|may be|could be) in\b|\bis the bottom in\b|\bbottom(ed| confirmed)\b|\bmarket bottom\b|\bcycle low\b", 2),
     (r"\bbull (market|run|cycle)\b|\bnew uptrend\b", 2),
@@ -81,7 +82,7 @@ BEAR = [
     (r"\b(break(s|ing)? below|breakdown|los(es|t|ing) support|falls? below|drops? below)\b", 1),
     (r"\b(outflows?|liquidat\w*|capitulat\w*|recession)\b", 1),
 ]
-MARKET = r"\b(bitcoin|btc|crypto|cryptocurrenc\w*|market|altcoins?|ether(eum)?|eth)\b"
+MARKET = r"\b(bitcoin|btc|crypto|cryptocurrenc\w*|altcoins?|ether(eum)?|eth|stablecoins?|solana|xrp|digital assets?)\b"
 
 
 def classify(text):
@@ -94,6 +95,7 @@ def classify(text):
         if re.search(rx, t):
             score += w
             t = re.sub(rx, " ", t)
+    t = re.sub(NEGATION, " ", t)                                    # „may not crash“ – zapřené slovo se nepočítá
     for rx, w in BULL:
         if re.search(rx, t):
             score += w

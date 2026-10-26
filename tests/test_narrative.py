@@ -21,6 +21,12 @@ def test_classify_phrases_flips_and_questions():
     assert nr.classify("BTC breaks below support as liquidations mount")[0] == -1
     assert nr.classify("Apple unveils new iPhone with record sales")[0] == 0          # mimo trh krypta
     assert nr.classify("Bitcoin price today: steady near $90K")[0] == 0
+    # chyby nalezené na skutečných titulcích 26. 10. 2026
+    assert nr.classify("Galaxy Digital Says Bitcoin Bear Market Is Officially Over")[0] == 1
+    assert nr.classify("Bitcoin ETFs break 2-week outflow streak with $301M comeback")[0] == 1
+    assert nr.classify("Quantum computing fears may not crash Bitcoin, says analyst")[0] == 0
+    assert nr.classify("Brazil's Stock Market Crashes After Upset Victory")[0] == 0     # není o kryptu
+    assert nr.classify("Strategist warns BTC could drop below $70,000")[0] == -1
 
 
 def test_parsers():

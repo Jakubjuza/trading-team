@@ -8,13 +8,14 @@ jednou za hodinu, příkaz `/radar` v Telegramu. Bez AI; výklad dělá týdenn�
 
 | Skupina | Zdroje | Váha |
 |---|---|---|
-| Analytici a výzkum | Glassnode Insights, Google News „bitcoin analyst/trader + bear/bull/bottom/top“ | 1,5 |
+| Analytici | Google News „bitcoin analyst/trader/strategist + bear/bull/bottom/top/rally/crash“ | 1,5 |
 | Média | CoinDesk, Cointelegraph, The Block, Decrypt, Bitcoin Magazine, CryptoSlate, Blockworks | 1 |
-| Telegram | veřejné kanály (`narrative.telegram_channels` v configu, ověřené během „radar“) | 1 |
-| Burzy | Bybit oznámení (API) | 0,5 |
-| Komunita | Reddit r/BitcoinMarkets, r/CryptoCurrency | 0,5 |
+| Telegram | @WatcherGuru, @wublockchainenglish, @cointelegraph, @glassnode (veřejné kanály, `narrative.telegram_channels`) | 1 |
+| Komunita | Reddit r/BitcoinMarkets | 0,5 |
 
-Nečte se: X/Twitter (jen placené API), Threads (bez veřejného rozhraní), MEXC (bez ověřeného veřejného feedu zpráv).
+Ověřeno z GitHub Actions 26. 10. 2026. Nefungovalo (HTTP chyba): Glassnode Insights RSS, Bybit API oznámení,
+Reddit r/CryptoCurrency. Nečte se: X/Twitter (jen placené API), Threads (bez veřejného rozhraní), zprávy Bybit a MEXC
+(bez veřejného feedu dostupného z GitHubu). První kontrola: 201 zpráv za 3 dny, 25 se směrem (17 býčích, 8 medvědích).
 
 ## Jak se počítá
 
