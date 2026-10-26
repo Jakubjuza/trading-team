@@ -30,7 +30,7 @@ from scanner.calibrate import strategy_params  # noqa: E402
 from scanner.data import CandleCache  # noqa: E402
 from research import events as events_mod  # noqa: E402
 from research import carry as carry_mod  # noqa: E402
-from research import scenarios, sessions  # noqa: E402
+from research import mood, scenarios, sessions  # noqa: E402
 
 STATE = HERE / "state.json"
 _DEMO = {"broker": None, "error": None}
@@ -191,6 +191,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
                      prices={sym.split("/")[0]: p for sym, (p, _) in status["prices"].items()})
     except Exception as exc:                                          # zprávy a kalendář nesmí shodit skener
         print(f"kalendář/zprávy selhaly: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
+        mood.daily_update(cfg, state, frames, now, dry_run)
+    except Exception as exc:                                          # index nálady nesmí shodit skener
+        print(f"index nálady selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
         weekly_outlook(cfg, state, frames, now, dry_run)
     except Exception as exc:
@@ -405,6 +409,9 @@ def weekly_outlook(cfg, state, frames, now, dry_run=False, send=None):
     lines.append(f"BTC cyklus: {months:.0f} měsíců po halvingu"
                  + (f" (vrcholy minulých cyklů {min(peaks):.0f}–{max(peaks):.0f} měsíců po halvingu, jen {len(peaks)} případy)"
                     if peaks else "") + ".")
+    mo = (state.data.get("mood") or {}).get("last")
+    if mo:
+        lines.append(f"🌡️ Nálada trhu {mo['index']}/100 – {mo['zone']}. {mood.history_line(state)} Podrobnosti /nalada.")
     lines.append("Rozpětí je v testu od roku 2022 kalibrované, směr podle trendu ne (reports/scenarios.md). Jen informace.")
     msg = "\n".join(lines)
     st["last"] = week
