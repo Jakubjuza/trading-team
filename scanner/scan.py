@@ -182,6 +182,11 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
     except Exception as exc:                                          # samostatná část nesmí shodit skener
         print(f"ensemble selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     try:
+        from scanner import lab_paper                                 # ⚡ strategie z registru laboratoře, papírově
+        lab_paper.update(cfg, state, now, dry_run)
+    except Exception as exc:                                          # laboratoř nesmí shodit skener
+        print(f"laboratoř (papír) selhala: {exc.__class__.__name__}: {exc}", file=sys.stderr)
+    try:
         mtf_entries(cfg, state, frames, now, dry_run)
     except Exception as exc:                                          # vstup z nižších TF nesmí shodit skener
         print(f"vstup z nižších TF selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)

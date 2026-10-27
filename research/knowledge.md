@@ -82,6 +82,11 @@ Pravidla:
   HOLDOUT 7/2025– je efekt klesajícího trhu (náhodné shorty také v plusu). Longy mají trendový efekt nad náhodou, ale
   bez přísného potvrzení a s propady 100–300 R. Short MA 30 × 60 na 4H: 3 ze 72 variant kladné ve všech obdobích –
   `reports/ma_grid.md` – 27. 10. 2026.
+- ✅ **Atlas strategií (41 664 kombinací, 15 rodin, 15M–1D, poplatky MEXC 0,05 %/stranu)** – průrazové longy
+  (Bollinger, Keltner, Donchian, průraz s objemem) porážejí náhodu v OOS i HOLDOUT u 32–51 % kombinací (náhodou ~0,25 %);
+  návratové strategie u longu pod náhodou; shorty slabé; 15M po poplatcích ztrátové. Předem stanovený výběr splnil
+  jen long 12H MACD 19/39/9 (IS +0,78 / OOS +0,65 / HOLDOUT +0,19 R, nezávisle ověřeno) – `reports/strategy_atlas.md` –
+  27. 10. 2026. Kandidát na papírové ověření (H10).
 - **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.
   Na 8 tech akciích +0,27 R, ale náhodné vstupy +0,22 R (výběr vítězů) – výhoda strategie malá.
 - **Optimalizace výstupů a filtrů denních strategií (72 nastavení × 5 vah)** – walk-forward MAR 0,77 vs. dnešní 0,83,
@@ -115,6 +120,7 @@ Pravidla:
 | H7 | Směr z denního grafu (Close vs. EMA200 + sklon EMA50) a průběžné vstupy na 1H (návrat k EMA20 + obratová svíčka), trailing 3 denní ATR, max. 20 dní – vydělá víc R za rok než čekání na denní signál | test 26. 10. 2026 (`reports/bias_entry.md`): +0,10 ± 0,16 R, +45 vs. +30 R/rok, neprůkazné | nová data od 26. 10. 2026 | nerozhodnuto – kandidát na papírové ověření |
 | H8 | AI úprava týdenního indexu nálady (události a geopolitika, ±10 bodů) zlepší vztah indexu k výnosu BTC za další 4 týdny (korelace AI skóre s výnosem > 0,2 a vyšší než u měřeného indexu) | vlastní, 26. 10. 2026 | `research/mood_ai.jsonl` – týdenně | čeká na data (≥ 26 týdnů) |
 | H9 | Short podle protnutí MA 30 × MA 60 na 4H v nejjednodušší podobě (EMA, signál „cross“, bez filtru, výstup opačné protnutí – zvoleno předem, ne podle výsledků) má výhodu nad náhodnými shorty mimo medvědí trh | uživatel 27. 10. 2026; mřížka `reports/ma_grid.md`: z 72 variant kladné ve všech obdobích jen 3, v HOLDOUT kladné i náhodné shorty | nová data od 27. 10. 2026 (papírově, bez peněz) | nerozhodnuto – IS/OOS záporné, vypadá jako efekt režimu |
+| H10 | Long 12H MACD (19, 39, 9): vstup při protnutí signální linie zespodu, výstup při opačném protnutí, riziko 2 ATR na velikost pozice, 8 mincí – vydělá na nových datech po poplatcích MEXC víc než náhodné vstupy | atlas 27. 10. 2026 (`reports/strategy_atlas.md`), jediná kombinace z 41 664, která splnila předem stanovené pravidlo; nezávisle ověřeno | nová data od 27. 10. 2026 (papírově) | kandidát na papírové ověření |
 
 ## Hodnocení agentů desku
 
