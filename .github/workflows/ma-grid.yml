@@ -9,7 +9,7 @@ on:
     paths: ["research/experiments/ma_grid.py", ".github/workflows/ma-grid.yml"]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   grid:
@@ -28,6 +28,14 @@ jobs:
       - name: Report do souhrnu běhu
         if: always()
         run: test -f reports/ma_grid.md && cat reports/ma_grid.md >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Uložit report do větve
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f reports/ma_grid.md reports/ma_grid_all.csv.gz || exit 0
+          git commit -m "ma_grid: výsledky mřížky klouzavých průměrů" || exit 0
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
