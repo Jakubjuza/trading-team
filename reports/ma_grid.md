@@ -259,6 +259,21 @@ Z těchto zpětně nejlepších zůstalo kladných v HOLDOUT 7 z 10.
 
 ❌ **Žádná kombinace nesplnila předem stanovená kritéria.** Skener se nemění.
 
+## Interpretace (doplněno po vyhodnocení, 27. 10. 2026 – výběr se tím nemění)
+
+- **Short MA 30 × 60 na 4H:** v HOLDOUT (7/2025–dnes) je kladných 64 ze 72 variant (medián +0,24 R), ale v IS
+  (2019–2023) medián −0,04 R a v OOS (1/2024–6/2025) −0,19 R. Kladné ve všech třech obdobích jsou jen 3 varianty.
+  Náhodné shorty jsou v HOLDOUT také v plusu (medián +0,13 R) – poslední pohyb vydělal hlavně proto, že trh klesal,
+  ne proto, že by protnutí průměrů trefovalo obrat. V letech, kdy trh rostl nebo stál, stejný signál ztrácel.
+- **Shorty obecně:** na žádném timeframu nemají stabilní výhodu nad náhodou (OOS kladných 8–18 % kombinací).
+  Kladný HOLDOUT u 4H–1D sedí s náhodou → je to režim trhu, ne signál. Filtr d200 shortům v OOS nepomohl.
+- **Longy:** jako celek mají skutečný trendový efekt – na 2H–12H jsou mediány OOS nad svou náhodou a volnější
+  kritéria (bez t ≥ 2) splní 427 kombinací proti ~27 očekávaným náhodou. Ani jedna ale neprošla přísným výběrem
+  a nejlepší podle IS mají propady 100–300 R. Nejlépe funguje výstup „opp“ (nechat zisk běžet); u shortu je
+  nejméně špatný rychlý cíl („target“) – poklesy v kryptu jsou prudké a krátké, růsty dlouhé.
+- Funding není započten – u shortů na perpu by výsledky mírně zlepšil, závěr nemění.
+- Hypotéza „short podle MA 30 × 60 na 4H“ jde do fronty k ověření dopředu na nových datech (H9 v `research/knowledge.md`).
+
 Celá tabulka všech kombinací včetně jejich náhodných srovnání: `reports/ma_grid_all.csv.gz`.
 
 Nejde o finanční poradenství.
