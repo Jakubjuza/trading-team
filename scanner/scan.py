@@ -23,7 +23,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from scanner import broker, commands, ensemble, mtf, notify, pyramid, rules, setups, weekly  # noqa: E402
+from scanner import broker, commands, ensemble, equity, mtf, notify, pyramid, rules, setups, weekly  # noqa: E402
 from scanner.calibrate import strategies as cfg_strategies  # noqa: E402
 from scanner.evaluate import backtest, simulate  # noqa: E402
 from scanner.calibrate import strategy_params  # noqa: E402

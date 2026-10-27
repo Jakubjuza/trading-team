@@ -49,3 +49,9 @@ def test_snapshot_once_per_day_with_demo(tmp_path):
 
 def test_snapshot_skips_without_prices(tmp_path):
     assert equity.snapshot(CFG, state(tmp_path), {}, datetime(2026, 10, 27, tzinfo=timezone.utc), log=tmp_path / "x") is None
+
+
+def test_scanner_imports_equity():
+    """Regrese: snímek účtu ve skeneru padal na NameError, když import vypadl při slučování."""
+    import scanner.scan
+    assert scanner.scan.equity is equity
