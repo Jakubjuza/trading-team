@@ -373,3 +373,16 @@ def test_paper_position_opens_closes_and_blocks_same_direction(tmp_path):
     risk = s["entry"] - s["stop"]
     expected = -(risk + 0.0015 * (s["entry"] + s["stop"])) / risk               # -1 R + náklady (těsný stop → -1,78 R)
     assert state.data["closed"][0]["r"] == pytest.approx(expected, abs=1e-3)
+
+
+def test_heartbeat_counts_ensemble_and_pyramid(tmp_path):
+    state, sent = State(tmp_path / "s.json"), []
+    state.data["ensemble"] = {"cash": 2000.0, "qty": {"BTC": 0.05, "SOL": 20.0}, "start_equity": 5000.0,
+                              "equity": [["2026-10-26", 5000.0]], "demo_qty": {"BTC": 0.0047, "SOL": 3.7, "LINK": 21.6}}
+    state.data["pyramid"] = {"open": [], "closed": []}
+    status = {"prices": {"BTC/USDT": (80000.0, ""), "SOL/USDT": (100.0, "")}, "errors": {}}
+    now = datetime(2026, 10, 27, 12, 0, tzinfo=timezone.utc)
+    text = maybe_heartbeat(_cfg(heartbeat_hours=4), state, status, [], now, lambda t: sent.append(t) or True)
+    assert "Papírově – jádro: otevřené 0" in text
+    assert "🧭 Ensemble (papírově): drží BTC, SOL" in text and "hodnota 8 000 USD (+60,0 %)" in text
+    assert "🔺 Pyramida (papírově): otevřené 0" in text
