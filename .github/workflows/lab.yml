@@ -54,6 +54,8 @@ jobs:
         run: |
           git config user.name "trading-team lab"
           git config user.email "lab@users.noreply.github.com"
-          git add -f research/registry.json research/lab_state.json research/lab_log.md reports/strategy_atlas.md reports/atlas 2>/dev/null || true
+          for f in research/registry.json research/lab_state.json research/lab_log.md reports/strategy_atlas.md reports/atlas; do
+            if [ -e "$f" ]; then git add -f "$f"; fi
+          done
           git commit -q -m "lab: noční výzkum a registr strategií" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done
