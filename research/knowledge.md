@@ -77,6 +77,11 @@ Pravidla:
 - **Long BTC 21:00–23:00 UTC** – před náklady +0,04 %/den, po nákladech −0,10 až −0,26 % – `reports/portfolio_review.md`.
 - **Chycení kapitulace (long po panice: −30 % od maxima, top 10 % volatility, Fear & Greed < 20, sweep & reclaim)** –
   30 obchodů, Ø +0,30 ± 0,83 R vs. náhoda +0,34; zisk ze 2 obchodů, stop medián 11 % – `reports/capitulation.md` – 25. 10. 2026.
+- ✅ **Atlas strategií (41 664 kombinací, 15 rodin, 15M–1D, poplatky MEXC 0,05 %/stranu)** – průrazové longy
+  (Bollinger, Keltner, Donchian, průraz s objemem) porážejí náhodu v OOS i HOLDOUT u 32–51 % kombinací (náhodou ~0,25 %);
+  návratové strategie u longu pod náhodou; shorty slabé; 15M po poplatcích ztrátové. Předem stanovený výběr splnil
+  jen long 12H MACD 19/39/9 (IS +0,78 / OOS +0,65 / HOLDOUT +0,19 R, nezávisle ověřeno) – `reports/strategy_atlas.md` –
+  27. 10. 2026. Kandidát na papírové ověření (H10).
 - **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.
   Na 8 tech akciích +0,27 R, ale náhodné vstupy +0,22 R (výběr vítězů) – výhoda strategie malá.
 - **Optimalizace výstupů a filtrů denních strategií (72 nastavení × 5 vah)** – walk-forward MAR 0,77 vs. dnešní 0,83,
@@ -109,6 +114,7 @@ Pravidla:
 | H6 | Donchian: celá pozice bez výběru na T1, držení až 60 dní, trailing 4 ATR, bez víkendových vstupů (pullback beze změny) má lepší poměr zisku k propadu než dnešní výstup | optimalizace 25. 10. 2026 (`reports/optimize.md`) – vzorec vybraný ve všech 5 krocích walk-forwardu, ale celý postup výběru dnešek neporazil | nová data od 26. 10. 2026 | nerozhodnuto – rozhodnout na nových datech (papírově) |
 | H7 | Směr z denního grafu (Close vs. EMA200 + sklon EMA50) a průběžné vstupy na 1H (návrat k EMA20 + obratová svíčka), trailing 3 denní ATR, max. 20 dní – vydělá víc R za rok než čekání na denní signál | test 26. 10. 2026 (`reports/bias_entry.md`): +0,10 ± 0,16 R, +45 vs. +30 R/rok, neprůkazné | nová data od 26. 10. 2026 | nerozhodnuto – kandidát na papírové ověření |
 | H8 | AI úprava týdenního indexu nálady (události a geopolitika, ±10 bodů) zlepší vztah indexu k výnosu BTC za další 4 týdny (korelace AI skóre s výnosem > 0,2 a vyšší než u měřeného indexu) | vlastní, 26. 10. 2026 | `research/mood_ai.jsonl` – týdenně | čeká na data (≥ 26 týdnů) |
+| H10 | Long 12H MACD (19, 39, 9): vstup při protnutí signální linie zespodu, výstup při opačném protnutí, riziko 2 ATR na velikost pozice, 8 mincí – vydělá na nových datech po poplatcích MEXC víc než náhodné vstupy | atlas 27. 10. 2026 (`reports/strategy_atlas.md`), jediná kombinace z 41 664, která splnila předem stanovené pravidlo; nezávisle ověřeno | nová data od 27. 10. 2026 (papírově) | kandidát na papírové ověření |
 
 ## Hodnocení agentů desku
 
