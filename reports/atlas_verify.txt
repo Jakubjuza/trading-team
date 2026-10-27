@@ -1,0 +1,38 @@
+== 1. Stejná pravidla (Ø R / n / Ø % na obchod / úspěšnost)
+IS       n= 698  Ø R=+0.783  t=+6.15  Ø %=+6.47  win=38%
+OOS      n= 240  Ø R=+0.645  t=+2.89  Ø %=+4.18  win=40%
+HOLDOUT  n= 201  Ø R=+0.189  t=+1.43  Ø %=-0.05  win=35%
+== 2. Vstup o svíčku později
+IS       n= 663  Ø R=+0.775
+OOS      n= 231  Ø R=+0.591
+HOLDOUT  n= 181  Ø R=+0.191
+== 3. Účet, riziko 0,5 % na obchod, 8 mincí souběžně
+IS       konečný účet 13.95×  ročně +70.6%  max. propad 21.9%
+OOS      konečný účet 2.10×  ročně +60.7%  max. propad 12.6%
+HOLDOUT  konečný účet 1.20×  ročně +15.7%  max. propad 15.0%
+CELKEM   35.04×  ročně +58.2%  max. propad 21.9%  (7.8 let)
+  riziko 0.25%: 6.13×, ročně +26.3%, max. propad 11.6%
+  riziko 1.00%: 949.69×, ročně +142.1%, max. propad 39.3%
+== 4. Po letech (Σ R, n) a po mincích (Ø R)
+          sum  count  mean
+entry                     
+2019    56.88     79  0.72
+2020   168.16    128  1.31
+2021   199.57    159  1.26
+2022   -14.47    175 -0.08
+2023   136.69    157  0.87
+2024   140.12    157  0.89
+2025     5.40    161  0.03
+2026    47.30    123  0.38
+      mean  count     sum
+coin                     
+ADA   0.56    145   81.88
+AVAX  0.72    124   89.16
+BTC   0.64    149   94.68
+DOGE  0.82    142  116.56
+ETH   0.52    155   80.84
+LINK  0.45    157   71.23
+SOL   0.73    114   83.68
+XRP   0.79    153  121.62
+Buy & hold za celé období: {'BTC': '+2055%', 'ETH': '+1631%', 'SOL': '+3413%', 'XRP': '+270%', 'ADA': '+400%', 'LINK': '+3739%', 'AVAX': '+52%', 'DOGE': '+2564%'}
+Nejdelší obchody (svíčky 12H): {'count': 1139.0, 'mean': 19.2, 'std': 15.6, 'min': 0.0, '25%': 7.0, '50%': 16.0, '75%': 27.0, 'max': 181.0}
