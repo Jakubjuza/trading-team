@@ -687,6 +687,9 @@ def report(parts):
                  + ". Další krok je papírové ověření vedle skeneru, ne ostré zapnutí.")
     else:
         L.append("❌ **Předem stanovené pravidlo nesplnila žádná kombinace.**")
+    notes = ROOT / "reports" / "strategy_atlas_notes.md"             # ruční ověření a interpretace (report je nepřepíše)
+    if notes.exists():
+        L.append("\n" + notes.read_text(encoding="utf-8").strip())
     L.append("\nCelá tabulka: `reports/atlas/<timeframe>.csv.gz` (všechny scénáře poplatků i náhodná srovnání).\n")
     L.append("Nejde o finanční poradenství.")
     (ROOT / "reports" / "strategy_atlas.md").write_text("\n".join(L), encoding="utf-8")
