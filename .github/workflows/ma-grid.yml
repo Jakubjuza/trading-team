@@ -1,0 +1,38 @@
+name: Výzkum – mřížka klouzavých průměrů
+
+# Test všech kombinací MA (research/experiments/ma_grid.py). Data z OKX jsou v sandboxu blokovaná, proto běží tady.
+# Spouští se pushem změny skriptu na větev claude/** nebo ručně; report a tabulka jsou v artefaktu „ma-grid“.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+    paths: ["research/experiments/ma_grid.py", ".github/workflows/ma-grid.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  grid:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt numba
+      - name: Mřížka MA – 6 timeframů, SMA/EMA, 32 dvojic, 3 signály, 3 filtry, 4 výstupy, long/short
+        run: python3 research/experiments/ma_grid.py /tmp/cache
+      - name: Report do souhrnu běhu
+        if: always()
+        run: test -f reports/ma_grid.md && cat reports/ma_grid.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ma-grid
+          path: |
+            reports/ma_grid.md
+            reports/ma_grid_all.csv.gz
+          if-no-files-found: warn
