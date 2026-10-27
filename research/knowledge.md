@@ -77,6 +77,11 @@ Pravidla:
 - **Long BTC 21:00–23:00 UTC** – před náklady +0,04 %/den, po nákladech −0,10 až −0,26 % – `reports/portfolio_review.md`.
 - **Chycení kapitulace (long po panice: −30 % od maxima, top 10 % volatility, Fear & Greed < 20, sweep & reclaim)** –
   30 obchodů, Ø +0,30 ± 0,83 R vs. náhoda +0,34; zisk ze 2 obchodů, stop medián 11 % – `reports/capitulation.md` – 25. 10. 2026.
+- **Protnutí klouzavých průměrů – 27 648 kombinací** (1H–1D, SMA/EMA, 32 dvojic, 3 signály, 3 filtry, 4 výstupy) –
+  žádná neprošla předem stanoveným výběrem. Shorty bez stabilní výhody nad náhodou (OOS kladných 8–18 %), kladný
+  HOLDOUT 7/2025– je efekt klesajícího trhu (náhodné shorty také v plusu). Longy mají trendový efekt nad náhodou, ale
+  bez přísného potvrzení a s propady 100–300 R. Short MA 30 × 60 na 4H: 3 ze 72 variant kladné ve všech obdobích –
+  `reports/ma_grid.md` – 27. 10. 2026.
 - **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.
   Na 8 tech akciích +0,27 R, ale náhodné vstupy +0,22 R (výběr vítězů) – výhoda strategie malá.
 - **Optimalizace výstupů a filtrů denních strategií (72 nastavení × 5 vah)** – walk-forward MAR 0,77 vs. dnešní 0,83,
@@ -109,6 +114,7 @@ Pravidla:
 | H6 | Donchian: celá pozice bez výběru na T1, držení až 60 dní, trailing 4 ATR, bez víkendových vstupů (pullback beze změny) má lepší poměr zisku k propadu než dnešní výstup | optimalizace 25. 10. 2026 (`reports/optimize.md`) – vzorec vybraný ve všech 5 krocích walk-forwardu, ale celý postup výběru dnešek neporazil | nová data od 26. 10. 2026 | nerozhodnuto – rozhodnout na nových datech (papírově) |
 | H7 | Směr z denního grafu (Close vs. EMA200 + sklon EMA50) a průběžné vstupy na 1H (návrat k EMA20 + obratová svíčka), trailing 3 denní ATR, max. 20 dní – vydělá víc R za rok než čekání na denní signál | test 26. 10. 2026 (`reports/bias_entry.md`): +0,10 ± 0,16 R, +45 vs. +30 R/rok, neprůkazné | nová data od 26. 10. 2026 | nerozhodnuto – kandidát na papírové ověření |
 | H8 | AI úprava týdenního indexu nálady (události a geopolitika, ±10 bodů) zlepší vztah indexu k výnosu BTC za další 4 týdny (korelace AI skóre s výnosem > 0,2 a vyšší než u měřeného indexu) | vlastní, 26. 10. 2026 | `research/mood_ai.jsonl` – týdenně | čeká na data (≥ 26 týdnů) |
+| H9 | Short podle protnutí MA 30 × MA 60 na 4H v nejjednodušší podobě (EMA, signál „cross“, bez filtru, výstup opačné protnutí – zvoleno předem, ne podle výsledků) má výhodu nad náhodnými shorty mimo medvědí trh | uživatel 27. 10. 2026; mřížka `reports/ma_grid.md`: z 72 variant kladné ve všech obdobích jen 3, v HOLDOUT kladné i náhodné shorty | nová data od 27. 10. 2026 (papírově, bez peněz) | nerozhodnuto – IS/OOS záporné, vypadá jako efekt režimu |
 
 ## Hodnocení agentů desku
 
