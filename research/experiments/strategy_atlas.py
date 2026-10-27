@@ -352,6 +352,15 @@ def family_signals(z, fam, p, d):
         if L:
             return np.flatnonzero((l < lo) & (c > lo)), xup(c, mid)
         return np.flatnonzero((h > hi) & (c < hi)), xdn(c, mid)
+    if fam == "fng":                                                   # Strach a chamtivost (z.fng, den zpožděně)
+        mode, lvl = p
+        f = z.fng
+        lv = lvl if L else 100 - lvl
+        if mode == "into":                                             # vstup do extrému (long do strachu, short do chamtivosti)
+            ent = xdn(f, lv) if L else xup(f, lv)
+        else:                                                          # konec extrému (návrat ze strachu / z chamtivosti)
+            ent = xup(f, lv) if L else xdn(f, lv)
+        return np.flatnonzero(ent), (xup(f, 50) if L else xdn(f, 50))
     raise ValueError(fam)
 
 
@@ -470,7 +479,8 @@ def max_dd(r, xt):
 
 
 # ---------------------------------------------------------------- běh jednoho timeframu
-def run(tf, cache, quick=False):
+def run(tf, cache, quick=False, var=None, attach=None, name=None):
+    """var = vlastní seznam variant, attach(coin, z) = doplní další data (např. sentiment), name = jméno výstupu."""
     t0 = time.time()
     base_tf, start = ("15m", "2022-01-01") if tf == "15m" else ("1h", "2019-01-01")
     data = {}
@@ -490,9 +500,11 @@ def run(tf, cache, quick=False):
         day = df.index.floor("1D")
         z.flt = {"d200": bull.reindex(day).to_numpy(float), "d50": up50.reindex(day).to_numpy(float)}
         z.ns = df.index.as_unit("ns").asi8.astype(np.int64)
+        if attach is not None:
+            attach(coin, z)
         prep[coin] = z
     span_m = max(1.0, np.mean([(b.index[-1] - b.index[0]).days for b in data.values()]) / 30.4)
-    V = variants()
+    V = var if var is not None else variants()
     if quick:
         V = [v for i, v in enumerate(V) if i % 12 == 0]
     rng = np.random.default_rng(20261027 + sum(map(ord, tf)))
@@ -549,15 +561,16 @@ def run(tf, cache, quick=False):
         rows.append(row)
     out = ROOT / "reports" / "atlas"
     out.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(rows).to_csv(out / f"{tf}.csv.gz", index=False, float_format="%.5f")
+    name = name or tf
+    pd.DataFrame(rows).to_csv(out / f"{name}.csv.gz", index=False, float_format="%.5f")
     periods = {c: f"{b.index[0]:%m/%Y}" for c, b in data.items()}
-    (out / f"{tf}.meta").write_text(f"{tf}: {len(rows)} kombinací, {time.time() - t0:.0f} s, data od " +
+    (out / f"{name}.meta").write_text(f"{name}: {len(rows)} kombinací, {time.time() - t0:.0f} s, data od " +
                                     ", ".join(f"{c} {v}" for c, v in periods.items()), encoding="utf-8")
     print(f"{tf}: {len(rows)} kombinací za {time.time() - t0:.0f} s", flush=True)
 
 
 # ---------------------------------------------------------------- souhrnný report
-FAM_CS = {"ma_cross": "protnutí 2 průměrů", "price_ma": "cena × průměr", "donchian": "Donchian průraz",
+FAM_CS = {"fng": "strach a chamtivost", "ma_cross": "protnutí 2 průměrů", "price_ma": "cena × průměr", "donchian": "Donchian průraz",
           "boll_break": "Bollinger průraz", "boll_fade": "Bollinger návrat", "rsi_revert": "RSI návrat",
           "rsi_mom": "RSI momentum", "macd": "MACD", "roc": "momentum ROC", "supertrend": "Supertrend",
           "stoch": "Stochastic", "keltner": "Keltner průraz", "vol_break": "průraz s objemem",

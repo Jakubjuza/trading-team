@@ -1,0 +1,59 @@
+name: Laboratoř – noční výzkum
+
+# Každou noc jeden balík výzkumu + výběr do registru + papírové vyhodnocení (research/lab.py).
+# Push na claude/** spustí jen výběr (naplnění registru z existujících výsledků atlasu).
+on:
+  schedule:
+    - cron: "23 1 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "nightly = balík + výběr, select = jen výběr a papír"
+        type: choice
+        options: [nightly, select]
+        default: nightly
+  push:
+    branches: ["claude/**"]
+    paths: ["research/lab.py", ".github/workflows/lab.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lab-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt numba
+      - uses: actions/cache@v4
+        with:
+          path: /tmp/cache
+          key: lab-data-${{ github.run_id }}
+          restore-keys: lab-data-
+      - name: Laboratoř
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          MODE="${{ inputs.mode }}"
+          EXTRA=""
+          if [ "${{ github.event_name }}" = "push" ]; then MODE=select; EXTRA=--no-send; fi
+          python3 research/lab.py "${MODE:-nightly}" /tmp/cache $EXTRA
+      - name: Uložit výsledky
+        if: always()
+        run: |
+          git config user.name "trading-team lab"
+          git config user.email "lab@users.noreply.github.com"
+          git add -f research/registry.json research/lab_state.json research/lab_log.md reports/strategy_atlas.md reports/atlas 2>/dev/null || true
+          git commit -q -m "lab: noční výzkum a registr strategií" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done

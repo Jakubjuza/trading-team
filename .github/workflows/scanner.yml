@@ -59,7 +59,7 @@ jobs:
             start=$SECONDS
             python3 scanner/scan.py --once || echo "průchod selhal, pokračuji"
             # nové signály, datové listy a výsledky obchodů hned do repozitáře (čte je AI desk)
-            if [ -n "$(git status --porcelain scanner/signals.jsonl research/factsheets research/outcomes.jsonl research/demo_trades.jsonl research/pyramid_outcomes.jsonl research/equity_log.jsonl research/mood_log.jsonl research/narrative_log.jsonl research/narrative_calls.jsonl research/narrative_sources.json 2>/dev/null)" ]; then
+            if [ -n "$(git status --porcelain scanner/signals.jsonl research/factsheets research/outcomes.jsonl research/demo_trades.jsonl research/pyramid_outcomes.jsonl research/equity_log.jsonl research/mood_log.jsonl research/narrative_log.jsonl research/narrative_calls.jsonl research/narrative_sources.json research/lab_trades.jsonl 2>/dev/null)" ]; then
               git add scanner/signals.jsonl
               [ -d research/factsheets ] && git add research/factsheets
               [ -f research/outcomes.jsonl ] && git add research/outcomes.jsonl
@@ -67,6 +67,7 @@ jobs:
               [ -f research/pyramid_outcomes.jsonl ] && git add research/pyramid_outcomes.jsonl
               [ -f research/equity_log.jsonl ] && git add research/equity_log.jsonl
               [ -f research/mood_log.jsonl ] && git add research/mood_log.jsonl
+              [ -f research/lab_trades.jsonl ] && git add research/lab_trades.jsonl
               for f in research/narrative_log.jsonl research/narrative_calls.jsonl research/narrative_sources.json; do if [ -f "$f" ]; then git add "$f"; fi; done
               git commit -q -m "scanner: nové signály / výsledky"
               for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done

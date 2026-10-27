@@ -170,6 +170,10 @@ outlook:                  # 📆 týdenní výhled – research/scenarios.py (ro
   hour: 8                 # čas Prahy
   horizon: 13 týdnů
 
+lab:                      # ⚡ strategie z registru laboratoře (research/registry.json) – papírově, jen ve svém režimu trhu
+  enabled: true           # scanner/lab_paper.py; data OKX; poplatky MEXC 0,05 %/stranu; zpráva při signálu a uzavření
+                          # registr plní noční laboratoř (research/lab.py, .github/workflows/lab.yml)
+
 carry:                    # 💰 papírový carry z fundingu (research/carry.py, reports/carry.md) – NIC se neposílá na burzu
   enabled: true
   coins: [BTC, ETH, SOL, XRP, DOGE, AVAX, LINK, ADA]
