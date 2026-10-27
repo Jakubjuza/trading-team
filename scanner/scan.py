@@ -731,6 +731,22 @@ def positions_overview(state, prices, since=None, max_lines=8):
     return lines
 
 
+def ensemble_heartbeat_line(state, prices):
+    """🧭 Řádek do zprávy o stavu: co drží papírová kniha Ensemble a za kolik (ceny ze skeneru)."""
+    ens = state.data.get("ensemble") or {}
+    held = {c: q for c, q in (ens.get("qty") or {}).items() if q > 0}
+    if not held and not ens.get("equity"):
+        return None
+    def px(c):
+        return (prices.get(f"{c}/USDT") or (None,))[0]
+    invested = sum(q * (px(c) or 0) for c, q in held.items())
+    value = (ens.get("cash") or 0) + invested
+    start = ens.get("start_equity") or value
+    change = f" ({(value / start - 1) * 100:+.1f} %)".replace(".", ",") if start else ""
+    coins = ", ".join(sorted(held)) if held else "vše v hotovosti"
+    return f"🧭 Ensemble (papírově): drží {coins} · hodnota {notify.fmt(value)} USD{change}"
+
+
 def maybe_heartbeat(cfg, state, status, found, now, send=None):
     """Zpráva „skener běží“ každých heartbeat_hours (0 = vypnuto), i když nic nenašel.
 
@@ -754,8 +770,17 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
     if status.get("prices"):
         lines.append(" · ".join(f"{sym} {notify.fmt(p)}" for sym, (p, _) in status["prices"].items()))
     closed = state.data.get("closed", [])
-    lines.append(f"Papírově: otevřené {len(state.data.get('open', []))}, uzavřené {len(closed)}"
+    lines.append(f"Papírově – jádro: otevřené {len(state.data.get('open', []))}, uzavřené {len(closed)}"
                  + (f", Σ {sum(c['r'] for c in closed):+.2f} R" if closed else ""))
+    try:                                                              # ostatní části mají pozice jinde ve state
+        ens_line = ensemble_heartbeat_line(state, status.get("prices") or {})
+        if ens_line:
+            lines.append(ens_line)
+        pyr_line = pyramid.heartbeat_line(state)
+        if pyr_line:
+            lines.append(pyr_line)
+    except Exception as exc:
+        print(f"přehled ensemblu/pyramidy selhal: {exc}", file=sys.stderr)
     try:
         lines += positions_overview(state, status.get("prices") or {}, hb["last"])
     except Exception as exc:
@@ -764,9 +789,12 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
     try:                                                              # výkon částí je v 📊 týdenním přehledu (scanner/weekly.py)
         if (cfg.get("demo") or {}).get("enabled"):
-            n_demo = sum(1 for p in state.data.get("open", []) if (p.get("demo") or {}).get("status") == "open")
+            core_demo = [p["symbol"].split("/")[0] for p in state.data.get("open", [])
+                         if (p.get("demo") or {}).get("status") == "open"]
+            ens_demo = sorted(c for c, q in ((state.data.get("ensemble") or {}).get("demo_qty") or {}).items() if q > 0)
+            parts = [f"jádro {len(core_demo)}"] + ([f"ensemble {len(ens_demo)} ({', '.join(ens_demo)})"] if ens_demo else [])
             lines.append(f"Demo OKX: {'připojeno' if demo_broker(cfg) else 'nepřipojeno (' + ((_DEMO['error'] or (0, 'chybí klíče'))[1]) + ')'}"
-                         f", otevřené pozice {n_demo}")
+                         f", otevřené pozice {len(core_demo) + len(ens_demo)}: {', '.join(parts)}")
     except Exception as exc:
         print(f"stav dema selhal: {exc}", file=sys.stderr)
     try:
