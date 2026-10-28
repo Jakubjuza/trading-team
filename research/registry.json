@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-27T15:21:43+00:00",
+ "updated": "2026-10-28T07:08:48+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -660,6 +660,335 @@
      "date": "2026-10-27",
      "status": "papír",
      "reason": "atlas: OOS +0.15 R (t +2.9), HOLDOUT +0.11 R"
+    }
+   ]
+  },
+  {
+   "id": "ma_cross|sma/30/60/cross|4h|none|target|long",
+   "label": "Protnutí průměrů sma 30 60 cross · 4H long",
+   "family": "ma_cross",
+   "params": "sma/30/60/cross",
+   "tf": "4h",
+   "filter": "none",
+   "exit": "target",
+   "dir": "long",
+   "added": "2026-10-28",
+   "source": "atlas 2026-10-28",
+   "backtest": {
+    "is_r": 0.034,
+    "oos_r": 0.158,
+    "hold_r": 0.215,
+    "oos_t": 2.02,
+    "hold_t": 2.482,
+    "is_n": 700.0,
+    "oos_n": 250.0,
+    "hold_n": 202.0,
+    "maxdd_r": 64.6,
+    "per_month": 13.1
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 307,
+     "mean_r": 0.086
+    },
+    "medvědí": {
+     "n": 404,
+     "mean_r": 0.199
+    },
+    "boční": {
+     "n": 186,
+     "mean_r": 0.077
+    },
+    "panika": {
+     "n": 177,
+     "mean_r": -0.155
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-10-28",
+     "status": "papír",
+     "reason": "atlas: OOS +0.16 R (t +2.0), HOLDOUT +0.21 R"
+    }
+   ]
+  },
+  {
+   "id": "vol_break|20/2.5|12h|none|target|long",
+   "label": "Průraz s objemem 20 2.5 · 12H long",
+   "family": "vol_break",
+   "params": "20/2.5",
+   "tf": "12h",
+   "filter": "none",
+   "exit": "target",
+   "dir": "long",
+   "added": "2026-10-28",
+   "source": "atlas 2026-10-28",
+   "backtest": {
+    "is_r": 0.382,
+    "oos_r": 0.342,
+    "hold_r": 0.384,
+    "oos_t": 2.094,
+    "hold_t": 2.005,
+    "is_n": 180.0,
+    "oos_n": 59.0,
+    "hold_n": 41.0,
+    "maxdd_r": 13.4,
+    "per_month": 3.2
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 112,
+     "mean_r": 0.572
+    },
+    "medvědí": {
+     "n": 78,
+     "mean_r": 0.074
+    },
+    "boční": {
+     "n": 53,
+     "mean_r": 0.306
+    },
+    "panika": {
+     "n": 13,
+     "mean_r": -0.239
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-10-28",
+     "status": "papír",
+     "reason": "atlas: OOS +0.34 R (t +2.1), HOLDOUT +0.38 R"
+    }
+   ]
+  },
+  {
+   "id": "vol_break|55/1.5|1h|none|trail|long",
+   "label": "Průraz s objemem 55 1.5 · 1H long",
+   "family": "vol_break",
+   "params": "55/1.5",
+   "tf": "1h",
+   "filter": "none",
+   "exit": "trail",
+   "dir": "long",
+   "added": "2026-10-28",
+   "source": "atlas 2026-10-28",
+   "backtest": {
+    "is_r": 0.092,
+    "oos_r": 0.174,
+    "hold_r": 0.199,
+    "oos_t": 2.152,
+    "hold_t": 1.987,
+    "is_n": 2300.0,
+    "oos_n": 828.0,
+    "hold_n": 664.0,
+    "maxdd_r": 146.7,
+    "per_month": 43.1
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 1183,
+     "mean_r": 0.178
+    },
+    "medvědí": {
+     "n": 1169,
+     "mean_r": 0.165
+    },
+    "boční": {
+     "n": 654,
+     "mean_r": 0.075
+    },
+    "panika": {
+     "n": 518,
+     "mean_r": -0.04
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-10-28",
+     "status": "papír",
+     "reason": "atlas: OOS +0.17 R (t +2.2), HOLDOUT +0.20 R"
+    }
+   ]
+  },
+  {
+   "id": "keltner|2.5|2h|none|target|short",
+   "label": "Keltner průraz 2.5 · 2H short",
+   "family": "keltner",
+   "params": "2.5",
+   "tf": "2h",
+   "filter": "none",
+   "exit": "target",
+   "dir": "short",
+   "added": "2026-10-28",
+   "source": "atlas 2026-10-28",
+   "backtest": {
+    "is_r": 0.035,
+    "oos_r": 0.204,
+    "hold_r": 0.114,
+    "oos_t": 3.453,
+    "hold_t": 1.831,
+    "is_n": 1120.0,
+    "oos_n": 430.0,
+    "hold_n": 382.0,
+    "maxdd_r": 54.4,
+    "per_month": 22.0
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 359,
+     "mean_r": 0.129
+    },
+    "medvědí": {
+     "n": 811,
+     "mean_r": 0.107
+    },
+    "boční": {
+     "n": 328,
+     "mean_r": 0.236
+    },
+    "panika": {
+     "n": 291,
+     "mean_r": -0.084
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-10-28",
+     "status": "papír",
+     "reason": "atlas: OOS +0.20 R (t +3.5), HOLDOUT +0.11 R"
+    }
+   ]
+  },
+  {
+   "id": "supertrend|10/3.0|4h|d50|trail|short",
+   "label": "Supertrend 10 3.0 · 4H short",
+   "family": "supertrend",
+   "params": "10/3.0",
+   "tf": "4h",
+   "filter": "d50",
+   "exit": "trail",
+   "dir": "short",
+   "added": "2026-10-28",
+   "source": "atlas 2026-10-28",
+   "backtest": {
+    "is_r": 0.064,
+    "oos_r": 0.401,
+    "hold_r": 0.268,
+    "oos_t": 2.777,
+    "hold_t": 1.78,
+    "is_n": 328.0,
+    "oos_n": 116.0,
+    "hold_n": 155.0,
+    "maxdd_r": 36.2,
+    "per_month": 6.8
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 0,
+     "mean_r": null
+    },
+    "medvědí": {
+     "n": 435,
+     "mean_r": 0.163
+    },
+    "boční": {
+     "n": 85,
+     "mean_r": 0.656
+    },
+    "panika": {
+     "n": 70,
+     "mean_r": -0.264
+    }
+   },
+   "regimes": [
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-10-28",
+     "status": "papír",
+     "reason": "atlas: OOS +0.40 R (t +2.8), HOLDOUT +0.27 R"
+    }
+   ]
+  },
+  {
+   "id": "keltner|2.5|4h|none|target|short",
+   "label": "Keltner průraz 2.5 · 4H short",
+   "family": "keltner",
+   "params": "2.5",
+   "tf": "4h",
+   "filter": "none",
+   "exit": "target",
+   "dir": "short",
+   "added": "2026-10-28",
+   "source": "atlas 2026-10-28",
+   "backtest": {
+    "is_r": 0.05,
+    "oos_r": 0.183,
+    "hold_r": 0.15,
+    "oos_t": 2.107,
+    "hold_t": 1.666,
+    "is_n": 508.0,
+    "oos_n": 198.0,
+    "hold_n": 185.0,
+    "maxdd_r": 35.1,
+    "per_month": 10.1
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 141,
+     "mean_r": 0.074
+    },
+    "medvědí": {
+     "n": 429,
+     "mean_r": 0.168
+    },
+    "boční": {
+     "n": 151,
+     "mean_r": 0.253
+    },
+    "panika": {
+     "n": 119,
+     "mean_r": -0.211
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-10-28",
+     "status": "papír",
+     "reason": "atlas: OOS +0.18 R (t +2.1), HOLDOUT +0.15 R"
     }
    ]
   }
