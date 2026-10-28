@@ -13,7 +13,7 @@ import requests
 
 from scanner import notify
 
-HELP = ("Příkazy: /pozice – stav otevřených pozic (jádro, pyramida, ensemble, demo OKX) · /nalada – index nálady trhu "
+HELP = ("Příkazy: /pozice – přehled s grafem a stav otevřených pozic (jádro, pyramida, ensemble, laboratoř, demo OKX) · /nalada – index nálady trhu "
         "1–100 se složkami · /radar – radar vyprávění (sílí bear, nebo bull? potvrzuje to cena?) · /pomoc – tento seznam. "
         "Odpověď přijde do minuty.")
 
@@ -71,6 +71,11 @@ def positions_report(cfg, state, prices, demo=None, demo_log=None):
         if not held:
             lines.append("• vše v hotovosti")
 
+    try:
+        from scanner import lab_report
+        lines += lab_report.lines(state, prices)
+    except Exception as exc:
+        lines.append(f"⚡ Laboratoř: přehled nedostupný ({exc.__class__.__name__}).")
     if demo is not None:
         try:
             lines += _demo_lines(demo, state, prices)
@@ -148,6 +153,9 @@ def poll(cfg, state, prices, demo=None, demo_log=None, dry_run=False, get=None, 
         text = (m.get("text") or "").strip().lower()
         cmd = text.split()[0].split("@")[0] if text else ""
         if cmd in ("/pozice", "pozice", "/stav"):
+            if not dry_run and send is None:
+                from scanner import lab_report
+                lab_report.send_board(state, prices, "📊 Přehled papírových obchodů")
             replies.append(positions_report(cfg, state, prices, demo, demo_log))
         elif cmd in ("/nalada", "/nálada", "nalada", "nálada"):
             replies.append(mood_report(state))
