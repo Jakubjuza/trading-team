@@ -6,3 +6,4 @@ scanner/out/
 scanner/state.json
 scanner/paper_trades.json
 .env
+reports/telegram/

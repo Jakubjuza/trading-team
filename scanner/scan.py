@@ -787,6 +787,11 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
     except Exception as exc:
         print(f"přehled ensemblu/pyramidy selhal: {exc}", file=sys.stderr)
     try:
+        from scanner import lab_report
+        lines += lab_report.lines(state, status.get("prices") or {}, limit=8)
+    except Exception as exc:
+        print(f"přehled laboratoře selhal: {exc}", file=sys.stderr)
+    try:
         lines += positions_overview(state, status.get("prices") or {}, hb["last"])
     except Exception as exc:
         print(f"přehled pozic selhal: {exc}", file=sys.stderr)
@@ -815,6 +820,9 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
     rules_txt = ", ".join(f"{setups.NAMES_CS.get(st['setup'], st['setup'])} {st['timeframe']}" for st in cfg_strategies(cfg))
     lines.append(f"Hlídám: {rules_txt}. Další zpráva o stavu za {hours} h.")
     text = "\n".join(lines)
+    if send is None:                                                  # 📊 obrázek s přehledem před textem
+        from scanner import lab_report
+        lab_report.send_board(state, status.get("prices") or {}, f"📊 Přehled {now.astimezone(tz):%d.%m. %H:%M}")
     ok = (send or notify.telegram)(text)
     if ok:
         state.data["heartbeat"] = {"last": now.isoformat(), "scans": 0, "setups": 0, "errors": 0}

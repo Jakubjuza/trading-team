@@ -236,8 +236,11 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                 ent, _ = atlas.family_signals(z, s["family"], _params(s), d)
                 if not len(ent) or ent[-1] != i:
                     continue
+                sa0 = atlas.EXITS[s["exit"]][0]
+                risk = (sa0 if sa0 > 0 else 2.0) * float(z.atr[i])
                 o = {"sid": s["id"], "label": s["label"], "coin": coin, "tf": tf, "dir": s["dir"],
                      "signal_bar": last_closed, "signal_close": float(z.c[i]), "regime": rg,
+                     "rf": risk / float(z.c[i]), "stop": float(z.c[i]) - d * risk if sa0 > 0 else None,
                      "strategy": {k: s[k] for k in ("id", "family", "params", "tf", "filter", "exit", "dir", "label")}}
                 st["open"].append(o)
                 _log({"event": "signal", **{k: v for k, v in o.items() if k != "strategy"}, "time": now.isoformat()})
