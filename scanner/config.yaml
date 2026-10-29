@@ -173,6 +173,7 @@ outlook:                  # 📆 týdenní výhled – research/scenarios.py (ro
 lab:                      # ⚡ strategie z registru laboratoře (research/registry.json) – papírově, jen ve svém režimu trhu
   enabled: true           # scanner/lab_paper.py; data OKX; poplatky MEXC 0,05 %/stranu; zpráva při signálu a uzavření
                           # registr plní noční laboratoř (research/lab.py, .github/workflows/lab.yml)
+  max_same_dir: 3         # nejvýš 3 souběžné pozice stejného směru, 1 na minci a směr (ostatní jen stínově)
 
 carry:                    # 💰 papírový carry z fundingu (research/carry.py, reports/carry.md) – NIC se neposílá na burzu
   enabled: true

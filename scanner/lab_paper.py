@@ -7,7 +7,14 @@ Při každém průchodu skeneru: pro každý timeframe aktivních strategií, kd
      (research/experiments/strategy_atlas.family_signals) → ⚡ zpráva na Telegram + papírový obchod,
   4. otevřené obchody spravuje STEJNOU simulací jako backtest (vstup na open další svíčky, stop / cíl / trailing /
      výstup signálem), poplatky MEXC 0,05 % na stranu → 📕 zpráva při uzavření, záznam do research/lab_trades.jsonl.
-Na burzu se nic neposílá. Selhání nesmí shodit skener – volá se v try/except.
+  5. 🧠 KONTEXT (research/context.py, model research/context_model.json z testu research/experiments/context_gate.py):
+     u každého signálu spočítá kontext trhu (trend mince a BTC, trendovost, pokračování průrazů, nálada, kvalita
+     svíčky…). Trendové strategie: když brána v testu PROŠLA, vezme se jen signál se skóre nad prahem, jinak se skóre
+     jen zapíše. Strategie s context = "range" (návrat do rozpětí) obchoduje jen v bočním trhu.
+  6. LIMIT KORELACE: nejvýš `lab.max_same_dir` souběžných pozic stejného směru a jedna pozice na minci a směr
+     (stejný pohyb BTC jinak vybere několik stopů naráz).
+Signál, který brána nebo limit nepustí, se sleduje jako STÍNOVÝ obchod (research/lab_shadow.jsonl, bez zpráv),
+aby se dalo živě změřit, jestli brána pomáhá. Na burzu se nic neposílá. Selhání nesmí shodit skener – volá se v try/except.
 """
 import json
 import sys
@@ -20,11 +27,13 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from research import regime, registry  # noqa: E402
+from research import context, regime, registry  # noqa: E402
 from research.experiments import strategy_atlas as atlas  # noqa: E402
 from scanner import notify  # noqa: E402
 
 LOG = ROOT / "research" / "lab_trades.jsonl"
+SHADOW = ROOT / "research" / "lab_shadow.jsonl"
+MODEL = ROOT / "research" / "context_model.json"
 CACHE = ROOT / "scanner" / "cache"
 TF_TD = {"15m": "15min", "1h": "1h", "2h": "2h", "4h": "4h", "6h": "6h", "12h": "12h", "1d": "1D"}
 COST = atlas.COSTS[atlas.MAIN]
@@ -34,9 +43,40 @@ def _n(x, d=2):
     return f"{x:+.{d}f}".replace(".", ",")
 
 
-def _log(rec):
-    with LOG.open("a", encoding="utf-8") as f:
+def _log(rec, path=None):
+    with (path or LOG).open("a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+
+def load_model(path=None):
+    p = Path(path or MODEL)
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception as exc:
+        print(f"lab: model kontextu nečitelný: {exc.__class__.__name__}", file=sys.stderr)
+        return None
+
+
+def decide(model, s, feats, open_pos, max_same_dir, coin):
+    """Vezme se signál? Vrací (ano/ne, důvod, skóre, pro, proti)."""
+    sc, pos, neg = None, [], []
+    if model:
+        sc = float(context.score(model, feats)[0])
+        pos, neg = context.reasons(model, feats)
+    if s.get("context") == "range":
+        if not model:
+            return False, "chybí model kontextu", sc, pos, neg
+        if not bool(context.is_range(model, feats)[0]):
+            return False, "trh není boční (průrazy pokračují / denní trend)", sc, pos, neg
+    elif model and (model.get("gate") or {}).get("pass") and sc < model["threshold"]:
+        return False, f"slabý kontext (skóre {sc:+.2f} < práh {model['threshold']:+.2f})", sc, pos, neg
+    if any(o["coin"] == coin and o["dir"] == s["dir"] for o in open_pos):
+        return False, "na minci už je pozice stejného směru", sc, pos, neg
+    if sum(1 for o in open_pos if o["dir"] == s["dir"]) >= max_same_dir:
+        return False, f"limit {max_same_dir} souběžných pozic {s['dir']}", sc, pos, neg
+    return True, "", sc, pos, neg
 
 
 def _exchange():
@@ -136,6 +176,47 @@ def _plan(z, s, i):
     return ", ".join(parts)
 
 
+def _manage(positions, tf, frames, reg, now, msgs, shadow=False):
+    """Posune otevřené obchody timeframu `tf`; uzavřené zapíše (stínové do SHADOW, bez zprávy). Vrací ještě otevřené."""
+    still = []
+    for o in positions:
+        z = frames.get(o["coin"]) if o["tf"] == tf else None
+        if z is None:
+            still.append(o)
+            continue
+        s = registry.find(reg, o["sid"]) or o["strategy"]
+        d = 1 if o["dir"] == "long" else -1
+        pos = np.flatnonzero(z.df.index == pd.Timestamp(o["signal_bar"]))
+        if not len(pos):                                              # signál vypadl z okna dat – zavřít na posledním close
+            px = z.c[-1]
+            g = d * (px / o["entry"] - 1) if o.get("entry") else 0.0
+            res = {"entry_i": None, "g": g, "rf": o.get("rf") or 1.0, "exit_i": len(z.c) - 1, "closed": True}
+        else:
+            res = _simulate(z, s, int(pos[0]))
+            if res is None:
+                still.append(o)
+                continue
+            o["entry"] = float(z.o[res["entry_i"]])
+            o["rf"] = res["rf"]
+        if not res["closed"]:
+            still.append(o)
+            continue
+        r = (res["g"] - 2 * COST) / res["rf"]
+        fill = o["entry"] * (1 + d * res["g"]) if o.get("entry") else None     # skutečná výstupní cena (stop/cíl), ne close
+        rec = {"event": "close", "sid": o["sid"], "coin": o["coin"], "tf": tf, "dir": o["dir"],
+               "signal_bar": o["signal_bar"], "entry": o.get("entry"), "exit_bar": z.df.index[res["exit_i"]].isoformat(),
+               "exit": round(fill, 8) if fill is not None else None,
+               "g": round(res["g"], 6), "r": round(r, 3), "regime": o.get("regime"), "time": now.isoformat()}
+        for k in ("ctx_score", "skip"):
+            if k in o:
+                rec[k] = o[k]
+        _log(rec, SHADOW if shadow else None)
+        if not shadow:
+            msgs.append(f"🧪📕 {o['label']} · {o['coin']} {o['dir'].upper()} {tf.upper()}: {_n(r)} R "
+                        f"({_n(res['g'] * 100 - 2 * COST * 100)} % po poplatcích), papírově.")
+    return still
+
+
 def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
     lc = cfg.get("lab") or {}
     if not lc.get("enabled"):
@@ -147,7 +228,8 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
     st = state.data.setdefault("lab", {"last_eval": {}, "open": []})
     tg = send or (None if dry_run or not cfg.get("notify", {}).get("telegram", True) else notify.telegram)
     coins = [t["symbol"].split("/")[0] for t in cfg.get("tickers", []) if t.get("source") == "crypto"]
-    tfs = sorted({s["tf"] for s in strats} | {o["tf"] for o in st["open"]}, key=lambda x: pd.Timedelta(TF_TD[x]))
+    tfs = sorted({s["tf"] for s in strats} | {o["tf"] for o in st["open"] + st.get("shadow", [])},
+                 key=lambda x: pd.Timedelta(TF_TD[x]))
     due = []
     for tf in tfs:
         step = pd.Timedelta(TF_TD[tf])
@@ -158,12 +240,29 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
         return []
     ex = ex or _exchange()
     msgs = []
-    daily = {}
+    daily, ddf = {}, {}
     for coin in coins:
         try:
-            daily[coin] = _daily_context(candles(ex, coin, "1d", now, bars=900))
+            ddf[coin] = candles(ex, coin, "1d", now, bars=900)
+            daily[coin] = _daily_context(ddf[coin])
         except Exception as exc:
             print(f"lab: denní data {coin} selhala: {exc.__class__.__name__}", file=sys.stderr)
+    model = load_model()
+    max_same_dir = int(lc.get("max_same_dir", 3))
+    dctx = {}
+    if model:
+        fng_c = None
+        try:
+            from research.lab import fng_series
+            fng_c = fng_series()
+        except Exception as exc:
+            print(f"lab: nálada pro kontext nedostupná: {exc.__class__.__name__}", file=sys.stderr)
+        for coin in ddf:
+            try:
+                dctx[coin] = context.daily_frame(ddf[coin], ddf.get("BTC"), fng_c)
+            except Exception as exc:
+                print(f"lab: kontext {coin} selhal: {exc.__class__.__name__}", file=sys.stderr)
+    st.setdefault("shadow", [])
     fng = None
     if any(s["family"] == "fng" for s in strats):
         try:
@@ -182,39 +281,9 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                     frames[coin].fng = fng.reindex(frames[coin].df.index.floor("1D")).ffill().to_numpy(float)
             except Exception as exc:
                 print(f"lab: {coin} {tf} selhalo: {exc.__class__.__name__}", file=sys.stderr)
-        # 1) správa otevřených obchodů
-        still = []
-        for o in st["open"]:
-            z = frames.get(o["coin"]) if o["tf"] == tf else None
-            if z is None:
-                still.append(o)
-                continue
-            s = registry.find(reg, o["sid"]) or o["strategy"]
-            pos = np.flatnonzero(z.df.index == pd.Timestamp(o["signal_bar"]))
-            if not len(pos):                                          # signál vypadl z okna dat – zavřít na posledním close
-                res = {"entry_i": None, "g": None, "closed": True}
-                px = z.c[-1]
-                g = (1 if o["dir"] == "long" else -1) * (px / o["entry"] - 1) if o.get("entry") else 0.0
-                res.update({"g": g, "rf": o.get("rf") or 1.0, "exit_i": len(z.c) - 1})
-            else:
-                res = _simulate(z, s, int(pos[0]))
-                if res is None:
-                    still.append(o)
-                    continue
-                o["entry"] = float(z.o[res["entry_i"]])
-                o["rf"] = res["rf"]
-            if not res["closed"]:
-                still.append(o)
-                continue
-            r = (res["g"] - 2 * COST) / res["rf"]
-            rec = {"event": "close", "sid": o["sid"], "coin": o["coin"], "tf": tf, "dir": o["dir"],
-                   "signal_bar": o["signal_bar"], "entry": o.get("entry"), "exit_bar": z.df.index[res["exit_i"]].isoformat(),
-                   "exit": float(z.c[res["exit_i"]]) if res["exit_i"] is not None else None,
-                   "g": round(res["g"], 6), "r": round(r, 3), "regime": o.get("regime"), "time": now.isoformat()}
-            _log(rec)
-            msgs.append(f"🧪📕 {o['label']} · {o['coin']} {o['dir'].upper()} {tf.upper()}: {_n(r)} R "
-                        f"({_n(res['g'] * 100 - 2 * COST * 100)} % po poplatcích), papírově.")
-        st["open"] = still
+        # 1) správa otevřených (a stínových) obchodů
+        for key in ("open", "shadow"):
+            st[key] = _manage(st.get(key, []), tf, frames, reg, now, msgs, shadow=key == "shadow")
         # 2) nové signály na poslední uzavřené svíčce
         for s in strats:
             if s["tf"] != tf:
@@ -229,7 +298,7 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                 rg = z.reg[i]
                 if s.get("regimes") and rg not in s["regimes"]:
                     continue
-                if any(o["sid"] == s["id"] and o["coin"] == coin for o in st["open"]):
+                if any(o["sid"] == s["id"] and o["coin"] == coin for o in st["open"] + st["shadow"]):
                     continue
                 if s["filter"] != "none" and z.flt[s["filter"]][i] != (1.0 if d > 0 else 0.0):
                     continue
@@ -242,10 +311,33 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                      "signal_bar": last_closed, "signal_close": float(z.c[i]), "regime": rg,
                      "rf": risk / float(z.c[i]), "stop": float(z.c[i]) - d * risk if sa0 > 0 else None,
                      "strategy": {k: s[k] for k in ("id", "family", "params", "tf", "filter", "exit", "dir", "label")}}
+                feats = None
+                if model and coin in dctx:
+                    try:
+                        feats = context.TfContext(z.df, dctx[coin]).at([i], d)
+                    except Exception as exc:
+                        print(f"lab: kontext signálu selhal: {exc.__class__.__name__}", file=sys.stderr)
+                take, why, sc, pro, proti = decide(model if feats else None, s, feats, st["open"], max_same_dir, coin)
+                if sc is not None:
+                    o["ctx_score"] = round(sc, 3)
+                if s.get("context"):
+                    o["strategy"]["context"] = s["context"]
+                if not take:
+                    o["skip"] = why
+                    st["shadow"].append(o)
+                    _log({"event": "signal", **{k: v for k, v in o.items() if k != "strategy"}, "time": now.isoformat()},
+                         SHADOW)
+                    continue
                 st["open"].append(o)
                 _log({"event": "signal", **{k: v for k, v in o.items() if k != "strategy"}, "time": now.isoformat()})
+                ctx_line = ""
+                if sc is not None:
+                    ctx_line = (f"🧠 Kontext {_n(sc)} (práh {_n(model['threshold'])}"
+                                f"{'' if (model.get('gate') or {}).get('pass') else ', brána zatím jen měří'})"
+                                + (f" · pro: {', '.join(pro)}" if pro else "") + (f" · proti: {', '.join(proti)}" if proti else "")
+                                + "\n")
                 msgs.append(f"⚡ {s['label']} · {coin} {s['dir'].upper()} {tf.upper()} · režim {rg}\n"
-                            f"Vstup ~{notify.fmt(z.c[i])} (open další svíčky), {_plan(z, s, i)}.\n"
+                            f"Vstup ~{notify.fmt(z.c[i])} (open další svíčky), {_plan(z, s, i)}.\n" + ctx_line +
                             f"Laboratoř: {s['status']}, backtest OOS {_n(s['backtest'].get('oos_r', 0))} R. "
                             f"Papírově, ne rada.")
         st["last_eval"][tf] = last_closed
