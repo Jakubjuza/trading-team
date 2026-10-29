@@ -1,57 +1,57 @@
 {
- "generated": "2026-10-25T07:30:29+00:00",
+ "generated": "2026-10-29T08:16:48+00:00",
  "fomc": {
-  "range_x_vs_same_hour": 1.45,
-  "range_before_x": 1.06,
-  "n_meetings": 16,
+  "range_x_vs_same_hour": 1.44,
+  "range_before_x": 1.04,
+  "n_meetings": 17,
   "coins": {
    "BTC": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
-    "range_x_vs_same_hour": 1.62,
-    "range_before_x": 1.13
+    "range_x_vs_same_hour": 1.59,
+    "range_before_x": 1.12
    },
    "ETH": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
-    "range_x_vs_same_hour": 1.5,
-    "range_before_x": 1.19
+    "range_x_vs_same_hour": 1.48,
+    "range_before_x": 1.15
    },
    "SOL": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
-    "range_x_vs_same_hour": 1.53,
-    "range_before_x": 1.02
+    "range_x_vs_same_hour": 1.51,
+    "range_before_x": 0.99
    },
    "XRP": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
-    "range_x_vs_same_hour": 1.3,
-    "range_before_x": 1.22
+    "range_x_vs_same_hour": 1.27,
+    "range_before_x": 1.18
    },
    "ADA": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
-    "range_x_vs_same_hour": 1.36,
-    "range_before_x": 0.97
+    "range_x_vs_same_hour": 1.38,
+    "range_before_x": 0.95
    },
    "LINK": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
     "range_x_vs_same_hour": 1.57,
-    "range_before_x": 1.02
+    "range_before_x": 1.0
    },
    "AVAX": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
-    "range_x_vs_same_hour": 1.26,
-    "range_before_x": 0.98
+    "range_x_vs_same_hour": 1.27,
+    "range_before_x": 0.96
    },
    "DOGE": {
-    "n": 16,
+    "n": 17,
     "hours": 4,
-    "range_x_vs_same_hour": 1.44,
-    "range_before_x": 0.97
+    "range_x_vs_same_hour": 1.43,
+    "range_before_x": 0.95
    }
   }
  }

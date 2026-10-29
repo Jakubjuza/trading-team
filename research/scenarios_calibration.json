@@ -2,27 +2,27 @@
  "split_2022": [
   {
    "horizon": "4 týdny",
-   "n_train": 10096,
-   "n_test": 13832,
+   "n_train": 10092,
+   "n_test": 13872,
    "below_q10": 0.121,
-   "above_median": 0.417,
+   "above_median": 0.416,
    "above_q90": 0.062,
    "coverage_10_90": 0.817,
    "z": {
     "0.1": -1.228,
-    "0.5": 0.103,
-    "0.9": 2.105
+    "0.5": 0.102,
+    "0.9": 2.101
    },
    "regimes": {
     "týden ↑ · měsíc ↑": {
-     "pred_p_up": 0.546,
-     "actual_p_up": 0.415,
-     "n_test": 4041
+     "pred_p_up": 0.547,
+     "actual_p_up": 0.413,
+     "n_test": 4061
     },
     "týden ↑ · měsíc ↓": {
      "pred_p_up": 0.539,
-     "actual_p_up": 0.521,
-     "n_test": 1143
+     "actual_p_up": 0.512,
+     "n_test": 1163
     },
     "týden ↓ · měsíc ↑": {
      "pred_p_up": 0.554,
@@ -38,20 +38,20 @@
   },
   {
    "horizon": "13 týdnů",
-   "n_train": 9592,
-   "n_test": 13328,
-   "below_q10": 0.189,
-   "above_median": 0.355,
+   "n_train": 9588,
+   "n_test": 13368,
+   "below_q10": 0.188,
+   "above_median": 0.357,
    "above_q90": 0.049,
-   "coverage_10_90": 0.762,
+   "coverage_10_90": 0.763,
    "z": {
-    "0.1": -1.009,
-    "0.5": 0.241,
-    "0.9": 2.405
+    "0.1": -1.01,
+    "0.5": 0.24,
+    "0.9": 2.398
    },
    "regimes": {
     "týden ↑ · měsíc ↑": {
-     "pred_p_up": 0.658,
+     "pred_p_up": 0.655,
      "actual_p_up": 0.409,
      "n_test": 3941
     },
@@ -67,34 +67,34 @@
     },
     "týden ↓ · měsíc ↓": {
      "pred_p_up": 0.561,
-     "actual_p_up": 0.451,
-     "n_test": 6832
+     "actual_p_up": 0.455,
+     "n_test": 6872
     }
    }
   },
   {
    "horizon": "26 týdnů",
-   "n_train": 8864,
-   "n_test": 12600,
-   "below_q10": 0.217,
+   "n_train": 8860,
+   "n_test": 12640,
+   "below_q10": 0.216,
    "above_median": 0.292,
    "above_q90": 0.047,
-   "coverage_10_90": 0.736,
+   "coverage_10_90": 0.737,
    "z": {
     "0.1": -0.882,
     "0.5": 0.454,
-    "0.9": 2.767
+    "0.9": 2.76
    },
    "regimes": {
     "týden ↑ · měsíc ↑": {
-     "pred_p_up": 0.733,
+     "pred_p_up": 0.731,
      "actual_p_up": 0.423,
      "n_test": 3941
     },
     "týden ↑ · měsíc ↓": {
      "pred_p_up": 0.661,
-     "actual_p_up": 0.435,
-     "n_test": 993
+     "actual_p_up": 0.437,
+     "n_test": 996
     },
     "týden ↓ · měsíc ↑": {
      "pred_p_up": 0.665,
@@ -103,8 +103,8 @@
     },
     "týden ↓ · měsíc ↓": {
      "pred_p_up": 0.648,
-     "actual_p_up": 0.485,
-     "n_test": 6132
+     "actual_p_up": 0.484,
+     "n_test": 6169
     }
    }
   }
@@ -113,49 +113,49 @@
   "empirický střed": [
    {
     "horizon": "4 týdny",
-    "n_test": 13832,
+    "n_test": 13872,
     "below_q10": 0.114,
-    "above_median": 0.458,
+    "above_median": 0.457,
     "above_q90": 0.073,
-    "coverage_10_90": 0.813
+    "coverage_10_90": 0.814
    },
    {
     "horizon": "13 týdnů",
-    "n_test": 13328,
-    "below_q10": 0.141,
-    "above_median": 0.426,
+    "n_test": 13368,
+    "below_q10": 0.14,
+    "above_median": 0.428,
     "above_q90": 0.066,
-    "coverage_10_90": 0.793
+    "coverage_10_90": 0.794
    },
    {
     "horizon": "26 týdnů",
-    "n_test": 12600,
+    "n_test": 12640,
     "below_q10": 0.164,
     "above_median": 0.393,
     "above_q90": 0.063,
-    "coverage_10_90": 0.772
+    "coverage_10_90": 0.773
    }
   ],
   "neutrální střed": [
    {
     "horizon": "4 týdny",
-    "n_test": 13832,
+    "n_test": 13872,
     "below_q10": 0.11,
-    "above_median": 0.466,
+    "above_median": 0.465,
     "above_q90": 0.073,
-    "coverage_10_90": 0.817
+    "coverage_10_90": 0.818
    },
    {
     "horizon": "13 týdnů",
-    "n_test": 13328,
-    "below_q10": 0.126,
-    "above_median": 0.442,
+    "n_test": 13368,
+    "below_q10": 0.125,
+    "above_median": 0.444,
     "above_q90": 0.064,
     "coverage_10_90": 0.81
    },
    {
     "horizon": "26 týdnů",
-    "n_test": 12600,
+    "n_test": 12640,
     "below_q10": 0.104,
     "above_median": 0.468,
     "above_q90": 0.065,
