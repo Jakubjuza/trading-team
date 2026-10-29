@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29T19:23:56+00:00",
+ "updated": "2026-10-29T19:45:00+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -277,14 +277,7 @@
      "status": "papír",
      "reason": "atlas: OOS +0.39 R (t +2.3), HOLDOUT +0.56 R"
     }
-   ],
-   "paper": {
-    "n": 2,
-    "mean_r": -0.915,
-    "sum_r": -1.83,
-    "t": -7.35,
-    "win": 0.0
-   }
+   ]
   },
   {
    "id": "supertrend|10/3.0|6h|none|target|short",
@@ -684,10 +677,10 @@
     }
    ],
    "paper": {
-    "n": 2,
-    "mean_r": -1.035,
-    "sum_r": -2.07,
-    "t": -207.0,
+    "n": 1,
+    "mean_r": -1.04,
+    "sum_r": -1.04,
+    "t": null,
     "win": 0.0
    }
   },
@@ -1356,6 +1349,38 @@
      "date": "2026-10-29",
      "status": "papír",
      "reason": "atlas: OOS +0.64 R (t +2.5), HOLDOUT +0.27 R"
+    }
+   ]
+  },
+  {
+   "id": "sweep|55|4h|none|opp|long",
+   "label": "Sweep & reclaim 55 · 4H long · boční",
+   "family": "sweep",
+   "params": "55",
+   "tf": "4h",
+   "filter": "none",
+   "exit": "opp",
+   "dir": "long",
+   "added": "2026-10-29",
+   "source": "context_gate 2026-10-29",
+   "context": "range",
+   "regimes": [],
+   "backtest": {
+    "is_r": 0.031,
+    "oos_r": 0.377,
+    "hold_r": 0.012,
+    "oos_t": 2.257,
+    "hold_t": 0.045,
+    "is_n": 403,
+    "oos_n": 134,
+    "hold_n": 184
+   },
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-10-29",
+     "status": "papír",
+     "reason": "context_gate: jen boční kontext, OOS +0.38 R (t +2.3)"
     }
    ]
   }
