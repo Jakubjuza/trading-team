@@ -1,0 +1,44 @@
+name: Výzkum – kontextová brána
+
+# Test „vnímání trhu“ (research/experiments/context_gate.py): pomůže kontext (trend, follow-through průrazů,
+# nálada, kvalita svíčky…) obchodům laboratoře? Výsledek: reports/context_gate.md + research/context_model.json.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+    paths: ["research/context.py", "research/experiments/context_gate.py", ".github/workflows/context-gate.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt numba
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cache
+          key: lab-data-${{ github.run_id }}
+          restore-keys: lab-data-
+      - name: Kontextová brána
+        run: |
+          python3 research/experiments/context_gate.py /tmp/cache
+          cat reports/context_gate.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Uložit do větve
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in reports/context_gate.md research/context_model.json; do
+            if [ -e "$f" ]; then git add -f "$f"; fi
+          done
+          git commit -q -m "context-gate: výsledky testu kontextové brány" || exit 0
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}"

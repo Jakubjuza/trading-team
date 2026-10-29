@@ -154,6 +154,20 @@ def paper_stats():
     return st
 
 
+def gate_stats():
+    """Živé měření kontextové brány: vzaté papírové obchody vs. stínové (vyřazené bránou nebo limitem)."""
+    shadow = ROOT / "research" / "lab_shadow.jsonl"
+    out = {}
+    for name, path in (("vzaté", TRADES), ("vyřazené", shadow)):
+        if not path.exists():
+            continue
+        r = [json.loads(x)["r"] for x in path.read_text(encoding="utf-8").splitlines()
+             if x.strip() and json.loads(x).get("event") == "close"]
+        if r:
+            out[name] = {"n": len(r), "mean_r": float(np.mean(r)), "sum_r": float(np.sum(r))}
+    return out
+
+
 # ---------------------------------------------------------------- hlavní běh
 def select(cache, log):
     reg = registry.load()
@@ -228,6 +242,11 @@ def summary(reg, changes, log, weekly=False):
         for s in best:
             p = s["paper"]
             lines.append(f"• {s['label']}: {p['n']} obchodů, Ø {p['mean_r']:+.2f} R, Σ {p['sum_r']:+.1f} R".replace(".", ","))
+    if weekly:
+        gs = gate_stats()
+        if "vyřazené" in gs:
+            lines.append("🧠 Brána kontextu živě: " + " · ".join(
+                f"{k} {v['n']} obch. Ø {v['mean_r']:+.2f} R".replace(".", ",") for k, v in gs.items()))
     lines.append("Papírově, nic se neobchoduje skutečnými penězi. Nejde o finanční poradenství.")
     return "\n".join(lines)
 
