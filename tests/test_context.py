@@ -148,3 +148,27 @@ def test_update_routes_blocked_signal_to_shadow(tmp_path, monkeypatch):
     shadow = [json.loads(x) for x in lab_paper.SHADOW.read_text().splitlines()]
     assert shadow[0]["event"] == "signal" and shadow[0]["coin"] == "ETH"
     assert last == len(h1) - 1
+
+
+def test_update_with_model_logs_context_and_describes_it(tmp_path, monkeypatch):
+    h1 = _ohlcv(1200, seed=4, start="2025-06-01")
+    d1 = _daily(_ohlcv(24 * 400, seed=4, start="2024-06-01"))
+    now = h1.index[-1] + pd.Timedelta("1h")
+    monkeypatch.setattr(lab_paper, "candles", lambda ex, coin, tf, now_, bars=1000: d1 if tf == "1d" else h1)
+    monkeypatch.setattr(lab_paper, "load_model", lambda path=None: _model(pass_=False))
+    import research.lab
+    monkeypatch.setattr(research.lab, "fng_series", lambda: (_ for _ in ()).throw(OSError("offline")))
+    monkeypatch.setattr(lab_paper.atlas, "family_signals",
+                        lambda z, fam, p, d: (np.array([len(z.c) - 1]), np.zeros(len(z.c), bool)))
+    reg = {"strategies": [{"id": "x|1|1h|none|trail|long", "label": "Test · 1H long", "family": "donchian",
+                           "params": "100", "tf": "1h", "filter": "none", "exit": "trail", "dir": "long",
+                           "status": "papír", "regimes": [], "backtest": {"oos_r": 0.2}}]}
+    cfg = {"lab": {"enabled": True}, "tickers": [{"symbol": "BTC/USDT", "source": "crypto"}],
+           "notify": {"telegram": False}}
+    st = _State()
+    msgs = lab_paper.update(cfg, st, now=now, reg=reg, ex=object(), send=lambda m: None)
+    o = st.data["lab"]["open"][0]
+    assert "ft_tf" in o["ctx"] and isinstance(o["ctx_range"], bool)
+    assert "🧠 Kontext:" in msgs[0] and "Skóre" not in msgs[0]         # neprošlá brána: jen popis, žádné skóre
+    rec = json.loads(lab_paper.LOG.read_text().splitlines()[0])
+    assert rec["ctx"] == o["ctx"]

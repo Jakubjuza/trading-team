@@ -157,14 +157,21 @@ def paper_stats():
 def gate_stats():
     """Živé měření kontextové brány: vzaté papírové obchody vs. stínové (vyřazené bránou nebo limitem)."""
     shadow = ROOT / "research" / "lab_shadow.jsonl"
-    out = {}
+    out, by_ctx = {}, {"boční základna": [], "běžící trend": []}
     for name, path in (("vzaté", TRADES), ("vyřazené", shadow)):
         if not path.exists():
             continue
-        r = [json.loads(x)["r"] for x in path.read_text(encoding="utf-8").splitlines()
-             if x.strip() and json.loads(x).get("event") == "close"]
+        rows = [json.loads(x) for x in path.read_text(encoding="utf-8").splitlines() if x.strip()]
+        rows = [x for x in rows if x.get("event") == "close"]
+        r = [x["r"] for x in rows]
         if r:
             out[name] = {"n": len(r), "mean_r": float(np.mean(r)), "sum_r": float(np.sum(r))}
+        for x in rows:                                     # hypotéza H1 (reports/context_gate_notes.md)
+            if "ctx_range" in x:
+                by_ctx["boční základna" if x["ctx_range"] else "běžící trend"].append(x["r"])
+    for k, r in by_ctx.items():
+        if r:
+            out[k] = {"n": len(r), "mean_r": float(np.mean(r)), "sum_r": float(np.sum(r))}
     return out
 
 
@@ -244,7 +251,7 @@ def summary(reg, changes, log, weekly=False):
             lines.append(f"• {s['label']}: {p['n']} obchodů, Ø {p['mean_r']:+.2f} R, Σ {p['sum_r']:+.1f} R".replace(".", ","))
     if weekly:
         gs = gate_stats()
-        if "vyřazené" in gs:
+        if gs:
             lines.append("🧠 Brána kontextu živě: " + " · ".join(
                 f"{k} {v['n']} obch. Ø {v['mean_r']:+.2f} R".replace(".", ",") for k, v in gs.items()))
     lines.append("Papírově, nic se neobchoduje skutečnými penězi. Nejde o finanční poradenství.")
