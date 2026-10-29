@@ -207,7 +207,7 @@ def _manage(positions, tf, frames, reg, now, msgs, shadow=False):
                "signal_bar": o["signal_bar"], "entry": o.get("entry"), "exit_bar": z.df.index[res["exit_i"]].isoformat(),
                "exit": round(fill, 8) if fill is not None else None,
                "g": round(res["g"], 6), "r": round(r, 3), "regime": o.get("regime"), "time": now.isoformat()}
-        for k in ("ctx_score", "skip"):
+        for k in ("ctx_score", "ctx", "ctx_range", "skip"):
             if k in o:
                 rec[k] = o[k]
         _log(rec, SHADOW if shadow else None)
@@ -320,6 +320,9 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                 take, why, sc, pro, proti = decide(model if feats else None, s, feats, st["open"], max_same_dir, coin)
                 if sc is not None:
                     o["ctx_score"] = round(sc, 3)
+                if feats is not None:                                 # metriky kontextu pro měření dopředu
+                    o["ctx"] = {k: round(float(v[0]), 3) for k, v in feats.items() if np.isfinite(v[0])}
+                    o["ctx_range"] = bool(context.is_range(model, feats)[0])
                 if s.get("context"):
                     o["strategy"]["context"] = s["context"]
                 if not take:
@@ -330,12 +333,11 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                     continue
                 st["open"].append(o)
                 _log({"event": "signal", **{k: v for k, v in o.items() if k != "strategy"}, "time": now.isoformat()})
-                ctx_line = ""
-                if sc is not None:
-                    ctx_line = (f"🧠 Kontext {_n(sc)} (práh {_n(model['threshold'])}"
-                                f"{'' if (model.get('gate') or {}).get('pass') else ', brána zatím jen měří'})"
-                                + (f" · pro: {', '.join(pro)}" if pro else "") + (f" · proti: {', '.join(proti)}" if proti else "")
-                                + "\n")
+                ctx_line = context.describe(model, feats) + "\n" if feats is not None else ""
+                if sc is not None and (model.get("gate") or {}).get("pass"):
+                    ctx_line += (f"🧠 Skóre {_n(sc)} (práh {_n(model['threshold'])})"
+                                 + (f" · pro: {', '.join(pro)}" if pro else "")
+                                 + (f" · proti: {', '.join(proti)}" if proti else "") + "\n")
                 msgs.append(f"⚡ {s['label']} · {coin} {s['dir'].upper()} {tf.upper()} · režim {rg}\n"
                             f"Vstup ~{notify.fmt(z.c[i])} (open další svíčky), {_plan(z, s, i)}.\n" + ctx_line +
                             f"Laboratoř: {s['status']}, backtest OOS {_n(s['backtest'].get('oos_r', 0))} R. "

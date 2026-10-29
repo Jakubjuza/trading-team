@@ -208,3 +208,18 @@ def reasons(model, feats, k=3):
     neg = [CS[f] for v, f in parts[:k] if v < -0.25]
     pos = [CS[f] for v, f in parts[::-1][:k] if v > 0.25]
     return pos, neg
+
+
+def describe(model, feats):
+    """Jednořádkový popis kontextu signálu pro Telegram (popis, ne signál)."""
+    g = lambda k: float(np.atleast_1d(feats[k])[0])                    # noqa: E731
+    ft, er, tr = g("ft_tf"), g("er_d"), g("trend_d")
+    kind = "boční základna" if bool(is_range(model, feats)[0]) else "trh už trenduje"
+    bits = []
+    if np.isfinite(ft):
+        bits.append(f"průrazy pokračují {ft:.0%}")
+    if np.isfinite(er):
+        bits.append(f"denní trendovost {er:.2f}")
+    if np.isfinite(tr):
+        bits.append("denní trend " + ("po směru" if tr > 0 else "proti směru" if tr < 0 else "neutrální"))
+    return f"🧠 Kontext: {kind} · " + " · ".join(bits)
