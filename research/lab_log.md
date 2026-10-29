@@ -21,3 +21,12 @@
 - 🆕 Supertrend 10 3.0 · 4H short → papír, režimy: medvědí, boční
 - 🆕 Keltner průraz 2.5 · 4H short → papír, režimy: býčí, medvědí, boční
 - atlas:4h hotovo za 12 min
+
+## 2026-10-29
+- 🆕 Protnutí průměrů ema 5 50 pullback · 1H long → papír, režimy: býčí, boční, panika
+- 🆕 Průraz s objemem 55 2.5 · 1H long → papír, režimy: býčí, medvědí, boční, panika
+- 🆕 RSI momentum 60 · 4H long → papír, režimy: býčí, medvědí, boční
+- 🆕 RSI momentum 60 · 2H long → papír, režimy: býčí, medvědí, boční
+- 🆕 Cena × průměr ema 200 · 4H long → papír, režimy: býčí, medvědí, boční, panika
+- 🆕 RSI momentum 60 · 6H long → papír, režimy: býčí, medvědí, boční
+- atlas:1h hotovo za 15 min

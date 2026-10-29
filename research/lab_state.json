@@ -1,10 +1,15 @@
 {
- "next": 1,
+ "next": 2,
  "runs": [
   {
    "time": "2026-10-28T07:08:46+00:00",
    "batch": "atlas:4h",
    "log": "atlas:4h hotovo za 12 min"
+  },
+  {
+   "time": "2026-10-29T07:31:04+00:00",
+   "batch": "atlas:1h",
+   "log": "atlas:1h hotovo za 15 min"
   }
  ]
 }
