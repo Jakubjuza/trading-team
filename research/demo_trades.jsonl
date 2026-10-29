@@ -2,3 +2,4 @@
 {"event": "ensemble_error", "symbol": "ETH/USDC", "error": "ExchangeError: okx {\"msg\":\"This API Key does not have trading permission for the Crypto\",\"code\":\"50123\"}", "time": "2026-10-26T05:56:32.234692+00:00"}
 {"event": "ensemble", "symbol": "SOL/USDC", "side": "buy", "amount": 3.69931, "price": 101.4, "paper_price": 101.37, "time": "2026-10-26T05:56:32.724605+00:00"}
 {"event": "ensemble", "symbol": "LINK/USDC", "side": "buy", "amount": 21.598, "price": 11.452518473932772, "paper_price": 11.43811, "time": "2026-10-26T05:56:33.197923+00:00"}
+{"event": "ensemble", "symbol": "LINK/USDC", "side": "buy", "amount": 5.045, "price": 11.831283845391477, "paper_price": 11.7964, "time": "2026-10-29T00:01:18.609184+00:00"}
