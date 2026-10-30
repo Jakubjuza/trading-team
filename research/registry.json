@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29T19:45:00+00:00",
+ "updated": "2026-10-30T07:35:33+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -277,7 +277,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.39 R (t +2.3), HOLDOUT +0.56 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 2,
+    "mean_r": -0.915,
+    "sum_r": -1.83,
+    "t": -7.35,
+    "win": 0.0
+   }
   },
   {
    "id": "supertrend|10/3.0|6h|none|target|short",
@@ -444,10 +451,10 @@
     }
    ],
    "paper": {
-    "n": 2,
-    "mean_r": -1.058,
-    "sum_r": -2.12,
-    "t": -124.53,
+    "n": 9,
+    "mean_r": -1.018,
+    "sum_r": -9.16,
+    "t": -27.69,
     "win": 0.0
    }
   },
@@ -677,11 +684,11 @@
     }
    ],
    "paper": {
-    "n": 1,
-    "mean_r": -1.04,
-    "sum_r": -1.04,
-    "t": null,
-    "win": 0.0
+    "n": 3,
+    "mean_r": -0.2,
+    "sum_r": -0.6,
+    "t": -0.24,
+    "win": 0.33
    }
   },
   {
@@ -1184,7 +1191,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.37 R (t +2.2), HOLDOUT +0.25 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 1,
+    "mean_r": -1.041,
+    "sum_r": -1.04,
+    "t": null,
+    "win": 0.0
+   }
   },
   {
    "id": "rsi_mom|60|2h|none|opp_stop|long",
@@ -1239,7 +1253,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.28 R (t +3.0), HOLDOUT +0.18 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 3,
+    "mean_r": -1.061,
+    "sum_r": -3.18,
+    "t": -80.77,
+    "win": 0.0
+   }
   },
   {
    "id": "price_ma|ema/200|4h|none|opp_stop|long",
@@ -1295,7 +1316,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.72 R (t +2.1), HOLDOUT +0.30 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 1,
+    "mean_r": -0.777,
+    "sum_r": -0.78,
+    "t": null,
+    "win": 0.0
+   }
   },
   {
    "id": "rsi_mom|60|6h|none|opp_stop|long",

@@ -2,7 +2,7 @@
 
 Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu něco, co po poplatcích MEXC vydělává spolehlivěji než náhoda? Metoda stanovená předem je v hlavičce `research/experiments/strategy_atlas.py`.
 
-- **41 664 kombinací** (15 rodin, 248 variant × 7 timeframů × 3 filtry × 4 výstupy × long/short), 8 mincí.
+- **42 048 kombinací** (15 rodin, 248 variant × 7 timeframů × 3 filtry × 4 výstupy × long/short), 8 mincí.
 - 12h: 5952 kombinací, 1259 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 15m: 5952 kombinací, 4464 s, data od BTC 01/2022, ETH 01/2022, SOL 01/2022, XRP 01/2022, ADA 01/2022, LINK 01/2022, AVAX 01/2022, DOGE 01/2022
 - 1d: 5952 kombinací, 1225 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
@@ -10,6 +10,8 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 - 2h: 5952 kombinací, 901 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 4h: 5952 kombinací, 749 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 6h: 5952 kombinací, 844 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
+- sent_1d: 192 kombinací, 985 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
+- sent_4h: 192 kombinací, 2 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - Poplatky na stranu: **MEXC futures taker 0,02 % + skluz 0,03 % = 0,05 % (rozhoduje)**; MEXC spot taker 0,08 %; maker 0 % (optimistická mez); 0,15 % (dřívější testy). Funding nezapočten. Poplatky MEXC podle [MEXC, 11/2025](https://www.mexc.com/ru-RU/crypto-pulse/article/mexc-trading-fees-complete-guide-39643).
 - IS do 12/2023 (15M od 1/2022), OOS 1/2024–6/2025, HOLDOUT 7/2025–dnes. R = výsledek po poplatcích / riziko (vzdálenost stopu; bez stopu 2 ATR).
 
@@ -27,6 +29,8 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 | svíčkové vzory | short | 168 | 23% | 58% | 62% | 55% | 1,8% | -0,06 | +0,03 |
 | Donchian průraz | long | 420 | 80% | 64% | 95% | 82% | 30,7% | +0,25 | +0,09 |
 | Donchian průraz | short | 420 | 30% | 65% | 49% | 51% | 2,1% | -0,08 | +0,04 |
+| strach a chamtivost | long | 192 | 35% | 25% | 28% | 23% | 0,5% | -0,16 | -0,29 |
+| strach a chamtivost | short | 192 | 41% | 15% | 50% | 18% | 1,6% | +0,04 | -0,23 |
 | Keltner průraz | long | 252 | 80% | 69% | 96% | 88% | 48,0% | +0,19 | +0,14 |
 | Keltner průraz | short | 252 | 40% | 65% | 54% | 77% | 18,7% | -0,05 | +0,06 |
 | protnutí 2 průměrů | long | 16128 | 66% | 55% | 70% | 64% | 8,2% | +0,16 | +0,03 |
@@ -60,14 +64,14 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 | 1h | short | 54% | 40% | 72% | 45% | +0,01 | 44 |
 | 2h | long | 69% | 65% | 71% | 59% | +0,10 | 20 |
 | 2h | short | 41% | 66% | 61% | 41% | -0,02 | 22 |
-| 4h | long | 76% | 67% | 71% | 60% | +0,18 | 10 |
-| 4h | short | 32% | 78% | 67% | 41% | -0,07 | 11 |
+| 4h | long | 75% | 66% | 70% | 59% | +0,17 | 10 |
+| 4h | short | 32% | 76% | 67% | 41% | -0,07 | 11 |
 | 6h | long | 77% | 61% | 61% | 63% | +0,44 | 7 |
 | 6h | short | 28% | 84% | 71% | 60% | -0,10 | 8 |
 | 12h | long | 76% | 59% | 62% | 76% | +0,48 | 4 |
 | 12h | short | 22% | 87% | 65% | 65% | -0,18 | 4 |
-| 1d | long | 66% | 39% | 59% | 64% | +0,32 | 2 |
-| 1d | short | 11% | 89% | 51% | 75% | -0,28 | 2 |
+| 1d | long | 65% | 38% | 58% | 63% | +0,30 | 2 |
+| 1d | short | 12% | 86% | 51% | 73% | -0,28 | 2 |
 
 ## 3. Kolik dělají poplatky
 
@@ -75,10 +79,10 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 
 | Poplatky na stranu | OOS > 0 long | OOS > 0 short | HOLDOUT > 0 long | HOLDOUT > 0 short | Projde pravidlem (ze všech) |
 |---|---|---|---|---|---|
-| 0 % (maker, optimisticky) | 76% | 47% | 66% | 87% | 1021 z 33840 |
-| 0,05 % (MEXC futures taker) | 64% | 31% | 54% | 64% | 209 z 33840 |
-| 0,08 % (MEXC spot taker) | 61% | 23% | 49% | 57% | 144 z 33840 |
-| 0,15 % (dřívější testy) | 54% | 14% | 40% | 48% | 64 z 33840 |
+| 0 % (maker, optimisticky) | 76% | 47% | 66% | 86% | 1021 z 33868 |
+| 0,05 % (MEXC futures taker) | 64% | 31% | 54% | 63% | 209 z 33868 |
+| 0,08 % (MEXC spot taker) | 60% | 23% | 49% | 57% | 144 z 33868 |
+| 0,15 % (dřívější testy) | 54% | 14% | 40% | 48% | 64 z 33868 |
 
 ## 4. Výběr podle předem stanoveného pravidla (50 nejlepších podle IS t-statistiky na směr)
 
@@ -187,7 +191,7 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 
 ## 5. Všechny kombinace, které splní kritéria (bez pořadí v IS) – kandidáti, ne důkaz
 
-Splní je **209** z 33840 způsobilých kombinací. Čistou náhodou by to bylo řádově 25 (OOS i HOLDOUT nad p95 ≈ 0,25 %, k tomu t ≥ 2 a kladné IS). Kombinace v rámci rodiny jsou si podobné, takže skutečně nezávislých nálezů je méně.
+Splní je **209** z 33868 způsobilých kombinací. Čistou náhodou by to bylo řádově 25 (OOS i HOLDOUT nad p95 ≈ 0,25 %, k tomu t ≥ 2 a kladné IS). Kombinace v rámci rodiny jsou si podobné, takže skutečně nezávislých nálezů je méně.
 
 | Směr | Kombinace | IS Ø R | OOS n / Ø R / t | HOLDOUT n / Ø R | Max. propad R | Obch./měs. | Ø % na obchod (OOS) |
 |---|---|---|---|---|---|---|---|
