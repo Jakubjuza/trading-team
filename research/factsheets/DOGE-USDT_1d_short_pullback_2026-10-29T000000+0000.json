@@ -1,0 +1,1215 @@
+{
+ "symbol": "DOGE/USDT",
+ "coin": "DOGE",
+ "generated": "2026-10-30T23:01:14+00:00",
+ "signal": {
+  "id": "DOGE/USDT|1d|short|pullback|2026-10-29T00:00:00+00:00",
+  "symbol": "DOGE/USDT",
+  "source": "crypto",
+  "timeframe": "1d",
+  "strategy": "pullback_1d",
+  "found_at": "2026-10-30T23:00:43.160766+00:00",
+  "rules": {
+   "lookback": 3,
+   "trend_ema": 200,
+   "min_stop_pct": 1.5,
+   "target_multiples": [
+    2.0,
+    4.0
+   ],
+   "panic_vol_rank": 0.8,
+   "panic_window": 365
+  },
+  "exit": {
+   "split": 0.5,
+   "trail_atr": 3.0,
+   "max_hold_bars": 20
+  },
+  "min_rr": 1.0,
+  "setup": {
+   "kind": "pullback",
+   "direction": "short",
+   "breakout_time": "2026-10-29T00:00:00+00:00",
+   "retest_time": "2026-10-29T00:00:00+00:00",
+   "hold_time": "2026-10-29T00:00:00+00:00",
+   "level": 0.08088856469858828,
+   "range_high": 0.08088856469858828,
+   "range_low": 0.08088856469858828,
+   "entry": 0.0754,
+   "stop": 0.08179535714285714,
+   "targets": [
+    0.0626092857142857,
+    0.049818571428571407
+   ],
+   "rr": [
+    2.0,
+    4.0
+   ],
+   "meta": {
+    "atr": 0.00335357142857143,
+    "hold_index": 598,
+    "range_pct": 0.0
+   }
+  },
+  "size": {
+   "qty": 7818.171664,
+   "notional": 589.49,
+   "risk_usd": 50.0
+  },
+  "telegram": true,
+  "probabilities": {
+   "all": {
+    "n": 646,
+    "avg_r": 0.294,
+    "avg_r_ci": 0.143,
+    "p_t1": 0.272,
+    "p_t1_ci": 0.034,
+    "p_win": 0.437,
+    "p_win_ci": 0.038,
+    "p_2r": 0.152,
+    "p_2r_ci": 0.028
+   },
+   "recent": {
+    "n": 220,
+    "avg_r": 0.145,
+    "avg_r_ci": 0.2,
+    "p_t1": 0.25,
+    "p_t1_ci": 0.057,
+    "p_win": 0.441,
+    "p_win_ci": 0.066,
+    "p_2r": 0.123,
+    "p_2r_ci": 0.043
+   },
+   "after_t1": {
+    "n": 176,
+    "avg_r": 2.642,
+    "avg_r_ci": 0.279,
+    "p_t1": 1.0,
+    "p_t1_ci": 0.0,
+    "p_win": 1.0,
+    "p_win_ci": 0.0,
+    "p_2r": 0.557,
+    "p_2r_ci": 0.073
+   }
+  }
+ },
+ "structure": {
+  "source": "ccxt OHLCV",
+  "as_of": "2026-10-30T23:01:19+00:00",
+  "1h": {
+   "close": 0.07564,
+   "trend": "down",
+   "ema20": 0.075776,
+   "ema50": 0.076709,
+   "ema200": 0.078151,
+   "dist_ema200_pct": -3.21,
+   "rsi14": 45.7,
+   "atr_pct": 0.85,
+   "range20_pos_pct": 49.8,
+   "swings": "smíšené",
+   "bars": 719,
+   "last_bar": "2026-10-30T22:00:00+00:00"
+  },
+  "4h": {
+   "close": 0.07543,
+   "trend": "down",
+   "ema20": 0.077408,
+   "ema50": 0.078287,
+   "ema200": 0.082648,
+   "dist_ema200_pct": -8.73,
+   "rsi14": 38.9,
+   "atr_pct": 2.6,
+   "range20_pos_pct": 34.5,
+   "swings": "smíšené",
+   "bars": 719,
+   "last_bar": "2026-10-30T16:00:00+00:00"
+  },
+  "1d": {
+   "close": 0.0754,
+   "trend": "down",
+   "ema20": 0.080889,
+   "ema50": 0.083641,
+   "ema200": 0.090907,
+   "dist_ema200_pct": -17.06,
+   "rsi14": 34.3,
+   "atr_pct": 4.45,
+   "range20_pos_pct": 7.4,
+   "swings": "LH+LL (klesající)",
+   "bars": 719,
+   "last_bar": "2026-10-29T00:00:00+00:00"
+  }
+ },
+ "levels": {
+  "source": "ccxt OHLCV 1h",
+  "as_of": "2026-10-30T23:01:19+00:00",
+  "price": 0.07564,
+  "prev_day": {
+   "high": 0.08146,
+   "low": 0.07439
+  },
+  "prev_week": {
+   "high": 0.08378,
+   "low": 0.07483
+  },
+  "volume_profile_7d": {
+   "poc": 0.075825,
+   "vah": 0.07801,
+   "val": 0.07502
+  },
+  "liquidity_pools": {
+   "above": [
+    {
+     "price": 0.07667,
+     "touches": 2,
+     "dist_pct": 1.36
+    },
+    {
+     "price": 0.07736,
+     "touches": 2,
+     "dist_pct": 2.27
+    },
+    {
+     "price": 0.07768,
+     "touches": 3,
+     "dist_pct": 2.7
+    },
+    {
+     "price": 0.077997,
+     "touches": 3,
+     "dist_pct": 3.12
+    }
+   ],
+   "below": [
+    {
+     "price": 0.07486,
+     "touches": 2,
+     "dist_pct": -1.03
+    }
+   ]
+  },
+  "round_numbers": [
+   0.07,
+   0.075,
+   0.08,
+   0.085
+  ]
+ },
+ "orderflow": {
+  "source": "ccxt OHLCV 1h (delta je odhad ze svíček, ne tick data)",
+  "as_of": "2026-10-30T23:01:19+00:00",
+  "rel_volume_last_bar": 0.06,
+  "rel_volume_24h_vs_7d": 2.19,
+  "delta_24h_pct_of_volume": -13.9,
+  "delta_7d_pct_of_volume": 17.5
+ },
+ "orderbook": {
+  "source": "ccxt order book",
+  "as_of": "2026-10-30T23:01:20+00:00",
+  "mid": 0.07557,
+  "spread_bps": 5.3,
+  "depth_0.5pct": {
+   "bid_usd": 62179.0,
+   "ask_usd": 31729.0,
+   "imbalance": 0.324
+  },
+  "depth_1pct": {
+   "bid_usd": 296016.0,
+   "ask_usd": 263336.0,
+   "imbalance": 0.058
+  },
+  "depth_2pct": {
+   "bid_usd": 682180.0,
+   "ask_usd": 658440.0,
+   "imbalance": 0.018
+  },
+  "walls": {
+   "bids": [
+    {
+     "price": 0.07472,
+     "usd": 383008.0
+    },
+    {
+     "price": 0.07501,
+     "usd": 117584.0
+    },
+    {
+     "price": 0.07502,
+     "usd": 29944.0
+    }
+   ],
+   "asks": [
+    {
+     "price": 0.07682,
+     "usd": 392460.0
+    },
+    {
+     "price": 0.07618,
+     "usd": 50204.0
+    },
+    {
+     "price": 0.07612,
+     "usd": 40867.0
+    }
+   ]
+  },
+  "note": "jen jedna burza; spoofing a skryté příkazy nejsou vidět"
+ },
+ "derivatives": {
+  "source": "Hyperliquid (perp DEX)",
+  "as_of": "2026-10-30T23:01:20+00:00",
+  "funding_hourly_pct": 0.00087,
+  "funding_annual_pct": 7.6,
+  "funding_24h_avg_annual_pct": 6.4,
+  "funding_7d_avg_annual_pct": 6.0,
+  "open_interest_usd": 75717306.0,
+  "premium_pct": -0.0278,
+  "day_volume_usd": 13992791.0,
+  "price_change_24h_pct": -0.75,
+  "note": "funding > ~30 % p.a. = přeplněné longy, záporný = přeplněné shorty; OI bez historie (jen snímek)"
+ },
+ "options": {
+  "note": "Deribit opce jen pro BTC a ETH"
+ },
+ "macro": {
+  "source": "yfinance (denní close)",
+  "as_of": "2026-10-30T23:01:21+00:00",
+  "VIX": {
+   "last": 19.42,
+   "chg_1d_pct": 12.91,
+   "chg_5d_pct": -0.15,
+   "above_ma50": true
+  },
+  "DXY": {
+   "last": 101.96,
+   "chg_1d_pct": -0.07,
+   "chg_5d_pct": 0.15,
+   "above_ma50": true
+  },
+  "US10Y": {
+   "last": 4.93,
+   "chg_1d_pct": -1.2,
+   "chg_5d_pct": -1.18,
+   "above_ma50": false
+  },
+  "QQQ": {
+   "last": 690.49,
+   "chg_1d_pct": -3.47,
+   "chg_5d_pct": -1.97,
+   "above_ma50": false
+  },
+  "GOLD": {
+   "last": 3884.9,
+   "chg_1d_pct": -3.63,
+   "chg_5d_pct": -3.07,
+   "above_ma50": false
+  },
+  "regime": "neutrální",
+  "corr30d_QQQ": 0.65,
+  "corr30d_DXY": -0.12
+ },
+ "scenarios": {
+  "source": "denní svíčky (yfinance / burza), percentily research/scenario_stats.json, výpočet research/scenarios.py",
+  "as_of": "2026-10-30T23:01:22+00:00",
+  "state": {
+   "close": 0.075199,
+   "as_of": "2026-10-29",
+   "week": {
+    "close": 0.076842,
+    "ema21": 0.086735,
+    "above_ema21": false,
+    "ema21_slope_4w_pct": -1.48,
+    "rsi14": 42.4,
+    "high_52w": 0.209315,
+    "low_52w": 0.067973,
+    "last_week": "2026-10-25",
+    "pos_52w_pct": 5.1
+   },
+   "month": {
+    "close": 0.094472,
+    "sma10": 0.093321,
+    "above_sma10": true,
+    "prev_month_high": 0.105281,
+    "prev_month_low": 0.078405,
+    "rsi14": 44.5,
+    "last_month": "2026-09"
+   },
+   "drawdown_from_high_pct": -89.8,
+   "history_high": {
+    "price": 0.737567,
+    "date": "2021-05-08",
+    "note": "maximum v dostupné historii (nemusí být ATH, pokud je historie krátká)"
+   }
+  },
+  "regime": "týden ↓ · měsíc ↑",
+  "scenarios": {
+   "4 týdny": {
+    "medvědí (10 %)": 0.061858,
+    "základní (medián)": 0.075199,
+    "býčí (90 %)": 0.098127,
+    "pásmo_pct": [
+     -17.7,
+     30.5
+    ],
+    "vol_annual_pct": 54.1,
+    "n_days_history": 24152
+   },
+   "13 týdnů": {
+    "medvědí (10 %)": 0.05376,
+    "základní (medián)": 0.075199,
+    "býčí (90 %)": 0.126618,
+    "pásmo_pct": [
+     -28.5,
+     68.4
+    ],
+    "vol_annual_pct": 54.1,
+    "n_days_history": 23648
+   },
+   "26 týdnů": {
+    "medvědí (10 %)": 0.045131,
+    "základní (medián)": 0.075199,
+    "býčí (90 %)": 0.16355,
+    "pásmo_pct": [
+     -40.0,
+     117.5
+    ],
+    "vol_annual_pct": 54.1,
+    "n_days_history": 22920
+   }
+  },
+  "btc_cycle": {
+   "last_halving": "2024-04-20",
+   "days_since": 922,
+   "months_since": 30.3,
+   "same_phase_prev_cycles": [
+    {
+     "halving": "2016-07-09",
+     "ret_26w_pct": 190.0,
+     "max_dd_26w_pct": -7.6
+    },
+    {
+     "halving": "2020-05-11",
+     "ret_26w_pct": 62.3,
+     "max_dd_26w_pct": -5.5
+    }
+   ],
+   "cycle_peaks": [
+    {
+     "halving": "2016-07-09",
+     "peak_after_months": 17.2,
+     "peak_date": "2017-12-16"
+    },
+    {
+     "halving": "2020-05-11",
+     "peak_after_months": 17.9,
+     "peak_date": "2021-11-08"
+    },
+    {
+     "halving": "2024-04-20",
+     "peak_after_months": 17.5,
+     "peak_date": "2025-10-06"
+    }
+   ],
+   "note": "jen 2–3 minulé cykly → anekdota, ne statistika"
+  },
+  "note": "Rozpětí = kam se cena v minulosti dostala při stejné volatilitě (10.–90. percentil), ne předpověď směru. Kalibrace na datech od 2022 v reports/scenarios.md. Režim (týden/měsíc) je popis trendu – směr podle něj se v testu nepotvrdil."
+ },
+ "onchain": {
+  "source": "alternative.me, DefiLlama, blockchain.com, mempool.space",
+  "as_of": "2026-10-30T23:01:22+00:00",
+  "fear_greed": {
+   "value": 30,
+   "label": "Fear",
+   "week_ago": 50,
+   "avg_30d": 59.4,
+   "source": "alternative.me"
+  },
+  "stablecoins": {
+   "total_usd_bn": 299.7,
+   "chg_7d_pct": -1.18,
+   "chg_30d_pct": -2.17,
+   "chg_7d_usd_bn": -3.57,
+   "source": "DefiLlama"
+  },
+  "note": "Pomalý kontext (dny až týdny): růst stablecoinů = přítok kapitálu, extrémní strach/chamtivost = kontrariánský kontext, ne signál ke vstupu."
+ },
+ "events": {
+  "source": "kalendář Fedu, ForexFactory, Deribit, RSS (CoinDesk, Cointelegraph, Google News)",
+  "as_of": "2026-10-30T23:01:22+00:00",
+  "calendar": [],
+  "calendar_errors": [
+   "ff_calendar_nextweek.json: HTTPError"
+  ],
+  "news": {
+   "coin": [
+    {
+     "title": "Dogecoin Drops 5.42% Amid Broad Crypto Selloff - CoinMarketCap",
+     "time": "čt 29.10. 22:07",
+     "source": "CoinMarketCap",
+     "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBLaW0xNnBwUG9HWmdRUjRjc3E1R2ZPNlhiMmlReGhlUno0UzlWaWZ5eTRMV1JfU1JoVHZubE56aGJodm1paS1BZEdMbnlwbDJFc2NPQm1NM3VSOV9DdlRoWFM2U3Z4djJBeG5OWm1HdmM?oc=5",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "Bitcoin, Ethereum, XRP, Dogecoin Trade Sideways After Fed Rate Hold - Benzinga",
+     "time": "čt 29.10. 20:24",
+     "source": "Benzinga",
+     "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxORDBGVV9NNEtiSmJVdkZoQXJOTkQyT2U1emxmaFZQa1IxSVEyMGRFOTY5NjVxU3FxYlNpTEdTbDJ4Zy1oTjBsZGdPTEstd05idHhSMS1IZDI0YzM4Y0hiUFdDdEp3M0g2SWZndFhYYWRCeklMWEV4NEhZRmNhRms1UEhCS1lLNGlvNl9WNU1CNm5LWVZqbEp0RXpuU3piQzhLaV9SR0tJRHNRZnJxdE5ZVUo1TW8zT0daM1dMTEc4N05iZ2p2?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Crypto Market News: Fed Day Meets an $11B Options Expiry, Stellar and Dogecoin Wait, Pepeto Buyers Eye 100x Returns - TechBullion",
+     "time": "čt 29.10. 18:10",
+     "source": "TechBullion",
+     "link": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNTDVCN2QwVDBFdE8wYU1lNHFDZUdibk16dEZaSlhyemtqSnl0YzVabV9INEdGb1l3WGZkLXlUZXgzeFB2eWE1T1o3M3dleS1uOWNmUmgwM3o2YXJzMkk2ZldzZG1pcHEwT0pfTVROZ1VVWE5HUDJ0OFloQ3VNRmpFcncxZUFwTDd2VDBYRlh2bncwT3FxTm5xZGF1WlROS0F0TkJoTU9GS3YxZTRxUThXYXptQVRQMUYxQVd4LW1sQTJKRFphaVRXWmRIQXBZQTRtQ0E?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Dogecoin price steady at $0.0790 with wide dail... - Pluang",
+     "time": "čt 29.10. 17:39",
+     "source": "Pluang",
+     "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNeng4UktuQjd1U1hGMVJqVDl1N0FSZDZqbTBNLWlfUFRoTW1SVWVTVFRZREt2TkxVWWJoQWZaWlBuV2pDVHlneXJfZkRKeENod05iVTRHakhLQ2xqRHhUZy04LURhempGYkhiUV94bzFpeUxCYlE1ZTFkVm82Z0NFa01BQXFLY2d2SnFGc2dYYjlPOW9HSWRzNVdtemh1S28?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Dogecoin price: a 4.2 percent range, no result - CryptoTicker.io",
+     "time": "čt 29.10. 16:52",
+     "source": "CryptoTicker.io",
+     "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1HSzluVzBySEVpeHV2V2dTOWhjYVBoLVZSalhBLXNHcU9LSVVmQmhtZXp0VVpTLThmM3JPbjA0ZGg2YTNlM05oOG1LRkQyb1BpTmNtNU84dEtvQVpnNjEtSGRfRkdYVzVnQk1VaC13bDNIeE5TYV9GY0Zn?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "17.8M Dogecoin longs liquidated amid $342M cryp... - Pluang",
+     "time": "čt 29.10. 15:28",
+     "source": "Pluang",
+     "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPb2J0VzRMRWZOTnYzT01KRzZKWXExLVRFV0g5MDNJeVpaTEQ2N213N0xQVHdaLUtrOUQtdlJ0SndNbmF0aUZCRElQSHpvY21WTm05N2Z1SnUwQVBmb3kxSHl3eVVnMm5CcHQ0MThzazQ5ZGR0bXg5bDNidElBWDQ5alZ0akprVGd2ZnExNjJfWG5uVFBKT1RLQTNWN0hwZnhMUm82aQ?oc=5",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "Dogecoin News: Traders Turn to Pepeto as DOGE Builders Unite 500,000 Users, Analysts Eye 300x - TechBullion",
+     "time": "čt 29.10. 14:05",
+     "source": "TechBullion",
+     "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxObF9fMWppWjZMSWl0RmlPT0lacTRURzl6aUJ5WFd2cG5LY1A5VC1QZklvbklBYml3YVpSMjgzWGNEQkhmNkxrVl8yYUNXOUNRb0NfYTBQRk5qcUR0RXJORFV3RWI0dDB4QlNaZk1jSlhqVk02ZXVyZzZqdlRpRDJMaG1LY2tIRGJQeTZrUm1GTVVuMTZwdktZd3NKNlZVdlBxYlZIZHdzUW5ZTjhvRUM2R254ZXVJZw?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Open interest drops across top five crypto futu... - Pluang",
+     "time": "čt 29.10. 13:12",
+     "source": "Pluang",
+     "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQZTFzUnZMLVFNYXNhbVRsMHFiUW9tU2VVSkVLWkZnN2FFaUM0VG1kZEN0RHptb2JtcUVWQVN2Tkw1a0g0UVJ1ZU1YVm84dzVCSmNGV2Y4bWdXRFJlVFdNZzVHS1VPMGpMZThYME8wNWNQcUwtelpUVUNBQjA1cW40bVJ4QUhfLUhBaThWZzlYTkQ?oc=5",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "RedStone brings price feeds to DogeOS - The Paypers",
+     "time": "čt 29.10. 12:38",
+     "source": "The Paypers",
+     "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOZUk3WFpGakh0clB2amtqTFNwNnZ2cEtsMldJSm1aazltMHI5Zk8zWklBMGJLOVl2bm9ScWF1NGlkak9hVHRpdjlJa1pJcHhwNkdBNGdYR05NdTdfR0k2Y1hMaldNc2dHZXhnN25oWnhIN1B5U2hERWpMTVJ0cUw3MDhTY1JSeDRFSE1JMkEya0cwRWRsdTNaZWFReUk4Rk1Kc25vQ0RHTEZfeXVUZVJtTEhLSUZjNzN6N3Fj?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Dogecoin Slides to $0.0778, 60% Off a Year Ago as ETF Money Stays Away - BigGo Finance",
+     "time": "čt 29.10. 10:06",
+     "source": "BigGo Finance",
+     "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBJeTk3VTgtV2xzWmZITDFxR1FnOW1UcG1Kb2M2eV9uaWJlRjc0ajBMejI0STBhQ1hMNGF3alpvd3VZaEFYSzhQYXFVOUkxMWpoZzV0c2lxZG5yT18wZ0M5QXlqUmN4ZmpMeXZET2xvM3dYa2RwWUE?oc=5",
+     "tags": [
+      "etf"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Dogecoin Price Prediction: DOGE Near $0.076 as Remittix Invites Earn Testers With an 18-22% APY Offer - TechBullion",
+     "time": "čt 29.10. 04:35",
+     "source": "TechBullion",
+     "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPb2U4X0xOOHZ2dDdOWWdyaVdiNVRYUkx4anJQbEU0QUJNSzdHYUNPVWloakFXb0N6dmZOZ3FZNmVJeHNwdmEzLVZraGh5bzJSN3ZMMks1MHB4bVJyajlRRGVRdWViQ1BQcUZ5aDhETVlQNkFudzRjby1aaTJTRFhOTnNrV24tRzNpNk1QX29PdXBDM2k5NlpmakdaWm9uRTVOd0FzeWRPbUhmejhDMTdoWjJEV0NxZzZGdUFIajVnRWc?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Dogecoin News: DOGE Labs Attracts 500,000 Users While Pepeto Draws 100x Predictions - TechBullion",
+     "time": "čt 29.10. 03:20",
+     "source": "TechBullion",
+     "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQOVc1Z1JzdkFILUhuZVFmU202Z0JvdExJb2Vqc01wd01qNGhzcEpxenVnY0NWbXFSSm9hS0hlblRTam0ydVUzejVKbHd2Z0pGSEpwUEEtckxwU1duaUp3NFFCSW1kUFN1UldULTZxdEw3YUI1c2g3Rnpkb19zNXlLeENOV3V5ZU1TczlwNy1EbVBINHM4TkJhU1h5X0huXzExa0NWdnk0eF9zdw?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    }
+   ],
+   "geopolitika": [
+    {
+     "title": "'Thin' Oil Stocks Ratchet Up Market Stress as War Grinds On - Energy Intelligence",
+     "time": "čt 29.10. 22:56",
+     "source": "Energy Intelligence",
+     "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE54QjEwcGpOMzZwVjlGWVQ0VlJreVpWOVZNQVdHMWN3dG5NNkg5UWFkbURlYzFsSlZQZWhQVzRsRmJZek4ySE5vMWE1TjUtWWUwQ2FMb052NjFGeDE1VmM0VW1GdkJQU3E5R19JVGx6cnd5QQ?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "World News in Brief: 5 children killed in Sudan, Haiti hunger emergency, Yemen war update - UN News",
+     "time": "čt 29.10. 20:43",
+     "source": "UN News",
+     "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1JY29RNmxnQ2xMMTJ4Yks4MFhSR3hJSkw2NmxyVkdINW0wbDNRMTRGaXhjNEZIQm9lVlFtM2ZiX2tqRExEdU96bWZ4U1VzRlVaemo3dm9FMA?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Macro News: Crypto Markets Rally on CLARITY Act Hope Amid Fragile US-Iran Ceasefire - CoinMarketCap",
+     "time": "čt 29.10. 20:10",
+     "source": "CoinMarketCap",
+     "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNS1BVcEREUHF5NDM1djFvbXhwc1Z2Z2t4bC1ubHcxdHc1QjM3RTdFZWV5Z2xOaEdXS19nLXhGUUxNUF9QMjJLa0dLd1VwM0YyR3Etek5rQmJ3TUxLRWxvNUIwYnVNVGlZLXE4QTNFZVlMZGx1LWdUZG90YnRnc0pxSENVZWNRRFN6RW81M3pfbjdSOUItOFJ5bG0zdTd3bjlIZ1FpdjFn?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "US Cyclohexanone Market Faces a Demand-Supply Tug-of-War Amid Refinery Constraints - ChemAnalyst",
+     "time": "čt 29.10. 14:25",
+     "source": "ChemAnalyst",
+     "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPZnlmdFJLakFEMERMRzVsZno0dTIybzM1X1I1SVhTZFdGbzh1cDItUkZQY3M5TVdzTHR0U1RFbkhvMGNndlhSTk5KcmpwbVB4TURJa2NaSjlOMHIyUTdYVTBVOEYzalNZRjl6Yzh1dGlyVUdNaGtSc1VydWY1aHB0RXJZUDFSbHF2QTNFUzNlNU9ZallJc0JKaG9ZXzBJdmx1ZFZWOGhsWnY0aGdrT1NTYXAzc2paZw?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Tariffs Drive Around a Dozen EV Model Lines From US Market - Mezha.net",
+     "time": "čt 29.10. 14:01",
+     "source": "Mezha.net",
+     "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNQ1E3VGJhTk5EZnJlcHJHWjF5cEhBanlhSFkyLWR0djIyajVlVzNyT1dJM1VySXZ4ZG1fd2NjSm8tWEVsSnRRc0kzb2l0QUp2MWs5REY0ekI0Qkt6ZHgtd29NTkpqSDg0b1ctVVZpV3laNUdvQXE5OHVRbFBFaVpyc2lwQzlGdw?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "U.S. sanctions Russian nationals for laundering millions in crypto for North Korean IT workers - CoinDesk",
+     "time": "čt 29.10. 13:18",
+     "source": "CoinDesk",
+     "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNSDdCbVVROXRBQUFvNWg4dGY5ZGZqYXF4bFhWU2pUSTdzdnh5LTJFUDBrX3Y3SHVlcGN5UXVtQXZWU210aGlWOGdJZ3BMQ3Y1WTRPZTE5RW5Ca21OWEZVX2tQMnR5anhVN04xWjZXUDZVbGtBTmMxSU5La1cwdVFRQWkwWWRkNUhzMmtTR0FaMDk0MmhpSHQzLWYtV2lJUjRHaWNfSnAxM0JOeDF1bHpCckRSUHp1SnNGR2VmSg?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "The never-ending absurdity of global oil markets - The Economist",
+     "time": "čt 29.10. 12:16",
+     "source": "The Economist",
+     "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNR1RNdDk2OTFCcFZfUk5ONWpacU04UzdSWGxodHpWdVJJQ204WjFYRnRIZENvZHJqRnlhcTYxaUZ6dGJsN2l5c3hXRTU2RDlabFBkLTJxTWN3VXpmZndmM1ZzaXNTOW1IQXFzQTUxVWFsSFJjWm1iSUdoeWFvbzdKSzQ4VHZjVEdtWXVxMkpuazRQX2pScVNuOUFQRnFkc3BnNVZQLXNuanVTc0U?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "A Tale of Two Markets: A Dickensian Take on the Coming Years in Defense Tech - War on the Rocks",
+     "time": "čt 29.10. 09:04",
+     "source": "War on the Rocks",
+     "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPcmplWGVKZjB1N2k3ZEZnMDV3cTlRNnJ4SURvRGdFbDh1czZfUUQ1YkF6MW5BeGhUZnBpS2R0QmpZZFV6Z0pDSXhNcC1jeDhhTGhMNlBHWGhScTZmTWIzTnhUdng2ZFZpb1JNWEJXUWltc0xLR25DYXdmTWdVZV9YNEdTN1RTcEppRzRESTBEd1Z4VmI0Q1FpVENCM2tXSnBzN0tKNTdSZmQtOUhLUmdjb3loSmc?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Hong Kong poised for capital inflow amid France unrest: AllianzGI - South China Morning Post",
+     "time": "čt 29.10. 07:00",
+     "source": "South China Morning Post",
+     "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOYmVVeWRjeWV3TjlVRW8tb25adGFBVndrZFNzV0xBR19hZXgyM2E0RjFYdXluSnVXdjFDdlEzc1VVM2NscEJEWVNtOF9Tby14UUFOX05sbUhCVGgtV1ZLWnhGUjNjVGh3emtWVmRhYkxpNHB5anZxbkxFOENMYkR4UWNwYjhXM1ZWM0pERDdMZzRrNUdhbk00TWs4ekJDMFlPLXNBZUZUN1IxeEFJcjQ2RTBPNlBBTUFGUHVVNmd1Yk5oMS1nVW0tLThB0gHKAUFVX3lxTFBoMXJiRXlDWjU2LXhQVWhwYnFFTVdPdkxfQzNOLUpMdjJ4TkZqZERTdXZEQ1ZkaU8tWkUzbm9SSXNYeFBxTHR0UnVzWXpYVmFqcDFIeDJjWC1OZ0N5VVBjZE8yUTdkM2RjODhodFI1OVdqbXJXbDlReGp1Tl9mZ3AtdjVOYmo0WjdRYkwzaGFsYXVqcWZTUENjUGNyRDViNmlhcXpjZ0trSVBMbDZIdUhzLUEwNkh0NFUyVGxwMkRaa1hFU1hRajQwa1E?oc=5",
+     "tags": [
+      "etf",
+      "geopolitika"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "Oil falls as diplomacy hopes outweigh Middle East escalation fears - Business Recorder",
+     "time": "čt 29.10. 03:37",
+     "source": "Business Recorder",
+     "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNWW81TEtwQmFNdUl5M0pidi0xY3Mway1jRS1vTi16YmlzR0FRZW04VVRtcHZMVnFSY3pGakxxZXFUS3dCbXdqR1RQNWc1bXQ5aGN2OHpVSXFYaWpwMWQ1cHVwS0Nya3pyNWlBVXVTcEdPMWx0d1pvVm1tcHJ2RXhJZTRHZmg4UDRyVE9iajN4TWFJUUdGNzZOOEtOYWk1STNweUthQjdUOS1qZ9IBVkFVX3lxTE9wT1VWUXF4NlNoMW1RTVI1dWltdDNiV1hzVHUyVjY4Y2JDb3lQLThEclRzazY1bW1hbk8xcm83ZkwwQzBfWUkzQjZFUm5EMUJzQ3RlT2xB?oc=5",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "Top Asian LNG Markets Boost Coal Use as Iran War Limits Supply - EnergyNow",
+     "time": "čt 29.10. 03:32",
+     "source": "EnergyNow",
+     "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOMHhFaHFjaU1XODZmSUNsTWI4WUY3bWVBTVBLbHBBVFBWWnptMDFKdUNmalNlcG5jOXJWTERvem4wckZIcXY1LWk2bXdfQWNnTDZOSXZTVE5xZXRRNGwtZkcwalc5Q1Ywc0ZjVXFEWi12dkZDV1NKNHRCN093czBFQkJBTDVrLWFSRjg1cVU4djZkdWdwWHZJ?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Canada Weighs Options to Boost Oil Supply as Iran War Causes Market Turmoil - EnergyNow.com",
+     "time": "čt 29.10. 02:09",
+     "source": "EnergyNow.com",
+     "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNcmRxakxqS1planRDUTFaY09HTEYwMUlWcmFtYXY0Y2xEbG92d0Znb2Y1U0RDZFFIYzQxVk8tbWVfZ1pZZWRyQlJ4S3VmbTlzMXJCZU53YmU3R3RZU2tLYkcxX1dVeVFoUFdVMC1wOENMV1p0eHhTalM1elR1LTVGOUl0azBXT1lJaktwbW1Wa1ZIMHRYOGliQmk3LTBYV044MnlqV1V2dTZqQQ?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    }
+   ],
+   "regulace a hlasování": [
+    {
+     "title": "Ripple’s RLUSD Grew 88% This Year While XRP Fell 29%. Is the Stablecoin Replacing XRP? - Yahoo Finance",
+     "time": "čt 29.10. 23:59",
+     "source": "Yahoo Finance",
+     "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPY0ZMQTdwczNnSTFuUHdSalllbVhIcDFIT2hnWFI5WFpGQTFiSktNTTFmQVhfLVVta2dlQUtSTUh1eWpVVWlsaUZCSm05RGkyZ2dtU1lNdnJSUVdlVkRlMVVUQ3BfMGZIaUdyU0NOMUg2aDdiQVZmOUJyRklKTDR3aVVybG8yME5xVksza3dZRk44WUJSWFE?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "SEC Alleges $200 Million Crypto-Based Commodities Ponzi Scheme - Bloomberg Law News",
+     "time": "čt 29.10. 16:59",
+     "source": "Bloomberg Law News",
+     "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxORFVjTG9qbTRDd01ob1duai1mNXo0WDRlaEpMdXlBcm51dzJuRmZFdkU3N1ZmUEN1LXlRQ291RTVPOC1rRUFCd2d6ZmlhSjhjQWtmNm5STWJ0RTFqTUVaQ01wcnFPSXgwMGJ2NE45aEhPc01mNGktczVndFhkVHlxOENfcGRGaDAzVUoxc0FHTTNEU1c2N1Rfa3BqZXFUaWFxaXFqVDM1RFRldjlQdHhqUGZvTQ?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Only Congress Can Make America’s New Crypto Rules Last - The National Interest",
+     "time": "čt 29.10. 16:41",
+     "source": "The National Interest",
+     "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPekVjbkJxVWg2MzRJQzhzWFJYSjhrbkN4M2tYOU9fX2FuRmRwLS1BdjlwMUJzMHVyakRPamF2b01PVjhtQ3JCTGUzMHpRM0ZwSFJWeGtRZXRWaWlON2hPQWVwQ0t2eDkwRVdBRG9RS215Mi1FTjhDeWlabDNQTWJMZklxaTBXcGxVU1ZiMlFqYjRNUnVxV19oQTIwdnY?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Visa Reports Tenfold Increase In Stablecoin Settlements - Yahoo Finance",
+     "time": "čt 29.10. 13:45",
+     "source": "Yahoo Finance",
+     "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQSUxYOFBSQ3QxMVZtNVFzRDU1VDVDdGw5UTNyUjRqdHRTejFGbzRpajMzdHV0UzlSU1Zla1JOYU4tWEFiYjY5czd2cHA1WmlHWTVqU0EwSzBmeXVraUdtOUJYZy1RY1ZPZ3hJSHY5ZkVYN0Fhc0NjTWxuYzFWLTFnaUxPQXlYbk82RGdTaXB3ODdzczU4MHp4M0pOSHIxOXdJeWUybTJxNjM?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Insight: Crypto blitzes midterms with $176 million to support allies as it prepares for post-Trump era - Reuters",
+     "time": "čt 29.10. 11:06",
+     "source": "Reuters",
+     "link": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNbGVzelluUlRtODRKTG5wazVoU01tTjQ5bkZxZGI2TWpkTDNSc01XZEJaQTJlaE1EREtyZ0lqR2RieHZZcWVHcUk3T0RMNTY2SkwzYmhLY0I3aFZhV3RVbEwtakpyYm1tZHpfMlU2VVBIa0RTRGNLVTZRUVRsajJBdkhybVd6Q2tldlAtZGVBT1lWUUxrN2c4eXlfN1FiRWZYZlpjUmEzd1lKVGlQbjRFSkpPOUstSFpabzNjRnhIeDFnWHNZYmRYWHpYN3Q1SUk?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Banks see ways to get ahead in a Democratic Congress - Politico",
+     "time": "čt 29.10. 09:46",
+     "source": "Politico",
+     "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQbGdUdXdtS0ZpejVXV2tLeEx3VWN3ZGw4d3VSX3NBRHNiQndoYklRVll3RzZuSDVlY0Y1bm5pcHlrWmt0emUzUll3WFRWMldnS0lmcG5GNUNZYzNKUWs5TnF6QUdYOGRtRHVBZzNDTWFvZU5maVMwNkZsbXliVURpbC1EYUJ2T0U4dWEzUzJXdXAxbWJWamNxQ2RQbXRGRXAwbDhsYQ?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "US CFTC boss says Binance hack 'proves his point' about need for crypto market regulations - The National",
+     "time": "pá 30.10. 22:23",
+     "source": "The National",
+     "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQdnFzUUhTZnRBQ2NpZE9oTmMxbzZzU056V0Z3WjNlbWdONzB2UFdBQUR5SUNReVBGUnRxOWdyd2M2NVRRUXNONEpfaENiN00xbUcwNjRXTU1vMS1zV1pHaW1va1M5T3lQY1I2OGd6WnJBaHljWUMwRkNQZm9RcUhaWV81ajZEZzZaUmVESjFweUtTSFdMbng1MFk1b2tRTEE?oc=5",
+     "tags": [
+      "regulace",
+      "bezpečnost",
+      "burzy"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "President Trump says they're looking into Binance hack as calls grow for crypto rules - The Block",
+     "time": "pá 30.10. 22:06",
+     "source": "The Block",
+     "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOSmFRSU9ibkVRU0gzcWF6NWI1UjQwTnBlY2owNE9fSTlva2d4T21GYmZlZjhTQTZMckdjZERHMUpick96MElia1VRdnZ6YVE2NTI0SHFoVEV5NU9HMTVQQjZOY0QzZUt3WnBYYWlWUWhFOVpEOXpraVhqaVZPRTA4SUVwaDZfYVNVd3JOS0tjajZHMjdHaXNFSER4d3JkVlZBLXlYMHMtQ2hMMkw4TG9fc2Z6M0JIUTdQ?oc=5",
+     "tags": [
+      "bezpečnost",
+      "burzy"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "SEC Proposal Expands Options for Crypto Custody - Crowe",
+     "time": "pá 30.10. 21:50",
+     "source": "Crowe",
+     "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNTTBTY1JHUFJET01VNmo4YzJqUTFlcS1YMm5jVGxMdjBtWkRvZUtZSm1reWhOS1dWellEU3k4cENBS0ZfZ09Zc0tybEVIUTJuR2RNRTJlakdVR0RQU1lDd29ILS1aM0JJQTY2TXN3ak9QRV96aVJ5VzU4NjF3VVA4UWNYdU4yeS1PaG13NmI0XzZNWkRDck9FV25Ta2U?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "SEC Alleges Fake Advisors Used Bogus Federal Filings as Part of $100 Million Crypto Scam - Barron's",
+     "time": "pá 30.10. 21:15",
+     "source": "Barron's",
+     "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPUVpDODFVRGpuSWRIN0NNRC1iVVpwTTAwZ3ZCS3BzcU5DcE0xV3N2a0RuZUpSaGYtcm5lM1lGc1BQczg1cm85VzJnQ2NXbVBXem9tYlFMNW94V3hXMXc2MlR6aXl5eUlIR3lDR2tPZzhLdkRxdFRSM0J3VU1jbENJS0ZmNlIxUWdw?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Crypto Brief - Lowenstein Crypto Newsletter - October 29, 2026 - JD Supra",
+     "time": "pá 30.10. 19:57",
+     "source": "JD Supra",
+     "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTFB5MWRDUGJtNjZnT2lrNEh0M0oxRjlqTzRoYkowWTJFcWFBZElBbWNlWk50QU95RXFEdUIxbU4xR2RmZ3Rnbm1YemJQQmJvUVBjNzVlaVYzc015Q1FaTXlyOEZBTFdCMmw0Q1NLRk95eEtNNjRHNVBaYkk1b3h0QQ?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Digital Chamber Urges Congress to Set CFTC Rules for U.S. Crypto Exchanges - TOKENPOST",
+     "time": "pá 30.10. 19:46",
+     "source": "TOKENPOST",
+     "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9Jc1NuTE81M3J6NGN0MWtYVXFPLVVEak50STBtMFZMamxJUldiVWVVdDlERmdzTk93SVVlTDNHU08yVjg5SGk2VUl1R3hsY0RnQnRJeEJUbmVxQjg?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    }
+   ],
+   "Fed a inflace": [
+    {
+     "title": "Despite inflation: ECB says has tools to calm markets as French debt worries rise - RTL Today",
+     "time": "čt 29.10. 20:43",
+     "source": "RTL Today",
+     "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNdWlfTGRwRzVlajJtRm1BUnd2dnQ3d25qVHJKWHF3WnBfTUR0YnZjYXc4WXlDMFJZX01SMllBWFlzSC1ORlMwVnZ3anlTdk5HLUtlNVBibk15dDFjeHdXbHVfMlAxWF8wMnplRlFlREJEZjY5LXEtb0Q0YTJ2eTRhSVIxM2lUbzNvRFhZQl9ZeWU3N1l4QUZOa0s5RDAzM0E?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "ECB flags December hike but sees yield rise hitting growth - Reuters",
+     "time": "čt 29.10. 20:25",
+     "source": "Reuters",
+     "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQWVJheVZacGhZZXFXZGZ5RU91NEt6eTlObWpmUnBvMFZKVmlVZ2xFVThBNkVrN1hxaTViSllZa0I0TzVMSW5Ub19vWk5ZcFBJZkdnX0lZNGtLZHpFVDF0N2didHE5MER6NjhpdnNyYmJGSVY4azhKTmE1V3pzY2MyOFZRTWtPUWNUS2FMT18zNGRXRlZpQkRUdFVVNDE1VEVGWUg4?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "Warsh’s ‘Forward Silence’ Risks Bigger Treasury Market Swings - Bloomberg.com",
+     "time": "čt 29.10. 20:23",
+     "source": "Bloomberg.com",
+     "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQZzdFbTR0Tm11V3ZMZkxaYTU0d2NuRW5SYmhHOWFqWjdTOVU2cUhoa3kyLUlTT2tvVXRKaHYwbnVLMkNqa2RUdF9QOEVFeHFEUnJwLXVubUh0VzBIWmZfSnZGbkVaOERxYmRfUzgwT2F6VWFMYk80Rlc4eTF4VEZnMVFuM2ktdm5EQldmVG5Sc3I2WWpaQUpjRnlESUFBdDhlM1F6MU5SU3k3TTVYMWZv?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Fed Can't Beat Inflation Without Market Pain, Says Dawson - marketscreener.com",
+     "time": "čt 29.10. 19:53",
+     "source": "marketscreener.com",
+     "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQenQ3QmRONGNMWThfcTFCX1ZMV1EtS2RzeGEzdGNQOWpQQXU3VFI0MzZJbFA5LVFTMGdfV01QUGpLbS12dFl3S2dlQk96bjRmdFNFLTJsRGYxeWZWRFh2Tjc4SG0tdWlCa0JHVUMtYmdMQlhfQUVNODdPejE5ZXBCRU9lLTNOU0FkZHQ5QnhUVnN3SUdiQnFWTVJiMlBpSGdtZHlGLV9qRWZZeV9wcHc?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "ECB Leaves Rates Unchanged, Cites Energy Shock as Inflation Driver as December Hike Moves Into Focus - Morningstar",
+     "time": "čt 29.10. 15:11",
+     "source": "Morningstar",
+     "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQQkxKY1VlOXpyUzVMNXR5NS1vc1RkOVRZRjBZb2NHbHlSaVZtUU1JVFBZTy1hS0JLcTBHeTVJX1VzZldJRy1WSmJRZXRZeFAwZ3pacERBOVBXeTZLVDE1N1JXQTBBM1B2MmdMUHBXYVg3MXdCc0dEMjh1UUFFYW1mS19DN0h3NWlzRVA3MXJWMUdMb19HQzdNQmkzM2ZwWXJWY19CMTVFV0NlUnFSREZNX2VBSjBlcDEtVVJUS2lTMlB0Ykk1VGt2UWpSdUItWUZ5RTNLVg?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "European Central Bank keeps key interest rate on hold at 2.5% - CNBC",
+     "time": "čt 29.10. 14:18",
+     "source": "CNBC",
+     "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1EdmRuRWxaV3lJMlRiZGxtYmV3eV94WGRrcW9SU2xuejhkcUktdkVUNUlnUFR4YmJqZkNaRmJsYnVQem1KbHlYaTM4Q196b0xHdkVFWENydFItQzBtN2pXbUZkLXVEamNqNTFTZVFuOXRfTWZaeDhiM25fRkNBUdIBgwFBVV95cUxOclAxUlNIR3dYMzV2aUFZSjVxZ05CWUxzeXRMWU9MM3N5QS1DYS1mc1pnSU81cWlCQktxbk11NkQtWEFSWU1pQmxLY3N3dzlBbnJUTFlBUG1iZ2VPME93aktzay1VdWJaWF9SaF9vOHpDSDgtaTFVVXFCX2p0ZGRwNWdlZw?oc=5",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "Gold Slips as Markets Assess Fed Signals, Await US Inflation Data - ASHARQ AL-AWSAT English",
+     "time": "čt 29.10. 13:11",
+     "source": "ASHARQ AL-AWSAT English",
+     "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNTHBpRlRxMlhLVWdMd1Bzdjh5Y1NnTVR6VkhXSkJOYVoyNHI0WmlxdE9sZWplMkU4eWIyWFpGRDZzZThBelg3MHBrX3FsMS1oMFJCSHNfamZkbFpOdTFqX2RhVjVuajdaZWEwTHRpVlV4d1VqcWIwcDVuZlBmS2RMRnFhcVc5TllxVVh3OG5vTnlBNVdzOHdleWJDVkdXM1VqeUlJTzlIZjI?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Stocks Down Pre-Bell Ahead of Key Inflation Report, Amazon Earnings - Yahoo Finance",
+     "time": "čt 29.10. 12:47",
+     "source": "Yahoo Finance",
+     "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOYzV2MVFCYV9HSko5LVlLNVI3S0FXZWVGRWduVDhacFZ2cUFQU2F3cnhhbTlBelpGamx6RkFlUXBHLUdRRUdIdjVmUWtOMjJRQkZSM254SXVUZjZhcnhnMndlRkdIUDAyYkY1UGtwN0ZpRnhVOGpvdUo2U2JxNWhaRkdxTWV0UEthRUMtTEVud01sQlp1MXc?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "What the Fed's interest rate decision means for your bank accounts, loans, credit cards, and investments - Yahoo Finance",
+     "time": "čt 29.10. 10:56",
+     "source": "Yahoo Finance",
+     "link": "https://news.google.com/rss/articles/CBMihAJBVV95cUxOaDlWS0VRSklaemMzd3V4dllmTlZRbTQtOVV6WlA2SjlkcTI2LTl4RU1PTk93OHpIelZWUWczX1RfS0xCRHVnN0FlWUZBOFUtc2dWdjE1OXFaekxLWjR0b243b1VWRENCeko4OVFnSXBEVFhCeUhGVFQxMFZVby1CY3dNMG1ZR3JEd0dRWGgyblV2UjIxQkwxZXNjakpHV0dBWUtoeXJlUUpJR2pkaVFlRGEtMEZqd1M2UXlwT1RfRWlxbzhYQU1WdUxXWkh0MHZNa1J6QVl2SFliSVIzVmgwSjBoZ1V1RlZjUGloa2xIWmVBeURVSHNLcFNtM21LMXY2RHNTOQ?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Analysis: Kevin Warsh is keeping Wall Street guessing. It may be his most powerful tool - CNBC",
+     "time": "čt 29.10. 10:00",
+     "source": "CNBC",
+     "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxONFlmekxKd2RpdmVKX0c4R3hJRHNWQ01mMHlEM1ROd3RQY1pvcUdGTF9FYWpfQUFSRVJDZnk2ZFZmRGtXai04TGNNN1lwNm9Bc19nY3NUdV9aUzQzNHB5MUlubzF6SEJodmlSU25LZGFwZGc4Wlg3MTBnV05pbE5jV1N6OTA2Y0hwc2gxQmVTRi1fQdIBlwFBVV95cUxQb1c5ZXUtaXlMeGNSNVk0ZjJiV2pxTGVQekg3cGc0YUQ5Q2I4OVFVRGt6TWZHcVUxSFVYMEdBczhjM0trWVE4dlhzcTF4OWxmelBETzNpM1p0TEtucHg3eXhRRWFhLTFRQktfTTJHMGtrbG1BalNoQjUxeVd0enllUUhXa0JDUEFJNVJ6b1BaWjhJZHM2UmR3?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Gold drops 1 percent as markets assess Fed signals, await US inflation data - The Standard (HK)",
+     "time": "čt 29.10. 08:42",
+     "source": "The Standard (HK)",
+     "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOOFZLbW1vUWZjUDAtN0taVlZ3bVJ5MUZUOWZzVWUwUWtpREdEOVhNclNoVHRraXBaWE5jSHhQRGQ1Um92QVdPQTFwRW9SX2RZaFdXbDJOcXh5S0VyT0ZkYm0tRjgtM3NmNkM0RDJxNlBzVFRIRmZUaW9NR3NZb2x6TmFDX1o2WTU4V1h5U182QjM2YnhmTXFzNWpULVgwaGtHcDFDR2t4ZEdLcEVSMkkwNXNDRU9FN1lZZjVMRXlLWkxjRHp5d2RN?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "FOMC Are In. Here's What the SPY Options Market Is Telling Us. - Moomoo",
+     "time": "čt 29.10. 08:37",
+     "source": "Moomoo",
+     "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQa244MU9ZQ3dBY09NR2NWWWY2aXZWMHVFNlBvWWdHZ25TZmtKQ254LXJnVVMxMEMzdFpPTW00cUpyLVdYZFYzcEdFYVlVMlR0ODRrbnBrdWdfUndOZElLLW8xVUgwOTZjNnBieFNHX0d6czZ6TUhVTm5UZ0lTelV5a3FhRzdmanFpUE9sbm9TcXhrcXE3SlFGWk5LVldZR1FH?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    }
+   ],
+   "krypto": [
+    {
+     "title": "Tampered Ledger reported in Singapore a month before news broke: Asia Express",
+     "time": "čt 29.10. 23:31",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/magazine/tampered-ledger-reported-in-singapore-a-month-before-news-broke-asia-express?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Binance hit by $6.3B hack, the largest in cryptocurrency history",
+     "time": "čt 29.10. 22:24",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/binance-linked-wallet-faces-possible-exploit-blockchain-researcher-warns?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [
+      "bezpečnost",
+      "burzy"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Binance loses over $6 billion in 'biggest crypto hack in history'",
+     "time": "čt 29.10. 22:12",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/business/2026/10/29/potential-multi-billion-binance-hack-hitting-crypto-markets",
+     "tags": [
+      "bezpečnost",
+      "burzy"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Public companies double share of blockchain revenue since 2022: Report",
+     "time": "čt 29.10. 20:53",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/public-companies-double-share-of-blockchain-revenue-since-2022-report?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Polymarket suspended trading amid reports of user funds being drained",
+     "time": "čt 29.10. 20:23",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/polymarket-suspends-trading-user-funds-compromised?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [
+      "bezpečnost"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Polymarket suspends trading after third-party breach leads to user losses",
+     "time": "čt 29.10. 19:55",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/markets/2026/10/29/polymarket-suspends-trading-after-third-party-breach-leads-to-user-losses",
+     "tags": [
+      "bezpečnost"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "HYPE teases all-time high as NYSE owner ICE eyes US Hyperliquid perps",
+     "time": "čt 29.10. 18:12",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/markets/hype-price-all-time-high-ice-us-hyperliquid-perps?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "KuCoin suspends services in Russia and Belarus",
+     "time": "čt 29.10. 18:08",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/kucoin-services-russia-belarus-suspended?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Stanley Druckenmiller's first X post backs Hyperliquid venture after $23 million indirect investment",
+     "time": "čt 29.10. 18:04",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/business/2026/10/29/stanley-druckenmiller-s-first-x-post-backs-hyperliquid-venture-after-usd23-million-indirect-investment",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "KuCoin exits Russia and Belarus as crypto exchanges withdraw from Western-sanctioned markets",
+     "time": "čt 29.10. 17:51",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/policy/2026/10/29/kucoin-exits-russia-and-belarus-as-crypto-exchanges-withdraw-from-western-sanctioned-markets",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "From rivals to partners: Polygon and Solana team to bring stablecoin payments to banks",
+     "time": "čt 29.10. 17:35",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/business/2026/10/29/from-rivals-to-partners-polygon-and-solana-team-to-bring-stablecoin-payments-to-banks",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "Nasdaq-listed Canton Strategic Holdings plans tokenized stock trading from Nov. 2",
+     "time": "čt 29.10. 17:27",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/canton-strategic-holdings-tokenized-stock-trading-november-2026?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "neutrální"
+    }
+   ],
+   "note": "tone/tags = jen klíčová slova v titulku, ne analýza; výklad a „co je naceněno“ dělá agent."
+  },
+  "news_errors": [],
+  "stats": {
+   "range_x_vs_same_hour": 1.45,
+   "range_before_x": 1.06,
+   "n_meetings": 16,
+   "coins": {
+    "BTC": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.62,
+     "range_before_x": 1.13
+    },
+    "ETH": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.5,
+     "range_before_x": 1.19
+    },
+    "SOL": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.53,
+     "range_before_x": 1.02
+    },
+    "XRP": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.3,
+     "range_before_x": 1.22
+    },
+    "ADA": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.36,
+     "range_before_x": 0.97
+    },
+    "LINK": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.57,
+     "range_before_x": 1.02
+    },
+    "AVAX": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.26,
+     "range_before_x": 0.98
+    },
+    "DOGE": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.44,
+     "range_before_x": 0.97
+    }
+   }
+  },
+  "note": "FOMC: hist. rozkmit 4 h po rozhodnutí 1.45× vůči stejné hodině jiné dny (reports/events.md); směr se jako signál nepoužívá. Výsledek dat vs. očekávání (forecast) hodnotí agent."
+ },
+ "sessions": {
+  "source": "kalendář burz (zoneinfo) + research/sessions_stats.json (2024-10-27 – 2026-10-25)",
+  "as_of": "2026-10-30T23:01:25+00:00",
+  "now_prague": "so 31.10. 00:01",
+  "open_now": [
+   "žádná velká burza (jen krypto)"
+  ],
+  "weekend_cme_closed": true,
+  "next_24h": [],
+  "cme_gap": {
+   "friday_close": 0.07934,
+   "sunday_open": 0.07675,
+   "gap_pct": -3.26,
+   "filled": true,
+   "since": "ne 23:00"
+  },
+  "history": {
+   "cme_gaps": {
+    "n": 94,
+    "days": 5,
+    "min_gap_pct": 0.5,
+    "p_filled": 0.755,
+    "p_random_level": 0.634,
+    "avg_gap_pct": 4.25
+   },
+   "weekend": {
+    "n": 104,
+    "big_move_pct": 2.0,
+    "all_4h": {
+     "n": 104,
+     "p_reversal": 0.606,
+     "avg_after_pct": -0.09
+    },
+    "big_down_4h": {
+     "n": 29,
+     "p_reversal": 0.621,
+     "avg_after_pct": -0.02
+    },
+    "big_up_4h": {
+     "n": 25,
+     "p_reversal": 0.72,
+     "avg_after_pct": -0.34
+    },
+    "corr_4h": 0.175,
+    "all_24h": {
+     "n": 104,
+     "p_reversal": 0.596,
+     "avg_after_pct": 0.1
+    },
+    "big_down_24h": {
+     "n": 29,
+     "p_reversal": 0.655,
+     "avg_after_pct": 1.42
+    },
+    "big_up_24h": {
+     "n": 25,
+     "p_reversal": 0.68,
+     "avg_after_pct": -1.63
+    },
+    "corr_24h": -0.039
+   }
+  },
+  "note": "hist_vol_4h_x = kolikrát větší pohyb za 4 h po otevření než za běžné 4 h. Směr po otevření historicky není statisticky významný (|t| < 2) – otevření mění volatilitu a likviditu, ne směr."
+ },
+ "history": {
+  "source": "backtest strategie pullback_1d (pullback, 1d), 3650 dní, po nákladech",
+  "as_of": "2026-10-30T23:01:25+00:00",
+  "all": {
+   "n": 83,
+   "win": 41.0,
+   "avg_r": 0.253,
+   "ci": 0.48,
+   "sum_r": 21.02,
+   "max_dd_r": 6.79
+  },
+  "long": {
+   "n": 24,
+   "win": 41.7,
+   "avg_r": 0.946,
+   "ci": 1.403,
+   "sum_r": 22.7,
+   "max_dd_r": 2.82
+  },
+  "short": {
+   "n": 59,
+   "win": 40.7,
+   "avg_r": -0.028,
+   "ci": 0.349,
+   "sum_r": -1.68,
+   "max_dd_r": 8.11
+  },
+  "last_10_same_direction": [
+   {
+    "time": "2026-01-16 00:00",
+    "result": "time",
+    "r": 2.785
+   },
+   {
+    "time": "2026-02-18 00:00",
+    "result": "stop",
+    "r": -1.054
+   },
+   {
+    "time": "2026-02-27 00:00",
+    "result": "time",
+    "r": -0.035
+   },
+   {
+    "time": "2026-03-21 00:00",
+    "result": "stop",
+    "r": -1.054
+   },
+   {
+    "time": "2026-03-26 00:00",
+    "result": "time",
+    "r": -0.516
+   },
+   {
+    "time": "2026-04-19 00:00",
+    "result": "stop",
+    "r": -1.031
+   },
+   {
+    "time": "2026-06-03 00:00",
+    "result": "time",
+    "r": 1.183
+   },
+   {
+    "time": "2026-07-07 00:00",
+    "result": "time",
+    "r": 0.757
+   },
+   {
+    "time": "2026-08-09 00:00",
+    "result": "stop",
+    "r": -1.091
+   },
+   {
+    "time": "2026-08-12 00:00",
+    "result": "stop",
+    "r": -1.062
+   }
+  ]
+ }
+}
