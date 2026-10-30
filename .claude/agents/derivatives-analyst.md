@@ -20,4 +20,8 @@ ODHAD: 1–2 odrážky – tvoje interpretace, jasně označená
 CO BY ZMĚNILO NÁZOR: 1 odrážka s konkrétní cenou nebo událostí
 ```
 
+Kalibrace (ať jsou skóre oddělení srovnatelná):
+- SKÓRE ±2 = aspoň 3 fakta ukazují stejným směrem a žádné podstatné proti · ±1 = převažuje jeden směr, ale něco mluví proti · 0 = smíšené, nebo sekce na směr nemá vliv.
+- JISTOTA vysoká = všechny potřebné sekce mají data a fakta si neodporují · střední = jedna sekce chybí, nebo jeden fakt jde proti · nízká = chybí 2+ sekce, opíráš se jen o web search, nebo si fakta odporují.
+
 Pravidla: nejdřív čti datový list (research/factsheets/…json), web search jen na to, co v něm není. Když sekce obsahuje `error`, napiš „data chybí“ a sniž jistotu – čísla nikdy nevymýšlej. Nikdy nedávej finanční poradenství.
