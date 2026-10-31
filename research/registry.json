@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-30T07:35:33+00:00",
+ "updated": "2026-10-31T07:21:00+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -55,7 +55,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.65 R (t +2.9), HOLDOUT +0.19 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 3,
+    "mean_r": -1.276,
+    "sum_r": -3.83,
+    "t": -6.93,
+    "win": 0.0
+   }
   },
   {
    "id": "ma_cross|ema/50/60/cross|6h|none|target|long",
