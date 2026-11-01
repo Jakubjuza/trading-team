@@ -34,7 +34,10 @@ Pravidla:
 
 - **Donchian ensemble s cílovou volatilitou** (5 kanálů 10–160 dní, jen long, 40 % vol na minci) – +19 %/rok, Sharpe 1,24,
   IS/OOS 1,42/1,47; s jádrem korelace −0,03, kombinace Sharpe 1,86 – `reports/portfolio_review.md` – 26. 10. 2026.
-  Shoda se studií Zarattini a kol. Od 26. 10. 2026 běží jako 🧭 Ensemble (papír + spotové demo).
+  Shoda se studií Zarattini, Pagani, Barbon, „Catching Crypto Trends“ ([SFI RP 25-80](https://ideas.repec.org/p/chf/rpseri/rp2580.html);
+  Donchian ensemble, kanály 5–360 dní, cílová vol 25 %, rotace top-20 mincí, Sharpe > 1,5 po poplatcích; zdroj jsem otevřel jen
+  přes RePEc a shrnutí, ne plný text SSRN) – liší se rozsahem kanálů, cílovou volatilitou a rotací (u nás 10–160 dní, 40 %, jen long
+  na pevném seznamu) – 1. 11. 2026. Od 26. 10. 2026 běží jako 🧭 Ensemble (papír + spotové demo).
 
 ## ❌ U nás vyvráceno (neopakovat naslepo)
 
@@ -94,6 +97,11 @@ Pravidla:
 - **Spouštěč vstupu na 15M (1H potvrzení → 15M obrat)** – za 2 roky +0,28 ± 0,25 R/signál nad dnešním 1H vstupem, kladný
   v obou polovinách a na 6/8 mincích, ale OOS horší (−0,15 vs. +0,12) – `reports/mtf15.md`. Nerozhodnuto → H5.
 
+- **Výhoda LLM investičních strategií mizí při delším a širším testu** – FINSABER (2 dekády, 100+ symbolů): dříve hlášené
+  výhody LLM „výrazně slábnou“; LLM jsou příliš opatrné v býčím trhu a příliš agresivní v medvědím –
+  [Li, Kim, Cucuringu, Ma, arXiv 2505.07078](https://arxiv.org/abs/2505.07078) (otevřen jen abstrakt) – 1. 11. 2026.
+  Pro desk: verdikt AI oddělení nepovažovat za výhodu, dokud ho neporazí mechanický signál bez AI na stejných obchodech → H12.
+
 ## Metodika (proč testujeme přísně)
 
 - **Zpětné testy se snadno přeladí**; klasický hold-out nestačí, když se zkouší hodně variant –
@@ -121,8 +129,10 @@ Pravidla:
 | H8 | AI úprava týdenního indexu nálady (události a geopolitika, ±10 bodů) zlepší vztah indexu k výnosu BTC za další 4 týdny (korelace AI skóre s výnosem > 0,2 a vyšší než u měřeného indexu) | vlastní, 26. 10. 2026 | `research/mood_ai.jsonl` – týdenně | čeká na data (≥ 26 týdnů) |
 | H9 | Short podle protnutí MA 30 × MA 60 na 4H v nejjednodušší podobě (EMA, signál „cross“, bez filtru, výstup opačné protnutí – zvoleno předem, ne podle výsledků) má výhodu nad náhodnými shorty mimo medvědí trh | uživatel 27. 10. 2026; mřížka `reports/ma_grid.md`: z 72 variant kladné ve všech obdobích jen 3, v HOLDOUT kladné i náhodné shorty | nová data od 27. 10. 2026 (papírově, bez peněz) | nerozhodnuto – IS/OOS záporné, vypadá jako efekt režimu |
 | H10 | Long 12H MACD (19, 39, 9): vstup při protnutí signální linie zespodu, výstup při opačném protnutí, riziko 2 ATR na velikost pozice, 8 mincí – vydělá na nových datech po poplatcích MEXC víc než náhodné vstupy | atlas 27. 10. 2026 (`reports/strategy_atlas.md`), jediná kombinace z 41 664, která splnila předem stanovené pravidlo; nezávisle ověřeno | nová data od 27. 10. 2026 (papírově) | kandidát na papírové ověření |
+| H11 | Ensemble (🧭) s kanály rozšířenými na 5–360 dní (7 kanálů místo 5) a stejnou cílovou volatilitou nemá horší OOS Sharpe než dnešních 5 kanálů 10–160 dní; zvoleno předem, bez ladění dalších parametrů | Zarattini, Pagani, Barbon (SFI RP 25-80) | denní data 8 mincí, `reports/portfolio_review.md` | k testu (přijmout jen při OOS Sharpe ≥ dnešní +0,1 a v sousedních nastaveních) |
+| H12 | Stupně A/B head-traderu mají vyšší Ø R než všechny signály téže strategie bez AI filtru (rozdíl ≥ 0,15 R) | FINSABER (arXiv 2505.07078) | `verdicts.jsonl` × `outcomes.jsonl` | čeká na data (≥ 50 uzavřených obchodů s verdiktem) |
 
 ## Hodnocení agentů desku
 
-Až bude ≥ 20 uzavřených obchodů s verdiktem (`research/outcomes.jsonl` × `research/verdicts.jsonl`). Zatím 0
-(kontrola 25. 10. 2026: outcomes.jsonl neexistuje, verdicts.jsonl má 1 řádek – SKIPPED).
+Až bude ≥ 20 uzavřených obchodů s verdiktem (`research/outcomes.jsonl` × `research/verdicts.jsonl`). Zatím 1 uzavřený
+obchod (ETH short, −1,2 R) a 4 verdikty (3× C, 1× NO_TRADE) – kontrola 1. 11. 2026; nehodnotím.
