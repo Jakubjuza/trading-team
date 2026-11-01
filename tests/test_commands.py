@@ -46,7 +46,6 @@ def test_web_command_sends_link_buttons(tmp_path, monkeypatch):
     monkeypatch.setenv("TELEGRAM_CHAT_ID", "42")
     st = State(tmp_path / "s.json")
     upd = {"result": [{"update_id": 9, "message": {"chat": {"id": 42}, "date": int(time.time()), "text": "/web"}}]}
-    assert "ještě není zveřejněný" in commands.poll(CFG, st, {}, get=lambda p: upd, send=lambda t: None)[0]
-    text, buttons = commands.web_reply({"agentarium": {"url": "https://agentarium.example/"}})
-    assert buttons == [("📈 Trading desk", "https://agentarium.example/agent/trading-desk/"),
-                       ("🏠 Všichni agenti", "https://agentarium.example/")]
+    assert "ještě není nastavený" in commands.poll(CFG, st, {}, get=lambda p: upd, send=lambda t: None)[0]
+    text, buttons = commands.web_reply({"agentarium": {"url": "https://claude.ai/artifact/X"}})
+    assert buttons == [("🏙️ Otevřít Agentown", "https://claude.ai/artifact/X")]
