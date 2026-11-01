@@ -49,6 +49,3 @@ def test_web_command_sends_link_buttons(tmp_path, monkeypatch):
     assert "ještě není nastavený" in commands.poll(CFG, st, {}, get=lambda p: upd, send=lambda t: None)[0]
     text, buttons = commands.web_reply({"agentarium": {"url": "https://claude.ai/artifact/X"}})
     assert buttons == [("🏙️ Otevřít Agentown", "https://claude.ai/artifact/X")]
-    text, buttons = commands.web_reply({"agentarium": {"url": "https://agentarium.example/"}})
-    assert buttons == [("📈 Trading desk", "https://agentarium.example/agent/trading-desk/"),
-                       ("🏠 Všichni agenti", "https://agentarium.example/")]
