@@ -14,7 +14,7 @@ import requests
 from scanner import notify
 
 HELP = ("Příkazy: /pozice – přehled s grafem a stav otevřených pozic (jádro, pyramida, ensemble, laboratoř, demo OKX) · /nalada – index nálady trhu "
-        "1–100 se složkami · /radar – radar vyprávění (sílí bear, nebo bull? potvrzuje to cena?) · /pomoc – tento seznam. "
+        "1–100 se složkami · /web – odkaz na web Agentária s výsledky desku · /radar – radar vyprávění (sílí bear, nebo bull? potvrzuje to cena?) · /pomoc – tento seznam. "
         "Odpověď přijde do minuty.")
 
 
@@ -135,6 +135,7 @@ def poll(cfg, state, prices, demo=None, demo_log=None, dry_run=False, get=None, 
     if (not token or not chat) and get is None:
         return []
     st = state.data.setdefault("telegram", {})
+    injected = get is not None                                          # testy podstrkují vlastní getUpdates
     get = get or (lambda params: requests.get(f"https://api.telegram.org/bot{token}/getUpdates", params=params,
                                               timeout=10).json())
     try:
@@ -162,11 +163,46 @@ def poll(cfg, state, prices, demo=None, demo_log=None, dry_run=False, get=None, 
         elif cmd in ("/radar", "radar"):
             from research import narrative
             replies.append(narrative.report(state))
+        elif cmd in ("/web", "web", "/agentarium", "agentarium"):
+            replies.append(web_reply(cfg))
         elif cmd in ("/pomoc", "/help", "/start"):
             replies.append(HELP)
+    if not dry_run and token and not injected:
+        register_menu(cfg, st, token)
     state.save()
     for r in replies:
-        print(r)
+        text, buttons = r if isinstance(r, tuple) else (r, None)
+        print(text)
         if not dry_run:
-            (send or notify.telegram)(r)
-    return replies
+            if buttons and send is None:
+                notify.telegram(text, buttons=buttons)
+            else:
+                (send or notify.telegram)(text)
+    return [r[0] if isinstance(r, tuple) else r for r in replies]
+
+
+MENU = [("pozice", "Přehled a otevřené pozice"), ("nalada", "Index nálady trhu"), ("radar", "Radar vyprávění"),
+        ("web", "Odkaz na web Agentária"), ("pomoc", "Seznam příkazů")]
+
+
+def register_menu(cfg, st, token):
+    """Jednou nastaví nabídku příkazů v Telegramu (tlačítko „Menu“ vedle pole zprávy)."""
+    if st.get("menu") == MENU:
+        return
+    try:
+        r = requests.post(f"https://api.telegram.org/bot{token}/setMyCommands",
+                          data={"commands": json.dumps([{"command": c, "description": d} for c, d in MENU])}, timeout=10)
+        if r.ok:
+            st["menu"] = MENU
+    except Exception as exc:
+        print(f"Telegram setMyCommands: {exc}", file=sys.stderr)
+
+
+def web_reply(cfg):
+    """Odkaz na web Agentária (config agentarium.url) jako tlačítko pod zprávou."""
+    url = ((cfg.get("agentarium") or {}).get("url") or "").strip()
+    if not url:
+        return "🌐 Web Agentária ještě není zveřejněný – po nasazení (Vercel) se adresa doplní do configu (agentarium.url)."
+    desk = url.rstrip("/") + "/agent/trading-desk/"
+    return ("🌐 Agentárium – výsledky desku (živá křivka, propady, backtest orientačně).",
+            [("📈 Trading desk", desk), ("🏠 Všichni agenti", url)])
