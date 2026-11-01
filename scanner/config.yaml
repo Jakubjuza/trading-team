@@ -202,5 +202,5 @@ factsheet: true           # ke každému signálu datový list pro AI desk (rese
 paper_trading: true       # zapisovat papírové obchody do scanner/paper_trades.json
 live_trading: false       # ostré obchody – NIKDY nezapínat bez výslovného potvrzení
 
-agentarium:               # 🌐 web s výsledky desku (repozitář Jakubjuza/agentarium); /web v Telegramu pošle odkaz
-  url: ""                 # doplnit adresu po nasazení, např. https://agentarium.vercel.app
+agentarium:               # 🏙️ Agentown (stránka na claude.ai); /web v Telegramu pošle odkaz
+  url: "https://claude.ai/artifact/HQXaGfrfq9XZhVcnFMmYi8"   # Agentown Trade City
