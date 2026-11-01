@@ -90,7 +90,8 @@ def render_chart(ticker, tf, s, df, lines, out_dir, bars=80):
     return out
 
 
-def telegram(text, photo=None):
+def telegram(text, photo=None, buttons=None):
+    """`buttons` = [(popisek, URL), …] → tlačítka s odkazem pod zprávou (inline keyboard)."""
     token, chat = os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
     if not token or not chat:
         print("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID nejsou nastavené – zpráva neodeslána.", file=sys.stderr)
@@ -100,7 +101,10 @@ def telegram(text, photo=None):
         with open(photo, "rb") as fh:
             r = requests.post(f"{base}/sendPhoto", data={"chat_id": chat, "caption": text}, files={"photo": fh}, timeout=30)
     else:
-        r = requests.post(f"{base}/sendMessage", data={"chat_id": chat, "text": text}, timeout=30)
+        data = {"chat_id": chat, "text": text}
+        if buttons:
+            data["reply_markup"] = json.dumps({"inline_keyboard": [[{"text": t, "url": u}] for t, u in buttons]})
+        r = requests.post(f"{base}/sendMessage", data=data, timeout=30)
     if not r.ok:
         print(f"Telegram chyba {r.status_code}: {r.text[:200]}", file=sys.stderr)
     return r.ok

@@ -40,3 +40,13 @@ def test_poll_answers_only_own_chat_and_fresh_messages(tmp_path, monkeypatch):
     out = commands.poll(CFG, st, {"BTC/USDT": (100.0, "")}, get=lambda p: updates, send=sent.append)
     assert len(out) == 2 and out[0].startswith("📋 Pozice teď") and out[1].startswith("Příkazy:")
     assert st.data["telegram"]["offset"] == 5 and sent == out
+
+
+def test_web_command_sends_link_buttons(tmp_path, monkeypatch):
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "42")
+    st = State(tmp_path / "s.json")
+    upd = {"result": [{"update_id": 9, "message": {"chat": {"id": 42}, "date": int(time.time()), "text": "/web"}}]}
+    assert "ještě není zveřejněný" in commands.poll(CFG, st, {}, get=lambda p: upd, send=lambda t: None)[0]
+    text, buttons = commands.web_reply({"agentarium": {"url": "https://agentarium.example/"}})
+    assert buttons == [("📈 Trading desk", "https://agentarium.example/agent/trading-desk/"),
+                       ("🏠 Všichni agenti", "https://agentarium.example/")]
