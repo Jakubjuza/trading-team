@@ -47,7 +47,7 @@ Méně je víc: lepší jeden dokonalý efekt než pět průměrných.
 - Česky nebo jazykem uživatele; skutečný obsah, žádné lorem ipsum.
 
 ### 5. Kontrola (povinná, jednou)
-- Spusť `node scripts/shoot.mjs <cesta-k-html>` (Playwright; když chybí: `npm i -D playwright && npx playwright install chromium`). Udělá snímky desktop 1440×900 a mobil 390×844 po 3 s a vypíše chyby z konzole.
+- Zkopíruj `scripts/shoot.mjs` (ze složky tohoto skillu) do projektu a spusť tam `node shoot.mjs <cesta-k-html>` (Playwright musí být v projektu: `npm i -D playwright && npx playwright install chromium`; skript z jiné složky by balíček nenašel). Udělá snímky desktop 1440×900 a mobil 390×844 po 3 s a vypíše chyby z konzole.
 - Prohlédni oba snímky. Oprav: prázdný/černý canvas, text přes objekt, ořezaný objekt na mobilu, nečitelný kontrast, chyby v konzoli. Pak hotovo – žádné nekonečné ladění.
 - Pokud prohlížeč v prostředí nejde spustit, aspoň `node --check` na vytažený modulový skript a řekni uživateli, že vizuální kontrola neproběhla.
 
