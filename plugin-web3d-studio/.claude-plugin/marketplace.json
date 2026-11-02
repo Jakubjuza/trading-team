@@ -1,0 +1,11 @@
+{
+  "name": "web3d-studio",
+  "owner": { "name": "Jakub Juza" },
+  "plugins": [
+    {
+      "name": "web3d",
+      "source": "./plugins/web3d",
+      "description": "Kvalitní 3D webové stránky (three.js, WebGL): částice, chromové objekty, rozložené vrstvy, glitch typografie, HUD rozhraní."
+    }
+  ]
+}

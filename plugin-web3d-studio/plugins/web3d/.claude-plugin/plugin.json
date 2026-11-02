@@ -1,0 +1,7 @@
+{
+  "name": "web3d",
+  "version": "1.0.0",
+  "description": "Navrhne a postaví kvalitní 3D webovou stránku (three.js/WebGL) s promyšleným art directionem, interakcí a kontrolou výkonu. Spuštění: /web3d <popis stránky>.",
+  "author": { "name": "Jakub Juza" },
+  "keywords": ["threejs", "webgl", "3d", "landing-page", "web-design", "particles", "shader"]
+}
