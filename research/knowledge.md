@@ -131,6 +131,7 @@ Pravidla:
 | H10 | Long 12H MACD (19, 39, 9): vstup při protnutí signální linie zespodu, výstup při opačném protnutí, riziko 2 ATR na velikost pozice, 8 mincí – vydělá na nových datech po poplatcích MEXC víc než náhodné vstupy | atlas 27. 10. 2026 (`reports/strategy_atlas.md`), jediná kombinace z 41 664, která splnila předem stanovené pravidlo; nezávisle ověřeno | nová data od 27. 10. 2026 (papírově) | kandidát na papírové ověření |
 | H11 | Ensemble (🧭) s kanály rozšířenými na 5–360 dní (7 kanálů místo 5) a stejnou cílovou volatilitou nemá horší OOS Sharpe než dnešních 5 kanálů 10–160 dní; zvoleno předem, bez ladění dalších parametrů | Zarattini, Pagani, Barbon (SFI RP 25-80) | denní data 8 mincí, `reports/portfolio_review.md` | k testu (přijmout jen při OOS Sharpe ≥ dnešní +0,1 a v sousedních nastaveních) |
 | H12 | Stupně A/B head-traderu mají vyšší Ø R než všechny signály téže strategie bez AI filtru (rozdíl ≥ 0,15 R) | FINSABER (arXiv 2505.07078) | `verdicts.jsonl` × `outcomes.jsonl` | čeká na data (≥ 50 uzavřených obchodů s verdiktem) |
+| H13 | Výstup s pevným stopem −6 % a trailing stopem až po zisku +12 % (stejná velikost každého obchodu) dopadne u donchian_1d a pullback_1d na OOS lépe než dnešní výstupy podle ATR (rozdíl ≥ 0,05 R při ≥ 100 OOS obchodech); zvoleno předem, nic dalšího se neladí | příspěvek o „šesti botech“ (sebastianhardy_, 2. 11. 2026) – jen tvrzení bez dat, cílený na nové memecoiny | denní data 8 mincí (`scanner/evaluate.py`) | k testu – dokud neprojde, výstupy se nemění |
 
 ## Hodnocení agentů desku
 

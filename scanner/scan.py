@@ -86,6 +86,21 @@ def demo_open(cfg, pos, size, dry_run=False):
 SIGNALS = HERE / "signals.jsonl"   # deník signálů (commituje se, čte ho evaluate.py)
 FACTSHEETS = HERE.parent / "research" / "factsheets"   # datové listy k signálům pro AI desk
 OUTCOMES = HERE.parent / "research" / "outcomes.jsonl"  # výsledky uzavřených papírových obchodů (reflexe desku)
+DECISIONS = HERE.parent / "research" / "decisions.jsonl"  # deník rozhodnutí: každý kandidát a proč prošel / byl vyřazen
+
+
+def log_decision(now, symbol, tf, strat_name, s, decision, reason, dry_run=False, path=None):
+    """Zapíše jedno rozhodnutí skeneru (bez AI) do deníku – i vyřazené setupy, ať je vidět proč."""
+    if dry_run:
+        return
+    rec = {"time": now.isoformat(), "symbol": symbol, "timeframe": tf, "strategy": strat_name,
+           "direction": s.direction, "entry": s.entry, "stop": s.stop, "rr": s.rr[0] if s.rr else None,
+           "decision": decision, "reason": reason}
+    try:
+        with open(path or DECISIONS, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(rec, ensure_ascii=False, default=float) + "\n")
+    except Exception as exc:                                          # deník nesmí shodit skener
+        print(f"deník rozhodnutí selhal: {exc}", file=sys.stderr)
 
 
 class State:
@@ -241,14 +256,22 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         if s.rr[0] < min_rr:
             print(f"[{symbol}] {strat['name']} {s.direction} vyřazen: R:R {s.rr[0]} < {min_rr}")
             state.add(sid, day, {"sent": False, "reason": "rr"})
+            log_decision(now, symbol, tf, strat["name"], s, "vyřazen", f"R:R {s.rr[0]} < {min_rr}", dry_run)
             continue
         key = (strat["name"], s.direction)
         if per_dir.get(key, 0) >= strat.get("max_open_per_direction", cfg.get("max_open_per_direction", 99)):
             print(f"[{symbol}] {strat['name']} {s.direction} vyřazen: plno otevřených pozic stejným směrem (korelace)")
             state.add(sid, day, {"sent": False, "reason": "correlation"})
+            log_decision(now, symbol, tf, strat["name"], s, "vyřazen",
+                         "korelace: plno otevřených pozic stejným směrem", dry_run)
             continue
         if state.count_on(day) >= cfg["max_setups_per_day"]:
             print(f"[{symbol}] denní limit {cfg['max_setups_per_day']} vyčerpán")
+            logged = state.data["limit_logged"] = {k: v for k, v in state.data.get("limit_logged", {}).items() if v == str(day)}
+            if logged.get(sid) != str(day):                           # do deníku jen jednou za den, ne každou minutu
+                logged[sid] = str(day)
+                log_decision(now, symbol, tf, strat["name"], s, "odložen",
+                             f"denní limit {cfg['max_setups_per_day']} signálů vyčerpán", dry_run)
             continue
         size = rules.position_size(s, cfg["account_size"], cfg["risk_pct"],
                                    fractional=source == "crypto", cash_only=cfg.get("cash_only", True))
@@ -283,6 +306,7 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
             broker.place_order({"setup_id": sid, "symbol": symbol, "side": "buy" if s.direction == "long" else "sell",
                                 "qty": size["qty"], "entry": s.entry, "stop": s.stop, "targets": s.targets}, cfg)
         state.add(sid, day, {"sent": sent, "setup": s.to_dict(), "size": size, "strategy": strat["name"]})
+        log_decision(now, symbol, tf, strat["name"], s, "signál", f"prošel pravidly, R:R {s.rr[0]} ≥ {min_rr}", dry_run)
         state.data.setdefault("open", []).append({"id": sid, "symbol": symbol, "timeframe": tf, "setup": s.to_dict(),
                                                   "strategy": strat["name"], "exit": strat.get("exit", {})})
         dm = demo_open(cfg, state.data["open"][-1], size, dry_run)
