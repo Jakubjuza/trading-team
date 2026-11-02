@@ -14,9 +14,16 @@ Před stavbou si přečti podle potřeby:
 - `templates/starter.html` – kostra stránky (renderer, post-processing, scroll, kurzor, HUD, fallback). Začínej z ní.
 - `templates/particle-morph.html` – hotová ukázka roje částic přelévajícího se mezi tvary.
 
+## Režim: stav, neptej se
+- Uživatel chce hotovou stránku, ne dotazník. Nezastavuj se kvůli chybějícím detailům ani souborům.
+- Odkazuje-li zadání na neexistující soubory (šablona, data, skript), krátce je hledej v projektu; když nejsou, vytvoř vlastní ukázkovou verzi ve formátu ze zadání a pokračuj.
+- Ukládej do nové složky `web3d-<název>/` (pokud zadání neříká jinak) a nepřepisuj existující soubory.
+- Na konci vypiš „Předpoklady“ – co sis domyslel nebo vytvořil náhradou.
+- Ptát se smíš jen u nevratných kroků (mazání, přepis) nebo když zadání úplně chybí.
+
 ## Workflow
 
-### 1. Brief (krátce, max. 3 otázky jen když něco zásadního chybí)
+### 1. Brief (bez otázek – co chybí, rozhodni sám a zapiš jako předpoklad)
 Ujasni si a napiš do komentáře na začátek souboru:
 - **Předmět**: co stránka prodává/představuje (produkt, značka, služba, osobní projekt).
 - **Jeden hlavní moment**: jaký objekt a co udělá (rozloží se na vrstvy, přelije se, reaguje na kurzor, roztříští se na částice…).
