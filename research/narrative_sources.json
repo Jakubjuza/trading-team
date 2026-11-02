@@ -2,7 +2,11 @@
  "scores": {
   "Analytici (Google News)": {
    "hit7": 2,
-   "n7": 8
+   "n7": 9
+  },
+  "Bitcoin Magazine": {
+   "hit7": 0,
+   "n7": 2
   },
   "CoinDesk": {
    "hit7": 0,
@@ -14,10 +18,14 @@
   },
   "Decrypt": {
    "hit7": 1,
-   "n7": 1
+   "n7": 2
   },
   "Telegram @WatcherGuru": {
    "hit7": 1,
+   "n7": 1
+  },
+  "The Block": {
+   "hit7": 0,
    "n7": 1
   }
  }
