@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T08:39:04+00:00",
+ "updated": "2026-11-04T21:47:12+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -1423,6 +1423,116 @@
      "date": "2026-10-29",
      "status": "papír",
      "reason": "context_gate: jen boční kontext, OOS +0.38 R (t +2.3)"
+    }
+   ]
+  },
+  {
+   "family": "combo",
+   "params": "boll_break:20/2.5+ema:100",
+   "tf": "1h",
+   "filter": "none",
+   "exit": "opp",
+   "dir": "long",
+   "id": "combo|boll_break:20/2.5+ema:100|1h|none|opp|long",
+   "label": "Kombinace: Bollinger průraz 20 2.5 + trend EMA100 · 1H long",
+   "added": "2026-11-04",
+   "source": "combo_study díl 1 2026-11-04",
+   "backtest": {
+    "is_r": 0.282,
+    "oos_r": 0.18,
+    "hold_r": 0.327,
+    "oos_t": 2.645,
+    "hold_t": 2.268,
+    "is_n": 2334.0,
+    "oos_n": 761.0,
+    "hold_n": 629.0,
+    "maxdd_r": 80.2,
+    "per_month": 42.2,
+    "trigger_oos_r": 0.113
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 1343,
+     "mean_r": 0.315
+    },
+    "medvědí": {
+     "n": 1008,
+     "mean_r": 0.239
+    },
+    "boční": {
+     "n": 648,
+     "mean_r": 0.234
+    },
+    "panika": {
+     "n": 439,
+     "mean_r": 0.04
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-11-04",
+     "status": "papír",
+     "reason": "combo_study: díl 1, OOS +0.18 R (t +2.6), HOLDOUT +0.33 R (t +2.3), spouštěč sám OOS +0.11 R"
+    }
+   ]
+  },
+  {
+   "family": "combo",
+   "params": "vol_break:55/2.5+reg:side",
+   "tf": "1h",
+   "filter": "none",
+   "exit": "target",
+   "dir": "short",
+   "id": "combo|vol_break:55/2.5+reg:side|1h|none|target|short",
+   "label": "Kombinace: Průraz s objemem 55 2.5 + režim side · 1H short",
+   "added": "2026-11-04",
+   "source": "combo_study díl 1 2026-11-04",
+   "backtest": {
+    "is_r": 0.11,
+    "oos_r": 0.227,
+    "hold_r": 0.231,
+    "oos_t": 2.111,
+    "hold_t": 2.211,
+    "is_n": 328.0,
+    "oos_n": 133.0,
+    "hold_n": 134.0,
+    "maxdd_r": 28.4,
+    "per_month": 6.7,
+    "trigger_oos_r": 0.088
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 0,
+     "mean_r": null
+    },
+    "medvědí": {
+     "n": 0,
+     "mean_r": null
+    },
+    "boční": {
+     "n": 595,
+     "mean_r": 0.163
+    },
+    "panika": {
+     "n": 0,
+     "mean_r": null
+    }
+   },
+   "regimes": [
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-11-04",
+     "status": "papír",
+     "reason": "combo_study: díl 1, OOS +0.23 R (t +2.1), HOLDOUT +0.23 R (t +2.2), spouštěč sám OOS +0.09 R"
     }
    ]
   }
