@@ -147,9 +147,26 @@ def _params(s):
     return tuple(out)
 
 
+def _signals(z, s, d):
+    """Signály strategie – rodiny atlasu, nebo kombinace (spouštěč + filtry, research/experiments/combo_study.py)."""
+    if s["family"] == "combo":
+        from research.experiments import combo_study
+        return combo_study.combo_signals(z, s["params"], d)
+    return atlas.family_signals(z, s["family"], _params(s), d)
+
+
+def _needs_fng(s):
+    if s["family"] == "fng":
+        return True
+    if s["family"] == "combo":
+        from research.experiments import combo_study
+        return combo_study.needs_fng(s["params"])
+    return False
+
+
 def _simulate(z, s, sig_idx):
     d = 1 if s["dir"] == "long" else -1
-    ent, opp = atlas.family_signals(z, s["family"], _params(s), d)
+    ent, opp = _signals(z, s, d)
     sa, ta, ga, uo, mh = atlas.EXITS[s["exit"]]
     ii, xx, gg, rf = atlas.simulate(z.o, z.h, z.l, z.c, z.atr, np.array([sig_idx], np.int64), np.asarray(opp, bool),
                                     d, sa, ta, ga, uo, mh)
@@ -264,7 +281,7 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                 print(f"lab: kontext {coin} selhal: {exc.__class__.__name__}", file=sys.stderr)
     st.setdefault("shadow", [])
     fng = None
-    if any(s["family"] == "fng" for s in strats):
+    if any(_needs_fng(s) for s in strats):
         try:
             from research.lab import fng_series
             fng = fng_series()
@@ -290,7 +307,7 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                 continue
             d = 1 if s["dir"] == "long" else -1
             for coin, z in frames.items():
-                if s["family"] == "fng" and not hasattr(z, "fng"):
+                if _needs_fng(s) and not hasattr(z, "fng"):
                     continue
                 i = len(z.c) - 1
                 if z.df.index[i].isoformat() != last_closed:
@@ -302,7 +319,7 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                     continue
                 if s["filter"] != "none" and z.flt[s["filter"]][i] != (1.0 if d > 0 else 0.0):
                     continue
-                ent, _ = atlas.family_signals(z, s["family"], _params(s), d)
+                ent, _ = _signals(z, s, d)
                 if not len(ent) or ent[-1] != i:
                     continue
                 sa0 = atlas.EXITS[s["exit"]][0]

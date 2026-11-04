@@ -6,6 +6,7 @@ Stavy:  kandidát → papír → ověřeno, nebo → vyřazeno.
 Pravidla přechodů (stanovena předem, research/lab.py):
   - papír → ověřeno:  ≥ 30 uzavřených papírových obchodů, Ø R > 0 a t ≥ 1,5
   - papír/ověřeno → vyřazeno:  ≥ 30 obchodů a Ø R < 0, nebo ≥ 15 obchodů a Ø R < −0,5
+Rodina „combo“ (Kombinace) = spouštěč z atlasu + filtry, přidává ji research/experiments/combo_study.py.
 Soubor: research/registry.json (zapisuje laboratoř, čte skener a Agentown).
 """
 import json
@@ -20,7 +21,8 @@ FAM_CS = {"ma_cross": "Protnutí průměrů", "price_ma": "Cena × průměr", "d
           "boll_break": "Bollinger průraz", "boll_fade": "Bollinger návrat", "rsi_revert": "RSI návrat",
           "rsi_mom": "RSI momentum", "macd": "MACD", "roc": "Momentum ROC", "supertrend": "Supertrend",
           "stoch": "Stochastic", "keltner": "Keltner průraz", "vol_break": "Průraz s objemem",
-          "candle": "Svíčkové vzory", "sweep": "Sweep & reclaim", "fng": "Strach a chamtivost"}
+          "candle": "Svíčkové vzory", "sweep": "Sweep & reclaim", "fng": "Strach a chamtivost",
+          "combo": "Kombinace"}
 
 
 def sid(r):
@@ -29,6 +31,9 @@ def sid(r):
 
 def label(r):
     d = "long" if r["dir"] == "long" else "short"
+    if r["family"] == "combo":                     # params = "spouštěč:parametry+filtr:hodnota…" (combo_study.py)
+        from research.experiments.combo_study import pretty
+        return f"{FAM_CS['combo']}: {pretty(r['params'])} · {r['tf'].upper()} {d}"
     return f"{FAM_CS.get(r['family'], r['family'])} {r['params'].replace('/', ' ')} · {r['tf'].upper()} {d}"
 
 

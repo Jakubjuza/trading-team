@@ -1,0 +1,57 @@
+name: Výzkum – studie kombinací
+
+# Jeden díl studie kombinací (spouštěč + filtry) + zařazení prošlých do papírového registru
+# (research/experiments/combo_study.py). Spouští ho naplánovaná úloha „Studie kombinací“ (workflow_dispatch),
+# protože data z OKX a Strach a chamtivost jsou dostupné jen odsud. Nic nejde na skutečné peníze.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: combo-study
+  cancel-in-progress: false
+
+jobs:
+  study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt numba
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cache
+          key: lab-data-combo-${{ github.run_id }}
+          restore-keys: lab-data-
+      - name: Čerstvost dat z cache laboratoře (≤ 2 dny staré svíčky se nestahují znovu)
+        run: |
+          mkdir -p /tmp/cache
+          find /tmp/cache -name 'okx_*' -mtime -2 -exec touch {} + || true
+          ls -la /tmp/cache | head -30
+      - name: Díl studie
+        id: study
+        continue-on-error: true
+        run: python3 research/experiments/combo_study.py run /tmp/cache
+      - name: Testy
+        run: python3 -m pytest tests -q
+      - name: Uložit výsledky do main
+        run: |
+          cat reports/combo_study.md >> "$GITHUB_STEP_SUMMARY" || true
+          git config user.name "trading-team combo-study"
+          git config user.email "lab@users.noreply.github.com"
+          for f in research/combo_state.json research/registry.json research/knowledge.md reports/combo_study.md reports/combo; do
+            if [ -e "$f" ]; then git add -f "$f"; fi
+          done
+          N=$(python3 -c "import json;print(json.load(open('research/combo_state.json'))['parts'][-1]['no'])" 2>/dev/null || echo "?")
+          git commit -q -m "combo-study: díl $N" || exit 0
+          for i in 1 2 3 4 5; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 7; done
+      - name: Selhal díl?
+        if: steps.study.outcome == 'failure'
+        run: exit 1

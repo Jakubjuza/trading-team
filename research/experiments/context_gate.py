@@ -120,7 +120,11 @@ def frames(tf, h1, dctx, regs):
 
 
 def trades_for(z, fam, params, d, exit_, flt="none", regimes=None):
-    ent, opp = atlas.family_signals(z, fam, params, d)
+    if fam == "combo":                                     # kombinace ze studie (params = text, combo_study.py)
+        from research.experiments import combo_study
+        ent, opp = combo_study.combo_signals(z, params, d)
+    else:
+        ent, opp = atlas.family_signals(z, fam, params, d)
     ent = np.asarray(ent, np.int64)
     if flt != "none":
         ent = ent[z.flt[flt][ent] == (1.0 if d > 0 else 0.0)]
@@ -153,7 +157,7 @@ def part_a(h1, dctx, regs):
             cache_f[tf] = frames(tf, h1, dctx, regs)
             print(f"rámce {tf}: {time.time() - t0:.0f} s", flush=True)
         d = 1 if s["dir"] == "long" else -1
-        p = tuple(context_typed(x) for x in s["params"].split("/"))
+        p = s["params"] if s["family"] == "combo" else tuple(context_typed(x) for x in s["params"].split("/"))
         for coin, z in cache_f[tf].items():
             tr = trades_for(z, s["family"], p, d, s["exit"], s["filter"], s.get("regimes"))
             if tr is None:
