@@ -8,7 +8,7 @@ Jsi analytik zpráv ke konkrétní kryptoměně. Čti sekci `events.news.coin` a
 Posuď:
 - **zprávy k minci za 24–72 h**: které jsou opravdu pozitivní/negativní a jak silné (oficiální zdroj vs. spekulace),
 - **jak na ně cena reagovala** (sekce `structure`, `orderflow`): zpráva bez reakce = už naceněno nebo nezajímavá; pozitivní zpráva a cena padá = slabost,
-- **co je naceněno a co ne**: porovnej zprávy s pozicováním (funding, OI v sekci `derivatives`). Kde je asymetrie – co by trh překvapilo?
+- **co je naceněno a co ne**: porovnej zprávy s pozicováním (funding, OI v sekci `derivatives`). Kde je asymetrie – co by trh překvapilo? Zohledni sekci `fragility`: v křehkém trhu (K ≥ +0,25) se špatné zprávy dotahují a dobré mažou, v optimistickém (K ≤ −0,25) naopak – stejná zpráva má jinou váhu.
 - naplánované události k minci (unlock, upgrade, rozhodnutí o ETF) v horizontu obchodu s datem.
 - VETO: unlock > 2 % oběhu, hack nebo žaloba přímo k minci v horizontu → `VETO: <událost, datum>` na začátek.
 
