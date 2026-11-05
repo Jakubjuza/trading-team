@@ -1,0 +1,37 @@
+name: Výzkum – audit papíru laboratoře
+
+# Přepočítá živé papírové obchody laboratoře backtestovým kódem na čerstvých svíčkách OKX (research/experiments/paper_audit.py).
+# Výsledek: reports/paper_audit.md.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+    paths: ["research/experiments/paper_audit.py", ".github/workflows/paper-audit.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt numba
+      - name: Audit
+        run: |
+          python3 research/experiments/paper_audit.py
+          cat reports/paper_audit.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Uložit do větve
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -e reports/paper_audit.md ]; then git add -f reports/paper_audit.md; fi
+          git commit -q -m "paper-audit: výsledky auditu papíru" || exit 0
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}"
