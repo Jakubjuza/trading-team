@@ -13,6 +13,10 @@ Při každém průchodu skeneru: pro každý timeframe aktivních strategií, kd
      jen zapíše. Strategie s context = "range" (návrat do rozpětí) obchoduje jen v bočním trhu.
   6. LIMIT KORELACE: nejvýš `lab.max_same_dir` souběžných pozic stejného směru a jedna pozice na minci a směr
      (stejný pohyb BTC jinak vybere několik stopů naráz).
+  7. POJISTKA (5. 11. 2026): strategie s ≥ `lab.kill_min_n` živými obchody a součtem ≤ `lab.kill_r` R jde STÍNOVĚ;
+     vrátí se, když posledních `lab.revive_n` obchodů (živé i stínové) dá dohromady > 0 R.
+  8. BRÁNA SMĚRU (research/experiments/long_gate.py → research/long_gate.json): jen brány, které v testu PROŠLY –
+     long při medvědím režimu BTC / křehkém trhu, short zrcadlově; zablokovaný signál jde stínově.
 Signál, který brána nebo limit nepustí, se sleduje jako STÍNOVÝ obchod (research/lab_shadow.jsonl, bez zpráv),
 aby se dalo živě změřit, jestli brána pomáhá. Na burzu se nic neposílá. Selhání nesmí shodit skener – volá se v try/except.
 """
@@ -34,6 +38,7 @@ from scanner import notify  # noqa: E402
 LOG = ROOT / "research" / "lab_trades.jsonl"
 SHADOW = ROOT / "research" / "lab_shadow.jsonl"
 MODEL = ROOT / "research" / "context_model.json"
+GATE = ROOT / "research" / "long_gate.json"
 CACHE = ROOT / "scanner" / "cache"
 TF_TD = {"15m": "15min", "1h": "1h", "2h": "2h", "4h": "4h", "6h": "6h", "12h": "12h", "1d": "1D"}
 COST = atlas.COSTS[atlas.MAIN]
@@ -57,6 +62,59 @@ def load_model(path=None):
     except Exception as exc:
         print(f"lab: model kontextu nečitelný: {exc.__class__.__name__}", file=sys.stderr)
         return None
+
+
+def _closes(path):
+    out = []
+    if path and Path(path).exists():
+        for line in Path(path).read_text().splitlines():
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            if r.get("event") == "close" and r.get("r") is not None:
+                out.append(r)
+    return out
+
+
+def kill_switch(sid, live, shadow, min_n=5, kill_r=-3.0, revive_n=10):
+    """Pojistka: (ano/ne, důvod). Živé obchody strategie ≥ min_n a součet ≤ kill_r → stínově, dokud posledních
+    revive_n obchodů po zastavení (živé i stínové, podle času uzavření) nedá dohromady > 0 R."""
+    lv = [r for r in live if r["sid"] == sid]
+    if len(lv) < min_n or sum(r["r"] for r in lv) > kill_r:
+        return False, ""
+    total = round(sum(r["r"] for r in lv), 1)
+    stop_t = sorted(r.get("time", "") for r in lv)[min_n - 1]          # od kdy pojistka platí (nejdřív po min_n)
+    after = sorted([r for r in lv + [x for x in shadow if x["sid"] == sid] if r.get("time", "") > stop_t],
+                   key=lambda r: r.get("time", ""))[-revive_n:]
+    if len(after) >= revive_n and sum(r["r"] for r in after) > 0:
+        return False, ""
+    return True, f"pojistka: živě {len(lv)} obchodů, {total:+.1f} R – stínově, dokud se nezotaví"
+
+
+def load_gate(path=None):
+    path = Path(path or GATE)
+    try:
+        g = json.loads(path.read_text())
+        return set(g.get("active") or []), float(g.get("thr_k", 0.25))
+    except (OSError, ValueError):
+        return set(), 0.25
+
+
+def gate_block(direction, active, btc_reg, k, thr=0.25):
+    """Brána směru (jen prošlé brány): důvod blokace, nebo ''."""
+    bad = []
+    if direction == "long":
+        if {"G1", "G3"} & active and btc_reg == "medvědí":
+            bad.append("režim BTC medvědí")
+        if {"G2", "G3"} & active and k is not None and k >= thr:
+            bad.append(f"křehký trh K {k:+.2f}")
+    else:
+        if {"S1", "S3"} & active and btc_reg == "býčí":
+            bad.append("režim BTC býčí")
+        if {"S2", "S3"} & active and k is not None and k <= -thr:
+            bad.append(f"optimistický trh K {k:+.2f}")
+    return ("brána směru: " + ", ".join(bad)) if bad else ""
 
 
 def decide(model, s, feats, open_pos, max_same_dir, coin):
@@ -266,6 +324,20 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
             print(f"lab: denní data {coin} selhala: {exc.__class__.__name__}", file=sys.stderr)
     model = load_model()
     max_same_dir = int(lc.get("max_same_dir", 3))
+    live_closes, shadow_closes = _closes(LOG), _closes(SHADOW)
+    gate_active, gate_thr = load_gate()
+    btc_reg, btc_k = None, None
+    if gate_active:
+        try:
+            btc_reg = daily["BTC"][0].reindex([now.floor("1D")]).iloc[0]
+        except Exception:
+            btc_reg = None
+        if gate_active & {"G2", "G3", "S2", "S3"}:
+            try:
+                from research import fragility
+                btc_k = fragility.current(candles(ex, "BTC", "1h", now, bars=1500)).get("k")
+            except Exception as exc:
+                print(f"lab: křehkost nedostupná: {exc.__class__.__name__}", file=sys.stderr)
     dctx = {}
     if model:
         fng_c = None
@@ -335,6 +407,12 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                     except Exception as exc:
                         print(f"lab: kontext signálu selhal: {exc.__class__.__name__}", file=sys.stderr)
                 take, why, sc, pro, proti = decide(model if feats else None, s, feats, st["open"], max_same_dir, coin)
+                if take:
+                    ks, kwhy = kill_switch(s["id"], live_closes, shadow_closes, int(lc.get("kill_min_n", 5)),
+                                           float(lc.get("kill_r", -3.0)), int(lc.get("revive_n", 10)))
+                    gwhy = gate_block(s["dir"], gate_active, btc_reg, btc_k, gate_thr) if gate_active else ""
+                    if ks or gwhy:
+                        take, why = False, kwhy or gwhy
                 if sc is not None:
                     o["ctx_score"] = round(sc, 3)
                 if feats is not None:                                 # metriky kontextu pro měření dopředu

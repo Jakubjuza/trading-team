@@ -25,3 +25,5 @@ def _isolate_runtime_files(tmp_path, monkeypatch):
     import scanner.lab_paper
     monkeypatch.setattr(scanner.lab_paper, "LOG", tmp_path / "lab_trades.jsonl")
     monkeypatch.setattr(scanner.lab_paper, "SHADOW", tmp_path / "lab_shadow.jsonl")
+    import scanner.level_paper
+    monkeypatch.setattr(scanner.level_paper, "LOG", tmp_path / "level_trades.jsonl")

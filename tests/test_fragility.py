@@ -48,3 +48,23 @@ def test_too_few_shocks():
     s = fr.current(_frame(idx, r))
     assert s["state"] in ("málo dat", "vyrovnaný", "křehký", "optimistický")
     assert "Křehkost" in fr.line(s)
+
+
+def test_kill_switch_and_revive():
+    from scanner import lab_paper as lp
+    live = [{"sid": "a", "r": -1.0, "time": f"2026-11-0{i}"} for i in range(1, 6)]
+    assert lp.kill_switch("a", live, [])[0]
+    assert not lp.kill_switch("b", live, [])[0]
+    assert not lp.kill_switch("a", live[:4], [])[0]                    # málo obchodů
+    shadow = [{"sid": "a", "r": 0.5, "time": f"2026-11-1{i}"} for i in range(10)]
+    assert not lp.kill_switch("a", live, shadow)[0]                    # stínově se zotavila
+
+
+def test_gate_block_only_active_gates():
+    from scanner import lab_paper as lp
+    assert lp.gate_block("long", set(), "medvědí", 0.9) == ""
+    assert "medvědí" in lp.gate_block("long", {"G1"}, "medvědí", None)
+    assert lp.gate_block("long", {"G1"}, "býčí", 0.9) == ""
+    assert "křehký" in lp.gate_block("long", {"G3"}, "boční", 0.3)
+    assert "býčí" in lp.gate_block("short", {"S1"}, "býčí", 0.0)
+    assert lp.load_gate("/nonexistent.json") == (set(), 0.25)
