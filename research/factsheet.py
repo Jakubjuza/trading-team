@@ -14,6 +14,7 @@ Sekce:
   macro       – VIX, DXY, US10Y, QQQ, zlato; korelace s QQQ a DXY (yfinance)
   scenarios   – týden/měsíc (EMA21 týdnů, SMA10 měsíců, 52t rozpětí, propad od maxima), rozpětí 4/13/26 týdnů, BTC cyklus
   onchain     – Fear & Greed, stablecoiny (7/30 d), TVL sítě mince, síť BTC (hashrate, transakce, poplatky)
+  fragility   – křehkost trhu: reakce BTC na šoky/zprávy za 30 dní (research/fragility.py)
   events      – kalendář 7 dní (FOMC, CPI, NFP, ECB … s očekáváním), titulky 48 h (mince, geopolitika, regulace, Fed)
   sessions    – světové burzy: co je otevřené, co se otevírá v 24 h (+ historická volatilita po otevření), CME gap
   history     – jak dopadl stejný typ setupu na tomto tickeru (backtest, po nákladech)
@@ -35,7 +36,7 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from research import events, onchain, scenarios, sessions  # noqa: E402
+from research import events, fragility, onchain, scenarios, sessions  # noqa: E402
 
 HL_URL = "https://api.hyperliquid.xyz/info"
 DERIBIT = "https://www.deribit.com/api/v2/public"
@@ -398,6 +399,7 @@ def build(symbol, exchange="kraken", signal=None, frames=None, ex=None):
     sheet["scenarios"] = safe(scenarios.section_scenarios)(coin)
     sheet["onchain"] = safe(onchain.section_onchain)(coin)
     sheet["events"] = safe(events.section_events)(coin)
+    sheet["fragility"] = safe(fragility.section_fragility)()
     sheet["sessions"] = safe(sessions.section_sessions)(h1, coin=coin)
     sheet["history"] = section_history(symbol, (signal or {}).get("setup", {}).get("direction"),
                                        strategy=(signal or {}).get("strategy"))
