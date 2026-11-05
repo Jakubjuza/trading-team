@@ -131,6 +131,10 @@ mtf_entry:                # vstup z nižších TF pro denní signály (scanner/m
   swing_bars: 6           # stop za swingem posledních 6 hodinových svíček
   min_stop_pct: 1.5
 
+level_entry:              # 🎯 vstup NA PRŮRAZU 20denní úrovně (stop příkaz) + 1H trend + stop za 1H swingem – papírově
+  enabled: true           # souběžně s denním donchian_1d; scanner/level_paper.py, reports/level_entry.md (varianta E3)
+  strategy: donchian_1d
+
 approach_alerts:          # „⏳ setup se blíží“ – jen informace, ne signál ke vstupu
   enabled: true
   atr_distance: 0.5       # cena do 0,5 ATR od hladiny Donchian kanálu ve směru trendu
@@ -174,6 +178,9 @@ lab:                      # ⚡ strategie z registru laboratoře (research/regis
   enabled: true           # scanner/lab_paper.py; data OKX; poplatky MEXC 0,05 %/stranu; zpráva při signálu a uzavření
                           # registr plní noční laboratoř (research/lab.py, .github/workflows/lab.yml)
   max_same_dir: 3         # nejvýš 3 souběžné pozice stejného směru, 1 na minci a směr (ostatní jen stínově)
+  kill_min_n: 5           # pojistka: ≥ 5 živých obchodů strategie a součet ≤ kill_r → jen stínově
+  kill_r: -3.0
+  revive_n: 10            # návrat, když posledních 10 obchodů (živé + stínové) > 0 R
 
 carry:                    # 💰 papírový carry z fundingu (research/carry.py, reports/carry.md) – NIC se neposílá na burzu
   enabled: true
