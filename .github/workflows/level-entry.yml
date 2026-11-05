@@ -1,0 +1,37 @@
+name: Výzkum – vstup na průrazu úrovně
+
+# Předem stanovený test (research/experiments/level_entry.py): vstup stop příkazem v okamžiku průrazu 20denní úrovně
+# (+ 1H trend, + těsný stop za 1H swingem) vs. dnešní vstup na zavření denní svíčky. Výsledek: reports/level_entry.md.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+    paths: ["research/experiments/level_entry.py", ".github/workflows/level-entry.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      - name: Test
+        run: |
+          python3 research/experiments/level_entry.py /tmp/cache
+          cat reports/level_entry.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Uložit do větve
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -e reports/level_entry.md ]; then git add -f reports/level_entry.md; fi
+          git commit -q -m "level-entry: výsledky testu vstupu na průrazu úrovně" || exit 0
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}"
