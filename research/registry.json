@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T21:47:12+00:00",
+ "updated": "2026-11-05T08:12:35+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -691,11 +691,11 @@
     }
    ],
    "paper": {
-    "n": 6,
-    "mean_r": -0.163,
-    "sum_r": -0.98,
-    "t": -0.35,
-    "win": 0.33
+    "n": 7,
+    "mean_r": -0.293,
+    "sum_r": -2.05,
+    "t": -0.71,
+    "win": 0.29
    }
   },
   {
@@ -984,7 +984,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.40 R (t +2.8), HOLDOUT +0.27 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 1,
+    "mean_r": -1.023,
+    "sum_r": -1.02,
+    "t": null,
+    "win": 0.0
+   }
   },
   {
    "id": "keltner|2.5|4h|none|target|short",
