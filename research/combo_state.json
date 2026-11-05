@@ -1,7 +1,7 @@
 {
  "started": "2026-11-04",
- "next": 1,
- "total_tests": 144,
+ "next": 2,
+ "total_tests": 408,
  "parts": [
   {
    "no": 1,
@@ -121,6 +121,135 @@
    "seconds": 3,
    "n_basic": 9,
    "n_passed": 8
+  },
+  {
+   "no": 2,
+   "kind": "pair",
+   "tf": "1h",
+   "groups": [
+    "volatilita",
+    "momentum",
+    "sentiment"
+   ],
+   "grid": {
+    "triggers": [
+     {
+      "family": "ma_cross",
+      "params": "sma/30/200/confirm",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.72
+     },
+     {
+      "family": "macd",
+      "params": "19/39/9/zero",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.62
+     },
+     {
+      "family": "donchian",
+      "params": "100",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.59
+     },
+     {
+      "family": "boll_break",
+      "params": "20/2.5",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.22
+     },
+     {
+      "family": "price_ma",
+      "params": "sma/100",
+      "exit": "opp_stop",
+      "dir": "long",
+      "is_t": 4.95
+     },
+     {
+      "family": "supertrend",
+      "params": "20/3.0",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 4.89
+     },
+     {
+      "family": "ma_cross",
+      "params": "sma/50/100/pullback",
+      "exit": "trail",
+      "dir": "short",
+      "is_t": 2.74
+     },
+     {
+      "family": "boll_break",
+      "params": "50/2.0",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 2.06
+     },
+     {
+      "family": "price_ma",
+      "params": "sma/100",
+      "exit": "trail",
+      "dir": "short",
+      "is_t": 1.34
+     },
+     {
+      "family": "macd",
+      "params": "19/39/9/zero",
+      "exit": "trail",
+      "dir": "short",
+      "is_t": 1.29
+     },
+     {
+      "family": "vol_break",
+      "params": "55/2.5",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 1.24
+     },
+     {
+      "family": "donchian",
+      "params": "100",
+      "exit": "trail",
+      "dir": "short",
+      "is_t": 0.81
+     }
+    ],
+    "filters": [
+     "atrlo:0.3",
+     "atrlo:0.5",
+     "atrlo:0.7",
+     "atrhi:0.3",
+     "atrhi:0.5",
+     "atrhi:0.7",
+     "rsi:45",
+     "rsi:50",
+     "rsi:55",
+     "rsi:60",
+     "rsix:60",
+     "rsix:70",
+     "rsix:80",
+     "macd:sig",
+     "macd:zero",
+     "fng:30",
+     "fng:45",
+     "fng:60",
+     "fngg:40",
+     "fngg:55",
+     "fngg:70"
+    ]
+   },
+   "n_combos": 252,
+   "n_baselines": 12,
+   "n_tests": 264,
+   "started": "2026-11-05T21:40:27+00:00",
+   "status": "hotovo",
+   "seconds": 7,
+   "n_basic": 5,
+   "n_passed": 5
   }
  ]
 }
