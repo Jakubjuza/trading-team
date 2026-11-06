@@ -50,3 +50,17 @@ def test_gap_through_liquidation():
     f.loc[f.index[-2], "Open"] = 95.0          # gap přes likvidační cenu
     acc, *_ = D.run("ko50", {"BTC": f}, "2023-01-01")
     assert acc.liqs == 1
+
+
+def test_kronos_signal_threshold_and_one_bar_exit():
+    closes = [100.0] * 20 + [100.0, 101.0, 101.0, 101.0]
+    f = frame(closes, freq="2h")
+    pred = pd.Series(0.0, index=f.index)
+    pred.iloc[20] = 0.01            # čeká +1 % → long na open svíčky 21, zavřít na jejím close
+    pred.iloc[22] = 0.002           # pod prahem 0,3 % → nic
+    D.KRONOS.clear(); D.KRONOS["BTC"] = pred
+    acc, curve, pos, idx = D.run("kronos10", {"BTC": f}, "2023-01-01")
+    D.KRONOS.clear()
+    tr = [t for t in acc.trades if t["kind"] != "vklad"]
+    assert len(tr) == 1 and tr[0]["dir"] == 1 and tr[0]["kind"] == "čas"
+    assert tr[0]["pnl"] > 0

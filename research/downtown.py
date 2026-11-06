@@ -30,6 +30,9 @@ Pravidla stanovená PŘEDEM (6. 11. 2026), po spuštění se neladí:
                svíček · páka 15×, celá marže
     rot5       4h 8 mincí · drží long mince s nejlepším výnosem za 24 h (6 svíček), když je kladný, jinak hotovost;
                přepíná na close · páka 5×, celá marže
+    kronos10   2h BTC/ETH/SOL · předpověď modelu Kronos-small (research/downtown_kronos.py) – když čeká pohyb nad
+               0,3 %, vstup jeho směrem na open další svíčky, výstup na její close · páka 10×, celá marže ·
+               zpětný test až od 1. 9. 2025 (přidáno 6. 11. 2026 na přání uživatele, test v reports/kronos.md neprošel)
     hodl3      4h BTC · stále long · páka 3×, celá marže (srovnání: co udělá „jen držet s pákou“)
 
     python3 research/downtown.py [cache_dir]        → research/downtown.json + reports/downtown.md
@@ -55,7 +58,9 @@ START_CASH = 1000.0
 FEE, SLIP, MM = 0.0005, 0.0003, 0.005
 FUND_8H = 0.0001
 BROKE = 100.0                   # pod 10 % startu je účet „mrtvý“ → nový vklad
-TF_H = {"15m": 0.25, "1h": 1.0, "4h": 4.0}
+TF_H = {"15m": 0.25, "1h": 1.0, "2h": 2.0, "4h": 4.0}
+KRONOS_PRED = ROOT / "research" / "downtown_kronos.csv.gz"
+KRONOS = {}                     # mince → Series předpovězeného výnosu další 2H svíčky (index = close svíčky t)
 
 STRATS = {
     "scalp20": {"name": "Scalper 15m ×20", "tf": "15m", "coins": ["BTC", "ETH", "SOL"], "lev": 20,
@@ -70,6 +75,8 @@ STRATS = {
               "tag": "kupuje do paniky", "rules": "long po svíčce s propadem větším než 3 ATR · cíl 1,5 ATR, stop 1,5 ATR, max 12 h"},
     "rot5": {"name": "Rotace hybnosti ×5", "tf": "4h", "coins": COINS, "lev": 5,
              "tag": "vždy v nejsilnější minci", "rules": "drží long mince s nejlepším výnosem za 24 h (když je kladný) · přepíná po 4 h"},
+    "kronos10": {"name": "Kronos ×10", "tf": "2h", "coins": ["BTC", "ETH", "SOL"], "lev": 10, "bt_start": "2025-09-01",
+                 "tag": "AI model předpovídá další svíčku", "rules": "Kronos-small předpoví close další 2H svíčky; když čeká pohyb nad 0,3 %, vstoupí jeho směrem a po 1 svíčce zavře · zpětný test až od 1. 9. 2025 (starší data mohl model vidět při tréninku)"},
     "hodl3": {"name": "BTC ×3, jen drž", "tf": "4h", "coins": ["BTC"], "lev": 3,
               "tag": "srovnání bez obchodování", "rules": "stále long BTC s pákou 3× · po likvidaci nový účet a znovu long"},
 }
@@ -142,7 +149,7 @@ def rsi(c, n):
     return 100 - 100 / (1 + up / dn.replace(0, np.nan))
 
 
-def signals(sid, d):
+def signals(sid, d, coin=None):
     """Vrátí pole směru vstupu (+1/−1/0) na close každé svíčky (pro „target“ strategie skóre)."""
     c, o = d["Close"], d["Open"]
     ema = c.ewm(span=200, adjust=False, min_periods=200).mean()
@@ -157,6 +164,12 @@ def signals(sid, d):
         return np.where((c > hi) & (c > ema), 1, 0)
     if sid == "marti10":
         return np.where((c < o) & (rsi(c, 14) < 40), 1, 0)
+    if sid == "kronos10":
+        p = KRONOS.get(coin)
+        if p is None:
+            return np.zeros(len(d))
+        pr = p.reindex(d.index).to_numpy(float)
+        return np.where(np.isfinite(pr) & (np.abs(pr) > 0.003), np.sign(np.nan_to_num(pr)), 0)
     if sid == "dip15":
         a = atr(d).shift(1)
         return np.where((c - o) < -3 * a, 1, 0)
@@ -169,6 +182,7 @@ EXITS = {  # stop %, cíl %, stop ATR, cíl ATR, trailing ATR, max svíček
     "ko50": (0.008, 0.03, None, None, None, 24),
     "marti10": (0.01, 0.01, None, None, None, 24),
     "dip15": (None, None, 1.5, 1.5, None, 12),
+    "kronos10": (None, None, None, None, None, 1),
 }
 
 
@@ -207,7 +221,7 @@ def run(sid, frames, trade_from, cash=START_CASH):
         else:
             score = np.ones((len(idx), 1))
     else:
-        S = {c: np.asarray(signals(sid, F[c]), float) for c in coins}
+        S = {c: np.asarray(signals(sid, F[c], c), float) for c in coins}
     t_from = pd.Timestamp(trade_from, tz="UTC")
     start_i = int(np.searchsorted(idx.values, t_from.to_datetime64()))
     acc = Account(cash)
@@ -383,7 +397,7 @@ def write_md(res, now):
          f"Aktualizováno {now:%Y-%m-%d %H:%M} UTC skriptem `research/downtown.py` (pravidla stanovená předem v hlavičce).",
          "Oddělené od desku: na skener, registr, riziko ani peníze nesahá. Každá strategie má papírový účet 1 000 USDT,",
          "páku, reinvestici a skutečnou likvidaci; po bankrotu se vloží nových 1 000 USDT. Nejde o finanční poradenství.", "",
-         f"## Zpětný test od {BT_START}", "",
+         f"## Zpětný test od {BT_START} (Kronos ×10 až od 1. 9. 2025)", "",
          "| Strategie | Páka | Vloženo | Účet teď | Max. účet | Čistě | Max propad | Likvidace | Bankroty | Obchodů | Výher | Nejlepší měsíc | Nejhorší měsíc |",
          "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for s in res:
@@ -404,8 +418,18 @@ def write_md(res, now):
     OUT_MD.write_text("\n".join(L) + "\n", encoding="utf-8")
 
 
+def load_kronos():
+    KRONOS.clear()
+    if KRONOS_PRED.exists():
+        k = pd.read_csv(KRONOS_PRED)
+        k["t"] = pd.to_datetime(k["t"], utc=True)
+        for c, g in k.groupby("coin"):
+            KRONOS[c] = (g.set_index("t")["pred_close"] / g.set_index("t")["close"] - 1).sort_index()
+
+
 def main(cache="/tmp/dt_cache"):
     now = datetime.now(timezone.utc)
+    load_kronos()
     raw = {}
     need = {(c, "15m" if s["tf"] == "15m" else "1h") for s in STRATS.values() for c in s["coins"]}
     for c, base in sorted(need):
@@ -413,9 +437,12 @@ def main(cache="/tmp/dt_cache"):
         raw[(c, base)] = fetch(c, base, cache)
     res = []
     for sid, cfg in STRATS.items():
+        if sid == "kronos10" and not KRONOS:
+            print("kronos10: chybí předpovědi, přeskočeno", flush=True)
+            continue
         base = "15m" if cfg["tf"] == "15m" else "1h"
         frames = {c: resample(raw[(c, base)], cfg["tf"]) for c in cfg["coins"]}
-        acc, cv, pos, idx = run(sid, frames, BT_START)
+        acc, cv, pos, idx = run(sid, frames, cfg.get("bt_start", BT_START))
         bt = summarize(acc, cv, pos, idx)
         live = {"start": LIVE_START, "n_trades": 0, "equity": START_CASH, "deposited": START_CASH, "net": 0.0,
                 "liquidations": 0, "wipes": 0, "curve": [], "last_trades": [], "open": None}
@@ -424,7 +451,7 @@ def main(cache="/tmp/dt_cache"):
             if cv2:
                 live = summarize(acc2, cv2, pos2, idx2)
                 live["start"] = LIVE_START
-        res.append({"id": sid, "name": cfg["name"], "tag": cfg["tag"], "rules": cfg["rules"], "lev": cfg["lev"],
+        res.append({"id": sid, "name": cfg["name"], "bt_start": cfg.get("bt_start", BT_START), "tag": cfg["tag"], "rules": cfg["rules"], "lev": cfg["lev"],
                     "tf": cfg["tf"], "coins": cfg["coins"], "backtest": bt, "live": live, "updated": now.isoformat(timespec="minutes")})
         print(f"{sid}: čistě {bt['net']} USDT, likvidací {bt['liquidations']}, bankrotů {bt['wipes']}, obchodů {bt['n_trades']}", flush=True)
     OUT_JSON.write_text(json.dumps({"updated": now.isoformat(timespec="minutes"), "bt_start": BT_START, "live_start": LIVE_START,
