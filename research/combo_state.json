@@ -1,7 +1,7 @@
 {
  "started": "2026-11-04",
- "next": 2,
- "total_tests": 408,
+ "next": 3,
+ "total_tests": 552,
  "parts": [
   {
    "no": 1,
@@ -250,6 +250,125 @@
    "seconds": 7,
    "n_basic": 5,
    "n_passed": 5
+  },
+  {
+   "no": 3,
+   "kind": "pair",
+   "tf": "2h",
+   "groups": [
+    "trend",
+    "režim",
+    "objem"
+   ],
+   "grid": {
+    "triggers": [
+     {
+      "family": "ma_cross",
+      "params": "sma/20/200/confirm",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.33
+     },
+     {
+      "family": "macd",
+      "params": "12/26/9/zero",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.19
+     },
+     {
+      "family": "donchian",
+      "params": "55",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.75
+     },
+     {
+      "family": "price_ma",
+      "params": "ema/200",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.72
+     },
+     {
+      "family": "vol_break",
+      "params": "55/1.5",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.71
+     },
+     {
+      "family": "boll_break",
+      "params": "50/2.5",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.62
+     },
+     {
+      "family": "ma_cross",
+      "params": "ema/30/200/cross",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 3.1
+     },
+     {
+      "family": "boll_break",
+      "params": "20/2.5",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 2.22
+     },
+     {
+      "family": "vol_break",
+      "params": "55/2.5",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 2.2
+     },
+     {
+      "family": "price_ma",
+      "params": "sma/50",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 1.54
+     },
+     {
+      "family": "macd",
+      "params": "5/35/5/zero",
+      "exit": "opp_stop",
+      "dir": "short",
+      "is_t": 1.54
+     },
+     {
+      "family": "donchian",
+      "params": "55",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 1.16
+     }
+    ],
+    "filters": [
+     "ema:50",
+     "ema:100",
+     "ema:200",
+     "d:50",
+     "d:200",
+     "reg:trend",
+     "reg:notpanic",
+     "reg:side",
+     "vol:1",
+     "vol:1.5",
+     "vol:2"
+    ]
+   },
+   "n_combos": 132,
+   "n_baselines": 12,
+   "n_tests": 144,
+   "started": "2026-11-06T21:39:59+00:00",
+   "status": "hotovo",
+   "seconds": 3,
+   "n_basic": 7,
+   "n_passed": 7
   }
  ]
 }

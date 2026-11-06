@@ -1,150 +1,156 @@
 {
- "time": "2026-11-05T21:40:27+00:00",
+ "time": "2026-11-06T21:39:59+00:00",
  "changes": [
-  "🆕 Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,3 · 1H long → papír (combo_study: díl 2, OOS +0.22 R (t +3.4), HOLDOUT +0.32 R (t +2.8), spouštěč sám OOS +0.11 R); režimy: býčí, medvědí, boční, panika",
-  "🆕 Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,7 · 1H long → papír (combo_study: díl 2, OOS +0.26 R (t +2.7), HOLDOUT +0.38 R (t +2.7), spouštěč sám OOS +0.11 R); režimy: býčí, medvědí, boční, panika"
+  "🆕 Kombinace: Bollinger průraz 50 2.5 + trend EMA200 · 2H long → papír (combo_study: díl 3, OOS +0.58 R (t +2.2), HOLDOUT +0.75 R (t +2.3), spouštěč sám OOS +0.46 R); režimy: býčí, medvědí, boční, panika",
+  "🆕 Kombinace: Bollinger průraz 50 2.5 + denní 50 · 2H long → papír (combo_study: díl 3, OOS +0.60 R (t +2.2), HOLDOUT +1.25 R (t +2.8), spouštěč sám OOS +0.46 R); režimy: býčí, boční, panika"
  ],
  "error": null,
  "part": {
-  "no": 2,
+  "no": 3,
   "kind": "pair",
-  "tf": "1h",
+  "tf": "2h",
   "groups": [
-   "volatilita",
-   "momentum",
-   "sentiment"
+   "trend",
+   "režim",
+   "objem"
   ],
   "grid": {
    "triggers": [
     {
      "family": "ma_cross",
-     "params": "sma/30/200/confirm",
+     "params": "sma/20/200/confirm",
      "exit": "opp",
      "dir": "long",
-     "is_t": 6.72
+     "is_t": 6.33
     },
     {
      "family": "macd",
-     "params": "19/39/9/zero",
+     "params": "12/26/9/zero",
+     "exit": "opp",
+     "dir": "long",
+     "is_t": 6.19
+    },
+    {
+     "family": "donchian",
+     "params": "55",
+     "exit": "opp",
+     "dir": "long",
+     "is_t": 5.75
+    },
+    {
+     "family": "price_ma",
+     "params": "ema/200",
+     "exit": "opp",
+     "dir": "long",
+     "is_t": 5.72
+    },
+    {
+     "family": "vol_break",
+     "params": "55/1.5",
+     "exit": "opp",
+     "dir": "long",
+     "is_t": 5.71
+    },
+    {
+     "family": "boll_break",
+     "params": "50/2.5",
      "exit": "opp",
      "dir": "long",
      "is_t": 5.62
     },
     {
-     "family": "donchian",
-     "params": "100",
-     "exit": "opp",
-     "dir": "long",
-     "is_t": 5.59
+     "family": "ma_cross",
+     "params": "ema/30/200/cross",
+     "exit": "target",
+     "dir": "short",
+     "is_t": 3.1
     },
     {
      "family": "boll_break",
      "params": "20/2.5",
-     "exit": "opp",
-     "dir": "long",
-     "is_t": 5.22
-    },
-    {
-     "family": "price_ma",
-     "params": "sma/100",
-     "exit": "opp_stop",
-     "dir": "long",
-     "is_t": 4.95
-    },
-    {
-     "family": "supertrend",
-     "params": "20/3.0",
-     "exit": "opp",
-     "dir": "long",
-     "is_t": 4.89
-    },
-    {
-     "family": "ma_cross",
-     "params": "sma/50/100/pullback",
-     "exit": "trail",
-     "dir": "short",
-     "is_t": 2.74
-    },
-    {
-     "family": "boll_break",
-     "params": "50/2.0",
      "exit": "target",
      "dir": "short",
-     "is_t": 2.06
-    },
-    {
-     "family": "price_ma",
-     "params": "sma/100",
-     "exit": "trail",
-     "dir": "short",
-     "is_t": 1.34
-    },
-    {
-     "family": "macd",
-     "params": "19/39/9/zero",
-     "exit": "trail",
-     "dir": "short",
-     "is_t": 1.29
+     "is_t": 2.22
     },
     {
      "family": "vol_break",
      "params": "55/2.5",
      "exit": "target",
      "dir": "short",
-     "is_t": 1.24
+     "is_t": 2.2
+    },
+    {
+     "family": "price_ma",
+     "params": "sma/50",
+     "exit": "target",
+     "dir": "short",
+     "is_t": 1.54
+    },
+    {
+     "family": "macd",
+     "params": "5/35/5/zero",
+     "exit": "opp_stop",
+     "dir": "short",
+     "is_t": 1.54
     },
     {
      "family": "donchian",
-     "params": "100",
-     "exit": "trail",
+     "params": "55",
+     "exit": "target",
      "dir": "short",
-     "is_t": 0.81
+     "is_t": 1.16
     }
    ],
    "filters": [
-    "atrlo:0.3",
-    "atrlo:0.5",
-    "atrlo:0.7",
-    "atrhi:0.3",
-    "atrhi:0.5",
-    "atrhi:0.7",
-    "rsi:45",
-    "rsi:50",
-    "rsi:55",
-    "rsi:60",
-    "rsix:60",
-    "rsix:70",
-    "rsix:80",
-    "macd:sig",
-    "macd:zero",
-    "fng:30",
-    "fng:45",
-    "fng:60",
-    "fngg:40",
-    "fngg:55",
-    "fngg:70"
+    "ema:50",
+    "ema:100",
+    "ema:200",
+    "d:50",
+    "d:200",
+    "reg:trend",
+    "reg:notpanic",
+    "reg:side",
+    "vol:1",
+    "vol:1.5",
+    "vol:2"
    ]
   },
-  "n_combos": 252,
+  "n_combos": 132,
   "n_baselines": 12,
-  "n_tests": 264,
-  "started": "2026-11-05T21:40:27+00:00",
+  "n_tests": 144,
+  "started": "2026-11-06T21:39:59+00:00",
   "status": "hotovo",
-  "seconds": 7,
-  "n_basic": 5,
-  "n_passed": 5
+  "seconds": 3,
+  "n_basic": 7,
+  "n_passed": 7
  },
  "passed": [
   {
-   "mexc_fut_oos_r": 0.476,
-   "mexc_fut_oos_t": 2.536,
-   "mexc_fut_hold_r": 0.226,
-   "mexc_fut_hold_t": 1.248,
-   "tf": "1h",
-   "params": "macd:19/39/9/zero+rsix:60",
+   "mexc_fut_oos_r": 0.491,
+   "mexc_fut_oos_t": 2.741,
+   "mexc_fut_hold_r": 0.114,
+   "mexc_fut_hold_t": 0.885,
+   "tf": "2h",
+   "params": "macd:12/26/9/zero+reg:notpanic",
    "exit": "opp",
    "dir": "long",
-   "base_oos_r": 0.34,
+   "base_oos_r": 0.285,
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ]
+  },
+  {
+   "mexc_fut_oos_r": 0.585,
+   "mexc_fut_oos_t": 2.218,
+   "mexc_fut_hold_r": 0.751,
+   "mexc_fut_hold_t": 2.34,
+   "tf": "2h",
+   "params": "boll_break:50/2.5+ema:200",
+   "exit": "opp",
+   "dir": "long",
+   "base_oos_r": 0.456,
    "regimes": [
     "býčí",
     "medvědí",
@@ -153,71 +159,81 @@
    ]
   },
   {
-   "mexc_fut_oos_r": 1.033,
-   "mexc_fut_oos_t": 2.005,
-   "mexc_fut_hold_r": 1.051,
-   "mexc_fut_hold_t": 2.281,
-   "tf": "1h",
-   "params": "donchian:100+atrhi:0.7",
+   "mexc_fut_oos_r": 0.604,
+   "mexc_fut_oos_t": 2.202,
+   "mexc_fut_hold_r": 1.245,
+   "mexc_fut_hold_t": 2.765,
+   "tf": "2h",
+   "params": "boll_break:50/2.5+d:50",
    "exit": "opp",
    "dir": "long",
-   "base_oos_r": 0.533,
+   "base_oos_r": 0.456,
    "regimes": [
     "býčí",
-    "medvědí",
     "boční",
     "panika"
    ]
   },
   {
-   "mexc_fut_oos_r": 0.222,
-   "mexc_fut_oos_t": 3.351,
-   "mexc_fut_hold_r": 0.322,
-   "mexc_fut_hold_t": 2.761,
-   "tf": "1h",
-   "params": "boll_break:20/2.5+atrhi:0.3",
+   "mexc_fut_oos_r": 0.524,
+   "mexc_fut_oos_t": 2.05,
+   "mexc_fut_hold_r": 0.566,
+   "mexc_fut_hold_t": 1.442,
+   "tf": "2h",
+   "params": "boll_break:50/2.5+d:200",
    "exit": "opp",
    "dir": "long",
-   "base_oos_r": 0.113,
+   "base_oos_r": 0.456,
    "regimes": [
     "býčí",
-    "medvědí",
     "boční",
     "panika"
    ]
   },
   {
-   "mexc_fut_oos_r": 0.285,
-   "mexc_fut_oos_t": 3.656,
-   "mexc_fut_hold_r": 0.287,
-   "mexc_fut_hold_t": 2.614,
-   "tf": "1h",
-   "params": "boll_break:20/2.5+atrhi:0.5",
+   "mexc_fut_oos_r": 0.798,
+   "mexc_fut_oos_t": 2.088,
+   "mexc_fut_hold_r": 0.649,
+   "mexc_fut_hold_t": 1.444,
+   "tf": "2h",
+   "params": "boll_break:50/2.5+reg:trend",
    "exit": "opp",
    "dir": "long",
-   "base_oos_r": 0.113,
+   "base_oos_r": 0.456,
    "regimes": [
-    "býčí",
-    "medvědí",
-    "boční",
-    "panika"
+    "býčí"
    ]
   },
   {
-   "mexc_fut_oos_r": 0.263,
-   "mexc_fut_oos_t": 2.72,
-   "mexc_fut_hold_r": 0.384,
-   "mexc_fut_hold_t": 2.657,
-   "tf": "1h",
-   "params": "boll_break:20/2.5+atrhi:0.7",
+   "mexc_fut_oos_r": 0.679,
+   "mexc_fut_oos_t": 2.741,
+   "mexc_fut_hold_r": 0.413,
+   "mexc_fut_hold_t": 1.602,
+   "tf": "2h",
+   "params": "boll_break:50/2.5+reg:notpanic",
    "exit": "opp",
    "dir": "long",
-   "base_oos_r": 0.113,
+   "base_oos_r": 0.456,
    "regimes": [
     "býčí",
     "medvědí",
-    "boční",
-    "panika"
+    "boční"
+   ]
+  },
+  {
+   "mexc_fut_oos_r": 0.197,
+   "mexc_fut_oos_t": 2.65,
+   "mexc_fut_hold_r": 0.146,
+   "mexc_fut_hold_t": 2.072,
+   "tf": "2h",
+   "params": "vol_break:55/2.5+reg:notpanic",
+   "exit": "target",
+   "dir": "short",
+   "base_oos_r": 0.14,
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
    ]
   }
  ]
