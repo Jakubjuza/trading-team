@@ -1,0 +1,75 @@
+name: Výzkum – Kronos (předpověď 2H svíček)
+
+# Test open-source modelu Kronos (research/experiments/kronos_test.py). OKX, Hugging Face a PyPI jsou v sandboxu
+# blokované, proto běží tady. Spouští se pushem změny skriptu na větev claude/** nebo ručně; report jde do větve
+# (reports/kronos.md) a do artefaktu „kronos“. Jen výzkum – na skener ani peníze nesahá.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+    paths: ["research/experiments/kronos_test.py", ".github/workflows/kronos.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        coin: [BTC, ETH, SOL]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -q "numpy<2.3" pandas ccxt einops==0.8.1 huggingface_hub==0.33.1 safetensors==0.6.2 tqdm
+      - name: Kronos (pevný commit)
+        run: |
+          git clone -q https://github.com/shiyu-coder/Kronos.git /tmp/kronos
+          git -C /tmp/kronos checkout -q 67b630e67f6a18c9e9be918d9b4337c960db1e9a
+      - name: Předpovědi ${{ matrix.coin }}
+        env:
+          KRONOS_BUDGET_S: "16200"
+        run: python3 research/experiments/kronos_test.py predict ${{ matrix.coin }} /tmp/kronos_${{ matrix.coin }}.csv /tmp/kronos
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kronos-${{ matrix.coin }}
+          path: /tmp/kronos_${{ matrix.coin }}.csv
+          if-no-files-found: warn
+
+  report:
+    needs: predict
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q pandas numpy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: kronos-*
+          path: /tmp/k
+          merge-multiple: true
+      - name: Report
+        run: python3 research/experiments/kronos_test.py report /tmp/k/*.csv
+      - run: cat reports/kronos.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Uložit report a předpovědi do větve
+        run: |
+          mkdir -p research/kronos && cp /tmp/k/*.csv research/kronos/ && gzip -f research/kronos/*.csv
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f reports/kronos.md research/kronos/*.csv.gz
+          git commit -m "kronos: výsledky testu předpovědi 2H svíček" || exit 0
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kronos
+          path: reports/kronos.md
