@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: ["claude/**"]
-    paths: ["research/downtown.py", ".github/workflows/downtown.yml"]
+    paths: ["research/downtown.py", "research/downtown_kronos.py", ".github/workflows/downtown.yml"]
 
 permissions:
   contents: write
@@ -37,6 +37,15 @@ jobs:
           restore-keys: downtown-data-
       - name: Testy Downtownu
         run: python3 -m pytest tests/test_downtown.py -q
+      - name: Kronos – předpovědi nových 2H svíček (pro strategii Kronos ×10)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q einops==0.8.1 huggingface_hub==0.33.1 safetensors==0.6.2 tqdm
+          git clone -q https://github.com/shiyu-coder/Kronos.git /tmp/kronos
+          git -C /tmp/kronos checkout -q 67b630e67f6a18c9e9be918d9b4337c960db1e9a
+          python3 research/downtown_kronos.py /tmp/dt_cache /tmp/kronos 600
       - name: Downtown – zpětný test + živý papír
         run: python3 research/downtown.py /tmp/dt_cache
       - run: cat reports/downtown.md >> "$GITHUB_STEP_SUMMARY"
@@ -44,7 +53,7 @@ jobs:
         run: |
           git config user.name "trading-team downtown"
           git config user.email "downtown@users.noreply.github.com"
-          git add -f research/downtown.json reports/downtown.md
+          git add -f research/downtown.json reports/downtown.md research/downtown_kronos.csv.gz
           git commit -q -m "downtown: papírové účty divokých strategií" || exit 0
           for i in 1 2 3; do
             git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break
