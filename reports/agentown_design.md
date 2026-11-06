@@ -44,3 +44,16 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Paleta příkazů (⌘K) pro skok na budovu ve 3D městě – nejde ověřit bez WebGL v sandboxu; hledání zatím jen v žebříčku.
 - Profil strategie i v panelu laboratorní věže ve 3D (stejný obsah) – stejný důvod, ověřit až s funkčním vykreslením scény.
 - Světlý režim, sparkline papírové křivky a interval spolehlivosti – důvody beze změny (viz 5. 11.).
+
+## 2026-11-06 (večer) – redesign „chrome · neon · UFO“ na přání uživatele
+
+**Zadání**: stránka působila rozházeně a některé údaje neseděly; vizuálně čistší, víc chrome, neon a UFO.
+
+**Změněno**
+- Jedna skleněná horní lišta s chromovým okrajem: logo (létající talíř) + nápis AGENTOWN chromovým písmem (Michroma), přepínač čtvrtí (Trade City · Žebříček · Downtown · Přehled), vpravo 3 živá čísla z databáze (aktivní strategie, papírové obchody z registru, Downtown živě v USDT).
+- Odstraněno, co nesedělo: pás dnů 26. 10.–2. 11. (zastaralý), pevná čísla pokladny (0 obchodů / 3 pozice), záložka „DCA Town · brzy“, dlouhý návod přes scénu, „nabití (ukázka)“ v kartě budovy (u laboratorních věží místo něj skutečný papírový postup n/30). Texty jádra mají štítek „Stav k 27. 10.“, přehled města je bez starých dat.
+- Karta budovy se ukáže až po klepnutí na budovu nebo na „Přehled“ (dřív zabírala třetinu obrazovky pořád).
+- 3D: tmavší vesmírné nebe, chromové boky plošin s odrazy (RoomEnvironment jen pro kovové materiály), pod plošinami řada světel jako u talíře, radnice je chromový létající talíř se skleněnou kupolí, neonovým prstencem a světelným paprskem nad přistávací plošinou, nad městem krouží 3 malé talíře. Menší střešní nápisy.
+- Žebříček a Downtown ve stejném stylu: chromové nadpisy, neonová linka, karty s chromovým okrajem.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (načtenou z GitHubu přes git, CDN je v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled je záměrně jen tmavý), bez vodorovného posunu a bez chyb konzole. Databáze, kolekce `strategies` a `downtown`, capabilities i všechny čtvrti beze změny. Publikováno jako „Chrome · neon · UFO“.
