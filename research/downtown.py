@@ -384,12 +384,12 @@ def write_md(res, now):
          "Oddělené od desku: na skener, registr, riziko ani peníze nesahá. Každá strategie má papírový účet 1 000 USDT,",
          "páku, reinvestici a skutečnou likvidaci; po bankrotu se vloží nových 1 000 USDT. Nejde o finanční poradenství.", "",
          f"## Zpětný test od {BT_START}", "",
-         "| Strategie | Páka | Vloženo | Účet teď | Čistě | Max propad | Likvidace | Bankroty | Obchodů | Výher | Nejlepší měsíc | Nejhorší měsíc |",
-         "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+         "| Strategie | Páka | Vloženo | Účet teď | Max. účet | Čistě | Max propad | Likvidace | Bankroty | Obchodů | Výher | Nejlepší měsíc | Nejhorší měsíc |",
+         "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for s in res:
         b = s["backtest"]
-        L.append(f"| {s['name']} | {s['lev']}× | {eur(b['deposited'])} | {eur(b['equity'])} | {eur(b['net'])} ({b['net_pct']} %) | "
-                 f"{b['max_dd_pct']} % | {b['liquidations']} | {b['wipes']} | {b['n_trades']} | {b['win_pct']} % | "
+        L.append(f"| {s['name']} | {s['lev']}× | {eur(b['deposited'])} | {eur(b['equity'])} | {eur(b['peak_equity'])} | {eur(b['net'])} ({b['net_pct']} %) | "
+                 f"{b['max_dd_pct']} % | {b['liquidations']} | {b['wipes']} | {b['n_trades']} | {'–' if b['win_pct'] is None else str(b['win_pct']) + ' %'} | "
                  f"{b['best_month_pct']} % | {b['worst_month_pct']} % |")
     L += ["", "Roky (čistá křivka, % za rok):", ""]
     for s in res:
