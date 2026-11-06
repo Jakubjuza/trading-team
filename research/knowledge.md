@@ -50,6 +50,10 @@ Pravidla:
   `reports/mtf15.md` – 25. 10. 2026.
 - **Poziční styl (1W) a intradenní swing (4H)** se stejnými pravidly – OOS −0,11 až −0,29 R, korelace s denními
   strategiemi +0,24 až +0,44 – `reports/styles.md` – 25. 10. 2026.
+- **Kronos-small (open-source „foundation model“ pro svíčky) na předpověď další 2H svíčky** – BTC/ETH/SOL 9/2025–11/2026,
+  15 543 předpovědí: směr 51,5 % (statisticky nad 50 %, ale hrubá výhoda jen +0,02–0,03 % na obchod), velikost pohybu
+  odhadne hůř než „cena se nezmění“ (MAE poměr 1,26); po nákladech 0,30 % −0,27 % na obchod, ani nad náhodou – NEPROJDE –
+  `reports/kronos.md` – 6. 11. 2026. Podnět: virální příspěvek (getintoai); model [arXiv 2508.02739](https://arxiv.org/abs/2508.02739).
 
 ## 🧪 Vnější důkazy (u nás neověřeno)
 
