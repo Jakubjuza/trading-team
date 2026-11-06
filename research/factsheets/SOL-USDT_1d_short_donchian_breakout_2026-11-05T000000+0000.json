@@ -1,0 +1,1347 @@
+{
+ "symbol": "SOL/USDT",
+ "coin": "SOL",
+ "generated": "2026-11-06T00:01:18+00:00",
+ "signal": {
+  "id": "SOL/USDT|1d|short|donchian_breakout|2026-11-05T00:00:00+00:00",
+  "symbol": "SOL/USDT",
+  "source": "crypto",
+  "timeframe": "1d",
+  "strategy": "donchian_1d",
+  "found_at": "2026-11-06T00:00:37.119303+00:00",
+  "rules": {
+   "channel": 20,
+   "stop_atr": 2.0,
+   "trend_ema": 200,
+   "min_stop_pct": 1.5,
+   "target_multiples": [
+    2.0,
+    4.0
+   ],
+   "panic_vol_rank": 0.8,
+   "panic_window": 365
+  },
+  "exit": {
+   "split": 0.5,
+   "trail_atr": 3.0,
+   "max_hold_bars": 20
+  },
+  "min_rr": 1.0,
+  "setup": {
+   "kind": "donchian_breakout",
+   "direction": "short",
+   "breakout_time": "2026-11-05T00:00:00+00:00",
+   "retest_time": "2026-11-05T00:00:00+00:00",
+   "hold_time": "2026-11-05T00:00:00+00:00",
+   "level": 89.91,
+   "range_high": 109.22,
+   "range_low": 89.91,
+   "entry": 89.35,
+   "stop": 98.7205,
+   "targets": [
+    70.60899999999998,
+    51.86799999999997
+   ],
+   "rr": [
+    2.0,
+    4.0
+   ],
+   "meta": {
+    "atr": 4.462142857142855,
+    "hold_index": 598,
+    "range_pct": 17.68
+   }
+  },
+  "size": {
+   "qty": 5.335894,
+   "notional": 476.76,
+   "risk_usd": 50.0
+  },
+  "telegram": true,
+  "probabilities": {
+   "all": {
+    "n": 625,
+    "avg_r": 0.407,
+    "avg_r_ci": 0.126,
+    "p_t1": 0.323,
+    "p_t1_ci": 0.037,
+    "p_win": 0.512,
+    "p_win_ci": 0.039,
+    "p_2r": 0.165,
+    "p_2r_ci": 0.029
+   },
+   "recent": {
+    "n": 171,
+    "avg_r": 0.18,
+    "avg_r_ci": 0.208,
+    "p_t1": 0.292,
+    "p_t1_ci": 0.068,
+    "p_win": 0.462,
+    "p_win_ci": 0.075,
+    "p_2r": 0.123,
+    "p_2r_ci": 0.049
+   },
+   "after_t1": {
+    "n": 202,
+    "avg_r": 2.282,
+    "avg_r_ci": 0.169,
+    "p_t1": 1.0,
+    "p_t1_ci": 0.0,
+    "p_win": 1.0,
+    "p_win_ci": 0.0,
+    "p_2r": 0.51,
+    "p_2r_ci": 0.069
+   }
+  }
+ },
+ "structure": {
+  "source": "ccxt OHLCV",
+  "as_of": "2026-11-06T00:01:23+00:00",
+  "1h": {
+   "close": 89.35,
+   "trend": "down",
+   "ema20": 92.09418,
+   "ema50": 93.286442,
+   "ema200": 95.481492,
+   "dist_ema200_pct": -6.42,
+   "rsi14": 27.7,
+   "atr_pct": 1.48,
+   "range20_pos_pct": 11.8,
+   "swings": "LH+LL (klesající)",
+   "bars": 719,
+   "last_bar": "2026-11-05T23:00:00+00:00"
+  },
+  "4h": {
+   "close": 89.35,
+   "trend": "down",
+   "ema20": 93.445097,
+   "ema50": 95.374989,
+   "ema200": 102.058612,
+   "dist_ema200_pct": -12.45,
+   "rsi14": 35.8,
+   "atr_pct": 2.83,
+   "range20_pos_pct": 10.6,
+   "swings": "smíšené",
+   "bars": 719,
+   "last_bar": "2026-11-05T20:00:00+00:00"
+  },
+  "1d": {
+   "close": 89.35,
+   "trend": "mixed",
+   "ema20": 98.84735,
+   "ema50": 102.409619,
+   "ema200": 98.064321,
+   "dist_ema200_pct": -8.89,
+   "rsi14": 28.7,
+   "atr_pct": 4.99,
+   "range20_pos_pct": 4.9,
+   "swings": "LH+LL (klesající)",
+   "bars": 719,
+   "last_bar": "2026-11-05T00:00:00+00:00"
+  }
+ },
+ "levels": {
+  "source": "ccxt OHLCV 1h",
+  "as_of": "2026-11-06T00:01:23+00:00",
+  "price": 89.35,
+  "prev_day": {
+   "high": 98.08,
+   "low": 89.91
+  },
+  "prev_week": {
+   "high": 103.8,
+   "low": 92.38
+  },
+  "volume_profile_7d": {
+   "poc": 95.6445,
+   "vah": 96.801,
+   "val": 92.175
+  },
+  "liquidity_pools": {
+   "above": [
+    {
+     "price": 95.863333,
+     "touches": 3,
+     "dist_pct": 7.29
+    },
+    {
+     "price": 96.206667,
+     "touches": 3,
+     "dist_pct": 7.67
+    },
+    {
+     "price": 97.066667,
+     "touches": 3,
+     "dist_pct": 8.64
+    },
+    {
+     "price": 102.335,
+     "touches": 2,
+     "dist_pct": 14.53
+    }
+   ],
+   "below": []
+  },
+  "round_numbers": [
+   80.0,
+   85.0,
+   90.0,
+   95.0
+  ]
+ },
+ "orderflow": {
+  "source": "ccxt OHLCV 1h (delta je odhad ze svíček, ne tick data)",
+  "as_of": "2026-11-06T00:01:23+00:00",
+  "rel_volume_last_bar": 2.09,
+  "rel_volume_24h_vs_7d": 1.36,
+  "delta_24h_pct_of_volume": -2.7,
+  "delta_7d_pct_of_volume": 5.0
+ },
+ "orderbook": {
+  "source": "ccxt order book",
+  "as_of": "2026-11-06T00:01:24+00:00",
+  "mid": 89.47,
+  "spread_bps": 2.2,
+  "depth_0.5pct": {
+   "bid_usd": 448976.0,
+   "ask_usd": 326256.0,
+   "imbalance": 0.158
+  },
+  "depth_1pct": {
+   "bid_usd": 572345.0,
+   "ask_usd": 382452.0,
+   "imbalance": 0.199
+  },
+  "depth_2pct": {
+   "bid_usd": 1170145.0,
+   "ask_usd": 716406.0,
+   "imbalance": 0.241
+  },
+  "walls": {
+   "bids": [
+    {
+     "price": 88.51,
+     "usd": 515510.0
+    },
+    {
+     "price": 89.4,
+     "usd": 46765.0
+    },
+    {
+     "price": 89.23,
+     "usd": 42636.0
+    }
+   ],
+   "asks": [
+    {
+     "price": 90.4,
+     "usd": 284049.0
+    },
+    {
+     "price": 89.71,
+     "usd": 60445.0
+    },
+    {
+     "price": 89.59,
+     "usd": 32022.0
+    }
+   ]
+  },
+  "note": "jen jedna burza; spoofing a skryté příkazy nejsou vidět"
+ },
+ "derivatives": {
+  "source": "Hyperliquid (perp DEX)",
+  "as_of": "2026-11-06T00:01:25+00:00",
+  "funding_hourly_pct": 0.00125,
+  "funding_annual_pct": 11.0,
+  "funding_24h_avg_annual_pct": 5.5,
+  "funding_7d_avg_annual_pct": 8.3,
+  "open_interest_usd": 479008366.0,
+  "premium_pct": -0.0568,
+  "day_volume_usd": 362175416.0,
+  "price_change_24h_pct": -6.41,
+  "note": "funding > ~30 % p.a. = přeplněné longy, záporný = přeplněné shorty; OI bez historie (jen snímek)"
+ },
+ "options": {
+  "note": "Deribit opce jen pro BTC a ETH"
+ },
+ "macro": {
+  "source": "yfinance (denní close)",
+  "as_of": "2026-11-06T00:01:25+00:00",
+  "VIX": {
+   "last": 28.18,
+   "chg_1d_pct": 69.66,
+   "chg_5d_pct": 63.84,
+   "above_ma50": true
+  },
+  "DXY": {
+   "last": 101.57,
+   "chg_1d_pct": 0.06,
+   "chg_5d_pct": -0.46,
+   "above_ma50": true
+  },
+  "US10Y": {
+   "last": 4.84,
+   "chg_1d_pct": -1.16,
+   "chg_5d_pct": -3.05,
+   "above_ma50": false
+  },
+  "QQQ": {
+   "last": 647.05,
+   "chg_1d_pct": -6.49,
+   "chg_5d_pct": -9.55,
+   "above_ma50": false
+  },
+  "GOLD": {
+   "last": 4098.3,
+   "chg_1d_pct": 0.62,
+   "chg_5d_pct": 1.66,
+   "above_ma50": false
+  },
+  "regime": "risk-off",
+  "corr30d_QQQ": 0.6,
+  "corr30d_DXY": -0.29
+ },
+ "scenarios": {
+  "source": "denní svíčky (yfinance / burza), percentily research/scenario_stats.json, výpočet research/scenarios.py",
+  "as_of": "2026-11-06T00:01:26+00:00",
+  "state": {
+   "close": 95.488388,
+   "as_of": "2026-11-04",
+   "week": {
+    "close": 94.454628,
+    "ema21": 97.919187,
+    "above_ema21": false,
+    "ema21_slope_4w_pct": 2.02,
+    "rsi14": 47.9,
+    "high_52w": 188.741211,
+    "low_52w": 60.414719,
+    "last_week": "2026-11-01",
+    "pos_52w_pct": 27.3
+   },
+   "month": {
+    "close": 95.348213,
+    "sma10": 90.088927,
+    "above_sma10": true,
+    "prev_month_high": 123.478973,
+    "prev_month_low": 92.746407,
+    "rsi14": 45.8,
+    "last_month": "2026-10"
+   },
+   "drawdown_from_high_pct": -67.6,
+   "history_high": {
+    "price": 294.334961,
+    "date": "2025-01-19",
+    "note": "maximum v dostupné historii (nemusí být ATH, pokud je historie krátká)"
+   }
+  },
+  "regime": "týden ↓ · měsíc ↑",
+  "scenarios": {
+   "4 týdny": {
+    "medvědí (10 %)": 80.852033,
+    "základní (medián)": 95.488388,
+    "býčí (90 %)": 119.788987,
+    "pásmo_pct": [
+     -15.3,
+     25.4
+    ],
+    "vol_annual_pct": 46.1,
+    "n_days_history": 24152
+   },
+   "13 týdnů": {
+    "medvědí (10 %)": 71.742345,
+    "základní (medián)": 95.488388,
+    "býčí (90 %)": 148.845405,
+    "pásmo_pct": [
+     -24.9,
+     55.9
+    ],
+    "vol_annual_pct": 46.1,
+    "n_days_history": 23648
+   },
+   "26 týdnů": {
+    "medvědí (10 %)": 61.806514,
+    "základní (medián)": 95.488388,
+    "býčí (90 %)": 185.112432,
+    "pásmo_pct": [
+     -35.3,
+     93.9
+    ],
+    "vol_annual_pct": 46.1,
+    "n_days_history": 22920
+   }
+  },
+  "btc_cycle": {
+   "last_halving": "2024-04-20",
+   "days_since": 928,
+   "months_since": 30.5,
+   "same_phase_prev_cycles": [
+    {
+     "halving": "2016-07-09",
+     "ret_26w_pct": 173.7,
+     "max_dd_26w_pct": -5.2
+    },
+    {
+     "halving": "2020-05-11",
+     "ret_26w_pct": 61.7,
+     "max_dd_26w_pct": -1.8
+    }
+   ],
+   "cycle_peaks": [
+    {
+     "halving": "2016-07-09",
+     "peak_after_months": 17.2,
+     "peak_date": "2017-12-16"
+    },
+    {
+     "halving": "2020-05-11",
+     "peak_after_months": 17.9,
+     "peak_date": "2021-11-08"
+    },
+    {
+     "halving": "2024-04-20",
+     "peak_after_months": 17.5,
+     "peak_date": "2025-10-06"
+    }
+   ],
+   "note": "jen 2–3 minulé cykly → anekdota, ne statistika"
+  },
+  "note": "Rozpětí = kam se cena v minulosti dostala při stejné volatilitě (10.–90. percentil), ne předpověď směru. Kalibrace na datech od 2022 v reports/scenarios.md. Režim (týden/měsíc) je popis trendu – směr podle něj se v testu nepotvrdil."
+ },
+ "onchain": {
+  "source": "alternative.me, DefiLlama, blockchain.com, mempool.space",
+  "as_of": "2026-11-06T00:01:26+00:00",
+  "fear_greed": {
+   "value": 28,
+   "label": "Fear",
+   "week_ago": 30,
+   "avg_30d": 51.0,
+   "source": "alternative.me"
+  },
+  "stablecoins": {
+   "total_usd_bn": 294.6,
+   "chg_7d_pct": -1.84,
+   "chg_30d_pct": -4.29,
+   "chg_7d_usd_bn": -5.51,
+   "source": "DefiLlama"
+  },
+  "chain_tvl": {
+   "chain": "Solana",
+   "tvl_usd_bn": 5.27,
+   "chg_7d_pct": -7.43,
+   "chg_30d_pct": -19.59,
+   "source": "DefiLlama"
+  },
+  "note": "Pomalý kontext (dny až týdny): růst stablecoinů = přítok kapitálu, extrémní strach/chamtivost = kontrariánský kontext, ne signál ke vstupu."
+ },
+ "events": {
+  "source": "kalendář Fedu, ForexFactory, Deribit, RSS (CoinDesk, Cointelegraph, Google News)",
+  "as_of": "2026-11-06T00:01:26+00:00",
+  "calendar": [
+   {
+    "title": "Average Hourly Earnings m/m",
+    "country": "USA",
+    "impact": "High",
+    "kind": "macro",
+    "forecast": "0.3%",
+    "previous": "0.1%",
+    "source": "ForexFactory (nfs.faireconomy.media)",
+    "prague": "pá 06.11. 14:30",
+    "in_hours": 13.5
+   },
+   {
+    "title": "Non-Farm Employment Change",
+    "country": "USA",
+    "impact": "High",
+    "kind": "macro",
+    "forecast": "65K",
+    "previous": "29K",
+    "source": "ForexFactory (nfs.faireconomy.media)",
+    "prague": "pá 06.11. 14:30",
+    "in_hours": 13.5
+   },
+   {
+    "title": "Unemployment Rate",
+    "country": "USA",
+    "impact": "High",
+    "kind": "macro",
+    "forecast": "4.2%",
+    "previous": "4.2%",
+    "source": "ForexFactory (nfs.faireconomy.media)",
+    "prague": "pá 06.11. 14:30",
+    "in_hours": 13.5
+   },
+   {
+    "title": "Prelim UoM Consumer Sentiment",
+    "country": "USA",
+    "impact": "Medium",
+    "kind": "macro",
+    "forecast": "48.1",
+    "previous": "46.3",
+    "source": "ForexFactory (nfs.faireconomy.media)",
+    "prague": "pá 06.11. 16:00",
+    "in_hours": 15.0
+   },
+   {
+    "title": "Prelim UoM Inflation Expectations",
+    "country": "USA",
+    "impact": "Medium",
+    "kind": "macro",
+    "forecast": null,
+    "previous": "4.7%",
+    "source": "ForexFactory (nfs.faireconomy.media)",
+    "prague": "pá 06.11. 16:00",
+    "in_hours": 15.0
+   },
+   {
+    "title": "BOJ Gov Ueda Speaks",
+    "country": "Japonsko",
+    "impact": "High",
+    "kind": "macro",
+    "forecast": null,
+    "previous": null,
+    "source": "ForexFactory (nfs.faireconomy.media)",
+    "prague": "pá 06.11. 17:00",
+    "in_hours": 16.0
+   }
+  ],
+  "calendar_errors": [
+   "ff_calendar_nextweek.json: HTTPError"
+  ],
+  "news": {
+   "coin": [
+    {
+     "title": "Crypto Market Today, Nov. 5: Bitcoin Erases Post-Election Rally as Wall Street Suffers Worst Day in 18 Months - The Globe and Mail",
+     "time": "čt 05.11. 23:51",
+     "source": "The Globe and Mail",
+     "link": "https://news.google.com/rss/articles/CBMimgJBVV95cUxNV1hJOUVZVkZQUkRWNDJWQ0Nqei1GcFVzaHZqRlZfRVdUTzZwVXphNVFpTWtiallfRmlJS0c3QVY5bDg1RWtwelp6a2ZZaHVZVjdjRDZRdjIzNXRPSzluUjdjRl9weTVjb3VIU29qRVdOMzVxVUNTYTN3RmN2RzI2REd2UTF6b0hUUkpWOGVXcHZMejB4QWlIUXFsb1k2LXl3NWU5RGJSZEhSN0ozaEpEODFjTi1UYzJPSHdLZGxqNUp2VVNlYnlZaTg1Ny1vQ3ZtZjQyczdyNFlCbVNnNzAxX2xfR0ZUazZ3SG9pX2tpTV8tUExoUlFJTVJ5aFFkcXJhUVdQTzJDTU5iYk9SSUdIOEhEQmNpN1Fuanc?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "1 Unstoppable Cryptocurrency That Could Join Bitcoin in the $1 Trillion Club - The Motley Fool",
+     "time": "čt 05.11. 23:31",
+     "source": "The Motley Fool",
+     "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOa1Q0dm1uaGlGUTVTSnZTSFpEQWJVR1NmUl9rUUVrdE1vVmdNZEFNTmlaSV9FMWdKQ2JGMC1ITVViY0QxN1YzWG5tQVU3c0VTUFNmOFBoYWZDWUxPdkduRFM1UWtQektaNFpWT1pkbXc1eE9hajJsY25ZbURncmMtR0NFNzVMOGlyTElJZ1pZbDUzbFI3?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Hyperliquid Price Prediction 2030: Can HYPE Reach $250? - 24/7 Wall St.",
+     "time": "čt 05.11. 23:27",
+     "source": "24/7 Wall St.",
+     "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNTTRwaGFOVEJhMDJvUE9HR18yUkpvZ3dvcDJmdFVqd0l1T3AzRkgyNGJDQ3lHNUpoMEl3YU56MG5uZWtyaWRENTViUEZ3bVNKcmdsWGh6NUptNGlRQldOaEgzLVZuRWxoQVVmelpSWmxIWW9Xb2N2MWRnN1FoYVZBdGdmRVd1MWEzV1NSRTBrZzRhVi15Z1VNRDlNbFJxdmNiVng0QUlMUlZTQU4zMm1sZQ?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "We Asked Claude: Solana or Bitcoin, Which Hits a New All-Time High First? - 24/7 Wall St.",
+     "time": "čt 05.11. 23:03",
+     "source": "24/7 Wall St.",
+     "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNeFR3cUNxUDFQMHk2bDkwSzVfTFN6S1Q4a0F6dWlfWU03S2pWMTBEWjVwUVI5Zjl3Q0ZPa2U1QUtpMEdKOERRTjA4OC1FbzNZRG9qUW9XUm5uc3dNVzIxbHhCZ2NzSHBKa1I2R1dEQ2Jhd1gxV2ZSdGVlOHBUX1Y1Q3d0NEp6cEw5OVRxaFpzaU5KaFc4VVYxcWZoT1BhRlFkSjJ1bFR5MUhUVXhNbXNBaTgtT1laVkEwMXNnbXJ6akdPSl96c3R6cQ?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "ZetaChain Targets Dec. 9 to Switch Off Its Blockchain and Move ZETA to Solana - Yahoo Finance",
+     "time": "čt 05.11. 22:57",
+     "source": "Yahoo Finance",
+     "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxONzd0TkZMRTV2YVhxQWtNT1ZfQXFrTUphMVFqR3lTeE03TFZadGVPTGhIdU1BQXpxaDJsbTlfWWpLMUJkTlF3WXlQS1dpTU41LVoyRkFIRGZRV2xWRFZHTjB3Nk1NV2xWLXJWbERRZXlCc040QjM3dmZBUG9ySnRWV3ozZDdlRUtxdDhzdDI4dFhncEUzRGtaUEFHdw?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Solana: Samsung Wallet adds USDC through its Stablecoin Account - 05 Nov 2026 - TradingView",
+     "time": "čt 05.11. 22:21",
+     "source": "TradingView",
+     "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPRjBXc3ZOYVRCa1d2Z2c1a3RIQWRJcnZoNHdBR3ZVelYtY0xGQmxCRmNUOGRlVExhRVRBZUppdVc3dmxKOEdjSjgzU2dqMzRWM09XZS15d1hsMmZsMVpoa3NLVjNtM1YyVXA4bll2ck14NmZiRVY5WXR6ZWc5NDdVYThBd29DUkZJaDlOaXhkR09kX09wdHY4MVk5WmhYNXhDQW44UVRoVUEwNEJPV3pydE14U3ZjZnZzVHlTdU16LVh0RWRYVFF3RU96UHc5VThRTWk4OQ?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Solana Price at $89: First 200-Day Line Test Since August - CryptoTicker.io",
+     "time": "čt 05.11. 22:12",
+     "source": "CryptoTicker.io",
+     "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE43Z3g1aDhuZ3NfU2ZNOEtDODd4b3dEajJhd1Z5VjA0Q0NxTGJvbm4weUJKSWpyMXNNT2twUTdMaC1rQld0Uk9DeDBLaGljZDdtNnM4SzdTNEtqQ1E4RXBEU2lSMWd0eF9wWkJ2VnhIV0w?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "T. Rowe Price Gives XRP a 7.04% Weight. Where Could XRP Be by 2030? - 24/7 Wall St.",
+     "time": "čt 05.11. 21:31",
+     "source": "24/7 Wall St.",
+     "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQMkExUjZxQjFaMTN4dEZUYXhtRjNUdzQxWEJCMDV6U3pRVDhaaXhINk40VHdySWVOX1B2OGptUU4xdGNhdFhFVTNON0tGbk1ZUHd1VDNCaFpLdU5xMjFvSmhOXzM1VXhIWU5NRmRKbmRjUFc1WEtOT2pTS3JPbTVuMVJybzN6RGRzZUlfeUdSbzMtRE9VMkQxX1liVjlfYktZMlN0bEJSSWttak1YT25tS2Iwc2h2NTRodTN3OHVLcw?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Solana price falls below $90: Can oversold RSI bring relief? - Crypto News",
+     "time": "čt 05.11. 20:45",
+     "source": "Crypto News",
+     "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5kQTVQV2hiczhRY1pid3d2clZVYTNQbkdqV3p0TEhteTkxY1VURUtmWXNYcVdyaDNFaURXaWpSRHpvZFNmUGdiNmlVUm9PYXRWdVN5UHcwUnEwOWJvdE9vdmxJeU4zTVNtREZBR09jRW4?oc=5",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "Bitcoin’s $378 Million Short Squeeze Faded Under $80,000. Is It Already Over? - 24/7 Wall St.",
+     "time": "čt 05.11. 20:43",
+     "source": "24/7 Wall St.",
+     "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPVXBOQmNnTFlrWlFWNnBaZE1ZMGxnM29oM2E5a0VvQ2VuNzZjZlM5dkhLVUdjOHpPMk5zUkZ6OHRuaEZ1NHJfWGdBMldfVEVQZ0NxRmxRUHZ6NDVURWYzWmNnZkJSd0RzVEtyOUs1TWkwSFliTnNwRFQzaGFxSmJpZC0tU3ZyOC1MczlOZ2FzdHRNUTV2RHlzZkJsLTJXVEprNXZaMjZvaEU3LVNiY19WcnFmWmxIajVjaFdzQURGeWR6ZUdiRUdMUnpR?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "TRUMP Coin Fell 17% After the Midterms. Where Could It Be by 2030? - 24/7 Wall St.",
+     "time": "čt 05.11. 20:21",
+     "source": "24/7 Wall St.",
+     "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQYkVEWE9nNUZRalJqSHdqWXN5aVhybFhvYjRnc2FhRVg5bDN5a0Rla2FNTHhiU0JHYW5KcDRMV0NjaV9nYnR5TnhjcXA5aXRncURlVHFfOGZMaUE2dmphVFI0X2JaSUxqT190ekxJc3FWd3NPQXNVdkhLWXpFeVRLVWR2QVhPTTBPelJfd2J4MWROdG83MkJyVlNKRnYxdVp2RkVDdl9YWVZ0akRSTzJfWTJ2MURIYnJ2WmNpXzVHOA?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Solana Price Prediction: SOL Tests Its 200-Day Line - CryptoTicker.io",
+     "time": "čt 05.11. 20:14",
+     "source": "CryptoTicker.io",
+     "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPMXo3cHZ5aDFMZjc2YVNRczE3OXlmYnhfc0xza2txZ2ljbXhVbndOWUNzMmZhc01XNXBEN0ZlNUdQQXNtcjJOaXl4SFFUUENvVUc4MVE3V25DdmZ2YlRNS09QNUkwdERTSkYzM0dObVY1Zmd0Nm5XRlBQU0p3TGVWQkstbEI2ODNiTVlXY3pCa1AwME0?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    }
+   ],
+   "geopolitika": [
+    {
+     "title": "US lawmakers to impeach Defense Secretary Hegseth over Iran war role - Crypto Briefing",
+     "time": "čt 05.11. 21:19",
+     "source": "Crypto Briefing",
+     "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQcnlrYW9ELTNVWjZyV2xLcThzUndNSXFyV2ZLZTBCVUtzeC1RTWRNbFd6a2JocXcwX0xXYmdad0dSem4yNGFib3NNSWJaSUNMcEdZWHFQMm1KUlZ4Q29aOWxaU2c1ZXZEUEp3VHFLOGhJaFpCR0N6V25RdHFwV2hlTEU1MG05a3B0b0JRbTFUUE1qX0ZGMmZpbTFDRzc?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "How the midterm election results could affect the economy, markets and AI boom - ABC11 News",
+     "time": "čt 05.11. 20:53",
+     "source": "ABC11 News",
+     "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPZkEyVXp5ODlHVjNTY2ZEQlJtbEMyQXBGai1QbHUzYVU3aWROOU1wNVlxSloxQ3NlcTFldThRcl80QXBrSlY2VTNYeGI3czVNRDc2NjM1Z3Z4QVJoemZoeDVka282LWFfeE1IcDFYZzUzU3RCTTBNM1g5d1V2REN1c1pIWURIYm1QejNoTjJlVjFtZVpmbVE4OXZSRlkwWjDSAaQBQVVfeXFMT3lpV3dGbXlDRHAtQjJfeTUtUXI2UVlRWG1rWl9wUTNjdmlDbjFEeUdVaGVYdVU4cWF4M2Z3dkVPZFhiMUNwRW5rQXI0ZXRDTDYyNXZwa29xY2ZvWHhBUy1ZVTRBUmszckc3MDYyQlVHekg3Ti1TSnlHMVJjbHowbTF1VmI2N251OUFLYWJ2UEtuaFd6MHdOUFUxRUNsSWZwdGVWdVA?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Stellantis extends shutdown of Windsor, Ont., plant as it weighs ‘evolving market conditions’ - The Globe and Mail",
+     "time": "čt 05.11. 20:09",
+     "source": "The Globe and Mail",
+     "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQOTJpZ2tPZXJ3MFJuT0NLT1NhNXcweHBQOVV2enYzd1lVU3NQVUpCN3hVZmdXeDg4alBOYW40MmYyMmx3cFczak5ZbXl1WnBublpTR0NNMk9pZEYzYjdsVi0zSWdETVVBVmluQkNkSDkxT1VJcnViQVdPNFBNdmFlUEtWSzJwd1pxQzd0SEgyUnF4R01lZGo5Q2c5eEluQ2s?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "8 Best Defense Stocks for 2026 and How to Invest - The Motley Fool",
+     "time": "čt 05.11. 19:28",
+     "source": "The Motley Fool",
+     "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOaFRwZm5fRTRUMDJTeEVUMHJrd3U3bUJreWVIOWE1VjhSNW14UmgtMHJ5cmlleFVVZE94dkxqWHlZdV9GQlg5ZnhLLUNkQjlXVlJqTTdiWUtxb3JtczlQTUMwOTFMb0IwRDFQaXJ5bjJXa2JnMVhFQVdneS1veUFXb21IbndMQWZTNU5mRWVuVQ?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "US sanctions network supporting Iranian oil shipments - Oil & Gas Journal",
+     "time": "čt 05.11. 19:05",
+     "source": "Oil & Gas Journal",
+     "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOLUY1UklyZktnQk9RNEdub3pNZkZMQWFQNlROZWhJT2NPaE50YmRIV2V5Zl96RTNBT01ZMUJPOVIySmVTRS0wUmh0QlJaMDN1cXVYVkRQMjhYSWVkSDFCclhIWk1tZ0VaSjZNSTN3V21kbDYzVWhTVWVCMEFQWGUzeW1IcnhDeVNKdVoyLXVFd2xWUDd4NHVEMFhiVW5wXzdHU2M5ZUNSTU96M2xYQ1p1MnNmbURnSzFSb2tHWjhmUQ?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Iran War Upends IEA’s Oil Market Outlook as Global Supply and Demand to Contract in 2026 - EnergyNow.com",
+     "time": "čt 05.11. 17:44",
+     "source": "EnergyNow.com",
+     "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPak5XcGxWUXBlNVhTbFd3RkFvM2dzMUdvcm84a3Nzc2hxLVJYMU1zOHBsYlY0eV90Z2NlY0xDajNSdUxweFJ6WVprRjNzOHVrT0cwbXM0LUZvRHRmdF9VMEN0NUZpZ1VjYjFNeEdiSHZ1SHpyZ2otTVhyLXVsb09yVm1NUUhQM2dMMUNkQjFCalh1a2Y3bjlqX1ZNOHFVRDM5Ylh2clBwd0JmTUFtcmZUeUUyRnhsRXNjeUE?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "US Has More Natural Gas Than It Can Use as War Chokes Global Supply - EnergyNow.com",
+     "time": "čt 05.11. 17:34",
+     "source": "EnergyNow.com",
+     "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOaW9YckZKR1BkZFJLdDZ1bERpSzllSjlmUkV1anV5WXZXRlhaeFJER0NkWmJ2Tm9BeG9SSjUwVjhhV2sxQW4yNFVjQmh1bGZwQk5xSTZUR2M4THBEM0dhQjExSW9IU3BKR3lRb2EtMS0xWklobTF2RzN1SGhBYmJkWUJJc1lqN0Vzcy1iOTdZdnA5T3N6OHk5V2JnLUktYU0?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "A prolonged war in Iran is the market’s real ‘black swan,’ says this strategist - MarketWatch",
+     "time": "čt 05.11. 14:07",
+     "source": "MarketWatch",
+     "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPWEZ1TWNBSlNFaEJUN18weF9VSzZFNjRJcDRGMnJRV2N1TEdwOUdud2pxQzJvNEVxMmVZam5kb2hqbG5XSGNvb0ctRWFaaV80cE12REUxVlJDUUFNaGxqaXpnRVBaWEh4TTNKUlNXU2FvckhIS0NBR3FDS2FZTklOakRqYnhMNHJBd1A4UWZFaU9NQjBVZDRSaFVrdWgtZFhjUFVDUXlCSm9ycmNlZWRTUnQweGFaTGxTYlE?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Oil Prices Fall as Market Awaits Possible US-Iran Ceasefire Deal - EnergyNow",
+     "time": "čt 05.11. 12:43",
+     "source": "EnergyNow",
+     "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOSWlSQ0JySWhtckl3S01IdjNPcndoTTVOUWVSRmRXLWw2b1U3R3hZeTdwcFM4S1pxNnRVa2dPMXV5Vk9SZWNXaEsyWVYtd2hTZkNBXy1SbjRiaFRFT2cxekVUbTZFXzY1LXJEMXA2WkNVdXhMVnBzbGdNSllPdjlmcS1DMzZTQmo1bDl3dGJIWFhDUzhtUDN1bEV3?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Wisconsin’s food, forestry exports hit record high for first half of 2026 despite tariffs - WPR",
+     "time": "čt 05.11. 12:00",
+     "source": "WPR",
+     "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOV3dVZnl5SkVHNlZ4ellIcTJvM21RSGVLVlVTNVE0all0bVM5T0hsTENlaTZnQ3NJVklUTThiMTZCbUc5emdTeUpMVHlHYWlGMExUMXBhQ0hNblZDRWUwUDYweW5MNUVxd0NWSmNOd05tTnpEQmdaS1R1M3drVC05YU43eml6RGtFS21hNEFoaW1kdUxJQkdMSFZpRQ?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "Asia fuel oil benchmarks slump as market prices in potential Iran war de-escalation - Reuters",
+     "time": "čt 05.11. 11:13",
+     "source": "Reuters",
+     "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQOURmMHZvcURoTHdPckpVdEYtMVA3WTktOGNLOGpHeTRZcGZ4OWZjQ2tHQTlTYy15N05pZ0VPemlkZEozUGdHTU9ieDdvZlEyU2dBbzZtbzVPNDVaaGVGNktHTGg0Nk5GbU9kYnVTN291Zkp4NV9Idk05OTNKR1FFckUtVnFfX25tWkRYd1A3VEdrME1YQjFzVzF2VDk1T1Fnc2RRdEZMZzZPNWN1YVVtX2MyTzV0SlA4eWMzOFVlQ0NBY3p2VXpsZQ?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Brent crude jumps, settles up over $3 after tanker attacks - Reuters",
+     "time": "čt 05.11. 03:20",
+     "source": "Reuters",
+     "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQdzM2c3YzcktwU285aS1QaVVzTk51WFR0UnpxMXlnaFdEd2RtZWYzMm81TDZQUTJZS0ZlLXFVV3ZhcGFibkdLZm9Remo3YjlhNHJTd1lxSXNMUFNzejhIMkt0TlFRXy1RZl9TdTkxbDhfdjQxUEIzcUhaYlpOMjZJSVViNmVPV0dRV0RmaTJ3dDJ3QUs4TTFleFlnZnNyUHhVYlQ5NldaZVRZRFd5dU5nVnRKVUQ0UFE?oc=5",
+     "tags": [],
+     "tone": "pozitivní"
+    }
+   ],
+   "regulace a hlasování": [
+    {
+     "title": "Crypto’s Megadonors Learn a Hard Election Day Lesson - Bloomberg.com",
+     "time": "čt 05.11. 23:00",
+     "source": "Bloomberg.com",
+     "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOd2stLWUzN3JfcDVmY3hEbWgwbnJRNHRHTFZiR1gwMDNkRnRBWjVtM19XM1ZqR2ZBZmRoR2k0QWhXMEgwb3RzSG5oQjJyakRjT2gtYjdKU3h6WTgwWlQ1ZExrU3V2clgycERaZjhmNUxjblBCaGhuZWNTa2RsQy1MZXVlOTJtR0pibVlwcWE4czdxV01pTTNuUkd1Ym9CRjJHc3lsS3F0U0JZdw?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Anchorage Digital Applies for CFTC Swap Dealer Registration, Expanding Institutional Crypto Options Business - BigGo Finance",
+     "time": "čt 05.11. 22:55",
+     "source": "BigGo Finance",
+     "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9PQ2J4Slktd01DNEpDNE44WVdaZ01fN3Bvb19HZTY4dGFtemVVbHItTFpqenVPbm8zZFBmTExlTWliOVlXR2x3bmduanI1VElHaG8yeFFtWk5BQ0gyWDhNWTdKYmVTU20zQXJ2WEROTUxlb3ZTblE?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Bitcoin ETF inflows return as US crypto legislation faces delays - Crypto News",
+     "time": "čt 05.11. 21:55",
+     "source": "Crypto News",
+     "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTFBzZ0VDaXRKcXBpQVYwTGdZbU1lN0c2ZThyaFozdlBtRDlDbnE1OVRxTjlpMTRVV2ZqY044LU9IdFhSY2hUVFlPdHpsbnk1NlV2MDBuc3l3Z25vSm45UjlrTUNzUjhZRUhPRzFxZGI0YkhYNGxUX1F0YQ?oc=5",
+     "tags": [
+      "etf"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "Stand With Crypto Rates 241 Election Winners as Pro-Crypto - www.tokenpost.com",
+     "time": "čt 05.11. 21:54",
+     "source": "www.tokenpost.com",
+     "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFA5SWRaMVN4NVM1enlVWEptbGJrakpsOTRzUG1xSHU0UGRaMWYwVHVaU0ZxM1pOai16M0Etekw5ZUtQd2czMEZna1JBS0pWb3E1R2ctenRicnV1MUk?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Crypto Faces Tougher Congress as Financial Pressures Mount - PYMNTS.com",
+     "time": "čt 05.11. 21:11",
+     "source": "PYMNTS.com",
+     "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNeVIxSG40aXdSTmU2cFl0MzY5c3hlZGhDXzljNkpHZmR6eEhJNHVWSGVmcU1iREVPeGF4NnVJREZCY0dkYlZkb0o5YU9iRGRaUEdBdm51VkJKenpYMDNaQUZFUDVVODA5TUJ3WFlBYmhYdEZuYW5lUzNoY0xVWXc5WnliV2VBNTcwaHhzSnVjVC1pYWhqb29WSUVNYU83WUY0S19vNQ?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Bitcoin erases post-election gains as Wall Street selloff triggers over $1 billion in crypto liquidations - The Block",
+     "time": "čt 05.11. 21:11",
+     "source": "The Block",
+     "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPbGZzRkQ1RDZIajBuWW9GaHY2V0VQbzhaV3FPZ2FOakZYREgyMkt4Y1A0Zk5MN2VKdUs4d2l5SGJIaF9qUFc3em5kbkhhSTUtSGtXTm1jTm1UMkN2ODJfUDB0QzYwUHVjc0RhTm44YnJQQXlSek1renZ6RXVJbG1XMzdMSFBZSlUzX2RhcC16cGh3YkRIaWJUZ0VrNmRxWVZIYktJTWlSZkNMekVaSmstYjRqdmxDZkdydUU5NzhGRQ?oc=5",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "House Democrats Discuss Proposal to Expand SEC Crypto Oversight - TOKENPOST",
+     "time": "čt 05.11. 21:07",
+     "source": "TOKENPOST",
+     "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9CMjVwSUh0OGJsVDZxbHd6a2M0REFOVXNrWG1xOC0ybUFfQndxQ3ZadEhIcUFKemkyUXBsQk0tazgzeWF0Um93TXhBeFZFTVlMNEpkWjJoeGZZbGM?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "SEC Crypto Broker Rule Enters White House Review - The Defiant",
+     "time": "čt 05.11. 20:59",
+     "source": "The Defiant",
+     "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPNUpVMmtBdUNqRFByMnFtcVRRcWZZcEF0T3ZuQXplTmdxZi1KRG9xM1ZYaXlPeHZQdzBXRmlNYUpVbzhkYlp4LTR3NG1kWk50dG5Tcy1rQXd6R0lqR0ZRMWV4ZzFzNk10MW4yUVZ2VmRYVWxvYzBLNnlNNzRwVXBLZ3lzZEJKZUhTdTZ3al9zelFzWGp2?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Scaramucci Says Trump Memecoins Cost CLARITY Act 11 Senate Votes - Bitcoin Foundation",
+     "time": "čt 05.11. 20:43",
+     "source": "Bitcoin Foundation",
+     "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMml4cTlwYzBVMnl0cmFXUlM5X2tHU0V6LVBuRWQtRFEtYnFvcjRxTHo0WUE5WXFELWM5dE9IOWgwUUw3MEQyUFZFTVlPMzl0Zy0wZTgtUXVlZEpXaW1BX2gwR1Y5TjZ2cXdsSzA1NG0yZzdBRUJFLWhtSkV1OTRaSFg3eklfT0h6YXlYYU1GUURUd05NRVhUeFhWc21sLU5yTzdYUnpsRjZxVWhIYU9adg?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Ripple CLO Says Bipartisan Support for Crypto Remains After U.S. Elections - CryptoRank",
+     "time": "čt 05.11. 20:05",
+     "source": "CryptoRank",
+     "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOUzN5Rm9SYkRrNWZQbnJHMlN6S0xlSEdDWVZ2akduYjBfUFZDc0JyX2s0VmJZb1hPaGdSTk1UaC1hU1NhQmFZMHp0cU1CaTdvRHpxYUJXWlZaTHlSa1pOc0lrYjI1a09Ed3ZnLUYxZ3pRNTltMUhNWmtrU3I3akpCR3hBU3Bwak9fUEc3NVFqcUc0UU5iTU1ucEFRV2JYRURINGd1Y0hKR0xEM3JLcG40Qw?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "BlackRock Says Crypto Playbook Unchanged as Democrats Take Congress - BigGo Finance",
+     "time": "čt 05.11. 20:05",
+     "source": "BigGo Finance",
+     "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTFA5WHl3M0xwVHlJdDQtRGlreklfeTFBVDBJMEdBdjdXTXhUQjE2YmpFaXZxZll2a0VRMGxWUy0yVnVXSmIxekhqY1FpVkNYZGJ3VURKTzVsLU9oMXd2NE9Ca0o5M0xZLVhZZXhHSU92MnA5NGd3ZXc?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Can Injective Coin Hit $60 After ETF Approval? - CryptoRank",
+     "time": "čt 05.11. 20:05",
+     "source": "CryptoRank",
+     "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNN2M4ODZaYjJ6eDE5N1B4TlY2TENQdTJZYnF2UHFBdXVodm53Smh0ci0wc2RkYVBnSTY5aWZvb3FVQlNYQWJvR0QtZWhwTHgyVVRLNUNDa2dfMVZnNUtyUjdBWHVicUF0MlFUX2k1RmxzcEFtQ3NGSS14Wk1fSE5WMDZZSDVZaVV6LUE?oc=5",
+     "tags": [
+      "etf"
+     ],
+     "tone": "pozitivní"
+    }
+   ],
+   "Fed a inflace": [
+    {
+     "title": "Mexican Peso reels as Banxico's surprise rate cut fuels easing bets - www.tmgm.com",
+     "time": "čt 05.11. 23:41",
+     "source": "www.tmgm.com",
+     "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQMTAwZEdpWUJDbjJ0eU1pV1IwcW81TjVqMGtvUDFzRlV1R0ppeGxoZjdsSlphVjJfU0otOUR5bWd1a0UzWXp1dW5xY0JqYmpDMzNJNllJOVY4LWFXclJUbmV5Mjg2dlJJallqS1Myc1E5M0NrU050M1BMQ0ptdmdBeF96NTd3MUkyZnM3c0FKcEVuOEVQMVRIZGRWdTVCU0stTEFrRVFSOVphY1lBc1NvSjZ5aXZvOC1PVWh0TEdRazJNVkVyNDVuYjdKNlM?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "US mid-terms sees market rout ahead of US CPI and UK Q3 GDP - FXStreet",
+     "time": "čt 05.11. 23:03",
+     "source": "FXStreet",
+     "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOSVJrQWNPb0pxcWllcWR4VzcwVFg4S3dxMlhudGVycUNOTlF4YkM3aGRYWkV2THJ2bVRGSzFyMmZIYWpSSWNKMFh2a3luRGFDZUJzcHloaFpHQVR2MWFXUVdkd0tjdGx2MDNIaVB0WDFEbXlWdFZMbEFObERpSGhkbHVvODZyVkNkd2hacU9Uc1lENnZ2a3lqajRNdG5jMHdBVTNWX1pRVy1FZw?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Fed's Beth Hammack and Thomas Barkin favour gradual rate hikes as inflation stays high - The Economic Times",
+     "time": "čt 05.11. 20:42",
+     "source": "The Economic Times",
+     "link": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxNbkEtbmJKd1VFQUdUVE9TQ19FenlOb1hZVGMwVHpQcWthdlZ6WVo4bXZ2SGVfM1U3QWN6T3A3eDJYTkJiWUI1ZkR4d1RqdHZYNE0wV2hzcW52SUtPeU5iR1JNX3ZHRFpDTFpydFRGdDFKdGlQaS0zOGNlaHMxdE1xTWpDdm0yRko3WlpxWFFIczRxei0tSTFuc1lXZkhYS0tZQXU3ZmxxQjBrWkhra2pfX2FsUURSQ3lXN184VndlSC1DSF85bkpYTXdiYjNVbzhrUUF2VjUzcFpyZlZzdERLXzZqVWlSclZuVTNKVWdOOE5ycnJONHfSAfsBQVVfeXFMUFdRY0xxcEN4YlQxVElkLW1kbGpfOWFsQzlJeEJ6TzYwbHV5YzZ6WU9DTXV2SG5tZEc0ZFJJaHJnWXg1TUZSWXR6TmpvalMxMXlPd2lySTgxVWdqUGtvUk9vXzFrTjVyZXN4OURaUkJVcDllQy1sTkl2ZGNMZ3FIZVdOc1lMWWtULWlETTNDU29SQ1Nla19vWEM2R0FKbWU5SWhBTzB5RDYyekZ0VkpGWnA0ZTRpUkNBWTdwQjdSQ1pndEh1Vk0wZGwybzlhc2dRenFEbFZveEFuVG1LN3I5YkEwSmxBeENNbUUyVlQtcnRRYWozRWhTbk0zNnM?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Payrolls vs CPI and How Two Data Releases Steer the U.S. Dollar - StoneX",
+     "time": "čt 05.11. 17:03",
+     "source": "StoneX",
+     "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNLU5CQVJJVmxxWXN0ZnFsTUY2SXlBUHJqeVZXWm00eXJFZWpGbkQ1dW0zc1pqajBZVy1UcERVRzhYaC1KZldZeVNHeEtPOG5WTExnMXNIX05YRUZCUGNPdkpKMlFGZVVKSmNtVExUUUVwZzBPRThtZkdOTjYzSmVTRjBYZ3E5dW5LZ0FSZmZYRDU2ZlI4TWROSEoyT2ZTTUt6dEtUTGMwdmFWdUFoSHlRSmt0RTdyQlRDbld3NzJ5YW8yRTE5UkFyVEFNdWE?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Federal Reserve: Further tightening expected despite political shift – TD Securities - www.tmgm.com",
+     "time": "čt 05.11. 16:52",
+     "source": "www.tmgm.com",
+     "link": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOTkxhb2RyajI1RUtpa2NfWVlfaVlpYVZmUDJtZTNyd2J0MXFVMGZPQnJZc25Iby1NcTRNY2twTjJlYU1nWlJmS21SZmJhNlV3S2lYbmx5cnhDb3A4Uk5fX1ZTMG5CQnhsbEU0MTA4MExxTlAzZWpWdE9JVnNxcmNxeGMwYW5hdjRLbU9FZHBKaFQ2enhGZzRHZTl3cTM3eDZRNjFJNXFmNUI5Y19XRjFXMl94aFhmOU9EeTV5MmQ4dXlKTG1QNEJtLVFKby1GZU5Db2FFUFhYWEVocTVjNDdOZA?oc=5",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Fed’s Barkin: AI investments contributing to near-term inflation pressures - Crypto Briefing",
+     "time": "čt 05.11. 15:28",
+     "source": "Crypto Briefing",
+     "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNNlhiMUktWmZkcEc3LVYzOTFYcjR1d1lNejVJaXItTHlMSExfRGxXZmtqSVRvUlFUYzVZQmFyck91QkVzNWhYT1hQNUUzRmNyY0NjNmo3ZGJXNU54aGluRGlUMmpfWU9SZmhmTm5femxzMExVNThDZ2kwSlJ1NFMzSHVsT0NrNnVDd3ZqeE4zXzJ3R1NUOEFPUm5iM2pXcHpGRkE?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Fed’s Hammack calls for more restrictive monetary policy amid inflation concerns - Crypto Briefing",
+     "time": "čt 05.11. 15:04",
+     "source": "Crypto Briefing",
+     "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOQ1U5c2plX2lSeVVnRGI1XzlKS1FXS012QzBfVFhpQWxlaThhRTFvbzRZZlRCSVJqTV9xdllwTkdKb1dzbHY4dFB3ZUhGTWw3M3dOaUk5LVhVLTJZT0JMb2pQdDlfeEttcHJrVHRybzhST3JiUkpLbU9jbjZjZTlpOTJ2TzZXLVZsNEt6cllTblZuOW1DcE5DWUwtVHlUeXZBTGhXNUVCV0RLdDQ?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Market Movers blog: US markets rise at the open as Congress turns blue - Investment Week",
+     "time": "čt 05.11. 12:10",
+     "source": "Investment Week",
+     "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE5mZHNUUnlOeExDV2hSRjhxWEs0blpwaGhqUzIzQ054d1JaTnNIcGZWbkhtTDVwZFdwUXM5ekRkX2Z5UFJEWW5uMGtRSzVnd2NwZDFRUWZnYm9JWHFlTUptZzJGSHdKOS1oTEJxOUk0bFRWdw?oc=5",
+     "tags": [
+      "regulace"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "Indian Bonds, Rupee Rally as Sliding Oil Eases Inflation Risks - Bloomberg.com",
+     "time": "čt 05.11. 11:22",
+     "source": "Bloomberg.com",
+     "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQV0I2SkYxWVZzQ1hBczdHalpiWkdXSHZNc2tqRDVtUDV0cUZ5dlJjWVJPNERZMUJLanRiQkR6UHk2c3A0cmJiMkpMaWZJQTg2UjBXRTdObHREZlpIY2loQVgyMGxITGVKZ0E0dWlOemUtTEstUzVOeXFXRmhmOW5yeGItWEt1OUMzU2w3OFd6N09rN01tOEY2aHZKS2ZHdlVBdS0wOW9pQ3lESWFvc0lVZ3Jn?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "Inflation Drives Greek Food Retail Market Growth In 2025, Study Finds - ESM Magazine",
+     "time": "čt 05.11. 08:28",
+     "source": "ESM Magazine",
+     "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNSzc4UktSQ05EVEdJZ2ZwV2tUUzhvdnk5NzJGcWpYWUxVVUtZSU01LVJucnB2UHlJMjQ4Wl91RnJtNXJFd19leF9UcWUzRVFEeEh1R2tSX3p5QWtQRkc2Um5pREtnSTlDaVVYT3B5YjVYcWxrbGFQSm14R1lXRUdfZ1MxdE1lOHJMMklZNU56WGtweHRyemFhSDdUZEVlMEtqZFJycEExWHpkNXJ1bmRn?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "UK Stock Market Today: FTSE 100 Futures Slip On BoE Inflation Fight Focus - Simply Wall St",
+     "time": "čt 05.11. 08:27",
+     "source": "Simply Wall St",
+     "link": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPcVZUT2lKT0twVDI0SzY1c3JMejMxdWI5NEFRbklobTV1c3FGUFEzajVjUHlzb2RKcW52NEwyZ1VUWkpXaVcwVU5IS2RoTUd2YnVfZEtOUDV2bm9BREhaQzJZcGUyc04xYkIxVEhtRDZ0bUJsNzFvTDdMVkFYS3NYdWp4WFdWOWIteVNMSERBSGx5V3l0cVZOa0pJendubTBsQ2RqSXhlRm9uZnA0Y2lCUlB4UXV5MzJVZi04WkNOMjNKejh1WUN3NElxRUZBd9IB0wFBVV95cUxQX05zV2FQalN4b1lDbmpnMHREbGJkcVRmU3RPVzI0c3FkdURENXM1OGRvekRVX292cU80ZHc0ODF6VmkydlhaNHFBYTU4YWlhSnBpOUsxcnpuRHoyMU9yTG1NbTV1Q3dlNjRuc0pCS0hPWTNyR094RElpWG5mU3JYdTc2RXNoUHlMNExrYVBOSzNxeG9FVG0zeTFfbDR0U3NsN2IteEN3WjAwTkhnaXE2c0F2dHVHLWlscDZKRlRxbmpUZGU4ckxNVzlTeHJ5RVVEN0Zn?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Yardeni Sees Inflation Cooling, Says US Yields Attractive at 5% - Bloomberg.com",
+     "time": "čt 05.11. 07:26",
+     "source": "Bloomberg.com",
+     "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPbXk2ejJpa2VabHBjbzdnU05wSXVIVlNwaURLQ3J6X1IyR1p1WWxzV2JLUVIxaVFTZXdWaGU5ZzQwUDYwVkxJSWpETmRybmhsNXh3a0RENER0OUZlYm9pOE1NN2gtel9HOFVJYmJnRDVHc3o1TVNqODlES051NXB0ZWlSM0luM3ZqVHdyWHhiVUlLanA1cFdHV2tIbWxrd1FDTTYtenJBYmpVR19Fb3piOVR3?oc=5",
+     "tags": [
+      "fed/makro"
+     ],
+     "tone": "neutrální"
+    }
+   ],
+   "krypto": [
+    {
+     "title": "American Bitcoin’s $126M profit masks mining pressure as rivals turn to AI",
+     "time": "čt 05.11. 23:43",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/american-bitcoins-126m-profit-masks-mining-pressure-ai?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Asian crypto exchanges batten down the hatches as hacks surge: Asia Express",
+     "time": "čt 05.11. 23:18",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/magazine/asian-crypto-exchanges-bunker-down-as-hacks-surge-asia-express?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [
+      "bezpečnost"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Crypto ally French Hill wins reelection but set to lose House chair",
+     "time": "čt 05.11. 22:39",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/crypto-ally-french-hill-wins-reelection-arkansas?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "pozitivní"
+    },
+    {
+     "title": "Binance, Deribit revoke SignalPlus API keys after fake Teams invite attack",
+     "time": "čt 05.11. 20:02",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/binance-deribit-revoke-signalplus-api-fake-teams-attack?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [
+      "geopolitika",
+      "burzy"
+     ],
+     "tone": "neutrální"
+    },
+    {
+     "title": "U.S. Justice Department assembles force to shield against foreign AI threats",
+     "time": "čt 05.11. 19:59",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/policy/2026/11/05/u-s-justice-department-assembles-force-to-shield-against-foreign-ai-threats",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Bitcion tumbles to $76,000 as collapsing AI trade drags stocks sharply lower",
+     "time": "čt 05.11. 19:48",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/markets/2026/11/05/bitcoin-crypto-stocks-caught-in-ai-trade-meltdown-but-wintermute-trader-sees-glass-half-full",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "Fed, OCC check US banks after Binance hack as experts flag security risks",
+     "time": "čt 05.11. 19:32",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/fed-occ-check-us-banks-binance-hack-security-risks?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [
+      "fed/makro",
+      "bezpečnost",
+      "burzy"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Europe’s largest asset manager Amundi tokenizes equity index fund on Ethereum",
+     "time": "čt 05.11. 19:09",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/amundi-tokenizes-european-equity-index-fund-ethereum?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Paraguay president resigns after collapse of Ueno digital bank",
+     "time": "čt 05.11. 18:40",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/news/paraguay-president-resigns-after-collapse-ueno-digital-bank?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [],
+     "tone": "negativní"
+    },
+    {
+     "title": "What is TraderTraitor, the hacking squad behind the $6.3 billion Binance heist?",
+     "time": "čt 05.11. 17:58",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/business/2026/11/05/what-is-tradertraitor-the-hacking-squad-behind-the-usd6-3-billion-binance-heist",
+     "tags": [
+      "bezpečnost",
+      "burzy"
+     ],
+     "tone": "negativní"
+    },
+    {
+     "title": "Standard Chartered and SBI back crypto insurer Soter as funding reaches $23.5 million",
+     "time": "čt 05.11. 17:49",
+     "source": "CoinDesk",
+     "link": "https://www.coindesk.com/business/2026/11/05/soter-raises-usd23-5m-plus-btc-and-eth-as-banks-demand-theft-protection",
+     "tags": [],
+     "tone": "neutrální"
+    },
+    {
+     "title": "Bitcoin crashes 6% to 7-week low as US stocks erase election gains",
+     "time": "čt 05.11. 17:48",
+     "source": "Cointelegraph",
+     "link": "https://cointelegraph.com/markets/bitcoin-price-crashes-7-week-low-stocks-election-gains?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+     "tags": [
+      "geopolitika"
+     ],
+     "tone": "neutrální"
+    }
+   ],
+   "note": "tone/tags = jen klíčová slova v titulku, ne analýza; výklad a „co je naceněno“ dělá agent."
+  },
+  "news_errors": [],
+  "stats": {
+   "range_x_vs_same_hour": 1.45,
+   "range_before_x": 1.06,
+   "n_meetings": 16,
+   "coins": {
+    "BTC": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.62,
+     "range_before_x": 1.13
+    },
+    "ETH": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.5,
+     "range_before_x": 1.19
+    },
+    "SOL": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.53,
+     "range_before_x": 1.02
+    },
+    "XRP": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.3,
+     "range_before_x": 1.22
+    },
+    "ADA": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.36,
+     "range_before_x": 0.97
+    },
+    "LINK": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.57,
+     "range_before_x": 1.02
+    },
+    "AVAX": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.26,
+     "range_before_x": 0.98
+    },
+    "DOGE": {
+     "n": 16,
+     "hours": 4,
+     "range_x_vs_same_hour": 1.44,
+     "range_before_x": 0.97
+    }
+   }
+  },
+  "note": "FOMC: hist. rozkmit 4 h po rozhodnutí 1.45× vůči stejné hodině jiné dny (reports/events.md); směr se jako signál nepoužívá. Výsledek dat vs. očekávání (forecast) hodnotí agent."
+ },
+ "fragility": {
+  "k": 0.146,
+  "impact": 0.084,
+  "react": 0.208,
+  "n_dn": 7,
+  "n_up": 7,
+  "ft_dn": -0.03,
+  "ft_up": -0.44,
+  "k_7d_ago": -0.203,
+  "state": "vyrovnaný",
+  "last": [
+   {
+    "time": "2026-10-29 23:00 UTC",
+    "z": -3.9,
+    "ft": 0.46
+   },
+   {
+    "time": "2026-11-04 02:00 UTC",
+    "z": -3.3,
+    "ft": -3.34
+   },
+   {
+    "time": "2026-11-04 04:00 UTC",
+    "z": 3.3,
+    "ft": 2.35
+   },
+   {
+    "time": "2026-11-04 14:00 UTC",
+    "z": 3.6,
+    "ft": -0.78
+   },
+   {
+    "time": "2026-11-04 15:00 UTC",
+    "z": 3.4,
+    "ft": -3.19
+   }
+  ],
+  "line": "⚖️ Křehkost trhu K +0.15 (vyrovnaný, před týdnem -0.20) · šoky 30 dní 7↓/7↑ · dotažení špatných -0.03, dobrých -0.44",
+  "how": "K = jak trh reaguje na šoky (≥3σ hodiny ≈ zprávy) za 30 dní; + = špatné zprávy táhnou a dobré se smažou (křehký), − = naopak (optimistický). Popis, ne signál – test v reports/fragility.md."
+ },
+ "sessions": {
+  "source": "kalendář burz (zoneinfo) + research/sessions_stats.json (2024-10-27 – 2026-10-25)",
+  "as_of": "2026-11-06T00:01:28+00:00",
+  "now_prague": "pá 06.11. 01:01",
+  "open_now": [
+   "Sydney (ASX)",
+   "Tokio (TSE)"
+  ],
+  "weekend_cme_closed": false,
+  "next_24h": [
+   {
+    "prague": "pá 02:30",
+    "in_hours": 1.5,
+    "open": "Hongkong (HKEX)",
+    "hist_vol_4h_x": 0.98,
+    "hist_avg_ret_4h_pct": 0.034
+   },
+   {
+    "prague": "pá 09:00",
+    "in_hours": 8.0,
+    "open": "Londýn (LSE)",
+    "hist_vol_4h_x": 0.96,
+    "hist_avg_ret_4h_pct": 0.07
+   },
+   {
+    "prague": "pá 15:30",
+    "in_hours": 14.5,
+    "open": "New York (NYSE)",
+    "hist_vol_4h_x": 1.47,
+    "hist_avg_ret_4h_pct": -0.05
+   }
+  ],
+  "cme_gap": {
+   "friday_close": 95.2,
+   "sunday_open": 93.72,
+   "gap_pct": -1.55,
+   "filled": true,
+   "since": "po 00:00"
+  },
+  "history": {
+   "cme_gaps": {
+    "n": 95,
+    "days": 5,
+    "min_gap_pct": 0.5,
+    "p_filled": 0.716,
+    "p_random_level": 0.673,
+    "avg_gap_pct": 3.37
+   },
+   "weekend": {
+    "n": 104,
+    "big_move_pct": 2.0,
+    "all_4h": {
+     "n": 104,
+     "p_reversal": 0.49,
+     "avg_after_pct": -0.08
+    },
+    "big_down_4h": {
+     "n": 22,
+     "p_reversal": 0.545,
+     "avg_after_pct": -0.12
+    },
+    "big_up_4h": {
+     "n": 32,
+     "p_reversal": 0.406,
+     "avg_after_pct": 0.07
+    },
+    "corr_4h": -0.055,
+    "all_24h": {
+     "n": 104,
+     "p_reversal": 0.529,
+     "avg_after_pct": 0.05
+    },
+    "big_down_24h": {
+     "n": 22,
+     "p_reversal": 0.727,
+     "avg_after_pct": 2.08
+    },
+    "big_up_24h": {
+     "n": 32,
+     "p_reversal": 0.469,
+     "avg_after_pct": 0.26
+    },
+    "corr_24h": -0.229
+   }
+  },
+  "note": "hist_vol_4h_x = kolikrát větší pohyb za 4 h po otevření než za běžné 4 h. Směr po otevření historicky není statisticky významný (|t| < 2) – otevření mění volatilitu a likviditu, ne směr."
+ },
+ "history": {
+  "source": "backtest strategie donchian_1d (donchian_breakout, 1d), 3650 dní, po nákladech",
+  "as_of": "2026-11-06T00:01:28+00:00",
+  "all": {
+   "n": 60,
+   "win": 53.3,
+   "avg_r": 0.482,
+   "ci": 0.396,
+   "sum_r": 28.89,
+   "max_dd_r": 4.1
+  },
+  "long": {
+   "n": 32,
+   "win": 62.5,
+   "avg_r": 0.899,
+   "ci": 0.59,
+   "sum_r": 28.76,
+   "max_dd_r": 2.05
+  },
+  "short": {
+   "n": 28,
+   "win": 42.9,
+   "avg_r": 0.005,
+   "ci": 0.466,
+   "sum_r": 0.14,
+   "max_dd_r": 4.67
+  },
+  "last_10_same_direction": [
+   {
+    "time": "2025-02-17 00:00",
+    "result": "T1+BE",
+    "r": 0.98
+   },
+   {
+    "time": "2025-04-02 00:00",
+    "result": "stop",
+    "r": -1.023
+   },
+   {
+    "time": "2025-05-30 00:00",
+    "result": "time",
+    "r": 0.469
+   },
+   {
+    "time": "2025-06-20 00:00",
+    "result": "stop",
+    "r": -1.026
+   },
+   {
+    "time": "2025-11-03 00:00",
+    "result": "time",
+    "r": 1.795
+   },
+   {
+    "time": "2025-12-17 00:00",
+    "result": "stop",
+    "r": -1.025
+   },
+   {
+    "time": "2026-01-25 00:00",
+    "result": "time",
+    "r": 2.304
+   },
+   {
+    "time": "2026-03-29 00:00",
+    "result": "stop",
+    "r": -1.029
+   },
+   {
+    "time": "2026-06-02 00:00",
+    "result": "T1+BE",
+    "r": 1.14
+   },
+   {
+    "time": "2026-08-01 00:00",
+    "result": "stop",
+    "r": -1.049
+   }
+  ]
+ }
+}
