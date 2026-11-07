@@ -34,6 +34,12 @@ Pravidla stanovená PŘEDEM (6. 11. 2026), po spuštění se neladí:
                0,3 %, vstup jeho směrem na open další svíčky, výstup na její close · páka 10×, celá marže ·
                zpětný test až od 1. 9. 2025 (přidáno 6. 11. 2026 na přání uživatele, test v reports/kronos.md neprošel)
     hodl3      4h BTC · stále long · páka 3×, celá marže (srovnání: co udělá „jen držet s pákou“)
+  Přidáno 7. 11. 2026 z rešerše (reports/downtown_regimes.md), pravidla stanovená před zařazením:
+    rot_w3     1d 8 mincí · drží long mince s nejlepším výnosem za 21 dní, když je kladný, jinak hotovost; přepíná
+               denně · páka 3×, celá marže (3týdenní hybnost: Liu–Tsyvinski–Wu, NBER w25882)
+    squeeze10  1h 8 mincí · šířka Bollinger(20, 2) do 6 h zpět na 120h minimu (±5 %), pak close mimo pásmo → jeho
+               směrem · stop 1,5 ATR, trailing 3 ATR, max 72 svíček · páka 10×, celá marže
+  Dispečer (research/downtown_dispatch.py) strategie nemění – jen je zapíná ve fázích trhu, kde dřív vydělávaly.
 
     python3 research/downtown.py [cache_dir]        → research/downtown.json + reports/downtown.md
 """
@@ -58,7 +64,7 @@ START_CASH = 1000.0
 FEE, SLIP, MM = 0.0005, 0.0003, 0.005
 FUND_8H = 0.0001
 BROKE = 100.0                   # pod 10 % startu je účet „mrtvý“ → nový vklad
-TF_H = {"15m": 0.25, "1h": 1.0, "2h": 2.0, "4h": 4.0}
+TF_H = {"15m": 0.25, "1h": 1.0, "2h": 2.0, "4h": 4.0, "1d": 24.0}
 KRONOS_PRED = ROOT / "research" / "downtown_kronos.csv.gz"
 KRONOS = {}                     # mince → Series předpovězeného výnosu další 2H svíčky (index = close svíčky t)
 
@@ -77,6 +83,10 @@ STRATS = {
              "tag": "vždy v nejsilnější minci", "rules": "drží long mince s nejlepším výnosem za 24 h (když je kladný) · přepíná po 4 h"},
     "kronos10": {"name": "Kronos ×10", "tf": "2h", "coins": ["BTC", "ETH", "SOL"], "lev": 10, "bt_start": "2025-09-01",
                  "tag": "AI model předpovídá další svíčku", "rules": "Kronos-small předpoví close další 2H svíčky; když čeká pohyb nad 0,3 %, vstoupí jeho směrem a po 1 svíčce zavře · zpětný test až od 1. 9. 2025 (starší data mohl model vidět při tréninku)"},
+    "rot_w3": {"name": "Týdenní hybnost ×3", "tf": "1d", "coins": COINS, "lev": 3,
+               "tag": "nejsilnější mince za 3 týdny", "rules": "drží long mince s nejlepším výnosem za 21 dní (když je kladný) · přepíná denně"},
+    "squeeze10": {"name": "Squeeze průraz ×10", "tf": "1h", "coins": COINS, "lev": 10,
+                  "tag": "výbuch po dlouhém klidu", "rules": "Bollinger pásmo nejužší za 120 h, pak close mimo pásmo → jeho směrem · stop 1,5 ATR, trailing 3 ATR, max 72 h"},
     "hodl3": {"name": "BTC ×3, jen drž", "tf": "4h", "coins": ["BTC"], "lev": 3,
               "tag": "srovnání bez obchodování", "rules": "stále long BTC s pákou 3× · po likvidaci nový účet a znovu long"},
 }
@@ -173,6 +183,12 @@ def signals(sid, d, coin=None):
     if sid == "dip15":
         a = atr(d).shift(1)
         return np.where((c - o) < -3 * a, 1, 0)
+    if sid == "squeeze10":
+        m, s = c.rolling(20).mean(), c.rolling(20).std()
+        bw = 4 * s / m
+        sq = (bw <= bw.rolling(120).min() * 1.05).shift(1).fillna(False).astype(bool)
+        sq = sq.rolling(6).max().fillna(0).astype(bool)
+        return np.where(sq & (c > m + 2 * s), 1, np.where(sq & (c < m - 2 * s), -1, 0))
     raise KeyError(sid)
 
 
@@ -183,6 +199,7 @@ EXITS = {  # stop %, cíl %, stop ATR, cíl ATR, trailing ATR, max svíček
     "marti10": (0.01, 0.01, None, None, None, 24),
     "dip15": (None, None, 1.5, 1.5, None, 12),
     "kronos10": (None, None, None, None, None, 1),
+    "squeeze10": (None, None, 1.5, None, 3.0, 72),
 }
 
 
@@ -200,10 +217,16 @@ class Account:
             self.trades.append({"t": t, "kind": "vklad", "pnl": 0.0})
 
 
-def run(sid, frames, trade_from, cash=START_CASH):
-    """Projde svíčky jedné strategie a vrátí účet, denní křivku a otevřenou pozici."""
+def run(sid, frames, trade_from, cash=START_CASH, lev=None, gate=None, sweep=None):
+    """Projde svíčky jedné strategie a vrátí účet, denní křivku a otevřenou pozici.
+
+    lev   jiná páka než v STRATS (Dispečer s lev=1 získá výnosy obchodů bez páky)
+    gate  funkce(DatetimeIndex) → bool pole; nový vstup jen když gate[j] (j = svíčka, na jejímž close se rozhoduje);
+          u „target“ strategií gate=False znamená hotovost
+    sweep podíl zisku, který se při zdvojnásobení účtu přesune do trezoru (počítá se do hodnoty, neobchoduje se s ním)
+    """
     cfg = STRATS[sid]
-    lev, tf, hours = cfg["lev"], cfg["tf"], TF_H[cfg["tf"]]
+    lev, tf, hours = lev or cfg["lev"], cfg["tf"], TF_H[cfg["tf"]]
     coins = [c for c in cfg["coins"] if c in frames]
     idx = frames[coins[0]].index
     for c in coins[1:]:
@@ -214,10 +237,11 @@ def run(sid, frames, trade_from, cash=START_CASH):
     L = {c: F[c]["Low"].to_numpy(float) for c in coins}
     C = {c: F[c]["Close"].to_numpy(float) for c in coins}
     A = {c: atr(F[c]).to_numpy(float) for c in coins}
-    target = sid in ("rot5", "hodl3")
+    G = np.ones(len(idx), bool) if gate is None else np.asarray(gate(idx), bool)
+    target = sid in ("rot5", "hodl3", "rot_w3")
     if target:
-        if sid == "rot5":
-            score = pd.DataFrame({c: F[c]["Close"].pct_change(6) for c in coins}).to_numpy(float)
+        if sid in ("rot5", "rot_w3"):
+            score = pd.DataFrame({c: F[c]["Close"].pct_change(6 if sid == "rot5" else 21) for c in coins}).to_numpy(float)
         else:
             score = np.ones((len(idx), 1))
     else:
@@ -230,6 +254,7 @@ def run(sid, frames, trade_from, cash=START_CASH):
     curve = []
     liq_mult = 1 / lev - MM
     fund = FUND_8H * hours / 8
+    vault = [0.0, cash]          # trezor (vybrané zisky), základ pro další zdvojnásobení
 
     def close_pos(i, px, why):
         nonlocal pos, marti_k
@@ -242,7 +267,8 @@ def run(sid, frames, trade_from, cash=START_CASH):
         acc.eq += pnl
         acc.trades.append({"t": idx[i].isoformat(), "kind": why, "coin": c, "dir": d, "opened": pos["t0"],
                            "entry": round(pos["entry"], 6), "exit": round(fill, 6), "pnl": round(pnl, 2),
-                           "ret_pct": round(100 * pnl / pos["margin"], 1)})
+                           "ret_pct": round(100 * pnl / pos["margin"], 1),
+                           "r": round(pnl / pos["margin"] / lev - FEE, 6)})   # výnos bez páky vč. poplatků (pro Dispečera)
         if sid == "marti10":
             marti_k = 0 if pnl > 0 or marti_k >= 6 else marti_k + 1
         pos = None
@@ -254,7 +280,7 @@ def run(sid, frames, trade_from, cash=START_CASH):
         acc.eq -= pos["margin"]
         acc.trades.append({"t": idx[i].isoformat(), "kind": "likvidace", "coin": pos["coin"], "dir": pos["dir"],
                            "opened": pos["t0"], "entry": round(pos["entry"], 6), "exit": round(pos["liq"], 6),
-                           "pnl": round(-pos["margin"], 2), "ret_pct": -100.0})
+                           "pnl": round(-pos["margin"], 2), "ret_pct": -100.0, "r": round(-1 / lev, 6)})
         if sid == "marti10":
             marti_k = 0 if marti_k >= 6 else marti_k + 1
         pos = None
@@ -285,7 +311,9 @@ def run(sid, frames, trade_from, cash=START_CASH):
         if target:
             row = score[j]
             want = None
-            if sid == "hodl3":
+            if not G[j]:
+                want = None
+            elif sid == "hodl3":
                 want = (coins[0], 1)
             elif np.isfinite(row).any() and np.nanmax(row) > 0:
                 want = (coins[int(np.nanargmax(row))], 1)
@@ -293,7 +321,7 @@ def run(sid, frames, trade_from, cash=START_CASH):
                 close_pos(i, O[pos["coin"]][i], "přepnutí")
             if pos is None and want and j >= start_i - 1:
                 open_pos(i, *want)
-        elif pos is None:
+        elif pos is None and G[j]:
             for c in coins:
                 s = S[c][j]
                 if s and np.isfinite(O[c][i]):
@@ -325,12 +353,22 @@ def run(sid, frames, trade_from, cash=START_CASH):
                     pos["stop"] = ns if pos["stop"] is None else (max(pos["stop"], ns) if d > 0 else min(pos["stop"], ns))
                 if pos["bars"] >= pos["max"]:
                     close_pos(i, cl, "čas")
-        # 3) hodnota účtu na close
-        val = acc.eq
+        # 3) trezor: při zdvojnásobení účtu (bez otevřené pozice) se část zisku odloží stranou
+        if sweep and pos is None:
+            if acc.eq >= 2 * vault[1]:
+                w = (acc.eq - vault[1]) * sweep
+                acc.eq -= w
+                vault[0] += w
+                vault[1] = acc.eq
+            elif acc.eq < vault[1] / 2:
+                vault[1] = max(cash, acc.eq)
+        # 4) hodnota účtu na close
+        val = acc.eq + vault[0]
         if pos and np.isfinite(C[pos["coin"]][i]):
             c, d = pos["coin"], pos["dir"]
             val += max(-pos["margin"], pos["notional"] * d * (C[c][i] / pos["entry"] - 1) - pos["fund"])
         curve.append((idx[i], val, acc.dep))
+    acc.vault = vault[0]
     return acc, curve, pos, idx
 
 
@@ -454,10 +492,24 @@ def main(cache="/tmp/dt_cache"):
         res.append({"id": sid, "name": cfg["name"], "bt_start": cfg.get("bt_start", BT_START), "tag": cfg["tag"], "rules": cfg["rules"], "lev": cfg["lev"],
                     "tf": cfg["tf"], "coins": cfg["coins"], "backtest": bt, "live": live, "updated": now.isoformat(timespec="minutes")})
         print(f"{sid}: čistě {bt['net']} USDT, likvidací {bt['liquidations']}, bankrotů {bt['wipes']}, obchodů {bt['n_trades']}", flush=True)
+    # Dispečer fází: nasazuje strategie jen ve fázích trhu, kde dřív vydělávaly (research/downtown_dispatch.py)
+    try:
+        from research import downtown_dispatch as X
+        disp = X.build(raw, now)
+        X.write_md(disp)
+        res.append(disp)
+        d = disp["dispatch"]
+        print(f"dispecer: fáze {d['phase_now']}, nasazeno {d['active_now']}, čistě {disp['backtest']['net']} USDT", flush=True)
+    except Exception as exc:  # noqa: BLE001 – Dispečer nesmí shodit ostatní účty
+        print(f"dispecer: chyba {exc.__class__.__name__}: {exc}", flush=True)
     OUT_JSON.write_text(json.dumps({"updated": now.isoformat(timespec="minutes"), "bt_start": BT_START, "live_start": LIVE_START,
                                     "start_cash": START_CASH, "costs": {"fee": FEE, "slip": SLIP, "funding_8h": FUND_8H, "mm": MM},
                                     "strategies": res}, ensure_ascii=False, indent=1), encoding="utf-8")
-    write_md(res, now)
+    write_md([s for s in res if s["id"] != "dispecer"], now)
+    if any(s["id"] == "dispecer" for s in res):
+        with OUT_MD.open("a", encoding="utf-8") as fh:
+            fh.write("\n## Dispečer fází\n\nAgent, který strategie nasazuje jen ve fázích trhu, kde dřív vydělávaly: "
+                     "[reports/downtown_dispatch.md](downtown_dispatch.md), výzkum v [reports/downtown_regimes.md](downtown_regimes.md).\n")
 
 
 if __name__ == "__main__":

@@ -64,3 +64,41 @@ def test_kronos_signal_threshold_and_one_bar_exit():
     tr = [t for t in acc.trades if t["kind"] != "vklad"]
     assert len(tr) == 1 and tr[0]["dir"] == 1 and tr[0]["kind"] == "čas"
     assert tr[0]["pnl"] > 0
+
+
+def test_gate_blocks_entries_and_rotation_goes_to_cash():
+    closes = [100] * 5 + list(np.linspace(100, 130, 30))
+    acc, curve, pos, idx = D.run("hodl3", {"BTC": frame(closes)}, "2023-01-01", gate=lambda ix: np.zeros(len(ix), bool))
+    assert pos is None and all(abs(v - D.START_CASH) < 1e-9 for _, v, _ in curve)
+
+
+def test_sweep_moves_half_of_gain_to_vault():
+    # hodl3 ×3 na trhu +60 %: účet se zdvojnásobí → při vypnutí brány (hotovost) se půlka zisku odloží
+    closes = [100] * 5 + list(np.linspace(100, 160, 40)) + [160] * 10
+    n = len(closes)
+    gate = lambda ix: np.arange(len(ix)) < n - 8  # noqa: E731
+    acc, curve, pos, idx = D.run("hodl3", {"BTC": frame(closes)}, "2023-01-01", gate=gate, sweep=0.5)
+    assert acc.vault > 0
+    assert abs(curve[-1][1] - (acc.eq + acc.vault)) < 1e-6
+
+
+def test_dispatch_phase_uses_previous_day_only():
+    from research import downtown_dispatch as X
+    idx = pd.date_range("2022-01-01", periods=24 * 700, freq="1h", tz="UTC")
+    c = np.r_[np.linspace(100, 200, 24 * 400), np.linspace(200, 120, 24 * 300)]
+    btc = pd.DataFrame({"Open": c, "High": c, "Low": c, "Close": c, "Volume": 1.0}, index=idx)
+    ph, feat = X.phases(btc)
+    day = ph.index[50]
+    # fáze dne D = výpočet z close dne D−1 (žádný pohled do budoucna)
+    assert ph.loc[day, "trend"] == ("býk" if feat.loc[day - pd.Timedelta("1D"), "btc"] > feat.loc[day - pd.Timedelta("1D"), "sma200"] else "medvěd")
+
+
+def test_dispatch_plan_learns_only_from_closed_trades():
+    from research import downtown_dispatch as X
+    t0 = pd.Timestamp("2024-01-01", tz="UTC")
+    tr = pd.DataFrame({"opened": [t0 + pd.Timedelta(days=i) for i in range(20)],
+                       "t": [t0 + pd.Timedelta(days=i + 1) for i in range(20)],
+                       "r": [0.02, 0.01] * 10, "faze": "býk · trend · klid"})
+    plan = X.make_plan({"rot5": tr}, pd.DatetimeIndex([t0 + pd.Timedelta(days=10), t0 + pd.Timedelta(days=40)]))
+    assert plan[t0 + pd.Timedelta(days=10)] == {}                       # zatím jen 9 ukončených obchodů
+    assert plan[t0 + pd.Timedelta(days=40)] == {"býk · trend · klid": ["rot5"]}

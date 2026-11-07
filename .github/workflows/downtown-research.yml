@@ -1,0 +1,39 @@
+name: Downtown – výzkum režimů (data)
+
+# Jen pro výzkumnou větev claude/downtown-regimes: stáhne svíčky OKX a Fear & Greed (v sandboxu blokované)
+# a uloží je na tuto větev do data_dt/. Na main se nic nezapisuje.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/downtown-regimes"]
+    paths: ["research/experiments/downtown_data.py", ".github/workflows/downtown-research.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  data:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/dt_cache
+          key: downtown-data-${{ github.run_id }}
+          restore-keys: downtown-data-
+      - run: python3 research/experiments/downtown_data.py /tmp/dt_cache data_dt
+      - name: Uložit data na výzkumnou větev
+        run: |
+          git config user.name "trading-team downtown"
+          git config user.email "downtown@users.noreply.github.com"
+          git add -f data_dt
+          git commit -q -m "downtown výzkum: data svíček (jen výzkumná větev)" || exit 0
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
