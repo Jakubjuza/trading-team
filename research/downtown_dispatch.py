@@ -45,7 +45,7 @@ ER_TREND = 0.25
 
 # ---------------------------------------------------------------- fáze trhu
 def phases(btc_1h):
-    b = btc_1h["Close"].resample("1D").last().dropna()
+    b = pd.to_numeric(btc_1h["Close"], errors="coerce").resample("1D").last().dropna()
     b = b[b.index + pd.Timedelta("1D") <= datetime.now(timezone.utc)]          # jen uzavřené dny
     sma200 = b.rolling(200).mean()
     er = (b - b.shift(30)).abs() / b.diff().abs().rolling(30).sum()
@@ -75,7 +75,7 @@ def month_of(times):
 def unlevered_trades(sid, frames, raw):
     """Obchody strategie bez páky (r = čistý výnos obchodu vč. poplatků, skluzu a fundingu)."""
     if sid == "hodl3":   # drží pořád → „obchod“ = den držení BTC (close→close, funding 3× denně)
-        bc = raw[("BTC", "1h")]["Close"].resample("1D").last().dropna()
+        bc = pd.to_numeric(raw[("BTC", "1h")]["Close"], errors="coerce").resample("1D").last().dropna()
         r = bc.pct_change().dropna() - 3 * D.FUND_8H
         r = r[r.index >= pd.Timestamp(LEARN_FROM, tz="UTC")]
         return pd.DataFrame({"opened": r.index, "t": r.index + pd.Timedelta("1D"), "r": r.to_numpy()})
