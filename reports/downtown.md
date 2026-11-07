@@ -1,6 +1,6 @@
 # Downtown – divoké strategie (jen papír)
 
-Aktualizováno 2026-11-07 19:36 UTC skriptem `research/downtown.py` (pravidla stanovená předem v hlavičce).
+Aktualizováno 2026-11-07 19:42 UTC skriptem `research/downtown.py` (pravidla stanovená předem v hlavičce).
 Oddělené od desku: na skener, registr, riziko ani peníze nesahá. Každá strategie má papírový účet 1 000 USDT,
 páku, reinvestici a skutečnou likvidaci; po bankrotu se vloží nových 1 000 USDT. Nejde o finanční poradenství.
 
