@@ -10,8 +10,8 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 - 2h: 5952 kombinací, 856 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 4h: 5952 kombinací, 824 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 6h: 5952 kombinací, 1031 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
-- sent_1d: 192 kombinací, 985 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
-- sent_4h: 192 kombinací, 2 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
+- sent_1d: 192 kombinací, 1054 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
+- sent_4h: 192 kombinací, 1 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - Poplatky na stranu: **MEXC futures taker 0,02 % + skluz 0,03 % = 0,05 % (rozhoduje)**; MEXC spot taker 0,08 %; maker 0 % (optimistická mez); 0,15 % (dřívější testy). Funding nezapočten. Poplatky MEXC podle [MEXC, 11/2025](https://www.mexc.com/ru-RU/crypto-pulse/article/mexc-trading-fees-complete-guide-39643).
 - IS do 12/2023 (15M od 1/2022), OOS 1/2024–6/2025, HOLDOUT 7/2025–dnes. R = výsledek po poplatcích / riziko (vzdálenost stopu; bez stopu 2 ATR).
 
@@ -29,8 +29,8 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 | svíčkové vzory | short | 168 | 23% | 58% | 62% | 51% | 3,0% | -0,06 | +0,03 |
 | Donchian průraz | long | 420 | 80% | 62% | 94% | 83% | 34,3% | +0,25 | +0,07 |
 | Donchian průraz | short | 420 | 30% | 62% | 49% | 48% | 1,9% | -0,08 | +0,04 |
-| strach a chamtivost | long | 192 | 35% | 25% | 28% | 23% | 0,5% | -0,16 | -0,29 |
-| strach a chamtivost | short | 192 | 41% | 15% | 50% | 18% | 1,6% | +0,04 | -0,23 |
+| strach a chamtivost | long | 192 | 35% | 25% | 26% | 20% | 0,5% | -0,16 | -0,32 |
+| strach a chamtivost | short | 192 | 41% | 16% | 48% | 17% | 0,0% | +0,04 | -0,23 |
 | Keltner průraz | long | 252 | 80% | 69% | 96% | 88% | 45,6% | +0,19 | +0,13 |
 | Keltner průraz | short | 252 | 40% | 63% | 56% | 73% | 13,1% | -0,05 | +0,05 |
 | protnutí 2 průměrů | long | 16128 | 66% | 54% | 70% | 65% | 8,6% | +0,16 | +0,02 |
