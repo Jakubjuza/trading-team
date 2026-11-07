@@ -1,6 +1,6 @@
 # Downtown – divoké strategie (jen papír)
 
-Aktualizováno 2026-11-07 19:42 UTC skriptem `research/downtown.py` (pravidla stanovená předem v hlavičce).
+Aktualizováno 2026-11-07 19:46 UTC skriptem `research/downtown.py` (pravidla stanovená předem v hlavičce).
 Oddělené od desku: na skener, registr, riziko ani peníze nesahá. Každá strategie má papírový účet 1 000 USDT,
 páku, reinvestici a skutečnou likvidaci; po bankrotu se vloží nových 1 000 USDT. Nejde o finanční poradenství.
 
@@ -8,7 +8,7 @@ páku, reinvestici a skutečnou likvidaci; po bankrotu se vloží nových 1 000 
 
 | Strategie | Páka | Vloženo | Účet teď | Max. účet | Čistě | Max propad | Likvidace | Bankroty | Obchodů | Výher | Nejlepší měsíc | Nejhorší měsíc |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Scalper 15m ×20 | 20× | 189 000 | 637 | 1 677 | -188 363 (-99.7 %) | -93.8 % | 0 | 188 | 13472 | 38.8 % | -52.9 % | -97.9 % |
+| Scalper 15m ×20 | 20× | 189 000 | 642 | 1 677 | -188 358 (-99.7 %) | -93.8 % | 0 | 188 | 13472 | 38.8 % | -52.5 % | -97.9 % |
 | Průraz ×25 | 25× | 139 000 | 3 926 | 37 939 | -135 074 (-97.2 %) | -99.6 % | 10 | 138 | 2447 | 24.5 % | 232.9 % | -98.7 % |
 | Knock-out ×50 | 50× | 225 000 | 143 | 71 135 | -224 857 (-99.9 %) | -99.8 % | 0 | 224 | 2004 | 23.0 % | -23.6 % | -98.1 % |
 | Martingale ×10 | 10× | 1 000 | 219 | 1 013 | -781 (-78.1 %) | -80.0 % | 0 | 0 | 1693 | 46.5 % | 1.9 % | -23.8 % |
@@ -36,7 +36,7 @@ Roky (čistá křivka, % za rok):
 
 | Strategie | Účet | Čistě | Obchodů | Likvidace | Otevřená pozice |
 |---|---:|---:|---:|---:|---|
-| Scalper 15m ×20 | 884 | -116 | 4 | 0 | SOL short od 2026-11-07T18:15 |
+| Scalper 15m ×20 | 892 | -108 | 4 | 0 | SOL short od 2026-11-07T18:15 |
 | Průraz ×25 | 790 | -210 | 1 | 0 | ADA short od 2026-11-07T10:00 |
 | Knock-out ×50 | 1 000 | 0 | 0 | 0 | – |
 | Martingale ×10 | 1 000 | -0 | 0 | 0 | BTC long od 2026-11-07T16:00 |
@@ -46,3 +46,7 @@ Roky (čistá křivka, % za rok):
 | Týdenní hybnost ×3 | 1 000 | 0 | 0 | 0 | – |
 | Squeeze průraz ×10 | 940 | -60 | 1 | 0 | SOL short od 2026-11-07T13:00 |
 | BTC ×3, jen drž | 994 | -6 | 0 | 0 | BTC long od 2026-11-07T00:00 |
+
+## Dispečer fází
+
+Agent, který strategie nasazuje jen ve fázích trhu, kde dřív vydělávaly: [reports/downtown_dispatch.md](downtown_dispatch.md), výzkum v [reports/downtown_regimes.md](downtown_regimes.md).
