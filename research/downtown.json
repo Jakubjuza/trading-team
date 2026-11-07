@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-06T22:55+00:00",
+ "updated": "2026-11-07T05:54+00:00",
  "bt_start": "2023-01-01",
  "live_start": "2026-11-07",
  "start_cash": 1000.0,
@@ -25,22 +25,22 @@
    ],
    "backtest": {
     "start": "2023-01-01",
-    "end": "2026-11-06T22:45:00+00:00",
-    "equity": 647.53,
+    "end": "2026-11-07T05:45:00+00:00",
+    "equity": 625.56,
     "deposited": 189000.0,
-    "net": -188352.47,
+    "net": -188374.44,
     "net_pct": -99.7,
     "peak_equity": 1676.95,
     "max_dd_pct": -93.8,
     "liquidations": 0,
     "wipes": 188,
-    "n_trades": 13468,
+    "n_trades": 13470,
     "win_pct": 38.8,
     "best_trade": 100.67,
     "worst_trade": -126.48,
-    "best_month_pct": -52.1,
+    "best_month_pct": -53.7,
     "worst_month_pct": -97.9,
-    "trades_per_month": 291.8,
+    "trades_per_month": 291.6,
     "years": {
      "2023": -97.7,
      "2024": -99.3,
@@ -929,34 +929,12 @@
       188000.0
      ],
      [
-      "2026-11-06",
-      647.53,
+      "2026-11-07",
+      625.56,
       189000.0
      ]
     ],
     "last_trades": [
-     {
-      "t": "2026-11-05T14:00:00+00:00",
-      "kind": "stop",
-      "coin": "BTC",
-      "dir": 1,
-      "opened": "2026-11-05T12:45:00+00:00",
-      "entry": 79729.61171,
-      "exit": 79466.575748,
-      "pnl": -65.33,
-      "ret_pct": -7.7
-     },
-     {
-      "t": "2026-11-05T14:30:00+00:00",
-      "kind": "stop",
-      "coin": "BTC",
-      "dir": 1,
-      "opened": "2026-11-05T14:15:00+00:00",
-      "entry": 79423.01976,
-      "exit": 79160.995276,
-      "pnl": -59.49,
-      "ret_pct": -7.7
-     },
      {
       "t": "2026-11-06T00:30:00+00:00",
       "kind": "stop",
@@ -1022,32 +1000,96 @@
       "exit": 2247.903338,
       "pnl": -53.2,
       "ret_pct": -7.7
+     },
+     {
+      "t": "2026-11-07T02:00:00+00:00",
+      "kind": "čas",
+      "coin": "BTC",
+      "dir": -1,
+      "opened": "2026-11-06T22:15:00+00:00",
+      "entry": 75990.49601,
+      "exit": 76122.72997,
+      "pnl": -28.04,
+      "ret_pct": -4.4
+     },
+     {
+      "t": "2026-11-07T03:30:00+00:00",
+      "kind": "cíl",
+      "coin": "BTC",
+      "dir": -1,
+      "opened": "2026-11-07T02:15:00+00:00",
+      "entry": 76077.17,
+      "exit": 75795.593178,
+      "pnl": 39.01,
+      "ret_pct": 6.5
      }
     ],
     "open": {
      "coin": "BTC",
      "dir": -1,
-     "entry": 75990.49601,
-     "since": "2026-11-06T22:15:00+00:00",
-     "margin": 633.51,
-     "liq": 79410.06833,
-     "stop": 76218.467498,
-     "tgt": 75686.534026
+     "entry": 75995.49451,
+     "since": "2026-11-07T05:30:00+00:00",
+     "margin": 632.05,
+     "liq": 79415.291763,
+     "stop": 76223.480994,
+     "tgt": 75691.512532
     }
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
-    "equity": 1000.0,
+    "end": "2026-11-07T05:45:00+00:00",
+    "equity": 886.81,
     "deposited": 1000.0,
-    "net": 0.0,
+    "net": -113.19,
+    "net_pct": -11.3,
+    "peak_equity": 1000.0,
+    "max_dd_pct": -11.5,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
-    "last_trades": [],
+    "n_trades": 2,
+    "win_pct": 0.0,
+    "best_trade": -18.12,
+    "worst_trade": -75.93,
+    "best_month_pct": -11.3,
+    "worst_month_pct": -11.3,
+    "trades_per_month": 2.0,
+    "years": {
+     "2026": -11.3
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      886.81,
+      1000.0
+     ]
+    ],
+    "last_trades": [
+     {
+      "t": "2026-11-07T01:45:00+00:00",
+      "kind": "stop",
+      "coin": "SOL",
+      "dir": -1,
+      "opened": "2026-11-07T01:30:00+00:00",
+      "entry": 90.312898,
+      "exit": 90.611012,
+      "pnl": -75.93,
+      "ret_pct": -7.7
+     },
+     {
+      "t": "2026-11-07T05:45:00+00:00",
+      "kind": "čas",
+      "coin": "BTC",
+      "dir": -1,
+      "opened": "2026-11-07T02:00:00+00:00",
+      "entry": 76016.28827,
+      "exit": 76057.41038,
+      "pnl": -18.12,
+      "ret_pct": -2.0
+     }
+    ],
     "open": null
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   },
   {
    "id": "break25",
@@ -1069,11 +1111,11 @@
    ],
    "backtest": {
     "start": "2023-01-01",
-    "end": "2026-11-06T22:00:00+00:00",
-    "equity": 3497.22,
+    "end": "2026-11-07T05:00:00+00:00",
+    "equity": 3969.5,
     "deposited": 139000.0,
-    "net": -135502.78,
-    "net_pct": -97.5,
+    "net": -135030.5,
+    "net_pct": -97.1,
     "peak_equity": 37938.74,
     "max_dd_pct": -99.6,
     "liquidations": 10,
@@ -1082,14 +1124,14 @@
     "win_pct": 24.4,
     "best_trade": 13368.09,
     "worst_trade": -16594.99,
-    "best_month_pct": 196.5,
+    "best_month_pct": 236.6,
     "worst_month_pct": -98.7,
     "trades_per_month": 53.0,
     "years": {
      "2023": -97.7,
      "2024": -99.8,
      "2025": -95.1,
-     "2026": -85.3
+     "2026": -83.3
     },
     "curve": [
      [
@@ -1973,8 +2015,8 @@
       138000.0
      ],
      [
-      "2026-11-06",
-      3497.22,
+      "2026-11-07",
+      3969.5,
       139000.0
      ]
     ],
@@ -2075,23 +2117,51 @@
      "since": "2026-11-05T18:00:00+00:00",
      "margin": 1587.13,
      "liq": 1.277531,
-     "stop": 1.201657,
+     "stop": 1.183457,
      "tgt": null
     }
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
-    "equity": 1000.0,
+    "end": "2026-11-07T05:00:00+00:00",
+    "equity": 1122.21,
     "deposited": 1000.0,
-    "net": 0.0,
+    "net": 122.21,
+    "net_pct": 12.2,
+    "peak_equity": 1258.89,
+    "max_dd_pct": -10.9,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
+    "n_trades": 0,
+    "win_pct": null,
+    "best_trade": null,
+    "worst_trade": null,
+    "best_month_pct": 12.2,
+    "worst_month_pct": 12.2,
+    "trades_per_month": 0.0,
+    "years": {
+     "2026": 12.2
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      1122.21,
+      1000.0
+     ]
+    ],
     "last_trades": [],
-    "open": null
+    "open": {
+     "coin": "XRP",
+     "dir": -1,
+     "entry": 1.16795,
+     "since": "2026-11-07T03:00:00+00:00",
+     "margin": 987.5,
+     "liq": 1.208828,
+     "stop": 1.178557,
+     "tgt": null
+    }
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   },
   {
    "id": "ko50",
@@ -2113,7 +2183,7 @@
    ],
    "backtest": {
     "start": "2023-01-01",
-    "end": "2026-11-06T22:00:00+00:00",
+    "end": "2026-11-07T05:00:00+00:00",
     "equity": 143.44,
     "deposited": 225000.0,
     "net": -224856.56,
@@ -3017,7 +3087,7 @@
       225000.0
      ],
      [
-      "2026-11-06",
+      "2026-11-07",
       143.44,
       225000.0
      ]
@@ -3116,17 +3186,36 @@
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
+    "end": "2026-11-07T05:00:00+00:00",
     "equity": 1000.0,
     "deposited": 1000.0,
     "net": 0.0,
+    "net_pct": 0.0,
+    "peak_equity": 1000.0,
+    "max_dd_pct": 0.0,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
+    "n_trades": 0,
+    "win_pct": null,
+    "best_trade": null,
+    "worst_trade": null,
+    "best_month_pct": 0.0,
+    "worst_month_pct": 0.0,
+    "trades_per_month": 0.0,
+    "years": {
+     "2026": 0.0
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      1000.0,
+      1000.0
+     ]
+    ],
     "last_trades": [],
     "open": null
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   },
   {
    "id": "marti10",
@@ -3141,11 +3230,11 @@
    ],
    "backtest": {
     "start": "2023-01-01",
-    "end": "2026-11-06T22:00:00+00:00",
-    "equity": 219.39,
+    "end": "2026-11-07T05:00:00+00:00",
+    "equity": 219.62,
     "deposited": 1000.0,
-    "net": -780.61,
-    "net_pct": -78.1,
+    "net": -780.38,
+    "net_pct": -78.0,
     "peak_equity": 1012.87,
     "max_dd_pct": -80.0,
     "liquidations": 0,
@@ -3156,7 +3245,7 @@
     "worst_trade": -97.71,
     "best_month_pct": 1.9,
     "worst_month_pct": -23.8,
-    "trades_per_month": 36.7,
+    "trades_per_month": 36.6,
     "years": {
      "2023": -19.8,
      "2024": -40.9,
@@ -4045,8 +4134,8 @@
       1000.0
      ],
      [
-      "2026-11-06",
-      219.39,
+      "2026-11-07",
+      219.62,
       1000.0
      ]
     ],
@@ -4153,17 +4242,36 @@
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
+    "end": "2026-11-07T05:00:00+00:00",
     "equity": 1000.0,
     "deposited": 1000.0,
     "net": 0.0,
+    "net_pct": 0.0,
+    "peak_equity": 1000.0,
+    "max_dd_pct": 0.0,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
+    "n_trades": 0,
+    "win_pct": null,
+    "best_trade": null,
+    "worst_trade": null,
+    "best_month_pct": 0.0,
+    "worst_month_pct": 0.0,
+    "trades_per_month": 0.0,
+    "years": {
+     "2026": 0.0
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      1000.0,
+      1000.0
+     ]
+    ],
     "last_trades": [],
     "open": null
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   },
   {
    "id": "dip15",
@@ -4185,7 +4293,7 @@
    ],
    "backtest": {
     "start": "2023-01-01",
-    "end": "2026-11-06T22:00:00+00:00",
+    "end": "2026-11-07T05:00:00+00:00",
     "equity": 1019.38,
     "deposited": 12000.0,
     "net": -10980.62,
@@ -5089,7 +5197,7 @@
       12000.0
      ],
      [
-      "2026-11-06",
+      "2026-11-07",
       1019.38,
       12000.0
      ]
@@ -5188,17 +5296,36 @@
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
+    "end": "2026-11-07T05:00:00+00:00",
     "equity": 1000.0,
     "deposited": 1000.0,
     "net": 0.0,
+    "net_pct": 0.0,
+    "peak_equity": 1000.0,
+    "max_dd_pct": 0.0,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
+    "n_trades": 0,
+    "win_pct": null,
+    "best_trade": null,
+    "worst_trade": null,
+    "best_month_pct": 0.0,
+    "worst_month_pct": 0.0,
+    "trades_per_month": 0.0,
+    "years": {
+     "2026": 0.0
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      1000.0,
+      1000.0
+     ]
+    ],
     "last_trades": [],
     "open": null
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   },
   {
    "id": "rot5",
@@ -5220,16 +5347,16 @@
    ],
    "backtest": {
     "start": "2023-01-01",
-    "end": "2026-11-06T16:00:00+00:00",
-    "equity": 112.13,
+    "end": "2026-11-07T00:00:00+00:00",
+    "equity": 102.01,
     "deposited": 12000.0,
-    "net": -11887.87,
+    "net": -11897.99,
     "net_pct": -99.1,
     "peak_equity": 314458.38,
     "max_dd_pct": -99.8,
     "liquidations": 1,
     "wipes": 11,
-    "n_trades": 2490,
+    "n_trades": 2491,
     "win_pct": 40.8,
     "best_trade": 83667.81,
     "worst_trade": -102273.55,
@@ -5240,7 +5367,7 @@
      "2023": 2391.3,
      "2024": -89.7,
      "2025": -98.6,
-     "2026": -96.5
+     "2026": -96.8
     },
     "curve": [
      [
@@ -6124,23 +6251,12 @@
       12000.0
      ],
      [
-      "2026-11-06",
-      112.13,
+      "2026-11-07",
+      102.01,
       12000.0
      ]
     ],
     "last_trades": [
-     {
-      "t": "2026-11-02T04:00:00+00:00",
-      "kind": "přepnutí",
-      "coin": "AVAX",
-      "dir": 1,
-      "opened": "2026-11-01T08:00:00+00:00",
-      "entry": 8.882664,
-      "exit": 8.690392,
-      "pnl": -19.05,
-      "ret_pct": -11.2
-     },
      {
       "t": "2026-11-02T20:00:00+00:00",
       "kind": "přepnutí",
@@ -6217,32 +6333,71 @@
       "exit": 2251.764268,
       "pnl": -24.26,
       "ret_pct": -17.0
+     },
+     {
+      "t": "2026-11-07T00:00:00+00:00",
+      "kind": "přepnutí",
+      "coin": "ADA",
+      "dir": 1,
+      "opened": "2026-11-06T16:00:00+00:00",
+      "entry": 0.188356,
+      "exit": 0.184145,
+      "pnl": -13.61,
+      "ret_pct": -11.5
      }
     ],
     "open": {
-     "coin": "ADA",
+     "coin": "AVAX",
      "dir": 1,
-     "entry": 0.188356,
-     "since": "2026-11-06T16:00:00+00:00",
-     "margin": 118.32,
-     "liq": 0.151627,
+     "entry": 8.346503,
+     "since": "2026-11-07T00:00:00+00:00",
+     "margin": 104.45,
+     "liq": 6.718935,
      "stop": null,
      "tgt": null
     }
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
-    "equity": 1000.0,
+    "end": "2026-11-07T00:00:00+00:00",
+    "equity": 974.18,
     "deposited": 1000.0,
-    "net": 0.0,
+    "net": -25.82,
+    "net_pct": -2.6,
+    "peak_equity": 974.18,
+    "max_dd_pct": 0.0,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
+    "n_trades": 0,
+    "win_pct": null,
+    "best_trade": null,
+    "worst_trade": null,
+    "best_month_pct": -2.6,
+    "worst_month_pct": -2.6,
+    "trades_per_month": 0.0,
+    "years": {
+     "2026": -2.6
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      974.18,
+      1000.0
+     ]
+    ],
     "last_trades": [],
-    "open": null
+    "open": {
+     "coin": "AVAX",
+     "dir": 1,
+     "entry": 8.346503,
+     "since": "2026-11-07T00:00:00+00:00",
+     "margin": 997.5,
+     "liq": 6.718935,
+     "stop": null,
+     "tgt": null
+    }
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   },
   {
    "id": "kronos10",
@@ -6259,25 +6414,25 @@
    ],
    "backtest": {
     "start": "2025-09-01",
-    "end": "2026-11-06T20:00:00+00:00",
-    "equity": 334.9,
+    "end": "2026-11-07T04:00:00+00:00",
+    "equity": 345.97,
     "deposited": 29000.0,
-    "net": -28665.1,
+    "net": -28654.03,
     "net_pct": -98.8,
     "peak_equity": 1625.77,
     "max_dd_pct": -93.1,
     "liquidations": 2,
     "wipes": 28,
-    "n_trades": 4128,
+    "n_trades": 4131,
     "win_pct": 42.9,
     "best_trade": 379.01,
     "worst_trade": -1089.1,
-    "best_month_pct": -65.0,
+    "best_month_pct": -63.8,
     "worst_month_pct": -96.1,
-    "trades_per_month": 291.5,
+    "trades_per_month": 291.1,
     "years": {
      "2025": -97.3,
-     "2026": -98.3
+     "2026": -98.2
     },
     "curve": [
      [
@@ -7361,45 +7516,12 @@
       29000.0
      ],
      [
-      "2026-11-06",
-      334.9,
+      "2026-11-07",
+      345.97,
       29000.0
      ]
     ],
     "last_trades": [
-     {
-      "t": "2026-11-06T06:00:00+00:00",
-      "kind": "čas",
-      "coin": "BTC",
-      "dir": -1,
-      "opened": "2026-11-06T06:00:00+00:00",
-      "entry": 75677.48994,
-      "exit": 75644.98669,
-      "pnl": -0.17,
-      "ret_pct": -0.0
-     },
-     {
-      "t": "2026-11-06T08:00:00+00:00",
-      "kind": "čas",
-      "coin": "BTC",
-      "dir": -1,
-      "opened": "2026-11-06T08:00:00+00:00",
-      "entry": 75600.3131,
-      "exit": 76200.35325,
-      "pnl": -31.64,
-      "ret_pct": -8.5
-     },
-     {
-      "t": "2026-11-06T10:00:00+00:00",
-      "kind": "čas",
-      "coin": "BTC",
-      "dir": -1,
-      "opened": "2026-11-06T10:00:00+00:00",
-      "entry": 76154.54678,
-      "exit": 76169.74407,
-      "pnl": -2.31,
-      "ret_pct": -0.7
-     },
      {
       "t": "2026-11-06T12:00:00+00:00",
       "kind": "čas",
@@ -7454,23 +7576,98 @@
       "exit": 90.377105,
       "pnl": -9.88,
       "ret_pct": -2.9
+     },
+     {
+      "t": "2026-11-06T22:00:00+00:00",
+      "kind": "čas",
+      "coin": "SOL",
+      "dir": -1,
+      "opened": "2026-11-06T22:00:00+00:00",
+      "entry": 90.332892,
+      "exit": 90.167042,
+      "pnl": 4.56,
+      "ret_pct": 1.4
+     },
+     {
+      "t": "2026-11-07T00:00:00+00:00",
+      "kind": "čas",
+      "coin": "ETH",
+      "dir": 1,
+      "opened": "2026-11-07T00:00:00+00:00",
+      "entry": 2239.211562,
+      "exit": 2246.055981,
+      "pnl": 8.55,
+      "ret_pct": 2.5
+     },
+     {
+      "t": "2026-11-07T04:00:00+00:00",
+      "kind": "čas",
+      "coin": "ETH",
+      "dir": 1,
+      "opened": "2026-11-07T04:00:00+00:00",
+      "entry": 2245.763527,
+      "exit": 2248.935117,
+      "pnl": 3.06,
+      "ret_pct": 0.9
      }
     ],
     "open": null
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
-    "equity": 1000.0,
+    "end": "2026-11-07T04:00:00+00:00",
+    "equity": 1024.24,
     "deposited": 1000.0,
-    "net": 0.0,
+    "net": 24.24,
+    "net_pct": 2.4,
+    "peak_equity": 1024.24,
+    "max_dd_pct": 0.0,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
-    "last_trades": [],
+    "n_trades": 2,
+    "win_pct": 100.0,
+    "best_trade": 25.3,
+    "worst_trade": 9.05,
+    "best_month_pct": 2.4,
+    "worst_month_pct": 2.4,
+    "trades_per_month": 2.0,
+    "years": {
+     "2026": 2.4
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      1024.24,
+      1000.0
+     ]
+    ],
+    "last_trades": [
+     {
+      "t": "2026-11-07T00:00:00+00:00",
+      "kind": "čas",
+      "coin": "ETH",
+      "dir": 1,
+      "opened": "2026-11-07T00:00:00+00:00",
+      "entry": 2239.211562,
+      "exit": 2246.055981,
+      "pnl": 25.3,
+      "ret_pct": 2.5
+     },
+     {
+      "t": "2026-11-07T04:00:00+00:00",
+      "kind": "čas",
+      "coin": "ETH",
+      "dir": 1,
+      "opened": "2026-11-07T04:00:00+00:00",
+      "entry": 2245.763527,
+      "exit": 2248.935117,
+      "pnl": 9.05,
+      "ret_pct": 0.9
+     }
+    ],
     "open": null
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   },
   {
    "id": "hodl3",
@@ -7485,11 +7682,11 @@
    ],
    "backtest": {
     "start": "2023-01-01",
-    "end": "2026-11-06T16:00:00+00:00",
-    "equity": 10488.79,
+    "end": "2026-11-07T00:00:00+00:00",
+    "equity": 10489.9,
     "deposited": 1000.0,
-    "net": 9488.79,
-    "net_pct": 948.9,
+    "net": 9489.9,
+    "net_pct": 949.0,
     "peak_equity": 19821.3,
     "max_dd_pct": -62.5,
     "liquidations": 0,
@@ -8389,8 +8586,8 @@
       1000.0
      ],
      [
-      "2026-11-06",
-      10488.79,
+      "2026-11-07",
+      10489.9,
       1000.0
      ]
     ],
@@ -8408,17 +8605,45 @@
    },
    "live": {
     "start": "2026-11-07",
-    "n_trades": 0,
-    "equity": 1000.0,
+    "end": "2026-11-07T00:00:00+00:00",
+    "equity": 999.4,
     "deposited": 1000.0,
-    "net": 0.0,
+    "net": -0.6,
+    "net_pct": -0.1,
+    "peak_equity": 999.4,
+    "max_dd_pct": 0.0,
     "liquidations": 0,
     "wipes": 0,
-    "curve": [],
+    "n_trades": 0,
+    "win_pct": null,
+    "best_trade": null,
+    "worst_trade": null,
+    "best_month_pct": -0.1,
+    "worst_month_pct": -0.1,
+    "trades_per_month": 0.0,
+    "years": {
+     "2026": -0.1
+    },
+    "curve": [
+     [
+      "2026-11-07",
+      999.4,
+      1000.0
+     ]
+    ],
     "last_trades": [],
-    "open": null
+    "open": {
+     "coin": "BTC",
+     "dir": 1,
+     "entry": 75870.95446,
+     "since": "2026-11-07T00:00:00+00:00",
+     "margin": 998.5,
+     "liq": 50959.991079,
+     "stop": null,
+     "tgt": null
+    }
    },
-   "updated": "2026-11-06T22:55+00:00"
+   "updated": "2026-11-07T05:54+00:00"
   }
  ]
 }
