@@ -57,3 +57,22 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Žebříček a Downtown ve stejném stylu: chromové nadpisy, neonová linka, karty s chromovým okrajem.
 
 **Ověření**: Playwright se skutečnou Three.js r160 (načtenou z GitHubu přes git, CDN je v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled je záměrně jen tmavý), bez vodorovného posunu a bez chyb konzole. Databáze, kolekce `strategies` a `downtown`, capabilities i všechny čtvrti beze změny. Publikováno jako „Chrome · neon · UFO“.
+
+## 2026-11-07
+
+**Nalezené prvky**
+1. Paleta příkazů (Ctrl/⌘ K): jedno místo pro hledání i akce, výsledky ve skupinách podle informační architektury a nahoře „nejlepší shoda“, ovládání jen klávesnicí – [Retool: Designing the command palette](https://retool.com/blog/designing-the-command-palette), [Superhuman: How to build a remarkable command palette](https://blog.superhuman.com/how-to-build-a-remarkable-command-palette/), [Solomon: Designing command palettes](https://solomon.io/designing-command-palettes/).
+2. Porovnání položek vedle sebe: výběr 2–3 položek, zarovnané stejné údaje v řádcích, zvýraznění rozdílů a přepínač „jen rozdíly“ – [NN/g: 3 rules for better comparison tables](https://www.nngroup.com/videos/ux-rules-comparison-tables/), [Baymard: User-friendly comparison tools](https://baymard.com/blog/user-friendly-comparison-tools), [SAP Fiori: Comparison pattern](https://www.sap.com/design-system/fiori-design-web/v1-142/ui-elements/comparison-pattern/usage) (stránku se nepodařilo načíst, jen odkaz z vyhledávání).
+3. Interest invokers (`interestfor`) – popovery na najetí/fokus bez JS – [MDN: Using interest invokers](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using_interest_invokers).
+
+**Zapojeno**
+- Paleta příkazů: tlačítko lupy v horní liště (na desktopu „Hledat Ctrl K / ⌘ K“, na mobilu jen ikona) a zkratka Ctrl/⌘ K. Nativní `<dialog>` se skupinami Čtvrti · Jádro města · Laboratoř · Downtown a „Nejlepší shoda“ nahoře; hledání bez diakritiky se zvýrazněním `<mark>` (název, typ, TF, směr, stav, štítek Downtownu), šipky + Enter, Esc zavře, prázdný stav s radou. Výběr budovy přeletí kamerou na budovu a otevře její kartu (z interiéru nejdřív vystoupí); čtvrti otevřou žebříček / Downtown / přehled. Položky se berou z aktuálních budov, takže i z živých kolekcí `strategies` a `downtown`. (Splněno odložené z 6. 11.)
+- Porovnání strategií v žebříčku: u každého řádku „+ Porovnat“ (max. 3), dole přichycený pruh s výběrem, „Zrušit výběr“ a „Porovnat vedle sebe“. Dialog s tabulkou Pravidla · Backtest (vývoj, ověření + t, závěr + t, propad, obchodů/měs.) · Papírově (n, Ø R, Σ R, úspěšnost); nejlepší hodnota v řádku zlatě ★ (u propadu nejmenší), shodné řádky ztlumené, přepínač „Jen rozdíly“. Jen z polí registru (`backtest.*`, `paper.*`, `family`, `tf`, `dir`, `status`, `exit`, `filter`, `regimes`) – nic dopočítaného navíc.
+- Globální Esc nezavře žebříček, když je otevřený dialog (zavře jen dialog).
+
+**Ověření**: Playwright se skutečnou Three.js r160 (z GitHubu přes git, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez vodorovného posunu, bez chyb konzole (jen zablokované fonty); „keltner“ v paletě → 3 výsledky se zvýrazněním, Enter otevře kartu věže; porovnání 2 strategií → 6 nejlepších hodnot, „Jen rozdíly“ 8 řádků, tabulka se na 375 px vejde. Databáze, kolekce `strategies` a `downtown`, capabilities i všechny čtvrti beze změny. Publikováno jako „Design 7. 11.“.
+
+**Odloženo**
+- Interest invokers pro náhledy budov/strategií na najetí – MDN neuvádí stav podpory, na dotyku by byl jen záložní režim; zatím nepřidávat.
+- Porovnání i pro Downtown (stejný vzor nad kolekcí `downtown`) – až podle ohlasu na porovnání v žebříčku.
+- Světlý režim, sparkline papírové křivky a interval spolehlivosti – důvody beze změny (viz 5. 11.).
