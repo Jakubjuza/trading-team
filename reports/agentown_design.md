@@ -76,3 +76,15 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Interest invokers pro náhledy budov/strategií na najetí – MDN neuvádí stav podpory, na dotyku by byl jen záložní režim; zatím nepřidávat.
 - Porovnání i pro Downtown (stejný vzor nad kolekcí `downtown`) – až podle ohlasu na porovnání v žebříčku.
 - Světlý režim, sparkline papírové křivky a interval spolehlivosti – důvody beze změny (viz 5. 11.).
+
+## 2026-11-07 (večer) – tři oddělené kupole a nápisy bez překryvů (na přání uživatele)
+
+**Zadání**: Laboratoř a Downtown mají mít vlastní kupole; jedna velká kupole je překrývala a nápisy byly divně přeřezané.
+
+**Změněno**
+- Každá čtvrť má vlastní skleněnou kupoli: Trade City (r 80, uvnitř obrazovky žebříčku posunuté za okraj plošiny, r 61, výška 18–48), Laboratoř (fialová, střed z −152, r 62) a Downtown (červená, střed z 156, r 64). Kupole se nepřekrývají. Plošiny čtvrtí spojují dlouhé mosty s neonovým zábradlím, světly a branami LABORATOŘ / DOWNTOWN.
+- Nápisy na střechách se kreslí navrch (budovy je neuříznou). Každý snímek se promítnou na obrazovku a ten s nižší prioritou, který by zakryl jiný nápis nebo horní lištu či kartu budovy, se schová. Pořadí: vybraná budova, jádro města, Downtown, Laboratoř (ověřené a papírové napřed), pak bližší. Schované nápisy nechytají kliknutí. Při čtení obrazovek žebříčku jsou nápisy budov skryté.
+- Věže Laboratoře a Downtownu mají střešní nápisy se jménem a stavem. Malé talíře krouží uvnitř městské kupole nad obrazovkami. Výchozí kamera míří na město.
+- Dispečer fází z Downtownu: fasáda „AI“ místo páky, vlastní myšlenky agenta (data přijdou z kolekce `downtown`).
+
+**Ověření**: Playwright se skutečnou Three.js r160 a WebGL SwiftShader, 1280 a 375 px: bez chyb konzole, bez vodorovného posunu. Nápisy se nepřekrývají (kontrola promítnutím rohů nápisů), let na laboratorní věž z palety i „Ukázat ve městě“ v Downtownu míří na nové pozice. Paleta, porovnání i žebříček fungují. Databáze, kolekce `strategies` a `downtown` a capabilities beze změny. Publikováno jako „Tři kupole 7. 11.“.
