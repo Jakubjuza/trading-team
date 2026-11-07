@@ -141,8 +141,8 @@ def resample(df, tf):
     if tf in ("15m", "1h"):
         out = df
     else:
-        out = df.resample(tf).agg({"Open": "first", "High": "max", "Low": "min", "Close": "last", "Volume": "sum"}).dropna()
-    return out[out.index + pd.Timedelta(tf) <= datetime.now(timezone.utc)]
+        out = df.resample("1D" if tf == "1d" else tf).agg({"Open": "first", "High": "max", "Low": "min", "Close": "last", "Volume": "sum"}).dropna()
+    return out[out.index + pd.Timedelta("1D" if tf == "1d" else tf) <= datetime.now(timezone.utc)]
 
 
 # ---------------------------------------------------------------- ukazatele
@@ -494,6 +494,7 @@ def main(cache="/tmp/dt_cache"):
         print(f"{sid}: čistě {bt['net']} USDT, likvidací {bt['liquidations']}, bankrotů {bt['wipes']}, obchodů {bt['n_trades']}", flush=True)
     # Dispečer fází: nasazuje strategie jen ve fázích trhu, kde dřív vydělávaly (research/downtown_dispatch.py)
     try:
+        sys.path.insert(0, str(ROOT))
         from research import downtown_dispatch as X
         disp = X.build(raw, now)
         X.write_md(disp)
