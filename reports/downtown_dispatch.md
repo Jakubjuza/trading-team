@@ -1,6 +1,6 @@
 # Downtown – Dispečer fází (jen papír)
 
-Aktualizováno 2026-11-07T19:46+00:00 UTC skriptem `research/downtown_dispatch.py` (pravidla stanovená předem v hlavičce).
+Aktualizováno 2026-11-07T20:11+00:00 UTC skriptem `research/downtown_dispatch.py` (pravidla stanovená předem v hlavičce).
 Agent nasazuje divoké strategie Downtownu jen ve fázích trhu, kde dřív vydělávaly; výzkum v `reports/downtown_regimes.md`.
 Oddělené od desku, nejde o finanční poradenství.
 
