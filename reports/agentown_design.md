@@ -120,3 +120,9 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Poznámka pod kartami: zpětný test Laboratoře zahrnuje i období výběru strategie (optimistický) a složené úročení souběžných obchodů na 8 mincích dává velká čísla.
 
 **Ověření**: pytest celé sady prošel; první běh workflow v Actions úspěšný (35 účtů). Playwright se skutečnou Three.js r160: 1280 a 375 px, tmavý i světlý režim, bez vodorovného posunu a bez chyb skriptu; hledání „keltner“ v kartách → 3 karty. Publikováno jako „Účty jako Downtown 8. 11.“ (verze 19).
+
+## 2026-11-08 (noc) – Laboratoř jako čtvrť v horní liště (na přání uživatele)
+
+- Nová záložka **Laboratoř** v horní liště mezi Žebříčkem a Downtownem; otevře celostránkovou čtvrť ve stylu Downtownu: štítek čerstvosti (čas přepočtu účtů), informační box, přepínač Zpětný test / Papírově, souhrn (počet účtů, v plusu, čistě dohromady, nejhlubší propad, nejvíc vydělala), karty všech strategií z registru seřazené podle čistého výsledku a pod nimi karty jádra města. „Ukázat ve městě“ přeletí kamerou na laboratorní plošinu. Laboratoř je i v paletě hledání (Ctrl K).
+- Karty v Žebříčku (přepínač Seznam / Karty) zůstávají. Na mobilu je v liště 5 záložek (menší písmo, bez vodorovného posunu).
+- Ověření: Playwright se skutečnou Three.js r160, 1280 a 375 px, tmavý i světlý režim, bez chyb skriptu a bez vodorovného posunu; Esc zavře čtvrť, přepnutí na Downtown ji zavře. Publikováno jako „Laboratoř v liště 8. 11.“ (verze 20).
