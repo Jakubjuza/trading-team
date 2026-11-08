@@ -88,3 +88,23 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Dispečer fází z Downtownu: fasáda „AI“ místo páky, vlastní myšlenky agenta (data přijdou z kolekce `downtown`).
 
 **Ověření**: Playwright se skutečnou Three.js r160 a WebGL SwiftShader, 1280 a 375 px: bez chyb konzole, bez vodorovného posunu. Nápisy se nepřekrývají (kontrola promítnutím rohů nápisů), let na laboratorní věž z palety i „Ukázat ve městě“ v Downtownu míří na nové pozice. Paleta, porovnání i žebříček fungují. Databáze, kolekce `strategies` a `downtown` a capabilities beze změny. Publikováno jako „Tři kupole 7. 11.“.
+
+## 2026-11-08
+
+**Nalezené prvky**
+1. Štítek čerstvosti dat („data z …“): čas brát z nejnovějšího záznamu v datech, ne z načtení stránky, mít pro každý přehled očekávanou frekvenci obnovy a neoznačovat jako živé, co živé není – [Basedash: Data freshness – how current your dashboard data really is](https://www.basedash.com/blog/data-freshness-how-current-your-dashboard-data-really-is), [Qualtrics: Dashboard data freshness](https://www.qualtrics.com/support/vocalize/dashboard-data-freshness/).
+2. Relativní čas („před 3 hodinami“) u nedávných dat a přesné datum tam, kde na něm záleží – [Primer: RelativeTime guidelines](https://primer.style/product/components/relative-time/guidelines), [GitHub relative-time-element](https://github.com/github/relative-time-element/).
+3. Plynulé otevírání oken a dialogů z „top layer“ jen v CSS (`@starting-style`, `transition-behavior: allow-discrete`, přechod `::backdrop`) s ohledem na `prefers-reduced-motion` – [Chrome for Developers: Animate to and from the top layer](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/animate-to-from-top-layer), [Frontend Masters: Animating the dialog element](https://frontendmasters.com/blog/animating-dialog/) (přesměrováno, nečteno).
+4. CSS animace řízené posunem (`animation-timeline: view()`) – [codercops: View transitions & scroll animations 2026](https://blog.codercops.com/blog/css-view-transitions-scroll-animations-2026) (stav podpory v Safari/Firefoxu nebyl ověřen, článek s přehledem se nenačetl).
+
+**Zapojeno**
+- Štítek čerstvosti v hlavičce Downtownu: tečka + „data z D. M. RRRR HH:MM · před X hodinami“ (Intl.RelativeTimeFormat, česky), přesný čas a frekvence přepočtu v tooltipu, `<time datetime>`. Čas = nejnovější pole `updated` v kolekci `downtown`. Zelená pulzující tečka, když je stáří do 1,5× frekvence (6 h u 4hodinového přepočtu); jinak zlatý stav „Zpožděno“. Obnovuje se každou minutu. Stejný štítek je připravený v žebříčku (registr 1× denně, práh 36 h), ale ukáže se jen, když dokumenty v kolekci `strategies` dostanou pole `updated` – dnes ho nemají a datum poslední změny stavu v `history` není čas dat, takže se nic nepředstírá.
+- Plynulé otevření palety příkazů, porovnání strategií (dialogy + ztmavení pozadí) a celostránkového žebříčku i Downtownu: krátké vyjetí a zprůhlednění přes `@starting-style`, jen při `prefers-reduced-motion: no-preference`. Zavření zůstává okamžité (spolehlivé i ve Firefoxu/Safari, kde přechod `display` při zavírání nefunguje).
+
+**Ověření**: Playwright se skutečnou Three.js r160 (z GitHubu přes git, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb konzole, bez vodorovného posunu (první verze štítku na 375 px přetékala o 137 px – opraveno zalamováním). Ze snímku z publikace štítek správně ukazuje „Zpožděno · data z 6. 11. 2026 22:55“; na živé stránce bere čas z databáze. Dialogy mají při otevření 2 běžící přechody s počáteční průhledností 0. Databáze, kolekce `strategies` a `downtown`, capabilities i všechny čtvrti beze změny. Publikováno jako „Design 8. 11.“ (verze 18).
+
+**Odloženo**
+- Animace řízené posunem (třeba odhalování karet Downtownu při posunu) – nepodařilo se ověřit podporu napříč prohlížeči; čistě dekorativní.
+- Štítek čerstvosti pro žebříček – čeká na pole `updated` v kolekci `strategies` (doplnit v denní úloze, která kolekci plní; repozitář tento běh neměnil).
+- Animace zavírání dialogů – vyžaduje JS záložní řešení pro Firefox/Safari; přínos malý.
+- Světlý režim, sparkline papírové křivky strategií, interval spolehlivosti, porovnání pro Downtown, interest invokers – důvody beze změny (viz 5.–7. 11.).
