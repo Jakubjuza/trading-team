@@ -108,3 +108,15 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Štítek čerstvosti pro žebříček – čeká na pole `updated` v kolekci `strategies` (doplnit v denní úloze, která kolekci plní; repozitář tento běh neměnil).
 - Animace zavírání dialogů – vyžaduje JS záložní řešení pro Firefox/Safari; přínos malý.
 - Světlý režim, sparkline papírové křivky strategií, interval spolehlivosti, porovnání pro Downtown, interest invokers – důvody beze změny (viz 5.–7. 11.).
+
+## 2026-11-08 (večer) – statistiky jako v Downtownu pro Laboratoř a jádro (na přání uživatele)
+
+**Zadání**: stejné statistiky jako u Downtownu u všech strategií Laboratoře i u hlavních strategií. Uživatel zvolil papírový účet 1 000 USDT s rizikem 1 % na obchod, přepínač Karty / Seznam a automatický přepočet.
+
+**Změněno**
+- Nový přepočet `research/city_accounts.py` (testy `tests/test_city_accounts.py`) a workflow „Agentown – papírové účty čtvrtí“ (`.github/workflows/city-accounts.yml`, denně 03:41 UTC po noční laboratoři) → `research/city_accounts.json`. Každá strategie: účet 1 000 USDT, riziko 1 % uzavřeného účtu na obchod, reinvestice, bez páky. Laboratoř = obchody celé historie atlasu se stejnými signály a výstupy jako papír + papír z `lab_trades.jsonl`; jádro = donchian_1d, pullback_1d (P0), pyramida (P2), ensemble (denní výnosy) + papír z `outcomes.jsonl`, `pyramid_outcomes.jsonl`, `equity_log.jsonl`. Carry, BRH a RSI(2) účet nemají (chybí zpětný test po obchodech ve stejném tvaru).
+- Nová kolekce databáze `accounts` (35 dokumentů); denní úloha „Agentown – aktualizace z laboratoře“ ji teď synchronizuje spolu se `strategies`.
+- Žebříček: přepínač Zobrazení Seznam / Karty (pamatuje se v prohlížeči) a v kartách přepínač Zpětný test / Papírově. Karty ve stylu Downtownu: čistě v USDT, účet, vloženo, křivka účtu, max. propad, nejdelší série ztrát (místo bankrotů a likvidací), max. účet, obchodů, výher, nejlepší/nejhorší obchod a měsíc, roky, poslední obchody, „+ Porovnat“. Řazení, filtry a hledání platí i pro karty. Jádro města má stejné karty.
+- Poznámka pod kartami: zpětný test Laboratoře zahrnuje i období výběru strategie (optimistický) a složené úročení souběžných obchodů na 8 mincích dává velká čísla.
+
+**Ověření**: pytest celé sady prošel; první běh workflow v Actions úspěšný (35 účtů). Playwright se skutečnou Three.js r160: 1280 a 375 px, tmavý i světlý režim, bez vodorovného posunu a bez chyb skriptu; hledání „keltner“ v kartách → 3 karty. Publikováno jako „Účty jako Downtown 8. 11.“ (verze 19).
