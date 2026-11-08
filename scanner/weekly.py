@@ -77,6 +77,11 @@ def report(cfg, state, now, health=None, demo_log=None):
                      f"{len(cl)} obch. {_n(sum(r['pnl_usdt'] for r in cl))} USDC")
 
     lines.append(f"Papírově celkem (jádro + ensemble): týden {_n(usd_week, 0)} USD · od začátku {_n(usd_total, 0)} USD")
+    try:                                                              # čtvrti Agentownu (Laboratoř, Mozek, AI Lab, Downtown)
+        from scanner import lab_report
+        lines += [""] + lab_report.district_lines(state)
+    except Exception as exc:
+        print(f"čtvrti Agentownu selhaly: {exc}")
     if health:
         lines.append(health)
     lines.append("Jen papírové a demo výsledky. Nejde o finanční poradenství.")
@@ -103,5 +108,11 @@ def maybe_send(cfg, state, now, health_fn=None, demo_log=None, dry_run=False, se
     state.save()
     print(msg)
     if not dry_run and cfg.get("notify", {}).get("telegram", True):
+        if send is None:                                              # obrázek ve stylu Agentownu před textem
+            try:
+                from scanner import lab_report
+                lab_report.send_board(state, {}, f"📊 Týdenní přehled Agentownu · {loc:%d. %m.}")
+            except Exception as exc:
+                print(f"obrázek týdenního přehledu selhal: {exc}")
         (send or notify.telegram)(msg)
     return msg

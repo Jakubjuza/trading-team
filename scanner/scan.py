@@ -793,6 +793,7 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         print(f"přehled ensemblu/pyramidy selhal: {exc}", file=sys.stderr)
     try:
         from scanner import lab_report
+        lines += lab_report.district_lines(state, status.get("prices") or {})
         lines += lab_report.lines(state, status.get("prices") or {}, limit=8)
     except Exception as exc:
         print(f"přehled laboratoře selhal: {exc}", file=sys.stderr)
