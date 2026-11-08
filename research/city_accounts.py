@@ -41,6 +41,28 @@ def _ts(x):
     return t.tz_localize("UTC") if t.tzinfo is None else t.tz_convert("UTC")
 
 
+def daily_equity(trades, cash=START_CASH, risk=RISK):
+    """Denní uzavřený účet (stejná pravidla jako account) – pro studie alokace."""
+    tr = sorted(({**t, "entry": _ts(t["entry"]), "exit": _ts(t["exit"])} for t in trades), key=lambda t: t["entry"])
+    ev = []
+    for k, t in enumerate(tr):
+        ev.append((t["entry"], 1, k, 1))
+        ev.append((t["exit"], 0, k, 2 if t["exit"] <= t["entry"] else 0))
+    ev.sort(key=lambda e: (e[0], e[3]))
+    eq, size, pts = cash, {}, []
+    for t, kind, k, _ in ev:
+        if kind == 1:
+            size[k] = eq * risk
+        else:
+            eq += size.pop(k) * tr[k]["r"]
+            pts.append((t, eq))
+    if not pts:
+        return pd.Series(dtype=float)
+    s = pd.Series([v for _, v in pts], index=pd.DatetimeIndex([t for t, _ in pts])).groupby(level=0).last()
+    s = pd.concat([pd.Series([cash], index=[tr[0]["entry"]]), s]).groupby(level=0).last()
+    return s.resample("1D").last().ffill()
+
+
 def account(trades, start=None, end=None, cash=START_CASH, risk=RISK):
     """trades: dicty s entry, exit (čas), coin, dir (+1/−1), r. Vrátí souhrn ve tvaru Downtownu."""
     tr = sorted(({**t, "entry": _ts(t["entry"]), "exit": _ts(t["exit"])} for t in trades), key=lambda t: t["entry"])
@@ -249,7 +271,8 @@ def core_paper(path, name=None):
     return out
 
 
-def core_accounts(scache):
+def core_backtests(scache):
+    """Zpětné testy jádra: {"donchian"|"pullback"|"pyramida": obchody} a denní výnosy ensemblu (od 200. dne)."""
     sys.argv = [sys.argv[0], str(scache)]
     from scanner import evaluate as ev
     for c in COINS8:                                    # zajistí denní svíčky v cache (yfinance, jako skener)
@@ -260,22 +283,12 @@ def core_accounts(scache):
     import pyramid as P  # noqa: E402
     import ensemble as E  # noqa: E402
     df = P.build()
-    out = []
+    conv = lambda t: [{"entry": x.time, "exit": x.exit, "coin": x.coin, "dir": 1 if x.dir == "long" else -1,
+                       "r": float(x.r)} for x in t.itertuples()]
     p0 = df[df["var"] == "P0"]
-    for sid, name, tag in (("donchian", "donchian_1d", "Věž Donchian · průraz denního kanálu"),
-                           ("pullback", "pullback_1d", "Věž Pullback · návrat k trendu")):
-        t = P.portfolio(p0[p0["strategy"] == name])
-        tr = [{"entry": x.time, "exit": x.exit, "coin": x.coin, "dir": 1 if x.dir == "long" else -1, "r": float(x.r)}
-              for x in t.itertuples()]
-        out.append({"id": "core:" + sid, "kind": "core", "ref": sid, "name": tag, "tf": "1d", "coins": COINS8,
-                    "backtest": account(tr), "live": account(core_paper(ROOT / "research" / "outcomes.jsonl", name),
-                                                             start=CORE_LIVE_START)})
-    t = P.portfolio(df[df["var"] == "P2"])
-    tr = [{"entry": x.time, "exit": x.exit, "coin": x.coin, "dir": 1 if x.dir == "long" else -1, "r": float(x.r)}
-          for x in t.itertuples()]
-    out.append({"id": "core:pyramida", "kind": "core", "ref": "pyramida", "name": "Pyramida · přikupování (P2)", "tf": "1d",
-                "coins": COINS8, "backtest": account(tr),
-                "live": account(core_paper(ROOT / "research" / "pyramid_outcomes.jsonl"), start=CORE_LIVE_START)})
+    trades = {"donchian": conv(P.portfolio(p0[p0["strategy"] == "donchian_1d"])),
+              "pullback": conv(P.portfolio(p0[p0["strategy"] == "pullback_1d"])),
+              "pyramida": conv(P.portfolio(df[df["var"] == "P2"]))}
     frames = {c: E.load(c) for c in E.COINS}
     idx = frames["BTC"].index
     rets = pd.DataFrame({c: f["Close"].pct_change() for c, f in frames.items()}).reindex(idx)
@@ -284,9 +297,23 @@ def core_accounts(scache):
         vol = f["Close"].pct_change().rolling(30).std() * np.sqrt(365)
         w[c] = (E.coin_signal(f) * np.minimum(1, 0.40 / vol) / len(E.COINS)).reindex(idx).fillna(0)
     ens = (w.shift(1) * rets.fillna(0)).sum(axis=1) - w.diff().abs().sum(axis=1).fillna(0) * E.COST
-    live = ens_live()
+    return trades, ens.iloc[200:]
+
+
+CORE_META = {"donchian": ("donchian_1d", "Věž Donchian · průraz denního kanálu", "outcomes.jsonl"),
+             "pullback": ("pullback_1d", "Věž Pullback · návrat k trendu", "outcomes.jsonl"),
+             "pyramida": (None, "Pyramida · přikupování (P2)", "pyramid_outcomes.jsonl")}
+
+
+def core_accounts(scache):
+    trades, ens = core_backtests(scache)
+    out = []
+    for sid, (name, tag, fn) in CORE_META.items():
+        out.append({"id": "core:" + sid, "kind": "core", "ref": sid, "name": tag, "tf": "1d", "coins": COINS8,
+                    "backtest": account(trades[sid]),
+                    "live": account(core_paper(ROOT / "research" / fn, name), start=CORE_LIVE_START)})
     out.append({"id": "core:ensemble", "kind": "core", "ref": "ensemble", "name": "Ensemble · trendová alokace (jen long)",
-                "tf": "1d", "coins": COINS8, "backtest": returns_account(ens.iloc[200:]), "live": live})
+                "tf": "1d", "coins": COINS8, "backtest": returns_account(ens), "live": ens_live()})
     for a in out:
         print(f"{a['id']}: zpětný test {a['backtest']['net']} USDT, papír {a['live']['net']} USDT", flush=True)
     return out
