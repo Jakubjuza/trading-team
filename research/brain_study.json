@@ -1,0 +1,706 @@
+{
+ "updated": "2026-11-08T18:42+00:00",
+ "med_dd_pct": 38.0,
+ "med_cagr_pct": 60.7,
+ "domes": {
+  "Pevnost": [
+   {
+    "id": "lab:boll_break|20/2.5|6h|none|opp|long",
+    "name": "Bollinger průraz 20 2.5 · 6H long",
+    "kind": "lab",
+    "ref": "boll_break|20/2.5|6h|none|opp|long",
+    "style": "průraz",
+    "tf": "6h",
+    "dir": "long",
+    "is_dd_pct": -30.9,
+    "is_cagr_pct": 123.8
+   },
+   {
+    "id": "lab:boll_break|20/2.5|4h|none|opp_stop|long",
+    "name": "Bollinger průraz 20 2.5 · 4H long",
+    "kind": "lab",
+    "ref": "boll_break|20/2.5|4h|none|opp_stop|long",
+    "style": "průraz",
+    "tf": "4h",
+    "dir": "long",
+    "is_dd_pct": -34.9,
+    "is_cagr_pct": 160.3
+   },
+   {
+    "id": "lab:donchian|20|6h|d50|opp|long",
+    "name": "Donchian průraz 20 · 6H long",
+    "kind": "lab",
+    "ref": "donchian|20|6h|d50|opp|long",
+    "style": "průraz",
+    "tf": "6h",
+    "dir": "long",
+    "is_dd_pct": -29.5,
+    "is_cagr_pct": 139.4
+   },
+   {
+    "id": "lab:vol_break|20/1.5|6h|d50|opp|long",
+    "name": "Průraz s objemem 20 1.5 · 6H long",
+    "kind": "lab",
+    "ref": "vol_break|20/1.5|6h|d50|opp|long",
+    "style": "průraz",
+    "tf": "6h",
+    "dir": "long",
+    "is_dd_pct": -25.6,
+    "is_cagr_pct": 115.5
+   },
+   {
+    "id": "lab:keltner|2.5|6h|d50|opp|long",
+    "name": "Keltner průraz 2.5 · 6H long",
+    "kind": "lab",
+    "ref": "keltner|2.5|6h|d50|opp|long",
+    "style": "průraz",
+    "tf": "6h",
+    "dir": "long",
+    "is_dd_pct": -20.9,
+    "is_cagr_pct": 90.5
+   },
+   {
+    "id": "lab:combo|boll_break:20/2.5+atrhi:0.7|1h|none|opp|long",
+    "name": "Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,7 · 1H long",
+    "kind": "lab",
+    "ref": "combo|boll_break:20/2.5+atrhi:0.7|1h|none|opp|long",
+    "style": "kombinace",
+    "tf": "1h",
+    "dir": "long",
+    "is_dd_pct": -38.0,
+    "is_cagr_pct": 60.7
+   },
+   {
+    "id": "lab:combo|boll_break:50/2.5+ema:200|2h|none|opp|long",
+    "name": "Kombinace: Bollinger průraz 50 2.5 + trend EMA200 · 2H long",
+    "kind": "lab",
+    "ref": "combo|boll_break:50/2.5+ema:200|2h|none|opp|long",
+    "style": "kombinace",
+    "tf": "2h",
+    "dir": "long",
+    "is_dd_pct": -34.7,
+    "is_cagr_pct": 295.4
+   },
+   {
+    "id": "lab:combo|boll_break:50/2.5+d:50|2h|none|opp|long",
+    "name": "Kombinace: Bollinger průraz 50 2.5 + denní 50 · 2H long",
+    "kind": "lab",
+    "ref": "combo|boll_break:50/2.5+d:50|2h|none|opp|long",
+    "style": "kombinace",
+    "tf": "2h",
+    "dir": "long",
+    "is_dd_pct": -32.0,
+    "is_cagr_pct": 209.5
+   },
+   {
+    "id": "core:pyramida",
+    "name": "Pyramida · přikupování (P2)",
+    "kind": "core",
+    "ref": "pyramida",
+    "style": "jádro",
+    "tf": "1d",
+    "is_dd_pct": -23.1,
+    "is_cagr_pct": 75.1
+   }
+  ],
+  "Spořitelna": [
+   {
+    "id": "lab:ma_cross|ema/50/60/cross|6h|none|target|long",
+    "name": "Protnutí průměrů ema 50 60 cross · 6H long",
+    "kind": "lab",
+    "ref": "ma_cross|ema/50/60/cross|6h|none|target|long",
+    "style": "trend",
+    "tf": "6h",
+    "dir": "long",
+    "is_dd_pct": -25.9,
+    "is_cagr_pct": 2.3
+   },
+   {
+    "id": "lab:boll_break|50/2.5|4h|none|target|short",
+    "name": "Bollinger průraz 50 2.5 · 4H short",
+    "kind": "lab",
+    "ref": "boll_break|50/2.5|4h|none|target|short",
+    "style": "průraz",
+    "tf": "4h",
+    "dir": "short",
+    "is_dd_pct": -23.5,
+    "is_cagr_pct": 10.3
+   },
+   {
+    "id": "lab:vol_break|20/2.5|12h|none|target|long",
+    "name": "Průraz s objemem 20 2.5 · 12H long",
+    "kind": "lab",
+    "ref": "vol_break|20/2.5|12h|none|target|long",
+    "style": "průraz",
+    "tf": "12h",
+    "dir": "long",
+    "is_dd_pct": -12.7,
+    "is_cagr_pct": 13.9
+   },
+   {
+    "id": "lab:supertrend|10/3.0|4h|d50|trail|short",
+    "name": "Supertrend 10 3.0 · 4H short",
+    "kind": "lab",
+    "ref": "supertrend|10/3.0|4h|d50|trail|short",
+    "style": "trend",
+    "tf": "4h",
+    "dir": "short",
+    "is_dd_pct": -31.8,
+    "is_cagr_pct": 1.6
+   },
+   {
+    "id": "lab:keltner|2.5|4h|none|target|short",
+    "name": "Keltner průraz 2.5 · 4H short",
+    "kind": "lab",
+    "ref": "keltner|2.5|4h|none|target|short",
+    "style": "průraz",
+    "tf": "4h",
+    "dir": "short",
+    "is_dd_pct": -31.6,
+    "is_cagr_pct": 2.8
+   },
+   {
+    "id": "lab:combo|vol_break:55/2.5+reg:side|1h|none|target|short",
+    "name": "Kombinace: Průraz s objemem 55 2.5 + režim side · 1H short",
+    "kind": "lab",
+    "ref": "combo|vol_break:55/2.5+reg:side|1h|none|target|short",
+    "style": "kombinace",
+    "tf": "1h",
+    "dir": "short",
+    "is_dd_pct": -25.5,
+    "is_cagr_pct": 6.5
+   },
+   {
+    "id": "core:donchian",
+    "name": "Věž Donchian · průraz denního kanálu",
+    "kind": "core",
+    "ref": "donchian",
+    "style": "jádro",
+    "tf": "1d",
+    "is_dd_pct": -8.8,
+    "is_cagr_pct": 16.2
+   },
+   {
+    "id": "core:pullback",
+    "name": "Věž Pullback · návrat k trendu",
+    "kind": "core",
+    "ref": "pullback",
+    "style": "jádro",
+    "tf": "1d",
+    "is_dd_pct": -20.2,
+    "is_cagr_pct": 8.9
+   },
+   {
+    "id": "core:ensemble",
+    "name": "Ensemble · trendová alokace",
+    "kind": "core",
+    "ref": "ensemble",
+    "style": "jádro",
+    "tf": "1d",
+    "is_dd_pct": -25.6,
+    "is_cagr_pct": 31.8
+   }
+  ],
+  "Motor": [
+   {
+    "id": "lab:macd|19/39/9/signal|12h|none|opp|long",
+    "name": "MACD 19 39 9 signal · 12H long",
+    "kind": "lab",
+    "ref": "macd|19/39/9/signal|12h|none|opp|long",
+    "style": "trend",
+    "tf": "12h",
+    "dir": "long",
+    "is_dd_pct": -40.6,
+    "is_cagr_pct": 135.3
+   },
+   {
+    "id": "lab:macd|19/39/9/signal|2h|none|opp_stop|long",
+    "name": "MACD 19 39 9 signal · 2H long",
+    "kind": "lab",
+    "ref": "macd|19/39/9/signal|2h|none|opp_stop|long",
+    "style": "trend",
+    "tf": "2h",
+    "dir": "long",
+    "is_dd_pct": -95.6,
+    "is_cagr_pct": 107.8
+   },
+   {
+    "id": "lab:ma_cross|ema/5/50/pullback|1h|d50|opp|long",
+    "name": "Protnutí průměrů ema 5 50 pullback · 1H long",
+    "kind": "lab",
+    "ref": "ma_cross|ema/5/50/pullback|1h|d50|opp|long",
+    "style": "trend",
+    "tf": "1h",
+    "dir": "long",
+    "is_dd_pct": -69.3,
+    "is_cagr_pct": 232.5
+   },
+   {
+    "id": "lab:rsi_mom|60|4h|none|opp_stop|long",
+    "name": "RSI momentum 60 · 4H long",
+    "kind": "lab",
+    "ref": "rsi_mom|60|4h|none|opp_stop|long",
+    "style": "trend",
+    "tf": "4h",
+    "dir": "long",
+    "is_dd_pct": -48.6,
+    "is_cagr_pct": 289.3
+   },
+   {
+    "id": "lab:rsi_mom|60|2h|none|opp_stop|long",
+    "name": "RSI momentum 60 · 2H long",
+    "kind": "lab",
+    "ref": "rsi_mom|60|2h|none|opp_stop|long",
+    "style": "trend",
+    "tf": "2h",
+    "dir": "long",
+    "is_dd_pct": -70.2,
+    "is_cagr_pct": 289.3
+   },
+   {
+    "id": "lab:price_ma|ema/200|4h|none|opp_stop|long",
+    "name": "Cena × průměr ema 200 · 4H long",
+    "kind": "lab",
+    "ref": "price_ma|ema/200|4h|none|opp_stop|long",
+    "style": "trend",
+    "tf": "4h",
+    "dir": "long",
+    "is_dd_pct": -52.6,
+    "is_cagr_pct": 318.2
+   },
+   {
+    "id": "lab:rsi_mom|60|6h|none|opp_stop|long",
+    "name": "RSI momentum 60 · 6H long",
+    "kind": "lab",
+    "ref": "rsi_mom|60|6h|none|opp_stop|long",
+    "style": "trend",
+    "tf": "6h",
+    "dir": "long",
+    "is_dd_pct": -40.6,
+    "is_cagr_pct": 221.6
+   },
+   {
+    "id": "lab:combo|boll_break:20/2.5+ema:100|1h|none|opp|long",
+    "name": "Kombinace: Bollinger průraz 20 2.5 + trend EMA100 · 1H long",
+    "kind": "lab",
+    "ref": "combo|boll_break:20/2.5+ema:100|1h|none|opp|long",
+    "style": "kombinace",
+    "tf": "1h",
+    "dir": "long",
+    "is_dd_pct": -54.2,
+    "is_cagr_pct": 187.6
+   },
+   {
+    "id": "lab:combo|boll_break:20/2.5+atrhi:0.3|1h|none|opp|long",
+    "name": "Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,3 · 1H long",
+    "kind": "lab",
+    "ref": "combo|boll_break:20/2.5+atrhi:0.3|1h|none|opp|long",
+    "style": "kombinace",
+    "tf": "1h",
+    "dir": "long",
+    "is_dd_pct": -64.4,
+    "is_cagr_pct": 107.5
+   }
+  ],
+  "Divočina": [
+   {
+    "id": "lab:supertrend|10/3.0|6h|none|target|short",
+    "name": "Supertrend 10 3.0 · 6H short",
+    "kind": "lab",
+    "ref": "supertrend|10/3.0|6h|none|target|short",
+    "style": "trend",
+    "tf": "6h",
+    "dir": "short",
+    "is_dd_pct": -41.0,
+    "is_cagr_pct": 0.6
+   },
+   {
+    "id": "lab:donchian|100|1h|none|trail|long",
+    "name": "Donchian průraz 100 · 1H long",
+    "kind": "lab",
+    "ref": "donchian|100|1h|none|trail|long",
+    "style": "průraz",
+    "tf": "1h",
+    "dir": "long",
+    "is_dd_pct": -76.1,
+    "is_cagr_pct": 47.8
+   },
+   {
+    "id": "lab:ma_cross|sma/20/50/cross|2h|none|target|short",
+    "name": "Protnutí průměrů sma 20 50 cross · 2H short",
+    "kind": "lab",
+    "ref": "ma_cross|sma/20/50/cross|2h|none|target|short",
+    "style": "trend",
+    "tf": "2h",
+    "dir": "short",
+    "is_dd_pct": -45.3,
+    "is_cagr_pct": 3.2
+   },
+   {
+    "id": "lab:ma_cross|sma/30/60/cross|4h|none|target|long",
+    "name": "Protnutí průměrů sma 30 60 cross · 4H long",
+    "kind": "lab",
+    "ref": "ma_cross|sma/30/60/cross|4h|none|target|long",
+    "style": "trend",
+    "tf": "4h",
+    "dir": "long",
+    "is_dd_pct": -50.5,
+    "is_cagr_pct": 2.3
+   },
+   {
+    "id": "lab:vol_break|55/1.5|1h|none|trail|long",
+    "name": "Průraz s objemem 55 1.5 · 1H long",
+    "kind": "lab",
+    "ref": "vol_break|55/1.5|1h|none|trail|long",
+    "style": "průraz",
+    "tf": "1h",
+    "dir": "long",
+    "is_dd_pct": -80.5,
+    "is_cagr_pct": 31.4
+   },
+   {
+    "id": "lab:keltner|2.5|2h|none|target|short",
+    "name": "Keltner průraz 2.5 · 2H short",
+    "kind": "lab",
+    "ref": "keltner|2.5|2h|none|target|short",
+    "style": "průraz",
+    "tf": "2h",
+    "dir": "short",
+    "is_dd_pct": -45.2,
+    "is_cagr_pct": 2.6
+   },
+   {
+    "id": "lab:vol_break|55/2.5|1h|none|trail|long",
+    "name": "Průraz s objemem 55 2.5 · 1H long",
+    "kind": "lab",
+    "ref": "vol_break|55/2.5|1h|none|trail|long",
+    "style": "průraz",
+    "tf": "1h",
+    "dir": "long",
+    "is_dd_pct": -48.8,
+    "is_cagr_pct": 45.8
+   },
+   {
+    "id": "lab:sweep|55|4h|none|opp|long",
+    "name": "Sweep & reclaim 55 · 4H long · boční",
+    "kind": "lab",
+    "ref": "sweep|55|4h|none|opp|long",
+    "style": "návrat",
+    "tf": "4h",
+    "dir": "long",
+    "is_dd_pct": -79.2,
+    "is_cagr_pct": -21.1
+   }
+  ],
+  "Nováček": []
+ },
+ "results": {
+  "V0": {
+   "name": "Všechno pořád",
+   "test": {
+    "sharpe": 2.48,
+    "cagr_pct": 67.1,
+    "dd_pct": -23.9,
+    "days": 1043
+   },
+   "oos": {
+    "sharpe": 3.71,
+    "cagr_pct": 78.2,
+    "dd_pct": -8.0,
+    "days": 547
+   },
+   "hold": {
+    "sharpe": 1.79,
+    "cagr_pct": 55.7,
+    "dd_pct": -23.9,
+    "days": 496
+   },
+   "dev": {
+    "sharpe": 3.95,
+    "cagr_pct": 105.6,
+    "dd_pct": -22.8,
+    "days": 1461
+   }
+  },
+  "V1": {
+   "name": "Mozek kupolí",
+   "test": {
+    "sharpe": 2.64,
+    "cagr_pct": 73.1,
+    "dd_pct": -18.4,
+    "days": 1043
+   },
+   "oos": {
+    "sharpe": 3.73,
+    "cagr_pct": 80.9,
+    "dd_pct": -8.2,
+    "days": 547
+   },
+   "hold": {
+    "sharpe": 2.02,
+    "cagr_pct": 64.8,
+    "dd_pct": -18.4,
+    "days": 496
+   },
+   "dev": {
+    "sharpe": 3.92,
+    "cagr_pct": 109.2,
+    "dd_pct": -22.7,
+    "days": 1461
+   },
+   "tilt_pct": 95.8
+  },
+  "V2": {
+   "name": "Mozek strategií",
+   "test": {
+    "sharpe": 2.73,
+    "cagr_pct": 85.5,
+    "dd_pct": -16.5,
+    "days": 1043
+   },
+   "oos": {
+    "sharpe": 3.84,
+    "cagr_pct": 91.9,
+    "dd_pct": -9.6,
+    "days": 547
+   },
+   "hold": {
+    "sharpe": 2.14,
+    "cagr_pct": 78.7,
+    "dd_pct": -16.5,
+    "days": 496
+   },
+   "dev": {
+    "sharpe": 4.06,
+    "cagr_pct": 120.9,
+    "dd_pct": -21.1,
+    "days": 1461
+   },
+   "tilt_pct": 100.0
+  },
+  "BTC": {
+   "name": "Držení BTC",
+   "test": {
+    "sharpe": 0.67,
+    "cagr_pct": 22.7,
+    "dd_pct": -53.0,
+    "days": 1043
+   },
+   "oos": {
+    "sharpe": 1.47,
+    "cagr_pct": 86.0,
+    "dd_pct": -28.1,
+    "days": 547
+   },
+   "hold": {
+    "sharpe": -0.4,
+    "cagr_pct": -22.4,
+    "dd_pct": -53.0,
+    "days": 496
+   },
+   "dev": {
+    "sharpe": 1.0,
+    "cagr_pct": 55.7,
+    "dd_pct": -76.6,
+    "days": 1461
+   }
+  }
+ },
+ "verdict": {
+  "V1": {
+   "pass": true,
+   "cond": {
+    "oos": true,
+    "hold": true,
+    "dd": true,
+    "rand": true
+   },
+   "p95_random": 2.55
+  },
+  "V2": {
+   "pass": true,
+   "cond": {
+    "oos": true,
+    "hold": true,
+    "dd": true,
+    "rand": true
+   },
+   "p95_random": 2.55
+  }
+ },
+ "winner": "V2",
+ "today": {
+  "phase": "býk · pila · klid",
+  "dome_weights_pct": {
+   "Pevnost": 25.0,
+   "Spořitelna": 25.0,
+   "Motor": 25.0,
+   "Divočina": 25.0
+  },
+  "strategies_up": [
+   "lab:macd|19/39/9/signal|12h|none|opp|long",
+   "lab:boll_break|20/2.5|6h|none|opp|long",
+   "lab:boll_break|50/2.5|4h|none|target|short",
+   "lab:supertrend|10/3.0|6h|none|target|short",
+   "lab:donchian|20|6h|d50|opp|long",
+   "lab:donchian|100|1h|none|trail|long",
+   "lab:vol_break|20/1.5|6h|d50|opp|long",
+   "lab:keltner|2.5|6h|d50|opp|long",
+   "lab:ma_cross|sma/20/50/cross|2h|none|target|short",
+   "lab:vol_break|20/2.5|12h|none|target|long",
+   "lab:keltner|2.5|2h|none|target|short",
+   "lab:keltner|2.5|4h|none|target|short",
+   "lab:rsi_mom|60|4h|none|opp_stop|long",
+   "lab:price_ma|ema/200|4h|none|opp_stop|long",
+   "lab:rsi_mom|60|6h|none|opp_stop|long",
+   "lab:sweep|55|4h|none|opp|long",
+   "lab:combo|boll_break:20/2.5+ema:100|1h|none|opp|long",
+   "lab:combo|vol_break:55/2.5+reg:side|1h|none|target|short",
+   "lab:combo|boll_break:20/2.5+atrhi:0.3|1h|none|opp|long",
+   "lab:combo|boll_break:20/2.5+atrhi:0.7|1h|none|opp|long",
+   "lab:combo|boll_break:50/2.5+ema:200|2h|none|opp|long",
+   "lab:combo|boll_break:50/2.5+d:50|2h|none|opp|long"
+  ],
+  "strategies_down": [
+   "lab:supertrend|10/3.0|4h|d50|trail|short"
+  ]
+ },
+ "phase_table_is": {
+  "Pevnost": {
+   "býk · pila · divoko": {
+    "n": 214,
+    "mean_bp": 33.1
+   },
+   "býk · pila · klid": {
+    "n": 340,
+    "mean_bp": 15.1
+   },
+   "býk · trend · divoko": {
+    "n": 179,
+    "mean_bp": 79.1
+   },
+   "býk · trend · klid": {
+    "n": 184,
+    "mean_bp": 80.7
+   },
+   "medvěd · pila · divoko": {
+    "n": 187,
+    "mean_bp": -2.7
+   },
+   "medvěd · pila · klid": {
+    "n": 256,
+    "mean_bp": 5.8
+   },
+   "medvěd · trend · divoko": {
+    "n": 115,
+    "mean_bp": -2.7
+   },
+   "medvěd · trend · klid": {
+    "n": 151,
+    "mean_bp": 0.6
+   }
+  },
+  "Spořitelna": {
+   "býk · pila · divoko": {
+    "n": 214,
+    "mean_bp": 0.6
+   },
+   "býk · pila · klid": {
+    "n": 340,
+    "mean_bp": 1.1
+   },
+   "býk · trend · divoko": {
+    "n": 179,
+    "mean_bp": 6.5
+   },
+   "býk · trend · klid": {
+    "n": 184,
+    "mean_bp": 4.9
+   },
+   "medvěd · pila · divoko": {
+    "n": 187,
+    "mean_bp": -0.1
+   },
+   "medvěd · pila · klid": {
+    "n": 256,
+    "mean_bp": 1.2
+   },
+   "medvěd · trend · divoko": {
+    "n": 115,
+    "mean_bp": 5.5
+   },
+   "medvěd · trend · klid": {
+    "n": 151,
+    "mean_bp": 8.8
+   }
+  },
+  "Motor": {
+   "býk · pila · divoko": {
+    "n": 214,
+    "mean_bp": 40.4
+   },
+   "býk · pila · klid": {
+    "n": 340,
+    "mean_bp": 28.2
+   },
+   "býk · trend · divoko": {
+    "n": 179,
+    "mean_bp": 130.2
+   },
+   "býk · trend · klid": {
+    "n": 184,
+    "mean_bp": 107.8
+   },
+   "medvěd · pila · divoko": {
+    "n": 187,
+    "mean_bp": -10.1
+   },
+   "medvěd · pila · klid": {
+    "n": 256,
+    "mean_bp": 11.8
+   },
+   "medvěd · trend · divoko": {
+    "n": 115,
+    "mean_bp": -16.2
+   },
+   "medvěd · trend · klid": {
+    "n": 151,
+    "mean_bp": -7.2
+   }
+  },
+  "Divočina": {
+   "býk · pila · divoko": {
+    "n": 214,
+    "mean_bp": 1.4
+   },
+   "býk · pila · klid": {
+    "n": 340,
+    "mean_bp": 8.7
+   },
+   "býk · trend · divoko": {
+    "n": 179,
+    "mean_bp": 16.2
+   },
+   "býk · trend · klid": {
+    "n": 184,
+    "mean_bp": 18.6
+   },
+   "medvěd · pila · divoko": {
+    "n": 187,
+    "mean_bp": 0.6
+   },
+   "medvěd · pila · klid": {
+    "n": 256,
+    "mean_bp": 2.2
+   },
+   "medvěd · trend · divoko": {
+    "n": 115,
+    "mean_bp": -18.5
+   },
+   "medvěd · trend · klid": {
+    "n": 151,
+    "mean_bp": -7.3
+   }
+  }
+ }
+}
