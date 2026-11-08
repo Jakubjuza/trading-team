@@ -96,6 +96,22 @@ def lines(state, prices=None, limit=12):
     return out
 
 
+def trade_blocks(state, prices=None, limit=8):
+    """Otevřené obchody laboratoře jako přehledné bloky pro HTML zprávu: mince a výsledek tučně, strategie pod tím."""
+    from scanner.notify import h
+    ops = open_positions(state, prices)
+    out = []
+    for p in ops[:limit]:
+        arrow = "▲" if p["dir"] == "long" else "▼"
+        res = (f"{_n(p['r'])} R ({_n(p['pct'], 1)} %)" if p["r"] is not None
+               else (f"{_n(p['pct'], 1)} %" if p["pct"] is not None else "cena ?"))
+        icon = "🟢" if (p["r"] or 0) > 0 else ("🔴" if (p["r"] or 0) < 0 else "⚪")
+        out.append(f"{icon} <b>{arrow} {h(p['coin'])}</b> · {h(p['tf'].upper())} · <b>{h(res)}</b>\n      {h(_short(p))}")
+    if len(ops) > limit:
+        out.append(f"… a dalších {len(ops) - limit}")
+    return out
+
+
 def _ensemble_value(state, prices):
     ens = state.data.get("ensemble") or {}
     held = {c: q for c, q in (ens.get("qty") or {}).items() if q > 0}

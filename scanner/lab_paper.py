@@ -287,8 +287,15 @@ def _manage(positions, tf, frames, reg, now, msgs, shadow=False):
                 rec[k] = o[k]
         _log(rec, SHADOW if shadow else None)
         if not shadow:
-            msgs.append(f"🧪📕 {o['label']} · {o['coin']} {o['dir'].upper()} {tf.upper()}: {_n(r)} R "
-                        f"({_n(res['g'] * 100 - 2 * COST * 100)} % po poplatcích), papírově.")
+            H = notify.h
+            icon = "🟢" if r > 0 else "🔴"
+            msgs.append("\n".join([
+                f"<b>{icon} LABORATOŘ · obchod uzavřen</b>",
+                f"<b>{H(o['coin'])} · {'▲ LONG' if o['dir'] == 'long' else '▼ SHORT'}</b> · {H(tf.upper())}",
+                f"<i>{H(o['label'])}</i>",
+                "",
+                f"Výsledek: <b>{H(_n(r))} R</b> ({H(_n(res['g'] * 100 - 2 * COST * 100))} % po poplatcích)",
+                "<i>Papírově.</i>"]))
     return still
 
 
@@ -433,10 +440,20 @@ def update(cfg, state, now=None, dry_run=False, send=None, ex=None, reg=None):
                     ctx_line += (f"🧠 Skóre {_n(sc)} (práh {_n(model['threshold'])})"
                                  + (f" · pro: {', '.join(pro)}" if pro else "")
                                  + (f" · proti: {', '.join(proti)}" if proti else "") + "\n")
-                msgs.append(f"⚡ {s['label']} · {coin} {s['dir'].upper()} {tf.upper()} · režim {rg}\n"
-                            f"Vstup ~{notify.fmt(z.c[i])} (open další svíčky), {_plan(z, s, i)}.\n" + ctx_line +
-                            f"Laboratoř: {s['status']}, backtest OOS {_n(s['backtest'].get('oos_r', 0))} R. "
-                            f"Papírově, ne rada.")
+                H = notify.h
+                arrow = "▲ LONG" if s["dir"] == "long" else "▼ SHORT"
+                plan = [f"<code>{H(x)}</code>" for x in _plan(z, s, i).split(", ")]
+                msgs.append("\n".join([
+                    "<b>⚡ LABORATOŘ · nový obchod</b>",
+                    f"<b>{H(coin)} · {arrow}</b> · {H(tf.upper())}",
+                    f"<i>{H(s['label'])}</i>",
+                    "",
+                    f"<code>Vstup ~{H(notify.fmt(z.c[i]))}</code> (open další svíčky)",
+                    *plan,
+                    "",
+                    f"Režim trhu: {H(rg)} · stav: {H(s['status'])} · ověření v testu {H(_n(s['backtest'].get('oos_r', 0)))} R/obchod",
+                    *([H(x) for x in ctx_line.strip().split("\n")] if ctx_line.strip() else []),
+                    "<i>Papírově, ne rada.</i>"]))
         st["last_eval"][tf] = last_closed
     state.save()
     if tg:

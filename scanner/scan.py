@@ -773,58 +773,80 @@ def maybe_heartbeat(cfg, state, status, found, now, send=None):
         state.save()
         return None
     tz = ZoneInfo(cfg.get("timezone", "UTC"))
+    H, sec = notify.h, notify.section
+    prices = status.get("prices") or {}
     title = "🟢 Skener spuštěn a hledá" if last is None else "🟢 Skener běží"
     period = "od spuštění" if last is None else f"za posledních {hours} h"
-    lines = [f"{title} ({now.astimezone(tz):%d.%m. %H:%M})",
-             f"{period}: {hb['scans']} průchodů, nových setupů: {hb['setups']}"]
-    if status.get("prices"):
-        lines.append(" · ".join(f"{sym} {notify.fmt(p)}" for sym, (p, _) in status["prices"].items()))
+    lines = [f"<b>{title} · Agentown</b>",
+             f"<i>{now.astimezone(tz):%d.%m. %H:%M} · {period}: {hb['scans']} průchodů, nových setupů: {hb['setups']}</i>", ""]
+    if status.get("errors"):
+        lines += sec("⚠️ Problém s daty", [H(f"{k} – {v}") for k, v in status["errors"].items()])
+    if prices:
+        lines += sec("💱 Ceny", [f"<code>{H(sym)} {H(notify.fmt(p))}</code>" for sym, (p, _) in prices.items()])
+    city = []
     closed = state.data.get("closed", [])
-    lines.append(f"Papírově – jádro: otevřené {len(state.data.get('open', []))}, uzavřené {len(closed)}"
-                 + (f", Σ {sum(c['r'] for c in closed):+.2f} R" if closed else ""))
+    city.append(f"Papírově – jádro: otevřené {len(state.data.get('open', []))}, uzavřené {len(closed)}"
+                + (f", Σ {sum(c['r'] for c in closed):+.2f} R".replace(".", ",") if closed else ""))
     try:                                                              # ostatní části mají pozice jinde ve state
-        ens_line = ensemble_heartbeat_line(state, status.get("prices") or {})
-        if ens_line:
-            lines.append(ens_line)
-        pyr_line = pyramid.heartbeat_line(state)
-        if pyr_line:
-            lines.append(pyr_line)
+        for ln in (ensemble_heartbeat_line(state, prices), pyramid.heartbeat_line(state)):
+            if ln:
+                city.append(H(ln))
     except Exception as exc:
         print(f"přehled ensemblu/pyramidy selhal: {exc}", file=sys.stderr)
     try:
-        from scanner import lab_report
-        lines += lab_report.district_lines(state, status.get("prices") or {})
-        lines += lab_report.lines(state, status.get("prices") or {}, limit=8)
-    except Exception as exc:
-        print(f"přehled laboratoře selhal: {exc}", file=sys.stderr)
-    try:
-        lines += positions_overview(state, status.get("prices") or {}, hb["last"])
+        pos = positions_overview(state, prices, hb["last"])
+        if pos:
+            city.append("")
+            city += [("\n" + H(x)) if x.startswith("📕") else H(x) for x in pos]
     except Exception as exc:
         print(f"přehled pozic selhal: {exc}", file=sys.stderr)
-    if status.get("errors"):
-        lines.append("⚠️ Problém s daty: " + "; ".join(f"{k} – {v}" for k, v in status["errors"].items()))
-    try:                                                              # výkon částí je v 📊 týdenním přehledu (scanner/weekly.py)
+    lines += sec("🌆 Trade City · jádro", city)
+    try:
+        from scanner import lab_report
+        D = lab_report.districts(state, prices)
+        lb = D["lab"]
+        lab_rows = [f"{lb['active']} strategií · otevřené <b>{lb['open']}</b> · uzavřené {lb['closed']} (Σ {lab_report._n(lb['sum_r'])} R"
+                    + (f", {lb['win']:.0f} % výher)" if lb["win"] is not None else ")")]
+        blocks = lab_report.trade_blocks(state, prices, limit=8)
+        for bl in blocks:
+            lab_rows += ["", bl]
+        lines += sec("🔬 Laboratoř", lab_rows)
+        if "brain" in D:
+            b = D["brain"]
+            lines += sec("🧠 Mozek", [f"fáze trhu: <b>{H(b['phase'])}</b>"] +
+                         [H(f"{n}: {w:.1f} % kapitálu · ▲{u} ▼{d}".replace(".", ",")) for n, w, u, d in b["domes"]])
+        if "ai" in D:
+            a = D["ai"]
+            lines += sec("🤖 AI Lab", [f"testem prošlo {a['pass']}/{a['n']} · živě {a['live_trades']} obch. · {lab_report._n(a['live_net'], 0)} USDT"])
+        if "dt" in D:
+            t = D["dt"]
+            lines += sec("🌃 Downtown", [f"živě {lab_report._n(t['live_net'], 0)} USDT · v plusu {t['up']}/{t['n']} · bankroty {t['wipes']}"])
+    except Exception as exc:
+        print(f"přehled čtvrtí selhal: {exc}", file=sys.stderr)
+    other = []
+    try:
         if (cfg.get("demo") or {}).get("enabled"):
             core_demo = [p["symbol"].split("/")[0] for p in state.data.get("open", [])
                          if (p.get("demo") or {}).get("status") == "open"]
             ens_demo = sorted(c for c, q in ((state.data.get("ensemble") or {}).get("demo_qty") or {}).items() if q > 0)
             parts = [f"jádro {len(core_demo)}"] + ([f"ensemble {len(ens_demo)} ({', '.join(ens_demo)})"] if ens_demo else [])
-            lines.append(f"Demo OKX: {'připojeno' if demo_broker(cfg) else 'nepřipojeno (' + ((_DEMO['error'] or (0, 'chybí klíče'))[1]) + ')'}"
-                         f", otevřené pozice {len(core_demo) + len(ens_demo)}: {', '.join(parts)}")
+            other.append(H(f"🧪 Demo OKX: {'připojeno' if demo_broker(cfg) else 'nepřipojeno (' + ((_DEMO['error'] or (0, 'chybí klíče'))[1]) + ')'}"
+                           f", otevřené pozice {len(core_demo) + len(ens_demo)}: {', '.join(parts)}"))
     except Exception as exc:
         print(f"stav dema selhal: {exc}", file=sys.stderr)
     try:
         up = sessions.upcoming_line(now, hours)
         if up:
-            lines.append(up)
+            other.append(H(up))
         if (cfg.get("events") or {}).get("enabled"):
             nxt = [e for e in events_mod.upcoming(now, 2)[0] if e["impact"] == "High"]
             if nxt:
-                lines.append("📅 Nejbližší: " + events_mod.event_line(nxt[0], events_mod.load_stats()))
+                other.append(H("📅 Nejbližší: " + events_mod.event_line(nxt[0], events_mod.load_stats())))
     except Exception as exc:
         print(f"kontext burz selhal: {exc}", file=sys.stderr)
+    lines += sec("🗓️ Demo a kalendář", other)
     rules_txt = ", ".join(f"{setups.NAMES_CS.get(st['setup'], st['setup'])} {st['timeframe']}" for st in cfg_strategies(cfg))
-    lines.append(f"Hlídám: {rules_txt}. Další zpráva o stavu za {hours} h.")
+    lines.append(f"<i>{H(f'Hlídám: {rules_txt}. Další zpráva o stavu za {hours} h. Jen papír, ne rada.')}</i>")
     text = "\n".join(lines)
     if send is None:                                                  # 📊 obrázek s přehledem před textem
         from scanner import lab_report

@@ -51,8 +51,8 @@ def test_weekly_report_lists_all_parts(tmp_path):
     log.write_text(json.dumps({"event": "close", "id": "x", "pnl_usdt": 12.5, "closed": "2026-10-30T00:00:00+00:00"}) + "\n")
     sent = []
     msg = weekly.maybe_send(CFG, state, now, health_fn=lambda: "Zdraví strategií: OK", demo_log=log, send=sent.append)
-    assert msg.startswith("📊 Týdenní přehled") and "Jádro (denní signály): týden 1 obch. +1,50 R · celkem 2 obch. +0,50 R" in msg
+    assert "📊 Týdenní přehled" in msg.splitlines()[0] and "Jádro (denní signály): týden 1 obch. +1,50 R · celkem 2 obch. +0,50 R" in msg
     assert "Vstup z 1H (papír): týden 1 obch. -1,00 R" in msg and "Pyramida" in msg and "+3,20 R" in msg
     assert "Ensemble (papír): týden +4,0 % · celkem +4,0 %" in msg and "Demo OKX: týden 1 obch. +12,50 USDC" in msg
-    assert "Zdraví strategií: OK" in msg and "týden +277 USD" in msg
+    assert "Zdraví strategií: OK" in msg and "týden <b>+277 USD</b>" in msg
     assert weekly.maybe_send(CFG, state, now, send=sent.append) is None              # jednou za týden

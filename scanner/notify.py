@@ -90,8 +90,23 @@ def render_chart(ticker, tf, s, df, lines, out_dir, bars=80):
     return out
 
 
+def h(x):
+    """Escapování pro zprávy s HTML formátováním (tučné nadpisy, oddíly)."""
+    import html
+    return html.escape(str(x), quote=False)
+
+
+def section(title, rows):
+    """Oddíl zprávy: tučný nadpis a pod ním řádky; prázdný oddíl vrátí []."""
+    rows = [r for r in rows if r is not None]
+    while rows and rows[-1] == "":
+        rows.pop()
+    return [f"<b>{title}</b>"] + rows + [""] if any(rows) else []
+
+
 def telegram(text, photo=None, buttons=None):
-    """`buttons` = [(popisek, URL), …] → tlačítka s odkazem pod zprávou (inline keyboard)."""
+    """`buttons` = [(popisek, URL), …] → tlačítka s odkazem pod zprávou (inline keyboard).
+    Text, který obsahuje <b>…</b>, se posílá jako HTML (dynamické části escapuj přes h())."""
     token, chat = os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
     if not token or not chat:
         print("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID nejsou nastavené – zpráva neodeslána.", file=sys.stderr)
@@ -99,9 +114,14 @@ def telegram(text, photo=None, buttons=None):
     base = f"https://api.telegram.org/bot{token}"
     if photo and Path(photo).exists() and len(text) <= 1024:
         with open(photo, "rb") as fh:
-            r = requests.post(f"{base}/sendPhoto", data={"chat_id": chat, "caption": text}, files={"photo": fh}, timeout=30)
+            data = {"chat_id": chat, "caption": text}
+            if "<b>" in text:
+                data["parse_mode"] = "HTML"
+            r = requests.post(f"{base}/sendPhoto", data=data, files={"photo": fh}, timeout=30)
     else:
-        data = {"chat_id": chat, "text": text}
+        data = {"chat_id": chat, "text": text, "disable_web_page_preview": "true"}
+        if "<b>" in text:
+            data["parse_mode"] = "HTML"
         if buttons:
             data["reply_markup"] = json.dumps({"inline_keyboard": [[{"text": t, "url": u}] for t, u in buttons]})
         r = requests.post(f"{base}/sendMessage", data=data, timeout=30)

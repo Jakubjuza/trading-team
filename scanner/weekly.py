@@ -24,7 +24,9 @@ def report(cfg, state, now, health=None, demo_log=None):
     since_dt = now - timedelta(days=7)
     since = since_dt.isoformat()
     risk_usd = cfg.get("account_size", 10000) * cfg.get("risk_pct", 1.0) / 100
-    lines = [f"📊 Týdenní přehled ({(loc - timedelta(days=7)):%d.%m.} – {loc:%d.%m.}) · 1 R = {notify.fmt(risk_usd)} USD"]
+    lines = [f"<b>📊 Týdenní přehled · Agentown</b>",
+             f"<i>{(loc - timedelta(days=7)):%d.%m.} – {loc:%d.%m.} · 1 R = {notify.h(notify.fmt(risk_usd))} USD · jen papír a demo</i>", "",
+             "<b>🌆 Trade City</b>"]
     usd_week = usd_total = 0.0
 
     closed = state.data.get("closed", [])
@@ -73,18 +75,20 @@ def report(cfg, state, now, health=None, demo_log=None):
                 continue
         cl = [r for r in recs if r.get("event") == "close" and r.get("pnl_usdt") is not None and r.get("id") != "TEST"]
         wk = [r for r in cl if (r.get("closed") or "") >= since]
+        lines += ["", "<b>🧪 Demo OKX</b>"]
         lines.append(f"• 🧪 Demo OKX: týden {len(wk)} obch. {_n(sum(r['pnl_usdt'] for r in wk))} USDC · celkem "
                      f"{len(cl)} obch. {_n(sum(r['pnl_usdt'] for r in cl))} USDC")
 
-    lines.append(f"Papírově celkem (jádro + ensemble): týden {_n(usd_week, 0)} USD · od začátku {_n(usd_total, 0)} USD")
+    lines += ["", f"<b>💰 Papírově celkem (jádro + ensemble)</b>", f"týden <b>{_n(usd_week, 0)} USD</b> · od začátku {_n(usd_total, 0)} USD"]
     try:                                                              # čtvrti Agentownu (Laboratoř, Mozek, AI Lab, Downtown)
         from scanner import lab_report
-        lines += [""] + lab_report.district_lines(state)
+        dl = lab_report.district_lines(state)
+        lines += ["", "<b>" + notify.h(dl[0]) + "</b>"] + [notify.h(x) for x in dl[1:]]
     except Exception as exc:
         print(f"čtvrti Agentownu selhaly: {exc}")
     if health:
-        lines.append(health)
-    lines.append("Jen papírové a demo výsledky. Nejde o finanční poradenství.")
+        lines += ["", "<b>🩺 Zdraví strategií</b>", notify.h(health)]
+    lines += ["", "<i>Jen papírové a demo výsledky. Nejde o finanční poradenství.</i>"]
     return "\n".join(lines)
 
 
