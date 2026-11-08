@@ -55,6 +55,10 @@ Pravidla:
   odhadne hůř než „cena se nezmění“ (MAE poměr 1,26); po nákladech 0,30 % −0,27 % na obchod, ani nad náhodou – NEPROJDE –
   `reports/kronos.md` – 6. 11. 2026. Podnět: virální příspěvek (getintoai); model [arXiv 2508.02739](https://arxiv.org/abs/2508.02739).
 
+<!-- combo-study:start -->
+- **Kombinace: filtr F&G (fng) jako potvrzení na 2H** – průměrně zhoršil OOS spouštěčů o -0,22 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-08.
+<!-- combo-study:end -->
+
 ## 🧪 Vnější důkazy (u nás neověřeno)
 
 - **Vysoký carry (funding) předpovídá propady ceny** – [BIS WP 1087](https://www.bis.org/publications/working-paper-1087-crypto-carry).
