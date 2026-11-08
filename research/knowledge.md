@@ -106,6 +106,18 @@ Pravidla:
   [Li, Kim, Cucuringu, Ma, arXiv 2505.07078](https://arxiv.org/abs/2505.07078) (otevřen jen abstrakt) – 1. 11. 2026.
   Pro desk: verdikt AI oddělení nepovažovat za výhodu, dokud ho neporazí mechanický signál bez AI na stejných obchodech → H12.
 
+- **Výsledky LLM obchodních agentů nejsou důkaz použitelnosti** – hlášený zisk (FinCon, FinMem, TradingAgents) může být
+  časová kontaminace, nezapočtené tření, krátké okno, dopasování příběhu; autoři navrhují minimální protokol P1–P6
+  (časová integrita, tření, robustnost, kalibrace, numerické provedení, rozklad multi-agenta) –
+  [Ye et al., arXiv 2605.16895](https://arxiv.org/abs/2605.16895) (otevřen jen abstrakt, detaily P1–P6 neověřeny) – 8. 11. 2026.
+  Pro desk: náš postup (papírové obchody až po zápisu verdiktu, náklady započtené, srovnání s mechanickým signálem v H12)
+  jde stejným směrem; verdikty hodnotit jen prospektivně.
+- **Parametrická „look-ahead“ předpojatost LLM** – model s trénovacími daty obsahujícími testované události „zná“ výsledky;
+  oprava na vstupu nestačí, navržená korekce při dekódování (FinCAD) snížila vnitrosampleový výnos v průměru o 67 %, OOS
+  se skoro nezměnil – [Li, Wang, Ma, arXiv 2605.24564, EMNLP 2026](https://arxiv.org/abs/2605.24564) (jen abstrakt; testováno
+  na 5 mega-cap akciích, ne na kryptu) – 8. 11. 2026. Pro desk: zpětné „AI verdikty“ na historii (před datem znalostí
+  modelu) nepoužívat jako důkaz; jen živé verdikty od 24. 10. 2026.
+
 ## Metodika (proč testujeme přísně)
 
 - **Zpětné testy se snadno přeladí**; klasický hold-out nestačí, když se zkouší hodně variant –
@@ -140,3 +152,5 @@ Pravidla:
 
 Až bude ≥ 20 uzavřených obchodů s verdiktem (`research/outcomes.jsonl` × `research/verdicts.jsonl`). Zatím 1 uzavřený
 obchod (ETH short, −1,2 R) a 4 verdikty (3× C, 1× NO_TRADE) – kontrola 1. 11. 2026; nehodnotím.
+Kontrola 8. 11. 2026: `outcomes.jsonl` 4 záznamy (3 z nich varianta „+mtf“ a 1 duplicita ETH, všechny stop), `verdicts.jsonl`
+6 záznamů (z toho 1 SKIPPED, 5 verdiktů: 3× C, 2× NO_TRADE); uzavřených obchodů s verdiktem ≤ 4 (potřeba ≥ 20) – nehodnotím.
