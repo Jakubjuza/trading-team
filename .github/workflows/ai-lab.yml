@@ -1,11 +1,11 @@
 name: AI Lab – strategie vymyšlené AI
 
 # 🤖 research/ai_lab.py: vlastní nápady Clauda (Ozvěna BTC, Tichý průraz, Hodiny trhu, Rotace síly) a evoluce pravidel.
-# Každé 4 hodiny přepočítá živý papír (genom evoluce je po prvním běhu zamčený v research/ai_lab_genome.json).
+# Denně (před ranní synchronizací Agentownu) přepočítá živý papír (genom evoluce je po prvním běhu zamčený v research/ai_lab_genome.json).
 # Jen papír, odděleno od desku – na skener, registr, riziko, demo ani peníze nesahá.
 on:
   schedule:
-    - cron: "29 */4 * * *"
+    - cron: "29 4 * * *"
   workflow_dispatch:
 
 permissions:

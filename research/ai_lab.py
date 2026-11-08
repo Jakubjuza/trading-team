@@ -34,6 +34,9 @@ Stanoveno PŘEDEM (8. 11. 2026), před prvním spuštěním na datech:
     různých genomů podle IS → ověření OOS. Vítěz = nejvyšší OOS t mezi těmi s Ø R > 0 v IS i OOS a OOS t ≥ 2;
     HOLDOUT se jen ukáže. Kontrola: 30 náhodných genomů stejné stavby – kolik z nich projde OOS stejně.
     Vítězný genom se uloží (research/ai_lab_genome.json) a dál se neladí.
+  Opravy chyb po prvním běhu (8. 11., nejde o ladění parametrů): obchody se stopem blíž než 0,1 % od vstupu se
+    vyřazují (svíčky s nulovým rozpětím dávaly R ~1e64); Hodiny trhu používaly při obchodování posunutý klíč hodiny
+    a účtovaly poplatek každou hodinu místo jen při vstupu a výstupu. Evoluce se znovu nespouštěla.
   PROJDE (strategie se stopem): Ø R > 0 v IS, OOS i HOLDOUT a OOS t ≥ 2. Alokační: Sharpe > 0 ve všech třech
     obdobích a OOS Sharpe ≥ 1. Neprošlé zůstávají na stránce jako pokus, s jasným štítkem.
 
@@ -58,6 +61,7 @@ IS_END, OOS_END = pd.Timestamp("2024-01-01", tz="UTC"), pd.Timestamp("2025-07-01
 ACC_START = "2024-01-01"
 LIVE_START = "2026-11-09"
 COST = 0.0005
+MIN_RISK = 0.001        # stop aspoň 0,1 % od vstupu, jinak je obchod chyba dat (nulové rozpětí svíček)
 SEED, POP, GENS, TOURN, TOP_K = 20261108, 200, 30, 3, 30
 HOLDS, STOPS = [2, 4, 8, 16, 32], [1.0, 1.5, 2.0, 3.0]
 QS = [.1, .2, .3, .4, .5, .6, .7, .8, .9]
@@ -121,7 +125,8 @@ def trades_from(z, ent_mask, d, stop, trail, hold):
     if not len(ent):
         return np.empty(0, np.int64), np.empty(0, np.int64), np.empty(0)
     ii, xx, gg, rf = atlas.simulate(z.o, z.h, z.l, z.c, z.atr, ent, np.zeros(len(z.c), bool), d, stop, trail, 0.0, False, hold)
-    return ii, xx, (gg - 2 * COST) / rf
+    ok = rf >= MIN_RISK                       # oprava dat (8. 11.): svíčky s nulovým rozpětím dávaly stop ~0 a R ~1e64
+    return ii[ok], xx[ok], (gg[ok] - 2 * COST) / rf[ok]
 
 
 def to_list(z, coin, d, ii, xx, rr):
@@ -169,9 +174,9 @@ def a3_hours(frames, F):
         t = st["mean"] / (st["std"] / np.sqrt(st["count"]))
         hrs = sorted(int(h) for h in t[t >= 2].index)
         learned[c] = hrs
-        nh = ((f.index.hour + 1) % 24)                             # hodina obchodované svíčky
-        on = np.isin(nh, hrs)
-        r = np.where(on, (np.exp(nxt) - 1) - 2 * COST, 0.0) / len(frames)
+        on = np.isin(f.index.hour, hrs).astype(float)             # oprava (8. 11.): stejný klíč hodiny jako při učení
+        chg = np.abs(np.diff(np.r_[0.0, on]))                      # poplatek jen při vstupu a výstupu, držení přes víc hodin nic nestojí
+        r = (on * (np.exp(nxt.fillna(0)) - 1) - chg * COST) / len(frames)
         parts.append(pd.Series(r, index=f.index + pd.Timedelta("1h")))
     tot = pd.concat(parts, axis=1).fillna(0).sum(axis=1)
     return tot, learned
