@@ -1,0 +1,50 @@
+name: Agentown – papírové účty čtvrtí
+
+# Jednou denně po noční laboratoři přepočítá papírové účty 1 000 USDT (riziko 1 % na obchod) pro Laboratoř a jádro
+# města – stejné statistiky jako Downtown (research/city_accounts.py → research/city_accounts.json). Data čte denní
+# úloha „Agentown – aktualizace z laboratoře“. Jen přepočet výsledků: na skener, riziko, demo ani peníze nesahá.
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: city-accounts
+  cancel-in-progress: false
+
+jobs:
+  accounts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt numba
+      # jen obnovit (neukládat): svíčky laboratoře a denní svíčky skeneru
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cache
+          key: lab-data-${{ github.run_id }}
+          restore-keys: lab-data-
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            scanner/cache
+          key: scanner-state-${{ github.run_id }}
+          restore-keys: scanner-state-
+      - name: Přepočet účtů
+        run: python3 research/city_accounts.py /tmp/cache scanner/cache
+      - name: Uložit
+        run: |
+          git config user.name "trading-team accounts"
+          git config user.email "accounts@users.noreply.github.com"
+          git add -f research/city_accounts.json
+          git commit -q -m "city-accounts: papírové účty čtvrtí Agentownu" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done
