@@ -1,11 +1,12 @@
 name: AI Lab – strategie vymyšlené AI
 
 # 🤖 research/ai_lab.py: vlastní nápady Clauda (Ozvěna BTC, Tichý průraz, Hodiny trhu, Rotace síly) a evoluce pravidel.
-# Denně (před ranní synchronizací Agentownu) přepočítá živý papír (genom evoluce je po prvním běhu zamčený v research/ai_lab_genome.json).
+# Každou noc jedno kolo průběžného výzkumu (nová evoluce se střídavým zaměřením, přísný test, nejvýš 10 strategií
+# z kol – research/ai_rounds.json, přidání jde na Telegram) a přepočet živého papíru před ranní synchronizací Agentownu.
 # Jen papír, odděleno od desku – na skener, registr, riziko, demo ani peníze nesahá.
 on:
   schedule:
-    - cron: "29 4 * * *"
+    - cron: "13 2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -32,12 +33,16 @@ jobs:
           path: /tmp/cache
           key: lab-data-${{ github.run_id }}
           restore-keys: lab-data-
-      - name: AI Lab
-        run: python3 research/ai_lab.py /tmp/cache
+      - name: AI Lab (kolo výzkumu + přepočet)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 research/ai_lab.py /tmp/cache --round
       - name: Uložit
         run: |
           git config user.name "trading-team ai-lab"
           git config user.email "ai-lab@users.noreply.github.com"
           git add -f research/ai_lab.json reports/ai_lab.md research/ai_lab_genome.json
-          git commit -q -m "ai-lab: strategie vymyšlené AI (přepočet)" || exit 0
+          if [ -f research/ai_rounds.json ]; then git add -f research/ai_rounds.json; fi
+          git commit -q -m "ai-lab: kolo výzkumu a přepočet" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done

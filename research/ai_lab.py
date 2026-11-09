@@ -37,6 +37,12 @@ Stanoveno PŘEDEM (8. 11. 2026), před prvním spuštěním na datech:
   Opravy chyb po prvním běhu (8. 11., nejde o ladění parametrů): obchody se stopem blíž než 0,1 % od vstupu se
     vyřazují (svíčky s nulovým rozpětím dávaly R ~1e64); Hodiny trhu používaly při obchodování posunutý klíč hodiny
     a účtovaly poplatek každou hodinu místo jen při vstupu a výstupu. Evoluce se znovu nespouštěla.
+  Průběžný výzkum (doplněno 9. 11. 2026 na přání uživatele, před prvním kolem): každou noc jedno nové kolo evoluce
+    (stejná stavba, populace 200, 30 generací, semínko 20261108 + číslo kola) se střídavým zaměřením: vše, jen short,
+    rychlé obchody 2–8 h, pomalé 16–32 h, jen long. Kandidát z 30 nejlepších kola se do AI Labu přidá jen při
+    Ø R > 0 v IS, v OOS s t ≥ 2,5 a v HOLDOUT s t ≥ 1 (přísnější než první kolo kvůli opakovanému testování), když kolo
+    porazí svou náhodnou kontrolu a pravidlo tam ještě není. Nejvýš 10 strategií z kol; při plném počtu nová nahradí
+    nejslabší jen s vyšším min(OOS t, HOLDOUT t). Kola se zapisují do research/ai_rounds.json, přidání jde na Telegram.
   PROJDE (strategie se stopem): Ø R > 0 v IS, OOS i HOLDOUT a OOS t ≥ 2. Alokační: Sharpe > 0 ve všech třech
     obdobích a OOS Sharpe ≥ 1. Neprošlé zůstávají na stránce jako pokus, s jasným štítkem.
 
@@ -64,6 +70,12 @@ COST = 0.0005
 MIN_RISK = 0.001        # stop aspoň 0,1 % od vstupu, jinak je obchod chyba dat (nulové rozpětí svíček)
 SEED, POP, GENS, TOURN, TOP_K = 20261108, 200, 30, 3, 30
 HOLDS, STOPS = [2, 4, 8, 16, 32], [1.0, 1.5, 2.0, 3.0]
+SPACE = {"dirs": [1, -1], "holds": HOLDS}           # prostor genomů (kola výzkumu ho zužují podle zaměření)
+ROUNDS = ROOT / "research" / "ai_rounds.json"
+MAX_AI = 10
+FOCUS = [("vše", {"dirs": [1, -1], "holds": HOLDS}), ("jen short", {"dirs": [-1], "holds": HOLDS}),
+         ("rychlé obchody 2–8 h", {"dirs": [1, -1], "holds": [2, 4, 8]}), ("pomalé obchody 16–32 h", {"dirs": [1, -1], "holds": [16, 32]}),
+         ("jen long", {"dirs": [1], "holds": HOLDS})]
 QS = [.1, .2, .3, .4, .5, .6, .7, .8, .9]
 FEATS = ["r1z", "r4z", "r24z", "btc1z", "btc24z", "ema50", "ema200", "rsi14", "volz", "comp", "pos24", "hour", "dow"]
 FEAT_CS = {"r1z": "výnos 1 h (σ)", "r4z": "výnos 4 h (σ)", "r24z": "výnos 24 h (σ)", "btc1z": "BTC 1 h (σ)",
@@ -252,7 +264,7 @@ def fitness(tr):
 def rand_gene(rng):
     k = int(rng.integers(1, 4))
     return {"conds": [(FEATS[rng.integers(len(FEATS))], ">" if rng.random() < .5 else "<", float(QS[rng.integers(len(QS))])) for _ in range(k)],
-            "dir": 1 if rng.random() < .5 else -1, "hold": int(HOLDS[rng.integers(len(HOLDS))]),
+            "dir": int(SPACE["dirs"][rng.integers(len(SPACE["dirs"]))]), "hold": int(SPACE["holds"][rng.integers(len(SPACE["holds"]))]),
             "stop": float(STOPS[rng.integers(len(STOPS))])}
 
 
@@ -276,10 +288,10 @@ def mutate(g, rng):
     elif x < .78 and len(g["conds"]) > 1:
         g["conds"].pop(int(rng.integers(len(g["conds"]))))
     elif x < .88:
-        g["hold"] = int(HOLDS[rng.integers(len(HOLDS))])
+        g["hold"] = int(SPACE["holds"][rng.integers(len(SPACE["holds"]))])
     elif x < .96:
         g["stop"] = float(STOPS[rng.integers(len(STOPS))])
-    else:
+    elif len(SPACE["dirs"]) > 1:
         g["dir"] = -g["dir"]
     return g
 
@@ -296,10 +308,14 @@ def key(g):
     return json.dumps([sorted([list(c) for c in g["conds"]]), g["dir"], g["hold"], g["stop"]])
 
 
-def evolve(frames, F):
+def is_thresholds(frames, F):
     pooled = pd.concat([F[c][F[c].index < IS_END] for c in frames])
-    thr = {fi: {q: float(pooled[fi].quantile(q)) for q in QS} for fi in FEATS}
-    rng = np.random.default_rng(SEED)
+    return {fi: {q: float(pooled[fi].quantile(q)) for q in QS} for fi in FEATS}
+
+
+def evolve(frames, F, seed=SEED):
+    thr = is_thresholds(frames, F)
+    rng = np.random.default_rng(seed)
     cache = {}
 
     def fit(g):
@@ -336,6 +352,79 @@ def evolve(frames, F):
             "top_oos_ok": sum(x["oos_ok"] for x in top), "created": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
 
 
+def round_pass(st):
+    return bool((st["is"]["mean_r"] or -1) > 0 and (st["oos"]["mean_r"] or -1) > 0 and (st["oos"]["t"] or 0) >= 2.5
+                and (st["hold"]["mean_r"] or -1) > 0 and (st["hold"]["t"] or 0) >= 1)
+
+
+def strength(st):
+    return min(st["oos"]["t"] or 0, st["hold"]["t"] or 0)
+
+
+def load_rounds():
+    try:
+        return json.loads(ROUNDS.read_text(encoding="utf-8"))
+    except Exception:
+        return {"rounds": [], "registry": []}
+
+
+def run_round(frames, F, base_winner=None, send=None):
+    """Jedno kolo průběžného výzkumu: evoluce se zaměřením, přísný test, případně přidání do registru AI Labu."""
+    global SPACE
+    R = load_rounds()
+    n = len(R["rounds"]) + 1
+    focus, space = FOCUS[(n - 1) % len(FOCUS)]
+    SPACE = space
+    try:
+        evo = evolve(frames, F, seed=SEED + n)
+    finally:
+        SPACE = {"dirs": [1, -1], "holds": HOLDS}
+    known = {key(x["genome"]) for x in R["registry"]} | ({key(base_winner)} if base_winner else set())
+    cands = [x for x in evo["top"] if round_pass(x["splits"]) and key(x["genome"]) not in known]
+    sane = evo["top_oos_ok"] > evo["random_oos_ok"]
+    best = max(cands, key=lambda x: strength(x["splits"]), default=None)
+    added, reason = None, ""
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if not sane:
+        reason = f"kolo neporazilo náhodnou kontrolu ({evo['top_oos_ok']} × {evo['random_oos_ok']} z {TOP_K})"
+    elif best is None:
+        reason = "žádné pravidlo neprošlo přísným testem"
+    else:
+        entry = {"id": f"ai{n}", "name": f"AI #{n} · {focus}", "round": n, "focus": focus, "added": today,
+                 "genome": best["genome"], "splits_at_add": best["splits"]}
+        if len(R["registry"]) < MAX_AI:
+            R["registry"].append(entry); added = entry["id"]; reason = "přidáno"
+        else:
+            weak = min(R["registry"], key=lambda x: strength(x["splits_at_add"]))
+            if strength(best["splits"]) > strength(weak["splits_at_add"]):
+                R["registry"].remove(weak); R["registry"].append(entry); added = entry["id"]; reason = f"přidáno místo {weak['name']}"
+            else:
+                reason = "registr plný a kandidát není silnější než nejslabší"
+    thr = evo["thr"]
+    R["rounds"].append({"n": n, "date": today, "focus": focus, "seed": SEED + n, "tested": evo["tested"],
+                        "top_oos_ok": evo["top_oos_ok"], "random_oos_ok": evo["random_oos_ok"], "candidates": len(cands),
+                        "best": genome_text(best["genome"], thr) if best else None,
+                        "best_splits": best["splits"] if best else None, "added": added, "reason": reason})
+    ROUNDS.write_text(json.dumps(R, ensure_ascii=False, indent=1, default=str) + "\n", encoding="utf-8")
+    print(f"kolo {n} ({focus}): {reason}", flush=True)
+    if added and send:
+        from scanner.notify import h
+        st = best["splits"]
+        send("\n".join([
+            "<b>🤖 AI LAB · nová strategie</b>",
+            f"<b>AI #{n}</b> · {h(focus)} · kolo výzkumu {n}",
+            "",
+            f"<i>{h(genome_text(best['genome'], thr))}</i>",
+            "",
+            f"<code>učení    {h(_f(st['is']['mean_r']))} R  (t {h(_f(st['is']['t']))})</code>",
+            f"<code>ověření  {h(_f(st['oos']['mean_r']))} R  (t {h(_f(st['oos']['t']))})</code>",
+            f"<code>závěr    {h(_f(st['hold']['mean_r']))} R  (t {h(_f(st['hold']['t']))})</code>",
+            "",
+            f"Vyzkoušeno {evo['tested']} pravidel · {h(reason)}",
+            "<i>Jen papír, odděleno od desku. Nejde o finanční poradenství.</i>"]))
+    return R
+
+
 def genome_text(g, thr=None):
     parts = []
     for fi, op, q in g["conds"]:
@@ -357,16 +446,27 @@ def main():
         evo = evolve(frames, F)
         GENOME.write_text(json.dumps(evo, ensure_ascii=False, indent=1, default=str) + "\n", encoding="utf-8")
     thr = {fi: {float(q): v for q, v in d.items()} for fi, d in evo["thr"].items()}
+    if "--round" in sys.argv:
+        send = None
+        try:
+            import os
+            if os.environ.get("TELEGRAM_BOT_TOKEN"):
+                from scanner.notify import telegram as send
+        except Exception:
+            send = None
+        run_round(frames, F, (evo.get("winner") or {}).get("genome"), send)
+    R = load_rounds()
 
     S = []
 
-    def r_strategy(sid, name, tag, how, tf, tr, kind="vlastní nápad"):
+    def r_strategy(sid, name, tag, how, tf, tr, kind="vlastní nápad", live_from=LIVE_START, strict=False, extra=None):
         st = split_stats(tr)
-        ok = all((st[k]["mean_r"] or -1) > 0 for k in ("is", "oos", "hold")) and (st["oos"]["t"] or 0) >= 2
+        ok = round_pass(st) if strict else all((st[k]["mean_r"] or -1) > 0 for k in ("is", "oos", "hold")) and (st["oos"]["t"] or 0) >= 2
+        lf = max(live_from, LIVE_START)
         S.append({"id": sid, "name": name, "tag": tag, "how": how, "tf": tf, "kind": kind, "type": "r",
-                  "splits": st, "pass": bool(ok),
+                  "splits": st, "pass": bool(ok), **(extra or {}),
                   "backtest": ca.account([t for t in tr if t["entry"] >= ca._ts(ACC_START)], start=ACC_START),
-                  "live": ca.account([t for t in tr if t["entry"] >= ca._ts(LIVE_START)], start=LIVE_START)})
+                  "live": ca.account([t for t in tr if t["entry"] >= ca._ts(lf)], start=lf)})
 
     def ret_strategy(sid, name, tag, how, tf, r, kind="vlastní nápad", extra=None):
         st = ret_split(r)
@@ -387,8 +487,14 @@ def main():
         g = evo["winner"]["genome"]
         r_strategy("ga", "Evoluce · vítěz", f"pravidlo vymyšlené evolucí z {evo['tested']} pokusů · 1H", genome_text(g, thr), "1h",
                    run_genome(frames, F, g, thr), kind="evoluce")
+    for e in R["registry"]:
+        r_strategy(e["id"], e["name"], f"kolo výzkumu {e['round']} · přidáno {e['added']} · 1H", genome_text(e["genome"], thr), "1h",
+                   run_genome(frames, F, e["genome"], thr), kind=f"evoluce · kolo {e['round']}", live_from=e["added"], strict=True,
+                   extra={"added": e["added"], "round": e["round"]})
     out = {"updated": now.strftime("%Y-%m-%dT%H:%M+00:00"), "live_start": LIVE_START, "acc_start": ACC_START,
            "strategies": S,
+           "research": {"rounds": R["rounds"][-15:][::-1], "n_rounds": len(R["rounds"]), "registry_n": len(R["registry"]), "max": MAX_AI,
+                        "next_focus": FOCUS[len(R["rounds"]) % len(FOCUS)][0]},
            "evolution": {"tested": evo["tested"], "pop": POP, "gens": GENS, "top_oos_ok": evo["top_oos_ok"], "top_k": TOP_K,
                          "random_oos_ok": evo["random_oos_ok"], "created": evo.get("created"),
                          "winner": genome_text(evo["winner"]["genome"], thr) if evo.get("winner") else None,
@@ -422,6 +528,11 @@ def write_md(o):
           "", f"Vítěz: {e['winner'] or 'žádný – ověřením neprošlo nic'}", "", "| Pravidlo | fitness IS | OOS Ø R (t) | HOLDOUT Ø R (t) |", "|---|---|---|---|"]
     for x in e["top"]:
         L.append(f"| {x['rule']} | {_f(x['fitness'])} | {_f(x['splits']['oos']['mean_r'])} ({_f(x['splits']['oos']['t'])}) | {_f(x['splits']['hold']['mean_r'])} ({_f(x['splits']['hold']['t'])}) |")
+    rs = o.get("research") or {}
+    L += ["", "## Průběžný výzkum (kola evoluce)", "", f"Kol celkem {rs.get('n_rounds', 0)}, strategií z kol {rs.get('registry_n', 0)}/{rs.get('max', MAX_AI)}, "
+          f"další zaměření: {rs.get('next_focus', '–')}.", "", "| Kolo | Datum | Zaměření | Vyzkoušeno | Prošlo ověřením (náhoda) | Výsledek |", "|---|---|---|---|---|---|"]
+    for r in rs.get("rounds", []):
+        L.append(f"| {r['n']} | {r['date']} | {r['focus']} | {r['tested']} | {r['top_oos_ok']} ({r['random_oos_ok']}) | {r['reason']} |")
     OUT_MD.write_text("\n".join(L) + "\n", encoding="utf-8")
 
 

@@ -47,3 +47,18 @@ def test_running_trade_not_counted():
     m[-3] = True
     ii, xx, rr = al.trades_from(z, m, 1, 2.0, 0.0, 32)
     assert al.to_list(z, "BTC", 1, ii, xx, rr) == []
+
+
+def test_research_round(monkeypatch, tmp_path):
+    fr = _frames()
+    F = al.features(fr)
+    monkeypatch.setattr(al, "POP", 10)
+    monkeypatch.setattr(al, "GENS", 2)
+    monkeypatch.setattr(al, "TOP_K", 5)
+    monkeypatch.setattr(al, "ROUNDS", tmp_path / "r.json")
+    sent = []
+    R = al.run_round(fr, F, None, sent.append)
+    R = al.run_round(fr, F, None, sent.append)
+    assert [r["n"] for r in R["rounds"]] == [1, 2] and R["rounds"][1]["focus"] == "jen short"
+    assert len(R["registry"]) <= al.MAX_AI and al.SPACE["dirs"] == [1, -1]
+    assert all("AI LAB" in m for m in sent)
