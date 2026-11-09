@@ -145,3 +145,9 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 
 - Tlačítko ▶ Prohlídka v horní liště (na mobilu a užším desktopu jen ikona). Kamera postupně přeletí 11 zastávek: celé město, Trade City, Laboratoř, AI Lab, Mozek, kupole Pevnost / Spořitelna / Motor / Divočina, Downtown a závěr. U každé skleněná karta v barvě čtvrti: krok x/11 s ukazatelem postupu, nadpis, popis co zóna dělá a obsahuje (počty a fáze trhu z živých dat), 2–4 body a tlačítko „Otevřít …“ pro danou čtvrť. Ovládání Zpět / Další, šipky, Esc; na mobilu spodní karta a kamera se posune, aby zóna byla nad kartou.
 - Ověření: Playwright se skutečnou Three.js r160, 1280 a 375 px, tmavý i světlý režim: všech 11 kroků, bez chyb a bez vodorovného posunu; „Otevřít“ zavře prohlídku a otevře čtvrť. Publikováno jako „Prohlídka 9. 11.“ (verze 23).
+
+## 2026-11-09 – 🤖 AI Lab jako průběžná laboratoř (na přání uživatele)
+
+- `research/ai_lab.py --round` (workflow „AI Lab“ každou noc 02:13 UTC): jedno nové kolo evoluce se střídavým zaměřením (vše · jen short · rychlé 2–8 h · pomalé 16–32 h · jen long), přísný test (IS > 0, OOS t ≥ 2,5, HOLDOUT t ≥ 1, kolo musí porazit náhodnou kontrolu), registr max. 10 strategií z kol (`research/ai_rounds.json`), při přidání karta do Telegramu. Pravidla stanovená předem, doplněná do hlavičky skriptu.
+- Kolo 1 (9. 11., „vše“): 4 204 pravidel, ověřením prošlo 22/30 (náhodných 1/30), přísným testem žádné → nic nepřidáno.
+- Agentown: v AI Labu nová sekce „Průběžný výzkum · každou noc nové kolo“ (počet kol, obsazenost registru, zaměření dalšího kola, seznam kol s výsledkem); nové strategie z kol se automaticky objeví jako karty i věže v kupoli. Publikováno jako „AI Lab výzkum 9. 11.“ (verze 24).
