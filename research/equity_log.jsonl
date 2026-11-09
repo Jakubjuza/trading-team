@@ -11,3 +11,4 @@
 {"t": "2026-11-06", "paper": 9984.73, "parts": {"core": 101.75, "pyramid": 2.4, "ensemble": -119.42}, "time": "2026-11-06T00:00:37+00:00", "demo": 258771.92, "demo_ccy": "USDC"}
 {"t": "2026-11-07", "paper": 9943.94, "parts": {"core": 66.52, "pyramid": -8.35, "ensemble": -114.23}, "time": "2026-11-07T00:00:21+00:00", "demo": 257104.31, "demo_ccy": "USDC"}
 {"t": "2026-11-08", "paper": 9984.78, "parts": {"core": 97.56, "pyramid": 3.95, "ensemble": -116.73}, "time": "2026-11-08T00:00:44+00:00", "demo": 256405.65, "demo_ccy": "USDC"}
+{"t": "2026-11-09", "paper": 10311.17, "parts": {"core": 397.82, "pyramid": 54.45, "ensemble": -141.09}, "time": "2026-11-09T00:00:22+00:00", "demo": 251686.47, "demo_ccy": "USDC"}
