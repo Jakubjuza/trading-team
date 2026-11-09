@@ -36,9 +36,9 @@ def positions_report(cfg, state, prices, demo=None, demo_log=None):
         now = px(p["symbol"])
         risk = abs(s["entry"] - s["stop"]) or None
         r = sg * (now - s["entry"]) / risk if now and risk else None
-        lines.append(f"• {p['symbol']} {s['direction'].upper()}{' (1H)' if p.get('mtf') else ''}: vstup {notify.fmt(s['entry'])}, "
-                     f"teď {notify.fmt(now) if now else '?'}" + (f" ({_n(r)} R ≈ {_n(r * risk_usd, 0)} USD)" if r is not None else "")
-                     + f", stop {'vstup (po T1)' if p.get('t1_notified') else notify.fmt(s['stop'])}"
+        lines.append(f"• {p['symbol']} {s['direction'].upper()}{' (1H)' if p.get('mtf') else ''}: vstup {notify.usd(s['entry'])}, "
+                     f"teď {notify.usd(now) if now else '?'}" + (f" ({_n(r)} R ≈ {_n(r * risk_usd, 0)} USD)" if r is not None else "")
+                     + f", stop {'vstup (po T1)' if p.get('t1_notified') else notify.usd(s['stop'])}"
                      + (" · 🧪 demo" if (p.get("demo") or {}).get("status") == "open" else ""))
 
     pyr = (state.data.get("pyramid") or {}).get("open", [])
@@ -51,9 +51,9 @@ def positions_report(cfg, state, prices, demo=None, demo_log=None):
             n = p.get("notified_units", 1)
             unit = pp["unit_r"] / abs(p["entry"] - p["stop"])
             r = sum(unit * sg * (now - (p["entry"] + sg * k * pp["add_atr"] * p["atr"])) for k in range(n)) if now else None
-            lines.append(f"• {p['symbol']} {p['direction'].upper()}: {n} kus(y), vstup {notify.fmt(p['entry'])}, teď "
-                         f"{notify.fmt(now) if now else '?'}" + (f" ({_n(r)} R)" if r is not None else "")
-                         + f", stop {notify.fmt(p.get('stop_now', p['stop']))}")
+            lines.append(f"• {p['symbol']} {p['direction'].upper()}: {n} kus(y), vstup {notify.usd(p['entry'])}, teď "
+                         f"{notify.usd(now) if now else '?'}" + (f" ({_n(r)} R)" if r is not None else "")
+                         + f", stop {notify.usd(p.get('stop_now', p['stop']))}")
 
     ens = state.data.get("ensemble") or {}
     if ens.get("qty") or ens.get("equity"):

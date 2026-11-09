@@ -386,3 +386,24 @@ def test_heartbeat_counts_ensemble_and_pyramid(tmp_path):
     assert "Papírově – jádro: otevřené 0" in text
     assert "🧭 Ensemble (papírově): drží BTC, SOL" in text and "hodnota 8 000 USD (+60,0 %)" in text
     assert "🔺 Pyramida (papírově): otevřené 0" in text
+
+
+def test_order_lines_in_usd_long_and_short():
+    from scanner import notify
+    L = notify.order_lines("long", 100.0, 95.0, [110.0, 120.0], qty=2, split=0.5,
+                           ocfg={"entry_limit_pct": 0.1, "stop_limit_pct": 0.3})
+    txt = "\n".join(L)
+    assert "limit BUY $100,10" in txt                       # vstup max. 0,10 % nad plánem
+    assert "spouštěcí $95,00, limit $94,72" in txt            # stop-limit 0,30 % pod spouštěcí cenou (94,715)
+    assert "limit SELL T1 $110,00 (50 %) · T2 $120,00 (zbytek)" in txt
+    assert "≈ $200,00" in txt and "riziko do stopu $10,00" in txt
+    S = "\n".join(notify.order_lines("short", 100.0, 105.0, [90.0], trigger=99.5))
+    assert "stop-limit SELL – spouštěcí $99,50, limit $99,40" in S
+    assert "Stop-loss: stop-limit BUY – spouštěcí $105,00, limit $105,31" in S
+    assert notify.usd(68420.4) == "$68 420,40" and notify.usd(0.07472) == "$0,0747"
+
+
+def test_summary_prices_in_dollars():
+    s = rules.latest_setup(load(POSITIVE[3][0]))[0]
+    lines = __import__("scanner.notify", fromlist=["x"]).summary_lines("BTC/USDT", "1h", s, rules.position_size(s, 10000, 1), 10000, 0.15)
+    assert lines[1].startswith("2. Vstup $") and "Stop $" in lines[1] and "T1 $" in lines[1]

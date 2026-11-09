@@ -89,6 +89,13 @@ def manage(pos, h1, ex):
     return res
 
 
+def _qty(cfg, e):
+    """Množství pro riziko účtu (account_size × risk_pct) – jen pro řádek s příkazy."""
+    risk = abs(e["entry"] - e["stop"])
+    rusd = cfg.get("account_size", 0) * cfg.get("risk_pct", 0) / 100
+    return rusd / risk if risk and rusd else None
+
+
 def update(cfg, state, now, dry_run=False, send=None, fetch=None):
     lc = cfg.get("level_entry") or {}
     if not lc.get("enabled"):
@@ -147,9 +154,12 @@ def update(cfg, state, now, dry_run=False, send=None, fetch=None):
         stt["open"].append(pos)
         _log({"event": "open", **pos, "logged": now.isoformat()})
         msgs.append(f"🎯 Vstup na průrazu 20denní úrovně · {coin} {e['dir'].upper()} (papír, test vedle denního vstupu)\n"
-                    f"Úroveň {notify.fmt(e['level'])} protnuta {e['time']:%d. %m. %H:%M} UTC, 1H v trendu. "
-                    f"Vstup {notify.fmt(e['entry'])}, stop {notify.fmt(e['stop'])} (za 1H swingem), "
-                    f"cíle {notify.fmt(e['targets'][0])} / {notify.fmt(e['targets'][1])}. Papírově, ne rada.")
+                    f"Úroveň {notify.usd(e['level'])} protnuta {e['time']:%d. %m. %H:%M} UTC, 1H v trendu. "
+                    f"Vstup {notify.usd(e['entry'])}, stop {notify.usd(e['stop'])} (za 1H swingem), "
+                    f"cíle {notify.usd(e['targets'][0])} / {notify.usd(e['targets'][1])}.\n"
+                    + "\n".join(notify.order_lines(e["dir"], e["entry"], e["stop"], e["targets"], _qty(cfg, e),
+                                                   ex.get("split", 0.5), cfg.get("orders"), trigger=e["level"]))
+                    + "\nPapírově, ne rada.")
     stt["last_eval"] = hour
     stt["taken"] = {k: v for k, v in stt["taken"].items() if v == day.isoformat()}
     state.save()

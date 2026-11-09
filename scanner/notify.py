@@ -21,6 +21,45 @@ def pct(x):
     return f"{x:.2f}".replace(".", ",")
 
 
+def usd(p):
+    """Cena v dolarech na centy (kvůli limitním příkazům): $68 420,50 · $2 254,22 · $0,0747 (páry v USDT ≈ USD)."""
+    a = abs(p)
+    dec = 2 if a >= 1 else (4 if a >= 0.01 else 6)
+    return ("−" if p < 0 else "") + "$" + f"{a:,.{dec}f}".replace(",", " ").replace(".", ",")
+
+
+ORDER_DEFAULTS = {"entry_limit_pct": 0.10, "stop_limit_pct": 0.30}
+
+
+def order_lines(direction, entry, stop, targets, qty=None, split=0.5, ocfg=None, trigger=None):
+    """📋 Příkazy v USD: limitní vstup, stop-loss jako stop-limit, take profit jako limity.
+    `trigger` = cena, při které se vstupuje stop příkazem (čekání na průraz) – pak je vstup stop-limit.
+    Limit vstupu je max. `entry_limit_pct` % za plánovanou cenou, limit stopu `stop_limit_pct` % za spouštěcí cenou
+    (aby se v rychlém pohybu vyplnil). Jen výpočet, nic se neposílá na burzu."""
+    o = {**ORDER_DEFAULTS, **(ocfg or {})}
+    long = direction == "long"
+    sign = 1 if long else -1
+    buy, sell = ("BUY", "SELL") if long else ("SELL", "BUY")
+    base = trigger if trigger is not None else entry
+    lim_in = base * (1 + sign * o["entry_limit_pct"] / 100)
+    lim_sl = stop * (1 - sign * o["stop_limit_pct"] / 100)
+    if trigger is not None:
+        rows = [f"• Vstup: stop-limit {buy} – spouštěcí {usd(trigger)}, limit {usd(lim_in)}"]
+    else:
+        rows = [f"• Vstup: limit {buy} {usd(lim_in)} (plán {usd(entry)}, max. {pct(o['entry_limit_pct'])} % {'nad' if long else 'pod'})"]
+    rows.append(f"• Stop-loss: stop-limit {sell} – spouštěcí {usd(stop)}, limit {usd(lim_sl)}")
+    tps = []
+    for i, t in enumerate(targets):
+        share = "" if len(targets) < 2 else (f" ({round(split * 100)} %)" if i == 0 else " (zbytek)")
+        tps.append(f"T{i + 1} {usd(t)}{share}")
+    if tps:
+        rows.append(f"• Take profit: limit {sell} " + " · ".join(tps))
+    if qty:
+        risk = abs(entry - stop) * qty
+        rows.append(f"• Množství {str(round(qty, 6)).replace('.', ',')} ks ≈ {usd(qty * entry)} · riziko do stopu {usd(risk)}")
+    return ["📋 Příkazy (USD):"] + rows
+
+
 def prob_line(prob):
     """Řádek s historickými pravděpodobnostmi strategie (z scanner/probabilities.json)."""
     if not prob:
@@ -40,19 +79,19 @@ def summary_lines(ticker, tf, s, size, account, cost_pct=0.0, setup_name=None, p
     from scanner.setups import NAMES_CS
     side = "LONG" if s.direction == "long" else "SHORT"
     name = setup_name or NAMES_CS.get(s.kind, s.kind)
-    tg = " / ".join(f"T{i + 1} {fmt(t)}" for i, t in enumerate(s.targets))
+    tg = " / ".join(f"T{i + 1} {usd(t)}" for i, t in enumerate(s.targets))
     rr = " / ".join(str(r).replace(".", ",") for r in s.rr)
     stop_pct = abs(s.entry - s.stop) / s.entry * 100
     risk = abs(s.entry - s.stop)
     rr_net = " / ".join(pct(abs(t - s.entry) / risk - cost_pct / 100 * (s.entry + t) / risk).rstrip("0").rstrip(",")
                         for t in s.targets)
     inval = "close pod" if s.direction == "long" else "close nad"
-    level = f" u {fmt(s.level)}" if s.kind in ("breakout_retest_hold", "donchian_breakout", "sweep_reclaim") else ""
+    level = f" u {usd(s.level)}" if s.kind in ("breakout_retest_hold", "donchian_breakout", "sweep_reclaim") else ""
     return [
         f"1. {ticker} {side} {tf} – {name}{level}",
-        f"2. Vstup {fmt(s.entry)} · Stop {fmt(s.stop)} ({pct(stop_pct)} %) · {tg}" + (f" · {outlook}" if outlook else ""),
-        f"3. R:R {rr} (po nákladech {rr_net}) · {str(size['qty']).replace('.', ',')} ks ≈ {fmt(size['notional'])} USD · riziko {fmt(size['risk_usd'])} USD ({pct(size['risk_usd'] / account * 100)} % účtu)",
-        f"4. Zneplatnění: {inval} stop {fmt(s.stop)} · ATR {fmt(s.meta['atr'])}" + (f" · {context}" if context else ""),
+        f"2. Vstup {usd(s.entry)} · Stop {usd(s.stop)} ({pct(stop_pct)} %) · {tg}" + (f" · {outlook}" if outlook else ""),
+        f"3. R:R {rr} (po nákladech {rr_net}) · {str(size['qty']).replace('.', ',')} ks ≈ {usd(size['notional'])} · riziko {usd(size['risk_usd'])} ({pct(size['risk_usd'] / account * 100)} % účtu)",
+        f"4. Zneplatnění: {inval} stop {usd(s.stop)} · ATR {usd(s.meta['atr'])}" + (f" · {context}" if context else ""),
         f"5. {prob_line(prob)} · papírově · nejde o finanční poradenství",
     ]
 

@@ -276,7 +276,10 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         if use_mtf:
             lines.append(f"6. Vstup z nižších TF (papírově souběžně): čekám max. {mc.get('wait_hours', 72)} h na 4H ve směru, "
                          f"návrat k EMA20 na 1H a obratovou 1H svíčku – pak pošlu 📍 vstup se stopem za swingem.")
-        print("\n".join(lines))
+        orders = notify.order_lines(s.direction, s.entry, s.stop, s.targets, size["qty"],
+                                    (strat.get("exit") or {}).get("split", cfg.get("exit", {}).get("split", 0.5)), cfg.get("orders"))
+        orders.append(f"Papírově, nic se neposílá na burzu · nejde o finanční poradenství.")
+        print("\n".join(lines + orders))
         found.append((sid, s, size))
         if dry_run:
             continue
@@ -284,6 +287,8 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         if cfg["notify"].get("chart", True):
             chart = notify.render_chart(symbol, tf, s, df, lines, HERE / "out", cfg["notify"].get("chart_bars", 80))
         sent = notify.telegram("\n".join(lines), photo=chart) if cfg["notify"].get("telegram", True) else False
+        if sent:
+            notify.telegram("\n".join([f"{symbol} {s.direction.upper()} {tf}"] + orders))
         if cfg.get("paper_trading", True):
             broker.place_order({"setup_id": sid, "symbol": symbol, "side": "buy" if s.direction == "long" else "sell",
                                 "qty": size["qty"], "entry": s.entry, "stop": s.stop, "targets": s.targets}, cfg)
@@ -544,10 +549,21 @@ def approach_alerts(cfg, state, frames, strats, now, day, dry_run=False):
                 if key in sent_today or len(sent_today) >= ac.get("max_per_day", 4):
                     continue
                 word = "nad" if d == "long" else "pod"
+                # orientační plán, kdyby se vstoupilo přímo na průrazu úrovně (stejná pravidla stopu a cílů jako signál)
+                sign = 1 if d == "long" else -1
+                risk = max((p.get("stop_atr", 2.0) + p.get("stop_buffer_atr", 0)) * atr,
+                           p.get("min_stop_atr", 0) * atr, lvl * p.get("min_stop_pct", 0) / 100)
+                stop = lvl - sign * risk
+                tgts = [lvl + sign * k * risk for k in p.get("target_multiples", [2.0, 4.0])]
+                rusd = cfg.get("account_size", 0) * cfg.get("risk_pct", 0) / 100
+                plan = notify.order_lines(d, lvl, stop, tgts, rusd / risk if risk and rusd else None,
+                                          (strat.get("exit") or {}).get("split", 0.5), cfg.get("orders"), trigger=lvl)
+                plan[0] = "📋 Orientační příkazy, kdyby se vstupovalo na průrazu (USD):"
                 msg = (f"⏳ Blíží se: {symbol} {d.upper()} – {setups.NAMES_CS['donchian_breakout']} ({tf}). "
-                       f"Signál vznikne, pokud denní svíčka zavře {word} {notify.fmt(lvl)} "
-                       f"(teď {notify.fmt(price)}, {notify.pct(abs(dist) / price * 100)} %). Denní svíčka končí v 00:00 UTC. "
-                       f"Jen informace, ne signál ke vstupu.")
+                       f"Signál vznikne, pokud denní svíčka zavře {word} {notify.usd(lvl)} "
+                       f"(teď {notify.usd(price)}, {notify.pct(abs(dist) / price * 100)} %). Denní svíčka končí v 00:00 UTC. "
+                       f"Jen informace, ne signál ke vstupu.\n" + "\n".join(plan) +
+                       "\nSkutečný signál bude mít vstup na denním close – stop a cíle se pak přepočítají.")
                 print(msg)
                 sent_today[key] = day
                 out.append(msg)
@@ -598,11 +614,14 @@ def mtf_entries(cfg, state, frames, now, dry_run=False, send=None):
             dm = demo_open(cfg, state.data["open"][-1], {"qty": risk_usd / risk if risk else 0}, dry_run)
             if dm:
                 msgs.append(dm)
-            tg = " / ".join(f"T{i + 1} {notify.fmt(t)}" for i, t in enumerate(s["targets"]))
+            tg = " / ".join(f"T{i + 1} {notify.usd(t)}" for i, t in enumerate(s["targets"]))
             msgs.append(f"📍 Vstup z nižších TF (papírově): {sym} {side} – 4H ve směru, 1H návrat k EMA20 a obratová svíčka.\n"
-                        f"Vstup {notify.fmt(entry)} · Stop {notify.fmt(stop)} ({notify.pct(risk / entry * 100)} %) · {tg} · "
+                        f"Vstup {notify.usd(entry)} · Stop {notify.usd(stop)} ({notify.pct(risk / entry * 100)} %) · {tg} · "
                         f"R:R {' / '.join(str(x).replace('.', ',') for x in rr)} (denní vstup: "
-                        f"{' / '.join(str(x).replace('.', ',') for x in s['rr'])}). Nejde o finanční poradenství.")
+                        f"{' / '.join(str(x).replace('.', ',') for x in s['rr'])}).\n"
+                        + "\n".join(notify.order_lines(s["direction"], entry, stop, s["targets"], risk_usd / risk if risk else None,
+                                                       ex.get("split", 0.5), cfg.get("orders")))
+                        + "\nNejde o finanční poradenství.")
         elif r["status"] == "stopped":
             msgs.append(f"❌ Vstup z nižších TF zrušen: {sym} {side} – cena zasáhla denní stop dřív, než se vstup potvrdil.")
         else:
@@ -723,12 +742,12 @@ def positions_overview(state, prices, since=None, max_lines=8):
             sign = 1 if s["direction"] == "long" else -1
             risk = abs(s["entry"] - s["stop"]) or None
             px = (prices.get(pos["symbol"]) or (None,))[0]
-            now_r = f", teď {notify.fmt(px)} ({num(sign * (px - s['entry']) / risk)} R)" if px and risk else ""
-            stop = "vstup (po T1)" if pos.get("t1_notified") else notify.fmt(s["stop"])
+            now_r = f", teď {notify.usd(px)} ({num(sign * (px - s['entry']) / risk)} R)" if px and risk else ""
+            stop = "vstup (po T1)" if pos.get("t1_notified") else notify.usd(s["stop"])
             demo = " · 🧪 demo" if (pos.get("demo") or {}).get("status") == "open" else ""
             lines.append(f"• {pos['symbol']} {s['direction'].upper()}{' 1H' if pos.get('mtf') else ''} "
                          f"({pos.get('strategy')}) "
-                         f"vstup {notify.fmt(s['entry'])}{now_r}, stop {stop}{demo}")
+                         f"vstup {notify.usd(s['entry'])}{now_r}, stop {stop}{demo}")
         if len(opened) > max_lines:
             lines.append(f"• … a dalších {len(opened) - max_lines}")
     recent = [c for c in state.data.get("closed", []) if c.get("closed_at") and (since is None or c["closed_at"] >= since)]

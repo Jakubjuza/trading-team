@@ -190,6 +190,10 @@ carry:                    # 💰 papírový carry z fundingu (research/carry.py,
 
 probabilities: scanner/probabilities.json   # tabulka z scanner/calibrate.py
 
+orders:                   # 📋 příkazy v USD u každého vstupu (zprávy na Telegram, verdikty) – jen výpočet, nic se neposílá na burzu
+  entry_limit_pct: 0.10   # limitní vstup max. 0,10 % za plánovanou cenou (long nad, short pod)
+  stop_limit_pct: 0.30    # stop-loss jako stop-limit: limit 0,30 % za spouštěcí cenou, aby se v rychlém pohybu vyplnil
+
 costs:                    # poplatek + skluz na JEDNU stranu, v % ceny
   fee_pct: 0.1            # zkontroluj u své burzy! (Kraken taker až 0,40 % → strategie je pak ztrátová)
   slippage_pct: 0.05

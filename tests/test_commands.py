@@ -21,7 +21,7 @@ def test_report_shows_all_parts(tmp_path):
     st = state_with_positions(tmp_path)
     prices = {"BTC/USDT": (105.0, ""), "ETH/USDT": (48.0, ""), "SOL/USDT": (110.0, "")}
     txt = commands.positions_report(CFG, st, prices)
-    assert "BTC/USDT LONG: vstup 100,00, teď 105,00 (+1,00 R ≈ +50 USD), stop 95,00 · 🧪 demo" in txt
+    assert "BTC/USDT LONG: vstup $100,00, teď $105,00 (+1,00 R ≈ +50 USD), stop $95,00 · 🧪 demo" in txt
     # pyramida short: kusy 50 a 49, cena 48 → 0,25 × (2 + 1) = +0,75 R
     assert "ETH/USDT SHORT: 2 kus(y)" in txt and "(+0,75 R)" in txt
     assert "Ensemble: hodnota 5 100 USD (+2,0 %)" in txt and "SOL: 1 100 USD, +10,0 % od nákupu" in txt

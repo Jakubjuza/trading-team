@@ -200,6 +200,7 @@ def test_approach_alert_once_per_day(tmp_path):
     frames = {("BTC/USDT", "1d"): d1, ("BTC/USDT", "1h"): h1}
     msgs = approach_alerts(cfg, state, frames, cfg["strategies"], datetime(2026, 2, 6, tzinfo=timezone.utc), "2026-02-06", True)
     assert len(msgs) == 1 and "LONG" in msgs[0] and "101" in msgs[0]
+    assert "zavře nad $101" in msgs[0] and "stop-limit BUY – spouštěcí $101" in msgs[0] and "Take profit: limit SELL" in msgs[0]
     assert approach_alerts(cfg, state, frames, cfg["strategies"], datetime(2026, 2, 6, tzinfo=timezone.utc), "2026-02-06", True) == []
 
 
