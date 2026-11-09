@@ -1,13 +1,13 @@
 # 🤖 AI Lab – strategie vymyšlené AI
 
-Přepočet 2026-11-08T20:18+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
+Přepočet 2026-11-09T08:20+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
 
 | Strategie | Typ | IS | OOS | HOLDOUT | Výsledek | Účet od 2024 |
 |---|---|---|---|---|---|---|
 | Ozvěna BTC | vlastní nápad | -0,038 R (t -1,89, n 2487) | 0,127 R (t 2,61, n 644) | -0,143 R (t -3,16, n 273) | ❌ neprojde | 313,09 USDT |
-| Tichý průraz | vlastní nápad | 0,113 R (t 1,3, n 459) | 0,185 R (t 1,07, n 137) | -0,086 R (t -0,56, n 144) | ❌ neprojde | 15,54 USDT |
-| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,14 | ❌ neprojde | -777,55 USDT |
-| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,13 | ❌ neprojde | -610,8 USDT |
+| Tichý průraz | vlastní nápad | 0,113 R (t 1,3, n 459) | 0,185 R (t 1,07, n 137) | -0,116 R (t -0,79, n 151) | ❌ neprojde | -37,19 USDT |
+| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,22 | ❌ neprojde | -781,0 USDT |
+| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,09 | ❌ neprojde | -607,16 USDT |
 | Evoluce · vítěz | evoluce | 0,203 R (t 6,8, n 2491) | 0,117 R (t 2,62, n 844) | 0,058 R (t 0,99, n 708) | ✅ projde | 1201,8 USDT |
 
 ## Evoluce
@@ -28,3 +28,11 @@ Vítěz: LONG když stažení ATR14/200 > 60. percentil (0.99) a od EMA200 (ATR)
 | LONG když RSI 14 > 40. percentil a výnos 4 h (σ) > 90. percentil a od EMA200 (ATR) > 70. percentil · stop 3,0 ATR · držení 32 h | 6,43 | 0,112 (2,53) | 0,065 (1,17) |
 | LONG když stažení ATR14/200 > 70. percentil a od EMA200 (ATR) > 40. percentil · stop 3,0 ATR · držení 32 h | 6,42 | 0,053 (1,61) | -0,013 (-0,35) |
 | LONG když stažení ATR14/200 > 70. percentil a od EMA200 (ATR) > 30. percentil a stažení ATR14/200 > 70. percentil · stop 3,0 ATR · držení 32 h | 6,4 | 0,029 (0,97) | -0,025 (-0,75) |
+
+## Průběžný výzkum (kola evoluce)
+
+Kol celkem 1, strategií z kol 0/10, další zaměření: jen short.
+
+| Kolo | Datum | Zaměření | Vyzkoušeno | Prošlo ověřením (náhoda) | Výsledek |
+|---|---|---|---|---|---|
+| 1 | 2026-11-09 | vše | 4204 | 22 (1) | žádné pravidlo neprošlo přísným testem |

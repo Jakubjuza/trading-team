@@ -1,0 +1,19 @@
+{
+ "rounds": [
+  {
+   "n": 1,
+   "date": "2026-11-09",
+   "focus": "vše",
+   "seed": 20261109,
+   "tested": 4204,
+   "top_oos_ok": 22,
+   "random_oos_ok": 1,
+   "candidates": 0,
+   "best": null,
+   "best_splits": null,
+   "added": null,
+   "reason": "žádné pravidlo neprošlo přísným testem"
+  }
+ ],
+ "registry": []
+}
