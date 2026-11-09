@@ -1,4 +1,4 @@
-# Kalendář událostí a krypto (2026-10-25)
+# Kalendář událostí a krypto (2026-11-09)
 
 ## FOMC (rozhodnutí Fedu, 14:00 New York)
 
@@ -6,16 +6,16 @@
 
 | Mince | Zasedání | Rozkmit 4 h po rozhodnutí vs. stejná hodina jindy | 4 h den předem vs. běžné 4 h |
 |---|---|---|---|
-| BTC | 16 | 1.62× | 1.13× |
-| ETH | 16 | 1.50× | 1.19× |
-| SOL | 16 | 1.53× | 1.02× |
-| XRP | 16 | 1.30× | 1.22× |
-| ADA | 16 | 1.36× | 0.97× |
-| LINK | 16 | 1.57× | 1.02× |
-| AVAX | 16 | 1.26× | 0.98× |
-| DOGE | 16 | 1.44× | 0.97× |
+| BTC | 16 | 1.61× | 1.11× |
+| ETH | 16 | 1.51× | 1.13× |
+| SOL | 16 | 1.56× | 1.01× |
+| XRP | 16 | 1.32× | 1.18× |
+| ADA | 16 | 1.38× | 0.95× |
+| LINK | 16 | 1.63× | 0.97× |
+| AVAX | 16 | 1.30× | 0.95× |
+| DOGE | 16 | 1.48× | 0.93× |
 
-Průměr: **1.45×** po rozhodnutí, 1.06× den předem. Po Fedu tedy výrazně větší knoty (riziko pro stop), den předem běžný trh. Směr po FOMC se neměří jako signál – 16 zasedání je na to málo.
+Průměr: **1.47×** po rozhodnutí, 1.03× den předem. Po Fedu tedy výrazně větší knoty (riziko pro stop), den předem běžný trh. Směr po FOMC se neměří jako signál – 16 zasedání je na to málo.
 
 ## Ostatní
 
