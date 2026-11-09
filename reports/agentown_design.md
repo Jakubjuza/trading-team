@@ -151,3 +151,23 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - `research/ai_lab.py --round` (workflow „AI Lab“ každou noc 02:13 UTC): jedno nové kolo evoluce se střídavým zaměřením (vše · jen short · rychlé 2–8 h · pomalé 16–32 h · jen long), přísný test (IS > 0, OOS t ≥ 2,5, HOLDOUT t ≥ 1, kolo musí porazit náhodnou kontrolu), registr max. 10 strategií z kol (`research/ai_rounds.json`), při přidání karta do Telegramu. Pravidla stanovená předem, doplněná do hlavičky skriptu.
 - Kolo 1 (9. 11., „vše“): 4 204 pravidel, ověřením prošlo 22/30 (náhodných 1/30), přísným testem žádné → nic nepřidáno.
 - Agentown: v AI Labu nová sekce „Průběžný výzkum · každou noc nové kolo“ (počet kol, obsazenost registru, zaměření dalšího kola, seznam kol s výsledkem); nové strategie z kol se automaticky objeví jako karty i věže v kupoli. Publikováno jako „AI Lab výzkum 9. 11.“ (verze 24).
+
+## 2026-11-09 (denní běh designéra)
+
+**Nalezené prvky**
+1. Proud událostí (activity feed) s oddělovači dnů, slučováním souvisejících událostí („4 změny“), relativním časem s přesným časem na najetí, filtry podle aktéra a typu a navrženým prázdným stavem i koncem historie („Začátek historie“) – [SaaS UI: Activity feed & audit log UX patterns (7/2026)](https://www.saasui.design/blog/saas-activity-feed-audit-log-ux-patterns), [Stream: Activity feed design](https://getstream.io/blog/activity-feed-design/) (starší, 2017: model aktér–sloveso–objekt, agregované proudy, nulový stav).
+2. Deep linking: každý stav, ke kterému se chce člověk vrátit, má mít vlastní adresu (identita v cestě, filtry v query, pozice ve fragmentu) – [Pattern Playground: Deep linking](https://pattern-playground.onrender.com/patterns/deep-linking).
+3. CSS anchor positioning je od Firefoxu 147 „Baseline newly available“ (tooltipy a popovery ukotvené k prvku bez JS) – [web.dev: New to the web platform in January 2026](https://web.dev/blog/web-platform-01-2026) (tabulka verzí na stránce nesedí s textem, ověřit na MDN).
+
+**Zapojeno – 📜 Kronika města** (nová záložka v horní liště mezi Downtownem a Přehledem, i v paletě Ctrl K)
+- Celostránková čtvrť ve stylu ostatních (oranžovo-magentová linka): štítek čerstvosti (nejnovější `updated` z účtů, Downtownu, AI Labu a Mozku), informační box, souhrn 7 dní (počet papírových obchodů, čistě v USDT + výhry, poslední událost).
+- Proud událostí nejnovější nahoře, oddělovače dnů (Dnes / Včera / den v týdnu, přichycené při posunu), časová osa s ikonou podle typu a barvou čtvrti. Typy: uzavřené papírové obchody (`live.last_trades` z kolekcí `accounts`, `downtown`, `ailab`, `brain`), otevřené pozice (`live.open`), změny stavu strategií (`history` v `strategies`), kola výzkumu AI (`ailab.research.rounds`) a spuštění papíru (`live.start`, jedna událost za čtvrť a den).
+- Obchody jedné strategie z jednoho dne jsou sloučené („uzavřela 2 obchody · −11,64 USDT“) s rozbalovacím rozpisem. Relativní čas, přesný čas v `<time title>`. Filtrovací čipy Čtvrť × Typ s počty (prázdné kombinace vypnuté), stránkování po 14 dnech, konec „Začátek kroniky“, prázdné stavy. „Otevřít <čtvrť> →“ u každé události. Zpětné testy se nezobrazují, nic se nedopočítává navíc.
+- Překreslí se při nových datech z databáze; otevření jiné čtvrti, prohlídky nebo Esc kroniku zavře.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (z GitHubu přes git, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb konzole, bez vodorovného posunu; ze snímku dat 56 událostí ve 12 dnech, filtr Laboratoř → 48, „Otevřít“ otevře správnou čtvrť, Esc zavře. Opraveno při kontrole: nadpisy dnů přebíjelo pravidlo `.board h3`, tlačítka „Otevřít“ byla roztažená přes celou šířku. Databáze (stejné kolekce a čtení), capabilities i všechny čtvrti beze změny. Publikováno jako „Design 9. 11.“ (verze 25).
+
+**Odloženo**
+- Deep linking (např. `#kronika`, `#lab/<strategie>`) – stránka běží ve vloženém rámci claude.ai, adresu rámce uživatel nevidí ani nesdílí; bez ověření, že fragment projde, nemá smysl.
+- Anchor positioning pro náhledy v Kronice/žebříčku – Safari podporu ověřit na MDN; zatím stačí `title`.
+- Světlý režim, sparkline papírové křivky strategií, interval spolehlivosti, porovnání pro Downtown, interest invokers, animace řízené posunem – důvody beze změny (viz 5.–8. 11.).
