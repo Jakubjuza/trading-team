@@ -2,15 +2,15 @@
  "scores": {
   "Analytici (Google News)": {
    "hit7": 37,
-   "n7": 88
+   "n7": 89
   },
   "Bitcoin Magazine": {
    "hit7": 0,
    "n7": 10
   },
   "CoinDesk": {
-   "hit7": 9,
-   "n7": 21
+   "hit7": 10,
+   "n7": 22
   },
   "Cointelegraph": {
    "hit7": 3,
@@ -30,7 +30,7 @@
   },
   "Telegram @cointelegraph": {
    "hit7": 3,
-   "n7": 5
+   "n7": 6
   },
   "Telegram @glassnode": {
    "hit7": 3,
