@@ -178,3 +178,24 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Výsledek (poctivě): A – výzkum by přidal 11 strategií (t v ověření 2,69–4,74), naostro kladný průměr 7/11, průkazně jen 1; fond A (riziko 0,5 %/obchod, všechny strategie najednou) $46 z $1 000, BTC drž −2,3 %. B – 132 pravidel prošlo přísným testem, vybraných 10 mělo na závěrečném roce záporný průměr ve všech 10 případech, fond B Ø −0,08 R (t −5,5) → $12; 9/10 pravidel je „long vysoko nad EMA200“ (sázka na pokračující růst), BTC za ten rok −28,5 %.
 - Agentown: záložka **$1M Future** a zlatá kupole s rotující mincí „$“ (vpravo za Laboratoří, most z laboratorní plošiny), věže = strategie obou simulací. Čtvrť: přepínač Stroj času / Zrychlená budoucnost, hlavní karta fondu s křivkou proti BTC drž (log), „Cesta k $1 000 000“ (log stupnice, přepočet tempa jen s jasným štítkem – teď „zatím ne“), box „Co simulace ukázala“ + hypotézy k testu (test v růstu i poklesu zvlášť, strop souběžného rizika fondu – nic se neměnilo), souhrn, karty strategií (účet $1 000, pravidlo, tabulka ověření × naostro / závěrečný test), časová osa 24 kol, mřížka 48 kol. Ceny v $. Paleta hledání umí otevřít $1M Future. Data jsou ve snímku stránky (simulace se nepřepočítává; kolekce `future` se čte, pokud vznikne).
 - Ověření: Playwright se skutečnou Three.js r160, 1280 a 375 px, tmavý i světlý režim: bez chyb, bez vodorovného posunu; horní lišta s 9 záložkami na 1280 px bez překryvu (pod 1480 px skryté číslo Downtownu). Esc zavře, přepnutí čtvrtí funguje. Publikováno jako „$1M Future 9. 11.“ (verze 26).
+
+## 2026-11-10 (denní běh designéra)
+
+**Nalezené prvky**
+1. Kalendářová mapa aktivity (GitHub styl: týdny × dny, 4–5 úrovní barvy, legenda „méně → více“, tooltip s počtem) – [21st.dev: React heatmap calendar components](https://21st.dev/blog/react-heatmap-calendar-components), [assistant-ui: Heat graph](https://www.assistant-ui.com/elements/heat-graph), [techinterview.org: Build a GitHub-style activity heatmap](https://www.techinterview.org/post/3233475390/build-github-style-activity-heatmap/).
+2. Teplotní mapa výnosů po obdobích (řádek = strategie, sloupec = rok/měsíc, divergentní barva zisk/ztráta) z quant tearsheetů – [QuantStats (PyPI)](https://pypi.org/project/quantstats/).
+3. Plynulé „dojetí“ čísla při změně hodnoty (animated number transitions) – [NumberFlow transitions (21st.dev)](https://21st.dev/@barvian/components/number-flow-transitions), [Rails Blocks: Animated number](https://railsblocks.com/docs/animated-number.md).
+4. Deterministické generované avatary z názvu (gradient/hash) pro profily – [Reflex UI: gradient profile](https://www.mintlify.com/reflex-dev/reflex-ui/components/gradient-profile), [Hashvatar](https://aiuxplayground.com/playground/hashvatar-com).
+5. Přehled klávesových zkratek na „?“ – [UI-Patterns: Keyboard shortcuts](https://ui-patterns.com/patterns/keyboard-shortcuts), [Salt DS: Keyboard shortcuts](https://main.saltdesignsystem.com/salt/patterns/keyboard-shortcuts).
+
+**Zapojeno**
+- Laboratoř: nová sekce „Rok po roku · výnos účtu v zpětném testu“ – tabulka účet × rok z pole `backtest.years` kolekce `accounts` (Laboratoř i jádro města), barva mint/korál podle logaritmu výnosu, čísla v % (k = tisíce), spodní řádek „v plusu X/Y“ za každý rok, šrafování = účet ještě neběžel, roky s méně než čtvrtinou účtů vynechané (s poznámkou). Prvních 12 podle čistého zisku, tlačítko „Zobrazit všech N účtů“. Na mobilu jméno nad řádkem buněk, 8 sloupců bez vodorovného posunu.
+- Kronika: „Aktivita města · 8 týdnů“ – mřížka Po–Ne × týdny z událostí kroniky (respektuje filtry čtvrti a typu), 5 úrovní jantarové, dnešek s bílým rámečkem, popisek s počtem událostí a papírovým P/L dne; klepnutí skočí na den v proudu (dočte starší dny, když jsou skryté).
+- Horní lišta: počty strategií, papírových obchodů a Downtown USDT při nové hodnotě z databáze plynule dojedou (700 ms, bez animace při `prefers-reduced-motion`).
+- Ověření: Playwright 1280 a 375 px, tmavý i světlý režim, bez chyb skriptu a bez vodorovného posunu. Three.js z CDN v sandboxu nešla načíst (jsdelivr blokovaný), proto test se zástupným modulem – 3D scéna se tento běh neověřovala, změny se jí netýkají. Publikováno jako „Design 10. 11.“ (verze 27).
+
+**Odloženo**
+- Generované avatary strategií – hezké pro profily, ale přidaly by jen dekoraci bez dat; zvážit, až budou samostatné profily agentů.
+- Přehled zkratek na „?“ – zkratek je zatím málo (Ctrl K, /, Esc), stačí patička palety příkazů.
+- Mapa výnosů po měsících – v kolekci je jen `years` a řídká křivka `curve`; měsíční výnos by se musel dopočítávat z křivky.
+- Světlý režim, sparkline papírové křivky strategií, interval spolehlivosti, porovnání pro Downtown, interest invokers, animace řízené posunem, deep linking – důvody beze změny (viz 5.–9. 11.).
