@@ -13,6 +13,20 @@
    "best_splits": null,
    "added": null,
    "reason": "žádné pravidlo neprošlo přísným testem"
+  },
+  {
+   "n": 2,
+   "date": "2026-11-10",
+   "focus": "jen short",
+   "seed": 20261110,
+   "tested": 4663,
+   "top_oos_ok": 3,
+   "random_oos_ok": 0,
+   "candidates": 0,
+   "best": null,
+   "best_splits": null,
+   "added": null,
+   "reason": "žádné pravidlo neprošlo přísným testem"
   }
  ],
  "registry": []

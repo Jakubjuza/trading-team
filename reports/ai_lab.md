@@ -1,13 +1,13 @@
 # 🤖 AI Lab – strategie vymyšlené AI
 
-Přepočet 2026-11-09T08:20+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
+Přepočet 2026-11-10T09:47+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
 
 | Strategie | Typ | IS | OOS | HOLDOUT | Výsledek | Účet od 2024 |
 |---|---|---|---|---|---|---|
 | Ozvěna BTC | vlastní nápad | -0,038 R (t -1,89, n 2487) | 0,127 R (t 2,61, n 644) | -0,143 R (t -3,16, n 273) | ❌ neprojde | 313,09 USDT |
-| Tichý průraz | vlastní nápad | 0,113 R (t 1,3, n 459) | 0,185 R (t 1,07, n 137) | -0,116 R (t -0,79, n 151) | ❌ neprojde | -37,19 USDT |
-| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,22 | ❌ neprojde | -781,0 USDT |
-| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,09 | ❌ neprojde | -607,16 USDT |
+| Tichý průraz | vlastní nápad | 0,113 R (t 1,3, n 459) | 0,185 R (t 1,07, n 137) | -0,11 R (t -0,75, n 150) | ❌ neprojde | -26,53 USDT |
+| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,19 | ❌ neprojde | -780,14 USDT |
+| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,04 | ❌ neprojde | -602,41 USDT |
 | Evoluce · vítěz | evoluce | 0,203 R (t 6,8, n 2491) | 0,117 R (t 2,62, n 844) | 0,058 R (t 0,99, n 708) | ✅ projde | 1201,8 USDT |
 
 ## Evoluce
@@ -31,8 +31,9 @@ Vítěz: LONG když stažení ATR14/200 > 60. percentil (0.99) a od EMA200 (ATR)
 
 ## Průběžný výzkum (kola evoluce)
 
-Kol celkem 1, strategií z kol 0/10, další zaměření: jen short.
+Kol celkem 2, strategií z kol 0/10, další zaměření: rychlé obchody 2–8 h.
 
 | Kolo | Datum | Zaměření | Vyzkoušeno | Prošlo ověřením (náhoda) | Výsledek |
 |---|---|---|---|---|---|
+| 2 | 2026-11-10 | jen short | 4663 | 3 (0) | žádné pravidlo neprošlo přísným testem |
 | 1 | 2026-11-09 | vše | 4204 | 22 (1) | žádné pravidlo neprošlo přísným testem |
