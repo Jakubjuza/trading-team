@@ -9,3 +9,4 @@
 {"event": "ensemble", "symbol": "LINK/USDC", "side": "sell", "amount": 18.322, "price": 10.554772732234472, "paper_price": 10.61931, "time": "2026-10-30T00:01:00.025787+00:00"}
 {"event": "ensemble_error", "symbol": "ETH/USDC", "error": "ExchangeError: okx {\"msg\":\"This API Key does not have trading permission for the Crypto\",\"code\":\"50123\"}", "time": "2026-11-05T00:01:17.899985+00:00"}
 {"event": "ensemble_error", "symbol": "ETH/USDC", "error": "InvalidOrder: okx amount of ETH/USDC must be greater than minimum amount precision of 0.000001", "time": "2026-11-09T00:00:46.011805+00:00"}
+{"event": "ensemble_error", "symbol": "SOL/USDC", "error": "InsufficientFunds: okx {\"code\":\"1\",\"data\":[{\"clOrdId\":\"6b9ad766b55dBCDE35bb42124467b4a4\",\"ordId\":\"\",\"sCode\":\"51008\",\"sMsg\":\"Order failed. Your available SOL balance is insufficien", "time": "2026-11-11T00:00:59.006332+00:00"}
