@@ -1,6 +1,6 @@
 # Downtown – Dispečer fází (jen papír)
 
-Aktualizováno 2026-11-11T16:06+00:00 UTC skriptem `research/downtown_dispatch.py` (pravidla stanovená předem v hlavičce).
+Aktualizováno 2026-11-11T22:39+00:00 UTC skriptem `research/downtown_dispatch.py` (pravidla stanovená předem v hlavičce).
 Agent nasazuje divoké strategie Downtownu jen ve fázích trhu, kde dřív vydělávaly; výzkum v `reports/downtown_regimes.md`.
 Oddělené od desku, nejde o finanční poradenství.
 
@@ -12,19 +12,19 @@ Oddělené od desku, nejde o finanční poradenství.
 
 ## Zpětný test od 2023-07-01 (walk-forward, učení jen z minulých obchodů)
 
-Vloženo celkem 2 000 → hodnota 10 284 USDT (z toho trezor 9 620), čistě 8 284 USDT; max. hodnota 12 903; max. propad -61.8 %; bankroty 1; obchodů 373.
+Vloženo celkem 2 000 → hodnota 10 295 USDT (z toho trezor 9 620), čistě 8 295 USDT; max. hodnota 12 903; max. propad -61.8 %; bankroty 1; obchodů 373.
 
-Roky: 2023: 345.0 %, 2024: 133.9 %, 2025: -12.3 %, 2026: 2.8 %
+Roky: 2023: 345.0 %, 2024: 133.9 %, 2025: -12.3 %, 2026: 2.9 %
 
 ## Živý papír od 2026-11-08
 
-Účet 1 007 USDT, čistě 7, obchodů 0.
+Účet 1 023 USDT, čistě 23, obchodů 0.
 
 ## Kde která strategie vydělávala (bez páky, průměr na obchod, všechny dosavadní obchody)
 
 | Strategie | býk · pila · divoko | býk · pila · klid | býk · trend · divoko | býk · trend · klid | medvěd · pila · divoko | medvěd · pila · klid | medvěd · trend · divoko | medvěd · trend · klid |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Scalper 15m ×20 | -0.15 % (n 2343, t -21.5) | -0.15 % (n 3088, t -25.3) | -0.17 % (n 1522, t -20.0) | -0.17 % (n 1388, t -18.8) | -0.16 % (n 1581, t -18.6) | -0.14 % (n 1119, t -14.8) | -0.13 % (n 913, t -11.8) | -0.16 % (n 548, t -11.6) |
+| Scalper 15m ×20 | -0.15 % (n 2343, t -21.5) | -0.15 % (n 3088, t -25.3) | -0.17 % (n 1522, t -20.0) | -0.17 % (n 1390, t -18.8) | -0.16 % (n 1581, t -18.6) | -0.14 % (n 1119, t -14.8) | -0.13 % (n 913, t -11.8) | -0.16 % (n 548, t -11.6) |
 | Průraz ×25 | -0.14 % (n 380, t -1.3) | -0.11 % (n 596, t -1.2) | -0.21 % (n 276, t -1.2) | -0.17 % (n 275, t -1.4) | -0.09 % (n 251, t -0.6) | -0.15 % (n 260, t -1.6) | -0.08 % (n 117, t -0.3) | -0.11 % (n 111, t -0.6) |
 | Knock-out ×50 | -0.20 % (n 333, t -2.5) | -0.13 % (n 399, t -1.8) | -0.20 % (n 365, t -2.7) | +0.01 % (n 251, t +0.1) | -0.07 % (n 175, t -0.6) | -0.15 % (n 158, t -1.4) | -0.04 % (n 75, t -0.2) | -0.17 % (n 58, t -0.9) |
 | Martingale ×10 | -0.17 % (n 300, t -3.1) | -0.19 % (n 368, t -3.8) | -0.22 % (n 153, t -2.8) | -0.22 % (n 155, t -2.9) | -0.17 % (n 214, t -2.5) | -0.28 % (n 145, t -3.5) | -0.21 % (n 156, t -2.7) | -0.35 % (n 98, t -3.6) |
