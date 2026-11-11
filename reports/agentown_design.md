@@ -199,3 +199,21 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Přehled zkratek na „?“ – zkratek je zatím málo (Ctrl K, /, Esc), stačí patička palety příkazů.
 - Mapa výnosů po měsících – v kolekci je jen `years` a řídká křivka `curve`; měsíční výnos by se musel dopočítávat z křivky.
 - Světlý režim, sparkline papírové křivky strategií, interval spolehlivosti, porovnání pro Downtown, interest invokers, animace řízené posunem, deep linking – důvody beze změny (viz 5.–9. 11.).
+
+## 2026-11-11 (denní běh designéra)
+
+**Nalezené prvky**
+1. Žebříček s trendem pořadí – u každé položky šipka ▲/▼ o kolik míst se posunula a zvýraznění nováčků – [shadcnblocks: Leaderboard with Trends](https://www.shadcnblocks.com/block/leaderboard3), [shadcn.io: Stats leaderboard with delta](https://www.shadcn.io/blocks/stats-leaderboard-with-delta), [UI-Patterns: Leaderboard](https://ui-patterns.com/patterns/leaderboard); otázka „jak se pořadí změnilo od minula“ – [PlayFab community](https://community.playfab.com/answers/24129/view.html), [CityStrides: Leaderboard rank change](https://community.citystrides.com/t/leaderboard-rank-change/29803).
+2. Pilulka „nové položky“ v živém proudu: nové záznamy nepřeskočí čtenáři pod rukama, nahoře se objeví „↑ N nových“ a klepnutí vrátí nahoru – [21st.dev: New items pill](https://21st.dev/@ddoemonn/components/new-items-pill), [UX StackExchange: indikace nových položek v živém feedu](https://ux.stackexchange.com/questions/149353/approaches-to-indicate-and-handle-new-items-from-websocket-on-a-live-news-feed), [techinterview.org: Frontend real-time UX – liveness indicators](https://www.techinterview.org/post/3233475354/frontend-real-time-ux-liveness-activity-saving/).
+3. Spodní navigační lišta na mobilu s položkou „Více“ v bottom sheetu – [UXPin: Mobile navigation (2026)](https://www.uxpin.com/studio/blog/mobile-navigation-examples/), [Design Studio: Mobile navigation UX (2026)](https://www.designstudiouiux.com/blog/mobile-navigation-ux/).
+
+**Zapojeno – 👋 Od minulé návštěvy** (pamatuje si jen tento prohlížeč, `localStorage` klíč `agentown-seen-v1`; návštěva = sezení s pauzou < 1 h)
+- Žebříček: pruh „Od minulé návštěvy · datum · před X“ se součty (výš / níž / nové / +N papírových obchodů / změny stavu) a čipem „Jen změněné“ (počet v čipu). U pořadí šipka ▲N / ▼N podle celkového pořadí pro zvolené řazení (tooltip „minule 4., teď 1.“), štítek „nová“, čip „+N obch.“ a „dřív <stav>“. Při první návštěvě jen vysvětlení, co se příště objeví.
+- Kronika: události, které při minulé návštěvě v datech nebyly (porovnání otisků událostí, ne času – zachytí i pozdě synchronizované obchody), mají štítek NOVÉ a zvýrazněnou ikonu; čára „tady jste minule skončili“ a věta s počtem nových záznamů. Když při otevřené kronice přijdou z databáze nová data a čtenář je níž, nahoře se ukáže pilulka „↑ N nových událostí“ (klepnutím nahoru).
+- Nic se nedopočítává ani nevymýšlí: porovnávají se jen data z databáze (`strategies` – pořadí, `paper.n`, `status`; kronika ze stejných kolekcí jako dosud). Kolekce, pole, zápisy i capabilities beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (z GitHubu, CDN v sandboxu blokované) a mockem databáze, 1280 a 375 px, tmavý i světlý systémový režim: bez chyb skriptu, bez vodorovného posunu; simulovaná minulá návštěva → ▲3 / ▼3 / nová / dřív ověřeno, „Jen změněné“ 4 z 25, v Kronice 4× NOVÉ + čára; nový obchod z mocku databáze při posunuté kronice → pilulka „↑ 1 nová událost“, klepnutí vrátí nahoru. Publikováno jako „Design 11. 11.“ (verze 28).
+
+**Odloženo**
+- Spodní navigace na mobilu – zásah do 3D ovládání a spodních karet (prohlídka, karta budovy), potřebuje samostatný test s živou scénou na telefonu.
+- Generované avatary, přehled zkratek „?“, měsíční mapa výnosů, světlý režim, sparkline, interval spolehlivosti, porovnání pro Downtown, interest invokers, animace řízené posunem, deep linking – důvody beze změny (viz 5.–10. 11.).
