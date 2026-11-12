@@ -217,3 +217,24 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 **Odloženo**
 - Spodní navigace na mobilu – zásah do 3D ovládání a spodních karet (prohlídka, karta budovy), potřebuje samostatný test s živou scénou na telefonu.
 - Generované avatary, přehled zkratek „?“, měsíční mapa výnosů, světlý režim, sparkline, interval spolehlivosti, porovnání pro Downtown, interest invokers, animace řízené posunem, deep linking – důvody beze změny (viz 5.–10. 11.).
+
+## 2026-11-12 (denní běh designéra)
+
+**Nalezené prvky**
+1. Žebříček/profil obchodníka: výnos za stejné období pro všechny a **max. propad hned vedle výnosu ve stejné velikosti**, upozornění na minulé výsledky přímo na kartě (ne v patičce), žádné FOMO prvky u peněz – [VP0: Copy-trading leaderboard UI (6/2026)](https://vp0.com/blogs/copy-trading-leaderboard-ui-react-native) (blog prodejce, brát jako názor).
+2. Animace řízené posunem (`animation-timeline: view()`) jsou od Firefoxu 159 „Baseline newly available“ (Chrome 115, Safari 26) – [web.dev: New to the web platform in October 2026](https://web.dev/blog/web-platform-10-2026). Tím padá důvod odkladu z 8. 11.
+3. Investiční dashboardy: šipky/znaménko vedle barvy (nezávislé na barvě), přepínač částka × %, „chvíle poklesu“ (začít vloženým kapitálem, méně křiklavé červené), sparkline na kartě – [Lollypop: Investment dashboard UX guide (5/2026, akt. 11/2026)](https://lollypop.design/blog/2026/may/investment-dashboard-ux-design-guide/).
+4. Profilová stránka: iniciály místo fotky, sekce v záložkách/akordeonech, hlavní akce v dosahu palce – [UXPin: Profile page UI design (2026)](https://www.uxpin.com/studio/blog/profile-page-ui-design/).
+
+**Zapojeno**
+- **Výnos × riziko na každé kartě účtu** (Laboratoř, Žebříček – Karty, AI Lab, Mozek, $1M Future, Downtown): nahoře dvojice stejně velkých čísel „Čistě +X USDT · ±Y % vkladu“ a „Max. propad −Z %“ (propad pod −50 % korálově). Procento vkladu = `net / deposited` z dat, nic jiného se nedopočítává. „Max. propad“ se z mřížky údajů přesunul nahoru, na jeho místo „Účet teď“.
+- **Štítek režimu přímo na kartě**: „zpětný test · historie, ne slib“ (fialový), „papír živě“ (mint), „simulace“ (zlatý) podle přepínače čtvrti; pod ním „vloženo celkem“.
+- **Odhalení karet při posunu** ve čtvrtích (karty účtů, kupole Mozku, řádky žebříčku): jemné vyjetí z 25 % průhlednosti, jen při `@supports (animation-timeline: view())` a `prefers-reduced-motion: no-preference`; karty viditelné při otevření jsou hned plně vidět.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu (jen zablokované fonty), bez vodorovného posunu ve všech 5 čtvrtích s kartami, žádná dvojice výnos × riziko nepřetéká. Opraveno při kontrole: obří procenta („+582889,7 %“) se lámala – nad 1 000 % se zaokrouhlují s mezerou tisíců. Databáze (kolekce a čtení), capabilities i všechny čtvrti beze změny. Publikováno jako „Design 12. 11.“ (verze 29).
+
+**Odloženo**
+- Výběr období (30 d / 90 d / 1 rok) stejný pro všechny – v datech jsou jen `years` a řídká `curve`; výnos za klouzavé období by se musel dopočítávat z křivky.
+- Přepínač USDT × % pro celou čtvrť – s dvojicí výnos × riziko je % vidět vždy; zvážit podle ohlasu.
+- Iniciály/avatary a profil v záložkách – stejný důvod jako 10. 11. (dekorace bez dat, až budou samostatné profily agentů).
+- Spodní navigace na mobilu, přehled zkratek „?“, měsíční mapa výnosů, světlý režim, interval spolehlivosti, porovnání pro Downtown, interest invokers, deep linking – důvody beze změny (viz 5.–11. 11.).
