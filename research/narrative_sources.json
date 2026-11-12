@@ -1,32 +1,32 @@
 {
  "scores": {
   "Analytici (Google News)": {
-   "hit7": 42,
-   "n7": 117
+   "hit7": 44,
+   "n7": 120
   },
   "Bitcoin Magazine": {
-   "hit7": 0,
-   "n7": 13
-  },
-  "CoinDesk": {
-   "hit7": 19,
-   "n7": 38
-  },
-  "Cointelegraph": {
-   "hit7": 4,
+   "hit7": 1,
    "n7": 14
   },
+  "CoinDesk": {
+   "hit7": 20,
+   "n7": 39
+  },
+  "Cointelegraph": {
+   "hit7": 5,
+   "n7": 15
+  },
   "CryptoSlate": {
-   "hit7": 6,
-   "n7": 18
+   "hit7": 7,
+   "n7": 19
   },
   "Decrypt": {
    "hit7": 3,
    "n7": 10
   },
   "Telegram @WatcherGuru": {
-   "hit7": 7,
-   "n7": 8
+   "hit7": 8,
+   "n7": 9
   },
   "Telegram @cointelegraph": {
    "hit7": 4,
@@ -37,12 +37,12 @@
    "n7": 3
   },
   "Telegram @wublockchainenglish": {
-   "hit7": 7,
-   "n7": 14
+   "hit7": 8,
+   "n7": 15
   },
   "The Block": {
-   "hit7": 1,
-   "n7": 5
+   "hit7": 2,
+   "n7": 6
   }
  }
 }
