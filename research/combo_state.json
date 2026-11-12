@@ -1,7 +1,7 @@
 {
  "started": "2026-11-04",
- "next": 5,
- "total_tests": 960,
+ "next": 6,
+ "total_tests": 1224,
  "parts": [
   {
    "no": 1,
@@ -616,6 +616,135 @@
    "status": "hotovo",
    "seconds": 2,
    "n_basic": 3,
+   "n_passed": 2
+  },
+  {
+   "no": 6,
+   "kind": "pair",
+   "tf": "4h",
+   "groups": [
+    "volatilita",
+    "momentum",
+    "sentiment"
+   ],
+   "grid": {
+    "triggers": [
+     {
+      "family": "ma_cross",
+      "params": "sma/10/100/confirm",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.25
+     },
+     {
+      "family": "macd",
+      "params": "19/39/9/signal",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.2
+     },
+     {
+      "family": "roc",
+      "params": "20",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.14
+     },
+     {
+      "family": "price_ma",
+      "params": "sma/100",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.05
+     },
+     {
+      "family": "boll_break",
+      "params": "50/2.0",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.02
+     },
+     {
+      "family": "rsi_mom",
+      "params": "55",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 6.02
+     },
+     {
+      "family": "vol_break",
+      "params": "20/2.5",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 4.66
+     },
+     {
+      "family": "donchian",
+      "params": "40",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 2.43
+     },
+     {
+      "family": "ma_cross",
+      "params": "sma/20/50/cross",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 2.19
+     },
+     {
+      "family": "boll_break",
+      "params": "50/2.5",
+      "exit": "target",
+      "dir": "short",
+      "is_t": 2.13
+     },
+     {
+      "family": "macd",
+      "params": "19/39/9/signal",
+      "exit": "opp_stop",
+      "dir": "short",
+      "is_t": 1.36
+     },
+     {
+      "family": "keltner",
+      "params": "2.5",
+      "exit": "opp_stop",
+      "dir": "short",
+      "is_t": 1.31
+     }
+    ],
+    "filters": [
+     "atrlo:0.3",
+     "atrlo:0.5",
+     "atrlo:0.7",
+     "atrhi:0.3",
+     "atrhi:0.5",
+     "atrhi:0.7",
+     "rsi:45",
+     "rsi:50",
+     "rsi:55",
+     "rsi:60",
+     "rsix:60",
+     "rsix:70",
+     "rsix:80",
+     "macd:sig",
+     "macd:zero",
+     "fng:30",
+     "fng:45",
+     "fng:60",
+     "fngg:40",
+     "fngg:55",
+     "fngg:70"
+    ]
+   },
+   "n_combos": 252,
+   "n_baselines": 12,
+   "n_tests": 264,
+   "started": "2026-11-12T21:39:51+00:00",
+   "status": "hotovo",
+   "seconds": 3,
+   "n_basic": 2,
    "n_passed": 2
   }
  ]
