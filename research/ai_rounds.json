@@ -57,6 +57,36 @@
    },
    "added": "ai3",
    "reason": "přidáno"
+  },
+  {
+   "n": 4,
+   "date": "2026-11-12",
+   "focus": "pomalé obchody 16–32 h",
+   "seed": 20261112,
+   "tested": 4282,
+   "top_oos_ok": 8,
+   "random_oos_ok": 1,
+   "candidates": 2,
+   "best": "LONG když od EMA200 (ATR) > 70. percentil (2.54) a výnos 4 h (σ) > 90. percentil (1.07) · stop 3,0 ATR · držení 32 h",
+   "best_splits": {
+    "is": {
+     "n": 3031,
+     "mean_r": 0.2,
+     "t": 6.8
+    },
+    "oos": {
+     "n": 989,
+     "mean_r": 0.113,
+     "t": 2.55
+    },
+    "hold": {
+     "n": 829,
+     "mean_r": 0.063,
+     "t": 1.15
+    }
+   },
+   "added": "ai4",
+   "reason": "přidáno"
   }
  ],
  "registry": [
@@ -103,6 +133,47 @@
      "n": 372,
      "mean_r": 0.074,
      "t": 2.4
+    }
+   }
+  },
+  {
+   "id": "ai4",
+   "name": "AI #4 · pomalé obchody 16–32 h",
+   "round": 4,
+   "focus": "pomalé obchody 16–32 h",
+   "added": "2026-11-12",
+   "genome": {
+    "conds": [
+     [
+      "ema200",
+      ">",
+      0.7
+     ],
+     [
+      "r4z",
+      ">",
+      0.9
+     ]
+    ],
+    "dir": 1,
+    "hold": 32,
+    "stop": 3.0
+   },
+   "splits_at_add": {
+    "is": {
+     "n": 3031,
+     "mean_r": 0.2,
+     "t": 6.8
+    },
+    "oos": {
+     "n": 989,
+     "mean_r": 0.113,
+     "t": 2.55
+    },
+    "hold": {
+     "n": 829,
+     "mean_r": 0.063,
+     "t": 1.15
     }
    }
   }
