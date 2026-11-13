@@ -238,3 +238,23 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Přepínač USDT × % pro celou čtvrť – s dvojicí výnos × riziko je % vidět vždy; zvážit podle ohlasu.
 - Iniciály/avatary a profil v záložkách – stejný důvod jako 10. 11. (dekorace bez dat, až budou samostatné profily agentů).
 - Spodní navigace na mobilu, přehled zkratek „?“, měsíční mapa výnosů, světlý režim, interval spolehlivosti, porovnání pro Downtown, interest invokers, deep linking – důvody beze změny (viz 5.–11. 11.).
+
+## 2026-11-13 (denní běh designéra)
+
+**Nalezené prvky**
+1. Pás historie jako u stavových stránek („uptime ribbon“): řada sloupců za období, procházení ukazatelem nebo šipkami s detailem každého dne – [21st.dev: Uptime Ribbon](https://21st.dev/@ham7a311/components/uptime-ribbon.md), [Atlassian Statuspage: Display historical uptime of components](https://support.atlassian.com/statuspage/docs/display-historical-uptime-of-components).
+2. Pás musí ukazovat jen naměřená data, ne vybraný příběh („measured, not published“), stav „zahřívá se“ místo předčasně zelené – [DEV: The status page you can't fake](https://dev.to/slima4/the-status-page-you-cant-fake-measured-uptime-not-published-ckp), [DEV: Status page best practices in 2026](https://dev.to/jensonhirst/status-page-best-practices-in-2026-5885) (článek prodejce).
+3. Sportovní „forma“ (posledních 5 výsledků jako V/R/P odznaky) a kritika, že krátká série je hlavně šum – [Sportmonks: Latest matches widget](https://docs.sportmonks.com/v3/football-widgets/our-widgets/team-widgets/latest-matches), [Five-game form is noise wearing a trend line (6/2026)](https://adsense-7r1.pages.dev/articles/five-game-form-is-noise-wearing-a-trend-line) (názorový článek).
+4. Sticky hlavičky, které se při přichycení změní, přes `@container scroll-state(stuck: top)` – [Chrome for Developers: State-aware sticky headers (akt. 8. 11. 2026)](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-atoms/state-aware-sticky-headers), [MDN: Container scroll-state queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_conditional_rules/Container_scroll-state_queries).
+
+**Zapojeno – 📊 Forma: pás posledních obchodů** (na každé kartě účtu s jednotlivými obchody: Laboratoř, Žebříček – Karty, AI Lab, Mozek, $1M Future, Downtown)
+- Sloupce z pole `last_trades` (až 12 obchodů, starší vlevo → novější vpravo): zisk nad osou mint, ztráta pod osou korálová (tvar nezávislý na barvě), výška = velikost obchodu (R, u Downtownu % marže, poměrně k největšímu v pásu). Nahoře ▲ výher · ▼ ztrát · Σ USDT jen za zobrazené obchody.
+- Procházení: najetí myší / klepnutí na sloupec nebo fokus + ← → Home End; řádek pod pásem ukáže „2/12 · datum · mince směr · ±USDT (R)“, ostatní sloupce ztlumené. Přístupnost: `role="slider"` s `aria-valuetext`.
+- Poctivě pod pásem: „Krátká série je z velké části náhoda – o strategii víc řekne celý účet výše.“ Pás se ukáže až od 2 obchodů; denní účty (Ensemble, mozek po dnech) ho nemají. Malé částky v detailu na 2 desetinná místa. Seznam „Poslední obchody“ zůstává.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu (jen zablokované fonty), bez vodorovného posunu v Downtownu, Laboratoři, AI Labu, Mozku a $1M Future; najetí i šipky přepínají detail. Opraveno při kontrole: popisek osy se překrýval (zkrácen), „+0 USDT“ u drobných obchodů (teď „+0,32“). Databáze (kolekce, pole, čtení), capabilities, čtvrti i 3D město beze změny. Publikováno jako „Design 13. 11.“ (verze 30).
+
+**Odloženo**
+- Hlavičky dnů v Kronice se stavem „přichyceno“ (scroll-state) – už mají plné pozadí, přínos malý; podporu napříč prohlížeči nešlo z MDN ověřit.
+- Stav „zahřívá se“ pro nové papírové účty – štítek „malý vzorek“ pod 30 obchodů už v žebříčku je; zvážit sjednocení na kartách.
+- Spodní navigace na mobilu, avatary, přehled zkratek „?“, měsíční mapa výnosů, výběr období, světlý režim, interval spolehlivosti, porovnání pro Downtown, interest invokers, deep linking – důvody beze změny (viz 5.–12. 11.).
