@@ -258,3 +258,23 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Hlavičky dnů v Kronice se stavem „přichyceno“ (scroll-state) – už mají plné pozadí, přínos malý; podporu napříč prohlížeči nešlo z MDN ověřit.
 - Stav „zahřívá se“ pro nové papírové účty – štítek „malý vzorek“ pod 30 obchodů už v žebříčku je; zvážit sjednocení na kartách.
 - Spodní navigace na mobilu, avatary, přehled zkratek „?“, měsíční mapa výnosů, výběr období, světlý režim, interval spolehlivosti, porovnání pro Downtown, interest invokers, deep linking – důvody beze změny (viz 5.–12. 11.).
+
+## 2026-11-14 (denní běh designéra)
+
+**Nalezené prvky**
+1. Žebříček bez chybových úseček klame: ke každému skóre ukázat interval (tečka = odhad, čárka = 95% interval) a strategie s překrývajícími se intervaly brát jako jeden shluk, ne jako stupně vítězů – [Transpose: The leaderboard has no error bars (6/2026)](https://transpose-guide.pages.dev/articles/posts/the-leaderboard-has-no-error-bars/).
+2. Rozptyl pořadí („rank spread“): vedle pořadí rozsah, jaké pořadí položka může mít podle intervalů, ± u skóre – [Arena Help Center: How to see AI rankings in Arena leaderboards](https://help.arena.ai/articles/7011479247-how-to-see-ai-rankings-in-arena-leaderboards-2-0-wip), [arXiv 2606.08679: Rank Intervals for Leaderboards (6/2026)](https://arxiv.org/html/2606.08679v1) (pořadí jako rozsah [nejlepší, nejhorší], shody jako „rank sets“).
+3. Správa agentů: karta agenta s identitou, zdrojem, schopnostmi a stavem „na jeden pohled“, filtr podle stavu/schopnosti – [Cloudscape: Agent management pattern (6/2026)](https://cloudscape.design/gen-ai/patterns/agent-management/).
+4. Prázdné / nedostatečné stavy dat na dashboardech (vysvětlit, proč číslo chybí, místo nuly) – [DEV: How we refactored three empty states out of a production dashboard](https://dev.to/137foundry/how-we-refactored-three-empty-states-out-of-a-production-dashboard-4gef) (jen z vyhledávání, nečteno).
+
+**Zapojeno – 📏 nejistota v Žebříčku** (splněno odložené „interval spolehlivosti“ z 5. 11.: směrodatná chyba jde spočítat přímo z dat jako R / t)
+- Řazení Ověření a Závěrečný test: místo prostého pruhu „whisker“ – tečka = R na obchod, čárka = 95% interval R ± 1,96 × R/t (z polí `backtest.oos_r/oos_t`, `hold_r/hold_t`), společná stupnice pro všechny řádky s čárou nuly. Interval nad nulou mint, pod nulou korál, přes nulu zlatě s textem „zahrnuje 0“. Řazení Papírově zůstává s pruhem (papír má malé vzorky).
+- Rozptyl pořadí pod číslem pořadí (např. „1–6“): výš strategii předběhnou jen ty, jejichž celý interval leží nad jejím. Když se překrývají všechny (dnes v ověření všech 25), místo 25 stejných štítků jeden box „Pořadí je zatím orientační … kterákoli může být 1. i 25.“.
+- Dlaždice „Nejlepší v ověření“: 95% interval a „od dalších N se zatím průkazně neliší“. V profilu strategie nový sloupec „95 %“ pro ověření a závěr. Poznámka pod žebříčkem vysvětluje výpočet a omezení (překryv intervalů není párový test; výběr z mnoha zkoušených strategií nejistotu ještě zvětšuje).
+
+**Ověření**: Playwright se skutečnou Three.js r160 (z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu (jen zablokované fonty), bez vodorovného posunu; 25 intervalů v seznamu, přepínání řazení funguje. Databáze (kolekce, pole, čtení), capabilities, čtvrti i 3D město beze změny. Publikováno jako „Design 14. 11.“ (verze 31).
+
+**Odloženo**
+- Interval i pro papír – `paper.t` je u 1–9 obchodů nespolehlivé (např. −80); dát, až budou účty mít ≥ 30 obchodů.
+- Karta agenta podle Cloudscape (identita, zdroj, schopnosti, stav) – sedí na samostatné profily agentů, které zatím nejsou (viz avatary 10. 11.).
+- Spodní navigace na mobilu, avatary, přehled zkratek „?“, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, stav „zahřívá se“ – důvody beze změny (viz 5.–13. 11.).
