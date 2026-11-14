@@ -117,6 +117,36 @@
    },
    "added": "ai5",
    "reason": "přidáno"
+  },
+  {
+   "n": 6,
+   "date": "2026-11-14",
+   "focus": "vše",
+   "seed": 20261114,
+   "tested": 4340,
+   "top_oos_ok": 20,
+   "random_oos_ok": 0,
+   "candidates": 10,
+   "best": "LONG když hodina UTC > 50. percentil (12.00) a od EMA200 (ATR) > 70. percentil (2.54) a výnos 1 h (σ) > 40. percentil (-0.16) · stop 3,0 ATR · držení 32 h",
+   "best_splits": {
+    "is": {
+     "n": 3555,
+     "mean_r": 0.179,
+     "t": 6.69
+    },
+    "oos": {
+     "n": 1148,
+     "mean_r": 0.117,
+     "t": 2.9
+    },
+    "hold": {
+     "n": 911,
+     "mean_r": 0.082,
+     "t": 1.6
+    }
+   },
+   "added": "ai6",
+   "reason": "přidáno"
   }
  ],
  "registry": [
@@ -245,6 +275,52 @@
      "n": 951,
      "mean_r": 0.057,
      "t": 1.16
+    }
+   }
+  },
+  {
+   "id": "ai6",
+   "name": "AI #6 · vše",
+   "round": 6,
+   "focus": "vše",
+   "added": "2026-11-14",
+   "genome": {
+    "conds": [
+     [
+      "hour",
+      ">",
+      0.5
+     ],
+     [
+      "ema200",
+      ">",
+      0.7
+     ],
+     [
+      "r1z",
+      ">",
+      0.4
+     ]
+    ],
+    "dir": 1,
+    "hold": 32,
+    "stop": 3.0
+   },
+   "splits_at_add": {
+    "is": {
+     "n": 3555,
+     "mean_r": 0.179,
+     "t": 6.69
+    },
+    "oos": {
+     "n": 1148,
+     "mean_r": 0.117,
+     "t": 2.9
+    },
+    "hold": {
+     "n": 911,
+     "mean_r": 0.082,
+     "t": 1.6
     }
    }
   }
