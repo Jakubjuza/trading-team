@@ -147,6 +147,20 @@
    },
    "added": "ai6",
    "reason": "přidáno"
+  },
+  {
+   "n": 7,
+   "date": "2026-11-15",
+   "focus": "jen short",
+   "seed": 20261115,
+   "tested": 4754,
+   "top_oos_ok": 8,
+   "random_oos_ok": 0,
+   "candidates": 0,
+   "best": null,
+   "best_splits": null,
+   "added": null,
+   "reason": "žádné pravidlo neprošlo přísným testem"
   }
  ],
  "registry": [
