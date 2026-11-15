@@ -2,10 +2,14 @@
 
 Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných rodin nebo kontextu. Metoda, filtry a pravidla jsou stanoveny předem v hlavičce `research/experiments/combo_study.py`; data, náklady (MEXC 0,05 %/stranu), simulace a dělení IS (do 12/2023) / OOS (1/2024–6/2025) / HOLDOUT (7/2025–) jsou stejné jako v atlasu. Papírově, nic nejde na skutečné peníze. Nejde o finanční poradenství.
 
-- Hotových dílů: **7**, testovaných kombinací celkem (vč. samotných spouštěčů): **1368** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
-- Poslední díl 7: **pair 6H** (skupiny trend, režim, objem), 132 kombinací + 12 spouštěčů samotných, 2 s; základní pravidlo splnilo 4, prošlo vč. citlivosti a režimů 2.
-- Mřížka (stanovena před výpočtem): spouštěče macd 12/26/9/signal · opp · long; price_ma sma/20 · opp · long; ma_cross ema/10/30/cross · opp · long; boll_break 50/2.0 · opp · long; rsi_mom 50 · opp · long; keltner 1.5 · opp · long; ma_cross ema/20/60/cross · target · short; macd 19/39/9/signal · opp_stop · short; vol_break 20/2.5 · target · short; donchian 55 · opp_stop · short; price_ma sma/100 · opp · short; roc 100 · opp · short × filtry ema:50, ema:100, ema:200, d:50, d:200, reg:trend, reg:notpanic, reg:side, vol:1, vol:1.5, vol:2.
-- Další díl: **pair 6H** (skupiny volatilita, momentum, sentiment).
+- Hotových dílů: **8**, testovaných kombinací celkem (vč. samotných spouštěčů): **1632** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
+- Poslední díl 8: **pair 6H** (skupiny volatilita, momentum, sentiment), 252 kombinací + 12 spouštěčů samotných, 3 s; základní pravidlo splnilo 1, prošlo vč. citlivosti a režimů 1.
+- Mřížka (stanovena před výpočtem): spouštěče macd 12/26/9/signal · opp · long; price_ma sma/20 · opp · long; ma_cross ema/10/30/cross · opp · long; boll_break 50/2.0 · opp · long; rsi_mom 50 · opp · long; keltner 1.5 · opp · long; ma_cross ema/20/60/cross · target · short; macd 19/39/9/signal · opp_stop · short; vol_break 20/2.5 · target · short; donchian 55 · opp_stop · short; price_ma sma/100 · opp · short; roc 100 · opp · short × filtry atrlo:0.3, atrlo:0.5, atrlo:0.7, atrhi:0.3, atrhi:0.5, atrhi:0.7, rsi:45, rsi:50, rsi:55, rsi:60, rsix:60, rsix:70, rsix:80, macd:sig, macd:zero, fng:30, fng:45, fng:60, fngg:40, fngg:55, fngg:70.
+- Další díl: **pair 12H** (skupiny trend, režim, objem).
+
+## Změny v registru v tomto běhu
+
+- 🆕 Kombinace: MACD 19 39 9 signal + RSI ≥ 50 · 6H short → papír (combo_study: díl 8, OOS +0.17 R (t +2.2), HOLDOUT +0.16 R (t +1.9), spouštěč sám OOS +0.10 R); režimy: býčí, medvědí, boční; nahradila Kombinace: Průraz s objemem 20 2.5 + F&G ≤ 60 · 4H short
 
 ## Combo strategie v registru (10 aktivních, limit 10)
 
@@ -20,7 +24,7 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 | Kombinace: Bollinger průraz 50 2.5 + F&G ≥ 40 · 2H long | papír | +0,52 (+2,2) | +1,47 (+3,3) | +0,46 | býčí, medvědí, boční, panika | 0 obch., Ø – R |
 | Kombinace: Bollinger průraz 50 2.5 + ATR pctl ≥ 0,3 · 2H long | papír | +0,68 (+2,5) | +0,42 (+1,7) | +0,46 | býčí, medvědí, boční, panika | 0 obch., Ø – R |
 | Kombinace: Bollinger průraz 50 2.5 + režim notpanic · 4H short | papír | +0,33 (+3,3) | +0,24 (+2,7) | +0,20 | býčí, medvědí, boční | 0 obch., Ø – R |
-| Kombinace: Průraz s objemem 20 2.5 + F&G ≤ 60 · 4H short | papír | +0,27 (+3,4) | +0,22 (+1,7) | +0,19 | býčí, medvědí, boční | 0 obch., Ø – R |
+| Kombinace: MACD 19 39 9 signal + RSI ≥ 50 · 6H short | papír | +0,17 (+2,2) | +0,16 (+1,9) | +0,10 | býčí, medvědí, boční | 0 obch., Ø – R |
 
 ## Top 10 kombinací (podle min(OOS t, HOLDOUT t), všechny díly)
 
@@ -34,8 +38,8 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 | 2 | 1H | Bollinger průraz 20 2.5 + MACD zero | opp · long | +0,23 (+5,5) | +0,15 (+2,5) | +0,25 (+2,5) | +0,08 / +0,05 | +0,11 | 3130/1018/926 | ❌ neporáží spouštěč o 0,05 R |
 | 6 | 4H | Průraz s objemem 20 2.5 + F&G ≤ 30 | target · short | +0,31 (+2,5) | +0,29 (+2,5) | +0,53 (+2,4) | +0,25 / +0,19 | +0,19 | 90/110/32 | ❌ málo obchodů |
 | 5 | 4H | Bollinger průraz 50 2.5 + trend EMA100 | target · short | +0,10 (+1,8) | +0,24 (+2,6) | +0,23 (+2,4) | +0,06 / +0,16 | +0,20 | 473/181/177 | ❌ neporáží spouštěč o 0,05 R |
+| 8 | 6H | Cena × průměr sma 20 + ATR pctl ≤ 0,3 | opp · long | +0,31 (+4,5) | +0,20 (+2,5) | +0,28 (+2,4) | +0,15 / +0,31 | +0,15 | 1174/412/426 | ❌ pod p95 náhody, neporáží spouštěč o 0,05 R |
 | 6 | 4H | Bollinger průraz 50 2.5 + F&G ≥ 70 | target · short | +0,14 (+1,7) | +0,74 (+2,6) | +0,28 (+2,3) | +0,04 / +0,14 | +0,20 | 207/16/103 | ❌ málo obchodů |
-| 2 | 1H | Bollinger průraz 20 2.5 + RSI ≥ 60 | opp · long | +0,21 (+5,4) | +0,15 (+2,7) | +0,21 (+2,3) | +0,13 / +0,11 | +0,11 | 3419/1069/1031 | ❌ neporáží spouštěč o 0,05 R |
 
 ## Co filtry dělají se spouštěči (páry, průměr přes spouštěče)
 
@@ -137,27 +141,48 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 | 4H | vol:1 | 11 | +0,06 | +0,07 | 58% | 0 |
 | 4H | vol:1.5 | 11 | +0,15 | +0,08 | 42% | 0 |
 | 4H | vol:2 | 11 | +0,17 | +0,18 | 50% | 0 |
+| 6H | atrhi:0.3 | 12 | -0,48 | +0,11 | 50% | 0 |
+| 6H | atrhi:0.5 | 12 | -0,54 | +0,18 | 50% | 0 |
+| 6H | atrhi:0.7 | 12 | -0,62 | +0,32 | 50% | 0 |
+| 6H | atrlo:0.3 | 12 | +0,69 | -0,07 | 50% | 0 |
+| 6H | atrlo:0.5 | 12 | +0,35 | -0,07 | 50% | 0 |
+| 6H | atrlo:0.7 | 12 | +0,20 | -0,06 | 50% | 0 |
 | 6H | d:200 | 12 | -0,12 | -0,08 | 25% | 0 |
 | 6H | d:50 | 12 | +0,59 | -0,02 | 25% | 0 |
 | 6H | ema:100 | 12 | +0,64 | +0,00 | 50% | 0 |
 | 6H | ema:200 | 12 | +0,59 | -0,02 | 33% | 1 |
 | 6H | ema:50 | 12 | -0,19 | +0,02 | 33% | 0 |
+| 6H | fng:30 | 12 | -0,60 | -0,20 | 50% | 0 |
+| 6H | fng:45 | 12 | -0,58 | -0,18 | 50% | 0 |
+| 6H | fng:60 | 12 | -0,52 | -0,16 | 42% | 0 |
+| 6H | fngg:40 | 12 | +0,27 | -0,01 | 42% | 0 |
+| 6H | fngg:55 | 12 | +0,58 | -0,03 | 50% | 0 |
+| 6H | fngg:70 | 12 | +1,36 | +0,09 | 67% | 0 |
+| 6H | macd:sig | 12 | +0,15 | +0,00 | 42% | 0 |
+| 6H | macd:zero | 12 | -0,20 | -0,00 | 25% | 0 |
 | 6H | reg:notpanic | 12 | -0,29 | +0,14 | 83% | 1 |
 | 6H | reg:side | 12 | -0,29 | -0,00 | 50% | 0 |
 | 6H | reg:trend | 12 | -0,03 | +0,12 | 58% | 1 |
+| 6H | rsi:45 | 12 | -0,30 | +0,01 | 25% | 0 |
+| 6H | rsi:50 | 12 | -0,25 | +0,01 | 33% | 1 |
+| 6H | rsi:55 | 12 | -0,14 | +0,05 | 42% | 0 |
+| 6H | rsi:60 | 12 | -0,26 | +0,26 | 75% | 0 |
+| 6H | rsix:60 | 12 | -0,15 | -0,23 | 25% | 0 |
+| 6H | rsix:70 | 12 | -0,02 | +0,06 | 83% | 0 |
+| 6H | rsix:80 | 12 | +0,00 | +0,01 | 67% | 0 |
 | 6H | vol:1 | 12 | +0,50 | +0,13 | 75% | 0 |
 | 6H | vol:1.5 | 12 | +1,22 | +0,20 | 92% | 1 |
 | 6H | vol:2 | 12 | +2,34 | +0,29 | 75% | 0 |
 
 ## Proč neprošly (nejčastější důvody)
 
-- pod p95 náhody: 1137×
-- OOS t < 2: 904×
-- neporáží spouštěč o 0,05 R: 889×
-- HOLDOUT ≤ 0: 392×
-- OOS ≤ 0: 162×
-- IS ≤ 0: 80×
-- málo obchodů: 67×
+- pod p95 náhody: 1371×
+- OOS t < 2: 1091×
+- neporáží spouštěč o 0,05 R: 1072×
+- HOLDOUT ≤ 0: 480×
+- OOS ≤ 0: 232×
+- IS ≤ 0: 110×
+- málo obchodů: 100×
 - reg: bez zlepšení v IS: 3×
 
 ## Plán studie
