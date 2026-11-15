@@ -278,3 +278,22 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Interval i pro papír – `paper.t` je u 1–9 obchodů nespolehlivé (např. −80); dát, až budou účty mít ≥ 30 obchodů.
 - Karta agenta podle Cloudscape (identita, zdroj, schopnosti, stav) – sedí na samostatné profily agentů, které zatím nejsou (viz avatary 10. 11.).
 - Spodní navigace na mobilu, avatary, přehled zkratek „?“, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, stav „zahřívá se“ – důvody beze změny (viz 5.–13. 11.).
+
+## 2026-11-15 (denní běh designéra)
+
+**Nalezené prvky**
+1. Vysvětlivka pojmu („definition tooltip“): pojem podtržený tečkami, na najetí nebo klepnutí krátká definice v bublině, Tab ukáže, Esc zavře; bublina nemá zakrývat sousední text a nemá obsahovat ovládací prvky – [Carbon Design System: Tooltip – definition tooltip](https://carbondesignsystem.com/components/tooltip/usage/), [Hightouch UI: Definition](https://ui.hightouch.com/components/definition) (místo opakovaných ikon „i“ u záhlaví tabulek), [Cloudflare style guide: Glossary tooltip](https://developers.cloudflare.com/style-guide/build-the-page/components/glossary-tooltip/) (jeden slovník pojmů pro celý web).
+2. Hvězdička „oblíbené / sledované“: hvězda u položky v seznamu i v detailu, osobní pro každého uživatele, sledované nahoře nebo ve vlastním filtru – [Netlify: Star your favorite sites](https://www.netlify.com/blog/star-your-favorite-netlify-sites-to-find-them-faster.md), [UI-Patterns: Favorites](https://ui-patterns.com/patterns/favorites).
+3. Rozlišení připnout × uložit × oblíbit × označit (připnutí = pozice, oblíbení = osobní výběr bez termínu) – [UX Collective: Pinning is not saving…](https://uxdesign.cc/pinning-is-not-saving-saving-is-not-favoriting-favoriting-is-not-flagging-c3941c444bd5) (názorový článek).
+
+**Zapojeno**
+- **⭐ Sledované strategie** (Žebříček): hvězdička u každé strategie v seznamu (☆/★, `aria-pressed`), čip „★ Jen sledované“ s počtem ve filtrech; filtr platí i pro zobrazení Karty. Pamatuje si jen tento prohlížeč (`localStorage` klíč `agentown-stars-v1`), pořadí žebříčku se nemění – sledované se jen dají odfiltrovat (podle bodu 3: oblíbení, ne připnutí).
+- **📖 Vysvětlivky pojmů**: jeden slovník (R, t, 95% interval, vývoj, ověření, závěrečný test, papírově, max. propad, čekáno × papír, forma) a pojmy podtržené tečkami v záhlaví žebříčku, ve sloupci Backtest, v bloku „čekáno × papír“, v tabulce testů profilu a na kartách účtů (Max. propad, Forma) ve všech čtvrtích s kartami. Klepnutí (dotyk) nebo najetí myší / fokus klávesnicí ukáže definici v bublině (Popover API, záložní režim bez něj), bublina primárně nad pojmem, aby nezakryla hodnotu; Esc zavře jen bublinu, ne čtvrť. Definice popisují metodiku, žádná čísla.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu; 2 hvězdičky → čip „Jen sledované 2“ → „zobrazeno 2 z 25“, po obnovení stránky zůstanou; bublina se vejde do 375 px, Esc ji zavře a žebříček zůstane otevřený; v Kartách 57 pojmů. Opraveno při kontrole: bublina pod pojmem zakrývala hodnotu „Max. propad“ – přesunuta nad pojem. Publikováno jako „Design 15. 11.“ (verze 32).
+
+**Odloženo**
+- Hvězdička přímo na kartách účtů a sledované v paletě příkazů (Ctrl K) – filtr už na Karty působí; přidat, pokud se hvězdičky ujmou.
+- Řazení „sledované nahoru“ (vzor Netlify) – rozbilo by význam čísla pořadí; proto jen filtr.
+- Spodní navigace na mobilu, avatary, přehled zkratek „?“, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, stav „zahřívá se“ – důvody beze změny (viz 5.–14. 11.).
