@@ -1,6 +1,6 @@
 # Downtown – Dispečer fází (jen papír)
 
-Aktualizováno 2026-11-15T15:38+00:00 UTC skriptem `research/downtown_dispatch.py` (pravidla stanovená předem v hlavičce).
+Aktualizováno 2026-11-15T21:00+00:00 UTC skriptem `research/downtown_dispatch.py` (pravidla stanovená předem v hlavičce).
 Agent nasazuje divoké strategie Downtownu jen ve fázích trhu, kde dřív vydělávaly; výzkum v `reports/downtown_regimes.md`.
 Oddělené od desku, nejde o finanční poradenství.
 
@@ -24,7 +24,7 @@ Roky: 2023: 345.0 %, 2024: 133.9 %, 2025: -12.3 %, 2026: 1.4 %
 
 | Strategie | býk · pila · divoko | býk · pila · klid | býk · trend · divoko | býk · trend · klid | medvěd · pila · divoko | medvěd · pila · klid | medvěd · trend · divoko | medvěd · trend · klid |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Scalper 15m ×20 | -0.15 % (n 2343, t -21.5) | -0.15 % (n 3088, t -25.3) | -0.17 % (n 1522, t -20.0) | -0.17 % (n 1394, t -18.7) | -0.16 % (n 1581, t -18.6) | -0.14 % (n 1119, t -14.8) | -0.13 % (n 926, t -11.9) | -0.16 % (n 564, t -11.2) |
+| Scalper 15m ×20 | -0.15 % (n 2343, t -21.5) | -0.15 % (n 3088, t -25.3) | -0.17 % (n 1522, t -20.0) | -0.17 % (n 1394, t -18.7) | -0.16 % (n 1581, t -18.6) | -0.14 % (n 1119, t -14.8) | -0.13 % (n 929, t -11.9) | -0.16 % (n 564, t -11.2) |
 | Průraz ×25 | -0.14 % (n 380, t -1.3) | -0.11 % (n 596, t -1.2) | -0.21 % (n 276, t -1.2) | -0.17 % (n 276, t -1.4) | -0.09 % (n 251, t -0.6) | -0.15 % (n 260, t -1.6) | -0.08 % (n 117, t -0.3) | -0.02 % (n 114, t -0.1) |
 | Knock-out ×50 | -0.20 % (n 333, t -2.5) | -0.13 % (n 399, t -1.8) | -0.20 % (n 365, t -2.7) | +0.01 % (n 251, t +0.1) | -0.07 % (n 175, t -0.6) | -0.15 % (n 158, t -1.4) | -0.04 % (n 75, t -0.2) | -0.18 % (n 59, t -0.9) |
 | Martingale ×10 | -0.17 % (n 300, t -3.1) | -0.19 % (n 368, t -3.8) | -0.22 % (n 153, t -2.8) | -0.24 % (n 158, t -3.1) | -0.17 % (n 214, t -2.5) | -0.28 % (n 145, t -3.5) | -0.20 % (n 159, t -2.6) | -0.37 % (n 117, t -4.2) |
