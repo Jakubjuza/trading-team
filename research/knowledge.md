@@ -19,7 +19,9 @@ Pravidla:
   ve futures napříč trhy ([Moskowitz, Ooi, Pedersen 2012, JFE](https://papers.ssrn.com/abstract=2089463)).
 - **Výhoda trendu od roku 2022 slábne** (Ø +0,50 → +0,15 R) – `reports/adaptive.md`; sleduje se „zdravím strategií“.
 - **Nevstupovat v panice** (ATR % v horních 20 % roku) zlepšilo OOS obou denních strategií, robustní v 9 sousedních
-  nastaveních – `reports/adaptive.md` – 25. 10. 2026.
+  nastaveních – `reports/adaptive.md` – 25. 10. 2026. Shoda s vnějším důkazem: propady momenta se shlukují v „panice“
+  (po poklesu trhu, při vysoké volatilitě, s prudkými odrazy) – [Daniel & Moskowitz, Momentum Crashes, NBER w20439 / JFE 2016](https://www.nber.org/papers/w20439)
+  (akcie a další třídy aktiv, ne krypto; otevřen abstrakt) – 15. 11. 2026. → H14 (shorty po propadu).
 - **Carry z fundingu (long spot + short perp) vydělává i v letech, kdy trend ztrácí** – +2 až +8,5 % p.a., propad do
   1,3 %, 2026 v plusu – `reports/carry.md`. Vnější důkaz: crypto carry v průměru > 10 % ročně, poháněné poptávkou po páce
   a omezeným arbitrážním kapitálem ([BIS WP 1087, Schmeling, Schrimpf, Todorov](https://www.bis.org/publications/working-paper-1087-crypto-carry)).
@@ -124,6 +126,13 @@ Pravidla:
   na 5 mega-cap akciích, ne na kryptu) – 8. 11. 2026. Pro desk: zpětné „AI verdikty“ na historii (před datem znalostí
   modelu) nepoužívat jako důkaz; jen živé verdikty od 24. 10. 2026.
 
+- **Snižování rizika při vysoké volatilitě zvyšuje Sharpe faktorových strategií** (trh, value, momentum, měnový carry),
+  protože výnos s volatilitou proporčně neroste – [Moreira & Muir, Volatility-Managed Portfolios, NBER w22208 / JF 2017](https://www.nber.org/papers/w22208)
+  (akcie a měny, ne krypto; otevřen abstrakt) – 15. 11. 2026. Pro desk: 🧭 Ensemble má cílovou volatilitu 40 %, ale
+  `reports/portfolio_review.md` neodděluje, kolik přidává samotné škálování → H13. Tip k ověření (neotevřeno, nezapsáno
+  jako důkaz): Cederburg et al., JFE 2020 uvádí, že v reálném čase volatility-managed verze 103 strategií často
+  nepřekonají původní.
+
 ## Metodika (proč testujeme přísně)
 
 - **Zpětné testy se snadno přeladí**; klasický hold-out nestačí, když se zkouší hodně variant –
@@ -152,6 +161,8 @@ Pravidla:
 | H9 | Short podle protnutí MA 30 × MA 60 na 4H v nejjednodušší podobě (EMA, signál „cross“, bez filtru, výstup opačné protnutí – zvoleno předem, ne podle výsledků) má výhodu nad náhodnými shorty mimo medvědí trh | uživatel 27. 10. 2026; mřížka `reports/ma_grid.md`: z 72 variant kladné ve všech obdobích jen 3, v HOLDOUT kladné i náhodné shorty | nová data od 27. 10. 2026 (papírově, bez peněz) | nerozhodnuto – IS/OOS záporné, vypadá jako efekt režimu |
 | H10 | Long 12H MACD (19, 39, 9): vstup při protnutí signální linie zespodu, výstup při opačném protnutí, riziko 2 ATR na velikost pozice, 8 mincí – vydělá na nových datech po poplatcích MEXC víc než náhodné vstupy | atlas 27. 10. 2026 (`reports/strategy_atlas.md`), jediná kombinace z 41 664, která splnila předem stanovené pravidlo; nezávisle ověřeno | nová data od 27. 10. 2026 (papírově) | kandidát na papírové ověření |
 | H11 | Ensemble (🧭) s kanály rozšířenými na 5–360 dní (7 kanálů místo 5) a stejnou cílovou volatilitou nemá horší OOS Sharpe než dnešních 5 kanálů 10–160 dní; zvoleno předem, bez ladění dalších parametrů | Zarattini, Pagani, Barbon (SFI RP 25-80) | denní data 8 mincí, `reports/portfolio_review.md` | k testu (přijmout jen při OOS Sharpe ≥ dnešní +0,1 a v sousedních nastaveních) |
+| H13 | 🧭 Ensemble se škálováním min(1; 40 % / roční vol) má OOS Sharpe aspoň o 0,1 vyšší než stejný ensemble s pevnou vahou 1/8 na minci (stejné kanály 10–160 dní, stejné signály, náklady 0,15 % z obratu, srovnání při stejné průměrné expozici); jinak škálování není zdroj výhody | Moreira & Muir 2017 (NBER w22208) | denní data 8 mincí, `research/experiments/ensemble.py` | k testu (zapsáno 15. 11. 2026) |
+| H14 | Short signály donchian_1d a pullback_1d vzniklé, když BTC za posledních 20 dní ztratil ≥ 15 % (BTC výnos 20D ≤ −15 %), mají Ø R o ≥ 0,15 R horší než ostatní shorty téže strategie (po nákladech); varianta „vynechat je“ se přijme jen při ≥ 100 OOS obchodech, výhodě nad náhodou a v sousedních prazích −10/−20 % | Daniel & Moskowitz 2016 (NBER w20439); naše 4 ztrátové shorty po výprodeji 29. 10. 2026 (`research/lessons.md`, slabý důkaz) | denní data 8 mincí 2016–2026 (`scanner/evaluate.py`) | k testu (zapsáno 15. 11. 2026); shortů může být málo – pak jen popis |
 | H12 | Stupně A/B head-traderu mají vyšší Ø R než všechny signály téže strategie bez AI filtru (rozdíl ≥ 0,15 R) | FINSABER (arXiv 2505.07078) | `verdicts.jsonl` × `outcomes.jsonl` | čeká na data (≥ 50 uzavřených obchodů s verdiktem) |
 
 ## Hodnocení agentů desku
@@ -160,3 +171,5 @@ Až bude ≥ 20 uzavřených obchodů s verdiktem (`research/outcomes.jsonl` × 
 obchod (ETH short, −1,2 R) a 4 verdikty (3× C, 1× NO_TRADE) – kontrola 1. 11. 2026; nehodnotím.
 Kontrola 8. 11. 2026: `outcomes.jsonl` 4 záznamy (3 z nich varianta „+mtf“ a 1 duplicita ETH, všechny stop), `verdicts.jsonl`
 6 záznamů (z toho 1 SKIPPED, 5 verdiktů: 3× C, 2× NO_TRADE); uzavřených obchodů s verdiktem ≤ 4 (potřeba ≥ 20) – nehodnotím.
+Kontrola 15. 11. 2026: beze změny – `outcomes.jsonl` 4 záznamy (3 signály: ETH, XRP, DOGE; ETH jako 1D i +mtf), `verdicts.jsonl`
+6 záznamů (1 SKIPPED, 5 verdiktů: 3× C, 2× NO_TRADE). Uzavřených obchodů s verdiktem 4 (3 unikátní signály), potřeba ≥ 20 – nehodnotím.
