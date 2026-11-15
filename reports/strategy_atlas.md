@@ -10,7 +10,7 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 - 2h: 5952 kombinací, 1090 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 4h: 5952 kombinací, 1146 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 6h: 5952 kombinací, 1155 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
-- sent_1d: 192 kombinací, 1054 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
+- sent_1d: 192 kombinací, 1006 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - sent_4h: 192 kombinací, 1 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - Poplatky na stranu: **MEXC futures taker 0,02 % + skluz 0,03 % = 0,05 % (rozhoduje)**; MEXC spot taker 0,08 %; maker 0 % (optimistická mez); 0,15 % (dřívější testy). Funding nezapočten. Poplatky MEXC podle [MEXC, 11/2025](https://www.mexc.com/ru-RU/crypto-pulse/article/mexc-trading-fees-complete-guide-39643).
 - IS do 12/2023 (15M od 1/2022), OOS 1/2024–6/2025, HOLDOUT 7/2025–dnes. R = výsledek po poplatcích / riziko (vzdálenost stopu; bez stopu 2 ATR).
@@ -29,8 +29,8 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 | svíčkové vzory | short | 168 | 23% | 61% | 57% | 53% | 2,4% | -0,06 | +0,04 |
 | Donchian průraz | long | 420 | 80% | 61% | 95% | 84% | 31,4% | +0,25 | +0,07 |
 | Donchian průraz | short | 420 | 30% | 66% | 48% | 46% | 1,4% | -0,08 | +0,06 |
-| strach a chamtivost | long | 192 | 35% | 25% | 26% | 20% | 0,5% | -0,16 | -0,32 |
-| strach a chamtivost | short | 192 | 41% | 16% | 48% | 17% | 0,0% | +0,04 | -0,23 |
+| strach a chamtivost | long | 192 | 35% | 21% | 29% | 20% | 0,5% | -0,16 | -0,34 |
+| strach a chamtivost | short | 192 | 41% | 18% | 46% | 17% | 1,0% | +0,04 | -0,18 |
 | Keltner průraz | long | 252 | 80% | 69% | 95% | 88% | 50,4% | +0,19 | +0,13 |
 | Keltner průraz | short | 252 | 40% | 62% | 54% | 73% | 9,5% | -0,05 | +0,08 |
 | protnutí 2 průměrů | long | 16128 | 66% | 53% | 70% | 67% | 8,6% | +0,16 | +0,01 |
@@ -64,7 +64,7 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 | 1h | short | 54% | 61% | 72% | 43% | +0,01 | 44 |
 | 2h | long | 69% | 62% | 72% | 58% | +0,10 | 20 |
 | 2h | short | 41% | 63% | 60% | 38% | -0,02 | 22 |
-| 4h | long | 75% | 64% | 70% | 65% | +0,17 | 10 |
+| 4h | long | 75% | 63% | 70% | 65% | +0,17 | 10 |
 | 4h | short | 32% | 82% | 67% | 37% | -0,07 | 11 |
 | 6h | long | 77% | 59% | 60% | 66% | +0,44 | 7 |
 | 6h | short | 28% | 87% | 70% | 60% | -0,10 | 8 |
