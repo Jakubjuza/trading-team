@@ -297,3 +297,23 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Hvězdička přímo na kartách účtů a sledované v paletě příkazů (Ctrl K) – filtr už na Karty působí; přidat, pokud se hvězdičky ujmou.
 - Řazení „sledované nahoru“ (vzor Netlify) – rozbilo by význam čísla pořadí; proto jen filtr.
 - Spodní navigace na mobilu, avatary, přehled zkratek „?“, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, stav „zahřívá se“ – důvody beze změny (viz 5.–14. 11.).
+
+## 2026-11-16 (denní běh designéra)
+
+**Nalezené prvky**
+1. Graf „pod vodou“ (underwater): pokles od dosavadního vrcholu v čase; mělké úseky u nuly jsou zdravé, hluboká koryta = rizikové události; vedle max. propadu sledovat i dobu zotavení a celkovou dobu pod vrcholem – [MetricGate: Drawdown analysis (2/2025)](https://metricgate.com/docs/drawdown-analysis/), [Sling Academy: Visualizing drawdowns and underwater curves with QuantStats (12/2024)](https://www.slingacademy.com/article/visualizing-drawdowns-and-underwater-curves-with-quantstats/).
+2. „Nejširší jezero“ – kromě nejhlubšího propadu zvýraznit nejdelší dobu pod vrcholem (high-water mark) – [Gregory Gundersen: Visualizing drawdown (2021)](https://www.gregorygundersen.com/blog/2021/08/27/drawdown/); hotová komponenta pro inspiraci – [21st.dev: Drawdown chart](https://21st.dev/@isaiahbjork/components/bjork-drawdown-chart.md) (bez návodu, jen ukázka).
+3. Anatomie KPI karty: hodnota + srovnání se slovně uvedeným obdobím, směr šipky oddělený od barvy „dobré/špatné“, sparkline jen jako doplněk, rozlišit „zatím bez dat“ × skutečnou nulu × chybu načtení, kostra místo skoku při načítání – [SaaS UI: KPI card UX patterns (7/2026)](https://www.saasui.design/blog/saas-metric-kpi-card-ux-patterns).
+
+**Zapojeno – 🌊 Pod vodou na každé kartě účtu** (Laboratoř, Žebříček – Karty, AI Lab, Mozek, $1M Future, Downtown – všude přes stejnou kartu)
+- Pod křivkou účtu nový pruh: korálová plocha = o kolik % byl účet v každém bodě pod dosavadním vrcholem (osa nahoře = vrchol), zlatě podbarvený a čárkovaně ohraničený nejdelší úsek pod vrcholem.
+- Hlavička: „Pod vodou · teď −X %“ (nebo „na vrcholu“ mint) a „nejdelší pod vrcholem N měs. (od – do / dosud)“. Pod pruhem nejhlubší bod křivky s datem; najetí myší / klepnutí ukáže den a hloubku (svislá čára, `aria-live`).
+- Vše jen z pole `curve` (body po ~9 dnech). Ověřeno na snímku dat: nejhlubší bod křivky je u všech účtů stejný nebo o něco mělčí než přesný `max_dd_pct` (např. −37,0 × −40,6 %), proto vysvětlivka „Pod vodou“ ve slovníku pojmů říká, že přesné číslo je Max. propad nahoře. Kde se během křivky dokládalo (Downtown po bankrotech) nebo má křivka < 3 body, pruh se nezobrazí – dokládky by hloubku zkreslily.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu; Laboratoř 35 pruhů, Downtown 2 (ostatní mají dokládky), najetí ukáže den, vysvětlivka se otevře. Publikováno jako „Design 16. 11.“ (verze 33).
+
+**Odloženo**
+- Kostra (skeleton) při načítání a rozlišení „bez dat × nula × chyba“ (bod 3) – karty se kreslí ze snímku v publikaci, takže prázdné načítání téměř nenastává; prázdné stavy už mají vlastní text.
+- Tabulka 5 největších propadů a doba zotavení zvlášť – z řídké křivky by data zotavení byla jen přibližná; zvážit, až bude přesná křivka z obchodů.
+- Spodní navigace na mobilu, avatary, přehled zkratek „?“, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, stav „zahřívá se“ – důvody beze změny (viz 5.–15. 11.).
