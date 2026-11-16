@@ -161,6 +161,36 @@
    "best_splits": null,
    "added": null,
    "reason": "žádné pravidlo neprošlo přísným testem"
+  },
+  {
+   "n": 8,
+   "date": "2026-11-16",
+   "focus": "rychlé obchody 2–8 h",
+   "seed": 20261116,
+   "tested": 4758,
+   "top_oos_ok": 20,
+   "random_oos_ok": 0,
+   "candidates": 2,
+   "best": "LONG když od EMA200 (ATR) > 50. percentil (-0.00) a BTC 1 h (σ) < 20. percentil (-0.56) a stažení ATR14/200 > 90. percentil (1.43) · stop 3,0 ATR · držení 8 h",
+   "best_splits": {
+    "is": {
+     "n": 2456,
+     "mean_r": 0.089,
+     "t": 7.05
+    },
+    "oos": {
+     "n": 610,
+     "mean_r": 0.065,
+     "t": 2.52
+    },
+    "hold": {
+     "n": 396,
+     "mean_r": 0.057,
+     "t": 1.85
+    }
+   },
+   "added": "ai8",
+   "reason": "přidáno"
   }
  ],
  "registry": [
@@ -335,6 +365,52 @@
      "n": 911,
      "mean_r": 0.082,
      "t": 1.6
+    }
+   }
+  },
+  {
+   "id": "ai8",
+   "name": "AI #8 · rychlé obchody 2–8 h",
+   "round": 8,
+   "focus": "rychlé obchody 2–8 h",
+   "added": "2026-11-16",
+   "genome": {
+    "conds": [
+     [
+      "ema200",
+      ">",
+      0.5
+     ],
+     [
+      "btc1z",
+      "<",
+      0.2
+     ],
+     [
+      "comp",
+      ">",
+      0.9
+     ]
+    ],
+    "dir": 1,
+    "hold": 8,
+    "stop": 3.0
+   },
+   "splits_at_add": {
+    "is": {
+     "n": 2456,
+     "mean_r": 0.089,
+     "t": 7.05
+    },
+    "oos": {
+     "n": 610,
+     "mean_r": 0.065,
+     "t": 2.52
+    },
+    "hold": {
+     "n": 396,
+     "mean_r": 0.057,
+     "t": 1.85
     }
    }
   }
