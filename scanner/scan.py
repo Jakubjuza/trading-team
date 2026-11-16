@@ -312,6 +312,12 @@ def scan_once(cfg, cache, state, dry_run=False, now=None, status=None):
         rec["factsheet"] = _write_factsheet(cfg, rec)
         log_signal(SIGNALS, rec)
         _ai_explain(cfg, s, sid)
+    if not dry_run:
+        try:                                                          # 📋 přehled otevřených pozic pro Agentown
+            from scanner import positions_export
+            positions_export.maybe_write(cfg, state, status["prices"], now)
+        except Exception as exc:                                      # export nesmí shodit skener
+            print(f"export pozic selhal: {exc.__class__.__name__}: {exc}", file=sys.stderr)
     if not dry_run and (cfg.get("telegram_commands") or {}).get("enabled", True):
         try:                                                          # /pozice z Telegramu (odpověď do minuty)
             from scanner.demo import LOG as DEMO_LOG
