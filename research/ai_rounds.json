@@ -191,6 +191,20 @@
    },
    "added": "ai8",
    "reason": "přidáno"
+  },
+  {
+   "n": 9,
+   "date": "2026-11-17",
+   "focus": "pomalé obchody 16–32 h",
+   "seed": 20261117,
+   "tested": 3900,
+   "top_oos_ok": 7,
+   "random_oos_ok": 1,
+   "candidates": 0,
+   "best": null,
+   "best_splits": null,
+   "added": null,
+   "reason": "žádné pravidlo neprošlo přísným testem"
   }
  ],
  "registry": [

@@ -1,13 +1,13 @@
 # 🤖 AI Lab – strategie vymyšlené AI
 
-Přepočet 2026-11-16T09:39+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
+Přepočet 2026-11-17T10:42+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
 
 | Strategie | Typ | IS | OOS | HOLDOUT | Výsledek | Účet od 2024 |
 |---|---|---|---|---|---|---|
 | Ozvěna BTC | vlastní nápad | -0,038 R (t -1,89, n 2487) | 0,127 R (t 2,61, n 644) | -0,145 R (t -3,26, n 282) | ❌ neprojde | 286,76 USDT |
 | Tichý průraz | vlastní nápad | 0,113 R (t 1,3, n 459) | 0,185 R (t 1,07, n 137) | -0,11 R (t -0,75, n 150) | ❌ neprojde | -26,53 USDT |
-| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,34 | ❌ neprojde | -788,14 USDT |
-| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,08 | ❌ neprojde | -609,87 USDT |
+| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,35 | ❌ neprojde | -788,75 USDT |
+| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,08 | ❌ neprojde | -610,7 USDT |
 | Evoluce · vítěz | evoluce | 0,203 R (t 6,8, n 2491) | 0,117 R (t 2,62, n 844) | 0,056 R (t 0,96, n 709) | ✅ projde | 1179,37 USDT |
 | AI #3 · rychlé obchody 2–8 h | evoluce · kolo 3 | 0,078 R (t 6,02, n 2222) | 0,068 R (t 2,95, n 599) | 0,075 R (t 2,45, n 375) | ✅ projde | 885,65 USDT |
 | AI #4 · pomalé obchody 16–32 h | evoluce · kolo 4 | 0,2 R (t 6,8, n 3031) | 0,113 R (t 2,55, n 989) | 0,063 R (t 1,15, n 829) | ✅ projde | 1452,65 USDT |
@@ -36,10 +36,11 @@ Vítěz: LONG když stažení ATR14/200 > 60. percentil (0.99) a od EMA200 (ATR)
 
 ## Průběžný výzkum (kola evoluce)
 
-Kol celkem 8, strategií z kol 5/10, další zaměření: pomalé obchody 16–32 h.
+Kol celkem 9, strategií z kol 5/10, další zaměření: jen long.
 
 | Kolo | Datum | Zaměření | Vyzkoušeno | Prošlo ověřením (náhoda) | Výsledek |
 |---|---|---|---|---|---|
+| 9 | 2026-11-17 | pomalé obchody 16–32 h | 3900 | 7 (1) | žádné pravidlo neprošlo přísným testem |
 | 8 | 2026-11-16 | rychlé obchody 2–8 h | 4758 | 20 (0) | přidáno |
 | 7 | 2026-11-15 | jen short | 4754 | 8 (0) | žádné pravidlo neprošlo přísným testem |
 | 6 | 2026-11-14 | vše | 4340 | 20 (0) | přidáno |
