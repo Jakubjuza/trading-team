@@ -325,3 +325,24 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Databáze: nová kolekce `positions` (dokument `state`), plní ji hodinová naplánovaná úloha „Agentown – otevřené pozice“.
 - Stránka: tlačítko „Pozice“ s počtem v horní liště (na mobilu a užším desktopu jen ikona s počtem; „Hledat“ je v rozsahu 761–1360 px také jen ikona, aby se lišta nepřekrývala) otevře dialog: štítky čerstvosti (skener, Downtown), souhrn (počet, výsledek teď, když všechny dojdou na stop / na cíl), filtr Vše / Jádro / Pyramida / Laboratoř / Downtown, karta každé pozice s cenovým žebříkem (stop – vstup – teď – T1/T2), třemi čísly Teď / Možná ztráta (u jádra po T1 „Nejhůř“, zisk z T1 je jistý) / Možný zisk a řádkem cen. Downtown z kolekce `downtown` (marže × páka × pohyb ceny, bez stopu = celá marže do likvidace). Ensemble jako tabulka (bez stopu a cíle). Prázdný stav vysvětluje, kdy data dorazí.
 - Ověření: pytest 200 testů prošel; Playwright se skutečnou Three.js r160, 1280 a 375 px, tmavý i světlý režim, s ukázkovými daty z exportu: bez chyb skriptu, bez vodorovného posunu, filtr a Esc fungují. Publikováno jako „Otevřené pozice 16. 11.“ (verze 34).
+
+## 2026-11-17 (denní běh designéra)
+
+**Nalezené prvky**
+1. Indikátor velikosti vzorku u každého výsledku: bez štítku = dost dat, „Indicative“ = jen směr, „Insufficient“ = málo dat, u obou rada, jak to napravit (víc dat / delší období) – [Tracksuit: How do sample size indicators work (6/2026)](https://help.gotracksuit.com/en/articles/11641167-how-do-tracksuit-s-sample-size-indicators-work).
+2. Stavový odznak metriky Pass / Warn / Fail / „Waiting“ (než dorazí data), jen upozornění, nic neblokuje – [LaunchDarkly: Metric health checks](https://launchdarkly.com/docs/home/metrics/metric-health-checks).
+3. Klávesové zkratky: dialog „?“ jako přehled, každá zkratka musí mít i ovládací prvek, jednoznakové zkratky jen mimo psaní, klávesy v `<kbd>` – [Primer: Keyboard shortcuts](https://primer.style/accessibility/patterns/keyboard-shortcuts), [Pattern Playground: Keyboard shortcuts (akt. 7/2026)](https://pattern-playground.onrender.com/patterns/keyboard-shortcuts) (zkratky i v paletě příkazů, „?“ je v pořádku, když je dialog fokusovaný).
+4. Index výnosu s překrytou čárou srovnávacího indexu (benchmark) – [Sharesight: Interpreting the return index graph (akt. 5/2026)](https://help.sharesight.com/interpreting-the-return-index-graph/).
+5. Viditelná stopa akcí AI a stavy „přemýšlí / jedná“, latence podle kontextu – [Lazarev: UI trends 2026 (2/2026)](https://www.lazarev.agency/articles/ui-trends-2026) (přehledový článek).
+
+**Zapojeno**
+- **🌱 Velikost vzorku na papírových účtech** (splněno odložené „zahřívá se“ z 13. 11.): v režimu Papírově / Živě na každé kartě účtu (Laboratoř, Žebříček – Karty, AI Lab, Mozek, Downtown) štítek vedle „papír živě“: „čeká na data · 0/30“ bez obchodu, „orientační · n/30“ s 10dílkovým ukazatelem pod 30 obchody, od 30 bez štítku. U orientačních je číslo „Čistě“ ztlumené s čárkovaným podtržením a pod ním věta „Zatím jen směr, ne závěr – n obchodů z 30. Počkej na další obchody.“ Nový pojem „Orientační výsledek“ ve slovníku vysvětlivek. Laboratoř (Papírově): dlaždice „účtů s ≥ 30 obchody X/Y“ a u „Nejvíc vydělala“ štítek „orientační, n/30 obch.“ (dnes nejlepší účet má 1 obchod). Jen z pole `n_trades`, denní účty (Ensemble) bez štítku.
+- **⌨️ Přehled klávesových zkratek**: klávesa „?“ (ne při psaní do pole, ne přes jiný dialog), položka „Klávesové zkratky“ v paletě Ctrl K (skupina Nápověda) a tlačítko „? všechny zkratky“ v patičce palety. Dialog ve stylu porovnání: Kdekoli, Paleta, Žebříček, pás Forma, Prohlídka, Vysvětlivky; Ctrl/⌘ podle systému, na dotykových zařízeních věta, že zkratky nejsou potřeba. Esc zavře jen dialog.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu; Laboratoř Papírově 13 orientačních + 21 čekajících, Downtown Živě 8 čekajících; vysvětlivka se otevře; „?“ v hledání žebříčku se jen napíše, mimo pole otevře dialog a Esc nechá žebříček otevřený; paleta „zkratky“ → dialog. Opraveno při kontrole: pátá dlaždice v Laboratoři nechávala díru v mřížce (dlaždice vzorku širší, „Nejvíc vydělala“ přes celou šířku). Publikováno jako „Design 17. 11.“ (verze 35).
+
+**Odloženo**
+- Srovnání s BTC drž (benchmark) na kartách účtů – v kolekci `accounts` není křivka BTC; musela by se přidat do exportu, ne dopočítávat na stránce.
+- Stopa akcí AI / stavy „přemýšlí“ – Agentown nemá živé AI akce, výzkum běží v dávkách; Kronika už ukazuje proběhlé kroky.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking – důvody beze změny (viz 5.–16. 11.).
