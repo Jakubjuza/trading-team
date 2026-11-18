@@ -3,7 +3,7 @@
 Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu něco, co po poplatcích MEXC vydělává spolehlivěji než náhoda? Metoda stanovená předem je v hlavičce `research/experiments/strategy_atlas.py`.
 
 - **42 048 kombinací** (15 rodin, 248 variant × 7 timeframů × 3 filtry × 4 výstupy × long/short), 8 mincí.
-- 12h: 5952 kombinací, 1158 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
+- 12h: 5952 kombinací, 833 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 15m: 5952 kombinací, 2824 s, data od BTC 01/2022, ETH 01/2022, SOL 01/2022, XRP 01/2022, ADA 01/2022, LINK 01/2022, AVAX 01/2022, DOGE 01/2022
 - 1d: 5952 kombinací, 1060 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
 - 1h: 5952 kombinací, 1085 s, data od BTC 01/2019, ETH 01/2019, SOL 09/2020, XRP 01/2019, ADA 01/2019, LINK 01/2019, AVAX 09/2020, DOGE 07/2019
@@ -21,38 +21,38 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 
 | Rodina | Směr | Kombinací | OOS > 0 | HOLDOUT > 0 | OOS nad náhodou | HOLDOUT nad náhodou | Obě nad p95 | Medián OOS R | Medián HOLDOUT R |
 |---|---|---|---|---|---|---|---|---|---|
-| Bollinger průraz | long | 336 | 81% | 74% | 93% | 90% | 53,6% | +0,25 | +0,16 |
-| Bollinger průraz | short | 336 | 32% | 75% | 54% | 74% | 11,9% | -0,06 | +0,10 |
+| Bollinger průraz | long | 336 | 81% | 74% | 93% | 90% | 53,0% | +0,25 | +0,16 |
+| Bollinger průraz | short | 336 | 32% | 75% | 53% | 74% | 11,9% | -0,06 | +0,10 |
 | Bollinger návrat | long | 336 | 21% | 26% | 16% | 33% | 0,3% | -0,11 | -0,09 |
-| Bollinger návrat | short | 336 | 33% | 54% | 44% | 37% | 4,2% | -0,05 | +0,02 |
-| svíčkové vzory | long | 168 | 50% | 38% | 57% | 52% | 0,6% | -0,00 | -0,02 |
-| svíčkové vzory | short | 168 | 23% | 67% | 58% | 54% | 2,4% | -0,06 | +0,05 |
-| Donchian průraz | long | 420 | 80% | 61% | 94% | 83% | 34,3% | +0,25 | +0,06 |
-| Donchian průraz | short | 420 | 30% | 70% | 47% | 50% | 1,7% | -0,08 | +0,09 |
+| Bollinger návrat | short | 336 | 33% | 54% | 45% | 36% | 3,0% | -0,05 | +0,02 |
+| svíčkové vzory | long | 168 | 50% | 38% | 58% | 54% | 1,2% | -0,00 | -0,02 |
+| svíčkové vzory | short | 168 | 23% | 68% | 60% | 53% | 2,4% | -0,06 | +0,06 |
+| Donchian průraz | long | 420 | 80% | 61% | 94% | 83% | 35,2% | +0,25 | +0,06 |
+| Donchian průraz | short | 420 | 30% | 70% | 48% | 51% | 1,7% | -0,08 | +0,10 |
 | strach a chamtivost | long | 192 | 35% | 21% | 29% | 20% | 0,5% | -0,16 | -0,34 |
 | strach a chamtivost | short | 192 | 41% | 18% | 46% | 17% | 1,0% | +0,04 | -0,18 |
-| Keltner průraz | long | 252 | 80% | 69% | 94% | 89% | 49,2% | +0,19 | +0,12 |
-| Keltner průraz | short | 252 | 40% | 65% | 54% | 74% | 10,3% | -0,05 | +0,09 |
-| protnutí 2 průměrů | long | 16128 | 66% | 52% | 70% | 68% | 8,8% | +0,16 | +0,01 |
-| protnutí 2 průměrů | short | 16128 | 31% | 72% | 69% | 51% | 5,1% | -0,07 | +0,12 |
-| MACD | long | 504 | 63% | 50% | 77% | 58% | 10,1% | +0,10 | -0,00 |
-| MACD | short | 504 | 45% | 63% | 79% | 42% | 6,7% | -0,01 | +0,03 |
-| cena × průměr | long | 840 | 54% | 50% | 54% | 49% | 5,2% | +0,02 | +0,00 |
-| cena × průměr | short | 840 | 37% | 69% | 88% | 46% | 9,6% | -0,02 | +0,04 |
-| momentum ROC | long | 336 | 56% | 49% | 57% | 52% | 3,9% | +0,02 | -0,00 |
-| momentum ROC | short | 336 | 32% | 64% | 81% | 38% | 7,7% | -0,04 | +0,04 |
-| RSI momentum | long | 252 | 62% | 60% | 76% | 69% | 12,3% | +0,06 | +0,02 |
-| RSI momentum | short | 252 | 37% | 75% | 85% | 56% | 7,9% | -0,02 | +0,05 |
-| RSI návrat | long | 336 | 23% | 19% | 23% | 26% | 0,0% | -0,09 | -0,11 |
-| RSI návrat | short | 336 | 24% | 53% | 38% | 46% | 7,4% | -0,07 | +0,01 |
-| Stochastic | long | 168 | 22% | 15% | 18% | 17% | 0,0% | -0,11 | -0,09 |
-| Stochastic | short | 168 | 11% | 61% | 27% | 61% | 3,0% | -0,07 | +0,03 |
-| Supertrend | long | 252 | 67% | 50% | 81% | 57% | 5,2% | +0,14 | -0,00 |
-| Supertrend | short | 252 | 55% | 74% | 79% | 55% | 4,0% | +0,02 | +0,08 |
-| sweep & reclaim | long | 168 | 34% | 12% | 22% | 12% | 0,0% | -0,10 | -0,14 |
-| sweep & reclaim | short | 168 | 12% | 62% | 24% | 40% | 1,2% | -0,11 | +0,03 |
-| průraz s objemem | long | 336 | 80% | 67% | 96% | 84% | 38,7% | +0,36 | +0,16 |
-| průraz s objemem | short | 336 | 27% | 69% | 41% | 56% | 5,7% | -0,14 | +0,09 |
+| Keltner průraz | long | 252 | 80% | 69% | 94% | 89% | 50,0% | +0,19 | +0,12 |
+| Keltner průraz | short | 252 | 40% | 65% | 54% | 75% | 10,3% | -0,05 | +0,10 |
+| protnutí 2 průměrů | long | 16128 | 66% | 52% | 70% | 68% | 9,0% | +0,16 | +0,01 |
+| protnutí 2 průměrů | short | 16128 | 31% | 73% | 69% | 51% | 5,2% | -0,07 | +0,13 |
+| MACD | long | 504 | 63% | 50% | 77% | 57% | 9,7% | +0,10 | -0,00 |
+| MACD | short | 504 | 45% | 64% | 79% | 42% | 6,5% | -0,01 | +0,03 |
+| cena × průměr | long | 840 | 54% | 50% | 55% | 49% | 5,0% | +0,02 | +0,00 |
+| cena × průměr | short | 840 | 37% | 69% | 88% | 46% | 9,0% | -0,02 | +0,05 |
+| momentum ROC | long | 336 | 56% | 49% | 56% | 54% | 4,2% | +0,02 | -0,00 |
+| momentum ROC | short | 336 | 32% | 64% | 79% | 38% | 7,7% | -0,04 | +0,04 |
+| RSI momentum | long | 252 | 62% | 60% | 77% | 68% | 12,7% | +0,06 | +0,02 |
+| RSI momentum | short | 252 | 37% | 76% | 86% | 58% | 7,5% | -0,02 | +0,06 |
+| RSI návrat | long | 336 | 23% | 18% | 25% | 26% | 0,0% | -0,09 | -0,11 |
+| RSI návrat | short | 336 | 24% | 53% | 38% | 44% | 6,5% | -0,07 | +0,02 |
+| Stochastic | long | 168 | 22% | 15% | 18% | 16% | 0,0% | -0,11 | -0,10 |
+| Stochastic | short | 168 | 11% | 61% | 27% | 60% | 2,4% | -0,07 | +0,03 |
+| Supertrend | long | 252 | 67% | 50% | 80% | 58% | 4,4% | +0,14 | -0,00 |
+| Supertrend | short | 252 | 55% | 75% | 79% | 52% | 4,4% | +0,02 | +0,08 |
+| sweep & reclaim | long | 168 | 34% | 11% | 23% | 12% | 0,0% | -0,10 | -0,14 |
+| sweep & reclaim | short | 168 | 12% | 62% | 27% | 40% | 1,2% | -0,11 | +0,03 |
+| průraz s objemem | long | 336 | 80% | 67% | 96% | 83% | 38,7% | +0,36 | +0,16 |
+| průraz s objemem | short | 336 | 27% | 69% | 41% | 57% | 5,7% | -0,14 | +0,10 |
 
 ## 2. Podle timeframu (všechny rodiny dohromady)
 
@@ -68,8 +68,8 @@ Otázka: je mezi běžnými pravidlovými strategiemi na kterémkoli timeframu n
 | 4h | short | 32% | 82% | 67% | 37% | -0,07 | 11 |
 | 6h | long | 77% | 59% | 60% | 69% | +0,44 | 7 |
 | 6h | short | 28% | 89% | 70% | 58% | -0,10 | 8 |
-| 12h | long | 76% | 57% | 63% | 78% | +0,48 | 4 |
-| 12h | short | 22% | 90% | 64% | 64% | -0,18 | 4 |
+| 12h | long | 76% | 56% | 63% | 78% | +0,48 | 3 |
+| 12h | short | 22% | 92% | 64% | 63% | -0,18 | 4 |
 | 1d | long | 65% | 35% | 57% | 63% | +0,30 | 2 |
 | 1d | short | 12% | 89% | 51% | 69% | -0,28 | 2 |
 
@@ -79,10 +79,10 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 
 | Poplatky na stranu | OOS > 0 long | OOS > 0 short | HOLDOUT > 0 long | HOLDOUT > 0 short | Projde pravidlem (ze všech) |
 |---|---|---|---|---|---|
-| 0 % (maker, optimisticky) | 76% | 47% | 64% | 90% | 1034 z 33868 |
-| 0,05 % (MEXC futures taker) | 64% | 31% | 51% | 70% | 241 z 33868 |
-| 0,08 % (MEXC spot taker) | 60% | 23% | 46% | 64% | 163 z 33868 |
-| 0,15 % (dřívější testy) | 54% | 14% | 37% | 54% | 70 z 33868 |
+| 0 % (maker, optimisticky) | 76% | 47% | 64% | 90% | 1033 z 33868 |
+| 0,05 % (MEXC futures taker) | 64% | 31% | 51% | 71% | 239 z 33868 |
+| 0,08 % (MEXC spot taker) | 60% | 23% | 46% | 64% | 162 z 33868 |
+| 0,15 % (dřívější testy) | 54% | 14% | 37% | 55% | 69 z 33868 |
 
 ## 4. Výběr podle předem stanoveného pravidla (50 nejlepších podle IS t-statistiky na směr)
 
@@ -90,14 +90,14 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 |---|---|---|---|---|---|---|---|---|---|---|
 | long | 2h MACD 19/39/9/signal · d50 · opp | 2019 / +0,31 | 635 / +0,07 | +1,1 | -0,02 | 460 / +0,12 | +0,09 | 64 | 35 | ❌ |
 | long | 1h protnutí 2 průměrů sma/30/200/confirm · none · opp | 1178 / +1,67 | 420 / +0,61 | +1,9 | +0,93 | 385 / +0,07 | +0,54 | 245 | 22 | ❌ |
-| long | 12h MACD 5/35/5/signal · none · opp | 1591 / +0,32 | 573 / +0,16 | +2,4 | +0,24 | 527 / +0,03 | +0,12 | 73 | 30 | ❌ |
+| long | 12h MACD 5/35/5/signal · none · opp | 1591 / +0,32 | 573 / +0,16 | +2,4 | +0,23 | 537 / +0,02 | +0,08 | 73 | 30 | ❌ |
 | long | 1h protnutí 2 průměrů sma/40/200/confirm · none · opp | 1071 / +1,82 | 379 / +0,83 | +2,1 | +1,02 | 337 / +0,09 | +0,23 | 246 | 20 | ❌ |
 | long | 1h protnutí 2 průměrů sma/10/30/cross · d50 · opp | 2795 / +0,39 | 867 / +0,06 | +0,8 | +0,06 | 618 / +0,10 | +0,35 | 107 | 48 | ❌ |
 | long | 6h MACD 12/26/9/signal · none · opp | 1904 / +0,35 | 660 / +0,24 | +2,9 | +0,30 | 668 / -0,00 | +0,13 | 123 | 36 | ❌ |
 | long | 6h MACD 19/39/9/signal · none · opp | 1450 / +0,54 | 506 / +0,26 | +2,5 | +0,42 | 500 / +0,06 | +0,11 | 107 | 28 | ❌ |
 | long | 4h MACD 5/35/5/signal · d50 · opp | 2312 / +0,18 | 748 / +0,04 | +1,0 | +0,03 | 508 / +0,08 | +0,10 | 43 | 40 | ❌ |
 | long | 1h protnutí 2 průměrů sma/10/200/confirm · none · opp | 1773 / +1,05 | 609 / +0,47 | +2,1 | +0,79 | 581 / +0,20 | +0,47 | 253 | 33 | ❌ |
-| long | 12h MACD 5/35/5/signal · none · opp_stop | 1591 / +0,41 | 573 / +0,19 | +2,3 | +0,18 | 527 / +0,05 | +0,15 | 93 | 30 | ❌ |
+| long | 12h MACD 5/35/5/signal · none · opp_stop | 1591 / +0,41 | 573 / +0,19 | +2,3 | +0,17 | 537 / +0,04 | +0,12 | 93 | 30 | ❌ |
 | long | 1h protnutí 2 průměrů sma/30/200/confirm · d50 · opp | 740 / +2,10 | 254 / +0,60 | +1,2 | +1,39 | 178 / +0,87 | +1,96 | 117 | 13 | ❌ |
 | long | 1h protnutí 2 průměrů ema/50/60/confirm · none · opp | 1682 / +1,28 | 596 / +0,59 | +2,4 | +1,12 | 587 / +0,07 | +0,34 | 288 | 32 | ❌ |
 | long | 1h protnutí 2 průměrů ema/50/200/confirm · none · opp | 1029 / +1,86 | 357 / +0,69 | +2,0 | +0,89 | 337 / +0,00 | +0,19 | 295 | 19 | ❌ |
@@ -131,7 +131,7 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 | long | 2h protnutí 2 průměrů sma/10/60/cross · none · opp | 1777 / +0,82 | 631 / +0,40 | +2,3 | +0,66 | 611 / +0,02 | +0,08 | 210 | 34 | ❌ |
 | long | 2h protnutí 2 průměrů sma/10/60/confirm · none · opp | 1699 / +0,85 | 592 / +0,44 | +2,4 | +0,54 | 576 / +0,04 | +0,04 | 201 | 32 | ❌ |
 | long | 4h protnutí 2 průměrů ema/20/30/cross · none · opp | 925 / +1,15 | 338 / +0,69 | +2,0 | +1,21 | 320 / -0,03 | -0,08 | 139 | 18 | ❌ |
-| long | 12h MACD 19/39/9/signal · none · opp | 698 / +0,78 | 240 / +0,65 | +2,9 | +0,83 | 212 / +0,12 | +0,13 | 49 | 13 | ❌ |
+| long | 12h MACD 19/39/9/signal · none · opp | 698 / +0,78 | 240 / +0,65 | +2,9 | +0,82 | 214 / +0,10 | -0,03 | 49 | 13 | ❌ |
 | long | 1h protnutí 2 průměrů ema/50/60/cross · none · opp | 1621 / +1,27 | 582 / +0,56 | +2,2 | +0,88 | 580 / +0,09 | +0,25 | 288 | 31 | ❌ |
 | long | 2h protnutí 2 průměrů sma/5/50/confirm · none · opp | 2445 / +0,59 | 859 / +0,27 | +2,5 | +0,40 | 818 / +0,06 | +0,08 | 210 | 47 | ❌ |
 | long | 4h momentum ROC 20 · none · opp | 3915 / +0,23 | 1370 / +0,08 | +1,7 | +0,15 | 1211 / +0,00 | +0,06 | 171 | 73 | ❌ |
@@ -158,7 +158,7 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 | short | 1h Bollinger průraz 50/2.0 · d50 · trail | 1557 / +0,16 | 656 / +0,07 | +0,9 | +0,08 | 726 / +0,03 | +0,12 | 102 | 33 | ❌ |
 | short | 2h protnutí 2 průměrů ema/30/200/cross · none · target | 482 / +0,17 | 202 / +0,21 | +2,5 | +0,11 | 175 / +0,04 | +0,11 | 30 | 10 | ❌ |
 | short | 1h protnutí 2 průměrů ema/20/100/cross · d50 · opp_stop | 785 / +0,46 | 327 / +0,15 | +0,9 | -0,14 | 391 / +0,10 | +0,42 | 116 | 17 | ❌ |
-| short | 12h protnutí 2 průměrů ema/5/150/cross · none · trail | 162 / +0,37 | 86 / -0,24 | -2,2 | +0,06 | 53 / +0,99 | +0,51 | 33 | 3 | ❌ |
+| short | 12h protnutí 2 průměrů ema/5/150/cross · none · trail | 162 / +0,37 | 86 / -0,24 | -2,2 | +0,04 | 53 / +1,16 | +0,56 | 33 | 3 | ❌ |
 | short | 4h Bollinger průraz 50/2.5 · d200 · target | 302 / +0,21 | 98 / +0,16 | +1,3 | +0,02 | 150 / +0,20 | +0,14 | 23 | 6 | ❌ |
 | short | 1h protnutí 2 průměrů sma/30/50/pullback · d50 · trail | 1797 / +0,14 | 706 / +0,04 | +0,6 | +0,06 | 774 / +0,11 | +0,11 | 77 | 37 | ❌ |
 | short | 1h Bollinger průraz 50/2.0 · d200 · trail | 1419 / +0,15 | 469 / +0,07 | +0,9 | +0,02 | 782 / +0,01 | +0,11 | 101 | 30 | ❌ |
@@ -177,7 +177,7 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 | short | 6h Supertrend 20/3.0 · d200 · opp | 198 / +0,42 | 70 / +0,21 | +1,3 | -0,46 | 117 / +0,19 | +0,64 | 48 | 4 | ❌ |
 | short | 1h protnutí 2 průměrů ema/50/60/confirm · d50 · opp | 915 / +0,35 | 385 / -0,13 | -0,9 | -0,09 | 424 / +0,10 | +0,58 | 169 | 19 | ❌ |
 | short | 1h protnutí 2 průměrů ema/30/150/cross · d50 · opp_stop | 551 / +0,52 | 233 / +0,14 | +0,7 | -0,02 | 263 / -0,12 | +0,35 | 116 | 12 | ❌ |
-| short | 12h MACD 5/35/5/signal · d200 · opp_stop | 652 / +0,13 | 198 / +0,05 | +0,7 | +0,04 | 373 / +0,05 | +0,05 | 39 | 14 | ❌ |
+| short | 12h MACD 5/35/5/signal · d200 · opp_stop | 652 / +0,13 | 198 / +0,05 | +0,7 | +0,02 | 377 / +0,09 | +0,12 | 39 | 14 | ❌ |
 | short | 1h protnutí 2 průměrů ema/30/60/pullback · d50 · trail | 2032 / +0,12 | 849 / -0,02 | -0,3 | +0,10 | 888 / +0,04 | +0,07 | 106 | 43 | ❌ |
 | short | 6h protnutí 2 průměrů ema/30/150/cross · none · target | 178 / +0,24 | 84 / +0,03 | +0,2 | +0,13 | 58 / +0,25 | +0,27 | 20 | 4 | ❌ |
 | short | 1h protnutí 2 průměrů sma/50/100/pullback · none · trail | 2776 / +0,10 | 1029 / -0,04 | -0,7 | +0,10 | 940 / +0,05 | +0,05 | 152 | 54 | ❌ |
@@ -191,7 +191,7 @@ Podíl všech kombinací s kladným Ø R v OOS a v HOLDOUT podle výše poplatk�
 
 ## 5. Všechny kombinace, které splní kritéria (bez pořadí v IS) – kandidáti, ne důkaz
 
-Splní je **241** z 33868 způsobilých kombinací. Čistou náhodou by to bylo řádově 25 (OOS i HOLDOUT nad p95 ≈ 0,25 %, k tomu t ≥ 2 a kladné IS). Kombinace v rámci rodiny jsou si podobné, takže skutečně nezávislých nálezů je méně.
+Splní je **239** z 33868 způsobilých kombinací. Čistou náhodou by to bylo řádově 25 (OOS i HOLDOUT nad p95 ≈ 0,25 %, k tomu t ≥ 2 a kladné IS). Kombinace v rámci rodiny jsou si podobné, takže skutečně nezávislých nálezů je méně.
 
 | Směr | Kombinace | IS Ø R | OOS n / Ø R / t | HOLDOUT n / Ø R | Max. propad R | Obch./měs. | Ø % na obchod (OOS) |
 |---|---|---|---|---|---|---|---|
@@ -219,12 +219,11 @@ Splní je **241** z 33868 způsobilých kombinací. Čistou náhodou by to bylo 
 | long | 1h protnutí 2 průměrů sma/10/50/confirm · none · opp | +0,30 | 1347 / +0,26 / +2,7 | 1262 / +0,03 | 310 | 75 | +0,51 |
 | short | 12h protnutí 2 průměrů ema/20/50/cross · none · target | +0,12 | 78 / +0,36 / +2,7 | 69 / +0,16 | 16 | 4 | +3,09 |
 | long | 1h protnutí 2 průměrů ema/10/100/cross · none · opp_stop | +0,57 | 957 / +0,37 / +2,6 | 953 / +0,19 | 249 | 52 | +0,48 |
-| long | 12h MACD 12/26/9/signal · none · opp_stop | +0,68 | 315 / +0,52 / +2,6 | 292 / +0,12 | 68 | 17 | +2,37 |
 | long | 1h protnutí 2 průměrů sma/10/60/confirm · none · opp | +0,41 | 1199 / +0,29 / +2,6 | 1134 / +0,10 | 245 | 66 | +0,55 |
 | long | 2h Bollinger průraz 50/2.0 · none · opp | +0,77 | 448 / +0,46 / +2,6 | 402 / +0,31 | 120 | 24 | +1,21 |
 | short | 6h protnutí 2 průměrů ema/10/50/cross · none · target | +0,06 | 207 / +0,22 / +2,6 | 190 / +0,16 | 37 | 10 | +1,58 |
 | long | 2h protnutí 2 průměrů sma/5/150/cross · none · trail | +0,20 | 434 / +0,28 / +2,6 | 412 / +0,25 | 60 | 23 | +0,69 |
-| long | 12h MACD 19/39/9/signal · none · opp_stop | +0,89 | 240 / +0,76 / +2,6 | 212 / +0,18 | 44 | 13 | +3,72 |
+| long | 12h MACD 19/39/9/signal · none · opp_stop | +0,89 | 240 / +0,76 / +2,6 | 214 / +0,17 | 44 | 13 | +3,72 |
 | long | 2h protnutí 2 průměrů ema/10/50/cross · none · trail | +0,13 | 634 / +0,23 / +2,6 | 640 / +0,06 | 121 | 35 | +0,52 |
 | long | 6h protnutí 2 průměrů ema/50/60/cross · none · target | +0,06 | 88 / +0,34 / +2,6 | 84 / +0,40 | 29 | 5 | +1,80 |
 | long | 1h Donchian průraz 55 · none · opp | +0,75 | 607 / +0,51 / +2,6 | 539 / +0,33 | 205 | 32 | +0,81 |
@@ -235,8 +234,9 @@ Splní je **241** z 33868 způsobilých kombinací. Čistou náhodou by to bylo 
 | long | 1h Bollinger průraz 50/2.5 · none · trail | +0,20 | 738 / +0,22 / +2,5 | 699 / +0,14 | 94 | 43 | +0,44 |
 | long | 4h cena × průměr sma/20 · none · opp_stop | +0,21 | 1518 / +0,13 / +2,5 | 1412 / +0,03 | 177 | 84 | +0,36 |
 | long | 6h RSI momentum 60 · none · opp | +0,77 | 310 / +0,52 / +2,5 | 286 / +0,17 | 77 | 17 | +2,28 |
+| long | 2h protnutí 2 průměrů ema/10/30/cross · none · trail | +0,18 | 823 / +0,18 / +2,5 | 779 / +0,06 | 125 | 44 | +0,40 |
 
-Podle rodiny a timeframu: protnutí 2 průměrů 2h long: 29; protnutí 2 průměrů 1h long: 23; protnutí 2 průměrů 6h long: 19; protnutí 2 průměrů 4h long: 18; Bollinger průraz 2h long: 12; Bollinger průraz 6h long: 11; Bollinger průraz 4h long: 9; protnutí 2 průměrů 12h long: 9; protnutí 2 průměrů 1h short: 9; Bollinger průraz 1h long: 8; Keltner průraz 6h long: 7; Bollinger průraz 12h long: 7; průraz s objemem 1h long: 6; Donchian průraz 6h long: 5; Donchian průraz 1h long: 5.
+Podle rodiny a timeframu: protnutí 2 průměrů 2h long: 29; protnutí 2 průměrů 1h long: 23; protnutí 2 průměrů 6h long: 19; protnutí 2 průměrů 4h long: 18; Bollinger průraz 2h long: 12; Bollinger průraz 6h long: 11; Bollinger průraz 4h long: 9; protnutí 2 průměrů 1h short: 9; Bollinger průraz 1h long: 8; protnutí 2 průměrů 12h long: 8; Keltner průraz 6h long: 7; Bollinger průraz 12h long: 7; průraz s objemem 1h long: 6; Donchian průraz 6h long: 5; Donchian průraz 1h long: 5.
 
 ## Závěr
 
