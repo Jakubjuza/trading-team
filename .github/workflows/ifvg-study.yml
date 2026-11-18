@@ -1,0 +1,71 @@
+name: Výzkum – IFVG s mozkem
+
+# IFVG (inverse fair value gap) na 7 timeframech, bez mozku i s mozkem (fáze trhu, kontext signálu, obojí).
+# research/experiments/ifvg_study.py → reports/ifvg.md + reports/ifvg/*. Jen výzkum, nic se nezapíná.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+    paths: ["research/experiments/ifvg_study.py", ".github/workflows/ifvg-study.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  tf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        tf: ["15m", "1h", "2h", "4h", "6h", "12h", "1d"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+      - run: pip install -q -r scanner/requirements.txt numba
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cache
+          key: lab-data-${{ github.run_id }}
+          restore-keys: lab-data-
+      - name: IFVG ${{ matrix.tf }}
+        run: python3 research/experiments/ifvg_study.py run ${{ matrix.tf }} /tmp/cache
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ifvg-${{ matrix.tf }}
+          path: |
+            reports/ifvg/${{ matrix.tf }}.csv.gz
+            reports/ifvg/${{ matrix.tf }}.meta
+            reports/ifvg/${{ matrix.tf }}.json
+
+  report:
+    needs: tf
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q pandas numpy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ifvg-*
+          path: reports/ifvg
+          merge-multiple: true
+      - name: Souhrnný report
+        run: |
+          ls -la reports/ifvg
+          python3 research/experiments/ifvg_study.py report reports/ifvg
+          cat reports/ifvg.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Uložit do větve
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f reports/ifvg.md reports/ifvg/*
+          git commit -m "ifvg: výsledky testu IFVG s mozkem" || exit 0
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}"
