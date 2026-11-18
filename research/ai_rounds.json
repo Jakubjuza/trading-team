@@ -205,6 +205,36 @@
    "best_splits": null,
    "added": null,
    "reason": "žádné pravidlo neprošlo přísným testem"
+  },
+  {
+   "n": 10,
+   "date": "2026-11-18",
+   "focus": "jen long",
+   "seed": 20261118,
+   "tested": 4229,
+   "top_oos_ok": 20,
+   "random_oos_ok": 0,
+   "candidates": 5,
+   "best": "LONG když hodina UTC > 50. percentil (12.00) a od EMA200 (ATR) > 70. percentil (2.54) a BTC 1 h (σ) < 50. percentil (0.02) · stop 3,0 ATR · držení 16 h",
+   "best_splits": {
+    "is": {
+     "n": 4602,
+     "mean_r": 0.113,
+     "t": 7.06
+    },
+    "oos": {
+     "n": 1484,
+     "mean_r": 0.098,
+     "t": 4.13
+    },
+    "hold": {
+     "n": 1137,
+     "mean_r": 0.047,
+     "t": 1.59
+    }
+   },
+   "added": "ai10",
+   "reason": "přidáno"
   }
  ],
  "registry": [
@@ -425,6 +455,52 @@
      "n": 396,
      "mean_r": 0.057,
      "t": 1.85
+    }
+   }
+  },
+  {
+   "id": "ai10",
+   "name": "AI #10 · jen long",
+   "round": 10,
+   "focus": "jen long",
+   "added": "2026-11-18",
+   "genome": {
+    "conds": [
+     [
+      "hour",
+      ">",
+      0.5
+     ],
+     [
+      "ema200",
+      ">",
+      0.7
+     ],
+     [
+      "btc1z",
+      "<",
+      0.5
+     ]
+    ],
+    "dir": 1,
+    "hold": 16,
+    "stop": 3.0
+   },
+   "splits_at_add": {
+    "is": {
+     "n": 4602,
+     "mean_r": 0.113,
+     "t": 7.06
+    },
+    "oos": {
+     "n": 1484,
+     "mean_r": 0.098,
+     "t": 4.13
+    },
+    "hold": {
+     "n": 1137,
+     "mean_r": 0.047,
+     "t": 1.59
     }
    }
   }

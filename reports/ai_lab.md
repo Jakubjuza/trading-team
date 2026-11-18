@@ -1,19 +1,20 @@
 # 🤖 AI Lab – strategie vymyšlené AI
 
-Přepočet 2026-11-17T10:42+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
+Přepočet 2026-11-18T10:07+00:00. Pravidla stanovená předem jsou v hlavičce `research/ai_lab.py`. Jen papír, odděleno od desku; nejde o finanční poradenství.
 
 | Strategie | Typ | IS | OOS | HOLDOUT | Výsledek | Účet od 2024 |
 |---|---|---|---|---|---|---|
 | Ozvěna BTC | vlastní nápad | -0,038 R (t -1,89, n 2487) | 0,127 R (t 2,61, n 644) | -0,145 R (t -3,26, n 282) | ❌ neprojde | 286,76 USDT |
 | Tichý průraz | vlastní nápad | 0,113 R (t 1,3, n 459) | 0,185 R (t 1,07, n 137) | -0,11 R (t -0,75, n 150) | ❌ neprojde | -26,53 USDT |
-| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,35 | ❌ neprojde | -788,75 USDT |
-| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,08 | ❌ neprojde | -610,7 USDT |
+| Hodiny trhu | vlastní nápad | Sharpe -1,06 | Sharpe -3,74 | Sharpe -6,3 | ❌ neprojde | -787,73 USDT |
+| Rotace síly | vlastní nápad | Sharpe 1,05 | Sharpe -0,69 | Sharpe -2,06 | ❌ neprojde | -608,09 USDT |
 | Evoluce · vítěz | evoluce | 0,203 R (t 6,8, n 2491) | 0,117 R (t 2,62, n 844) | 0,056 R (t 0,96, n 709) | ✅ projde | 1179,37 USDT |
 | AI #3 · rychlé obchody 2–8 h | evoluce · kolo 3 | 0,078 R (t 6,02, n 2222) | 0,068 R (t 2,95, n 599) | 0,075 R (t 2,45, n 375) | ✅ projde | 885,65 USDT |
 | AI #4 · pomalé obchody 16–32 h | evoluce · kolo 4 | 0,2 R (t 6,8, n 3031) | 0,113 R (t 2,55, n 989) | 0,063 R (t 1,15, n 829) | ✅ projde | 1452,65 USDT |
 | AI #5 · jen long | evoluce · kolo 5 | 0,181 R (t 7,02, n 3684) | 0,116 R (t 2,95, n 1186) | 0,057 R (t 1,16, n 951) | ✅ projde | 1988,19 USDT |
 | AI #6 · vše | evoluce · kolo 6 | 0,179 R (t 6,72, n 3551) | 0,115 R (t 2,87, n 1149) | 0,082 R (t 1,6, n 911) | ✅ projde | 2465,95 USDT |
 | AI #8 · rychlé obchody 2–8 h | evoluce · kolo 8 | 0,089 R (t 7,05, n 2456) | 0,065 R (t 2,52, n 610) | 0,057 R (t 1,85, n 396) | ✅ projde | 762,1 USDT |
+| AI #10 · jen long | evoluce · kolo 10 | 0,113 R (t 7,06, n 4602) | 0,098 R (t 4,13, n 1484) | 0,047 R (t 1,59, n 1137) | ✅ projde | 3757,55 USDT |
 
 ## Evoluce
 
@@ -36,10 +37,11 @@ Vítěz: LONG když stažení ATR14/200 > 60. percentil (0.99) a od EMA200 (ATR)
 
 ## Průběžný výzkum (kola evoluce)
 
-Kol celkem 9, strategií z kol 5/10, další zaměření: jen long.
+Kol celkem 10, strategií z kol 6/10, další zaměření: vše.
 
 | Kolo | Datum | Zaměření | Vyzkoušeno | Prošlo ověřením (náhoda) | Výsledek |
 |---|---|---|---|---|---|
+| 10 | 2026-11-18 | jen long | 4229 | 20 (0) | přidáno |
 | 9 | 2026-11-17 | pomalé obchody 16–32 h | 3900 | 7 (1) | žádné pravidlo neprošlo přísným testem |
 | 8 | 2026-11-16 | rychlé obchody 2–8 h | 4758 | 20 (0) | přidáno |
 | 7 | 2026-11-15 | jen short | 4754 | 8 (0) | žádné pravidlo neprošlo přísným testem |
