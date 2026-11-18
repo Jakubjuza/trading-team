@@ -1,15 +1,18 @@
 {
- "time": "2026-11-16T21:40:17+00:00",
- "changes": [],
+ "time": "2026-11-18T21:39:44+00:00",
+ "changes": [
+  "🆕 Kombinace: MACD 5 35 5 signal + MACD sig · 12H short → papír (combo_study: díl 10, OOS +0.15 R (t +2.1), HOLDOUT +0.20 R (t +2.5), spouštěč sám OOS +0.03 R); režimy: býčí, medvědí, boční; nahradila Kombinace: Bollinger průraz 50 2.5 + ATR pctl ≥ 0,3 · 2H long",
+  "🆕 Kombinace: Bollinger průraz 20 2.0 + MACD zero · 12H long → papír (combo_study: díl 10, OOS +0.99 R (t +2.1), HOLDOUT +0.39 R (t +2.0), spouštěč sám OOS +0.76 R); režimy: býčí, medvědí, boční, panika; nahradila Kombinace: MACD 19 39 9 signal + RSI ≥ 50 · 6H short"
+ ],
  "error": null,
  "part": {
-  "no": 9,
+  "no": 10,
   "kind": "pair",
   "tf": "12h",
   "groups": [
-   "trend",
-   "režim",
-   "objem"
+   "volatilita",
+   "momentum",
+   "sentiment"
   ],
   "grid": {
    "triggers": [
@@ -99,27 +102,71 @@
     }
    ],
    "filters": [
-    "ema:50",
-    "ema:100",
-    "ema:200",
-    "d:50",
-    "d:200",
-    "reg:trend",
-    "reg:notpanic",
-    "reg:side",
-    "vol:1",
-    "vol:1.5",
-    "vol:2"
+    "atrlo:0.3",
+    "atrlo:0.5",
+    "atrlo:0.7",
+    "atrhi:0.3",
+    "atrhi:0.5",
+    "atrhi:0.7",
+    "rsi:45",
+    "rsi:50",
+    "rsi:55",
+    "rsi:60",
+    "rsix:60",
+    "rsix:70",
+    "rsix:80",
+    "macd:sig",
+    "macd:zero",
+    "fng:30",
+    "fng:45",
+    "fng:60",
+    "fngg:40",
+    "fngg:55",
+    "fngg:70"
    ]
   },
-  "n_combos": 132,
+  "n_combos": 252,
   "n_baselines": 12,
-  "n_tests": 144,
-  "started": "2026-11-16T21:40:17+00:00",
+  "n_tests": 264,
+  "started": "2026-11-18T21:39:44+00:00",
   "status": "hotovo",
   "seconds": 3,
   "n_basic": 2,
-  "n_passed": 0
+  "n_passed": 2
  },
- "passed": []
+ "passed": [
+  {
+   "mexc_fut_oos_r": 0.993,
+   "mexc_fut_oos_t": 2.102,
+   "mexc_fut_hold_r": 0.386,
+   "mexc_fut_hold_t": 1.962,
+   "tf": "12h",
+   "params": "boll_break:20/2.0+macd:zero",
+   "exit": "opp",
+   "dir": "long",
+   "base_oos_r": 0.758,
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční",
+    "panika"
+   ]
+  },
+  {
+   "mexc_fut_oos_r": 0.149,
+   "mexc_fut_oos_t": 2.092,
+   "mexc_fut_hold_r": 0.195,
+   "mexc_fut_hold_t": 2.488,
+   "tf": "12h",
+   "params": "macd:5/35/5/signal+macd:sig",
+   "exit": "opp_stop",
+   "dir": "short",
+   "base_oos_r": 0.028,
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ]
+  }
+ ]
 }

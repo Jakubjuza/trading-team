@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18T08:53:41+00:00",
+ "updated": "2026-11-18T21:39:47+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -1889,12 +1889,17 @@
     "boční",
     "panika"
    ],
-   "status": "papír",
+   "status": "vyřazeno",
    "history": [
     {
      "date": "2026-11-08",
      "status": "papír",
      "reason": "combo_study: díl 4, OOS +0.68 R (t +2.5), HOLDOUT +0.42 R (t +1.7), spouštěč sám OOS +0.46 R"
+    },
+    {
+     "date": "2026-11-18",
+     "status": "vyřazeno",
+     "reason": "combo_study: nahrazeno silnější kombinací (min t 2.09 > 1.74)"
     }
    ]
   },
@@ -2124,12 +2129,130 @@
     "medvědí",
     "boční"
    ],
-   "status": "papír",
+   "status": "vyřazeno",
    "history": [
     {
      "date": "2026-11-15",
      "status": "papír",
      "reason": "combo_study: díl 8, OOS +0.17 R (t +2.2), HOLDOUT +0.16 R (t +1.9), spouštěč sám OOS +0.10 R"
+    },
+    {
+     "date": "2026-11-18",
+     "status": "vyřazeno",
+     "reason": "combo_study: nahrazeno silnější kombinací (min t 1.96 > 1.85)"
+    }
+   ]
+  },
+  {
+   "family": "combo",
+   "params": "macd:5/35/5/signal+macd:sig",
+   "tf": "12h",
+   "filter": "none",
+   "exit": "opp_stop",
+   "dir": "short",
+   "id": "combo|macd:5/35/5/signal+macd:sig|12h|none|opp_stop|short",
+   "label": "Kombinace: MACD 5 35 5 signal + MACD sig · 12H short",
+   "added": "2026-11-18",
+   "source": "combo_study díl 10 2026-11-18",
+   "backtest": {
+    "is_r": 0.06,
+    "oos_r": 0.149,
+    "hold_r": 0.195,
+    "oos_t": 2.092,
+    "hold_t": 2.488,
+    "is_n": 535.0,
+    "oos_n": 217.0,
+    "hold_n": 219.0,
+    "maxdd_r": 33.6,
+    "per_month": 11.0,
+    "trigger_oos_r": 0.028
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 313,
+     "mean_r": 0.065
+    },
+    "medvědí": {
+     "n": 312,
+     "mean_r": 0.183
+    },
+    "boční": {
+     "n": 167,
+     "mean_r": 0.255
+    },
+    "panika": {
+     "n": 126,
+     "mean_r": -0.04
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-11-18",
+     "status": "papír",
+     "reason": "combo_study: díl 10, OOS +0.15 R (t +2.1), HOLDOUT +0.20 R (t +2.5), spouštěč sám OOS +0.03 R"
+    }
+   ]
+  },
+  {
+   "family": "combo",
+   "params": "boll_break:20/2.0+macd:zero",
+   "tf": "12h",
+   "filter": "none",
+   "exit": "opp",
+   "dir": "long",
+   "id": "combo|boll_break:20/2.0+macd:zero|12h|none|opp|long",
+   "label": "Kombinace: Bollinger průraz 20 2.0 + MACD zero · 12H long",
+   "added": "2026-11-18",
+   "source": "combo_study díl 10 2026-11-18",
+   "backtest": {
+    "is_r": 1.123,
+    "oos_r": 0.993,
+    "hold_r": 0.386,
+    "oos_t": 2.102,
+    "hold_t": 1.962,
+    "is_n": 378.0,
+    "oos_n": 120.0,
+    "hold_n": 98.0,
+    "maxdd_r": 24.0,
+    "per_month": 6.7,
+    "trigger_oos_r": 0.758
+   },
+   "regime_stats": {
+    "býčí": {
+     "n": 227,
+     "mean_r": 1.266
+    },
+    "medvědí": {
+     "n": 158,
+     "mean_r": 0.58
+    },
+    "boční": {
+     "n": 125,
+     "mean_r": 0.682
+    },
+    "panika": {
+     "n": 40,
+     "mean_r": 0.823
+    }
+   },
+   "regimes": [
+    "býčí",
+    "medvědí",
+    "boční",
+    "panika"
+   ],
+   "status": "papír",
+   "history": [
+    {
+     "date": "2026-11-18",
+     "status": "papír",
+     "reason": "combo_study: díl 10, OOS +0.99 R (t +2.1), HOLDOUT +0.39 R (t +2.0), spouštěč sám OOS +0.76 R"
     }
    ]
   }

@@ -58,10 +58,12 @@ Pravidla:
   `reports/kronos.md` – 6. 11. 2026. Podnět: virální příspěvek (getintoai); model [arXiv 2508.02739](https://arxiv.org/abs/2508.02739).
 
 <!-- combo-study:start -->
-- **Kombinace: filtr F&G (fng) jako potvrzení na 2H** – průměrně zhoršil OOS spouštěčů o -0,22 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-16.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 6H** – průměrně zhoršil OOS spouštěčů o -0,18 R (n spouštěčů 12, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-16.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,17 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-16.
-- **Kombinace: filtr RSI (rsix) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,05 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-16.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 12H** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 10, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-18.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 2H** – průměrně zhoršil OOS spouštěčů o -0,22 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-18.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 6H** – průměrně zhoršil OOS spouštěčů o -0,18 R (n spouštěčů 12, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-18.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,17 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-18.
+- **Kombinace: filtr RSI (rsix) jako potvrzení na 12H** – průměrně zhoršil OOS spouštěčů o -0,06 R (n spouštěčů 10, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-18.
+- **Kombinace: filtr RSI (rsix) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,05 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-18.
 <!-- combo-study:end -->
 
 ## 🧪 Vnější důkazy (u nás neověřeno)
