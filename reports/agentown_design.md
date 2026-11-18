@@ -346,3 +346,27 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Srovnání s BTC drž (benchmark) na kartách účtů – v kolekci `accounts` není křivka BTC; musela by se přidat do exportu, ne dopočítávat na stránce.
 - Stopa akcí AI / stavy „přemýšlí“ – Agentown nemá živé AI akce, výzkum běží v dávkách; Kronika už ukazuje proběhlé kroky.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking – důvody beze změny (viz 5.–16. 11.).
+
+## 2026-11-18 (denní běh designéra)
+
+**Nalezené prvky**
+1. Bodový graf riziko × výnos („Risk/Reward Analysis“): každá položka jako bod, srovnávací linie, rozbalení po jednotlivých položkách – [CapIntel: Core 4.0 – Graphs Overview](https://capintel.zendesk.com/hc/en-ca/articles/31276242121747-Core-4-0-Graphs-Overview) (bez data).
+2. Volba typu grafu podle otázky: bodový graf pro vztah dvou veličin, KPI karta s rozdílem proti období, filtry a časové výběry nad obsahem – [Setproduct: Dashboard UI design (6/2026)](https://www.setproduct.com/blog/dashboard-ui-design).
+3. Porovnání dvou portfolií posuvníkem, který dělí jeden graf na dvě nezávislé poloviny; nejlíp u grafů s pevnou osou (propady, teplotní mapa) – [Portfolio Charts: Two charts are better than one (7/2025)](https://portfoliocharts.com/2025/07/02/two-charts-are-better-than-one/).
+4. Profil obchodního bota: souhrn ROI / P&L, křivka zisku s přepínačem All / 30 d / 7 d a popiskem na najetí – [Phemex: Trading bot profile page (1/2026)](https://phemex.com/help-center/trading-bot-profile-page).
+5. Žebříček s časovými přepínači bez přenačtení a minulým obdobím dostupným přes adresu – [Bugcrowd: Redesigned leaderboard (8/2025)](https://docs.bugcrowd.com/changelog/researchers/new-leaderboard/).
+
+**Zapojeno – 🎯 Mapa výnos × propad v Laboratoři** (nová sekce pod souhrnem, nad „Rok po roku“)
+- Každý účet Laboratoře (●, mint/korál podle znaménka) a jádra města (◆ zlatě) jako bod: vodorovně max. propad (`max_dd_pct`), svisle čistý výnos v % vkladu (`net_pct`, záložně `net / deposited`) na symetrické log stupnici (zpětné testy mají −89 % až +583 000 %). Řídí se přepínačem Zpětný test / Papírově; v Papírově jsou účty pod 30 obchody duté (orientační) a účty bez obchodu se nekreslí (počet v legendě).
+- Hranice výnos × propad (čárkovaně, body s bílým kroužkem): účty, které žádný jiný nepřekonal zároveň ve výnosu i v propadu; jen porovnání dvou polí, nic dopočítaného. Nový pojem „Hranice výnos × propad“ ve slovníku vysvětlivek. Dnes v zpětném testu 8 z 35 (začíná Věží Donchian s nejmenším propadem), papírově 1 z 14.
+- Najetí myší / klepnutí na bod nebo fokus grafu + šipky (Home/End) ukáže řádek s názvem, výnosem, propadem, počtem obchodů, začátkem a štítkem „na hranici“ (`aria-live`); tlačítko „Karta účtu ↓“ (nebo Enter) posune na kartu účtu a krátce ji zvýrazní. Karty dostaly `data-acc`. Graf se kreslí podle šířky (na mobilu kratší popisky os a krok 25 %).
+- Poctivá poznámka pod grafem: zpětné testy začínají v různých letech (2016–2019) a výnos není přepočtený na rok, proto víc řekne propad a poloha vůči hranici; test Laboratoře je optimistický.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu (jen zablokované fonty), bez vodorovného posunu; 35 bodů / 8 na hranici, Papírově 14 bodů / 13 dutých, šipky přepínají detail, „Karta účtu ↓“ zaostří správnou kartu. Opraveno při kontrole: popisek „lepší“ zakrýval bod v Papírově (přesunut do hlavičky grafu), na 375 px se slévaly popisky −80 % a −100 %. Publikováno jako „Design 18. 11.“ (verze 37).
+
+**Odloženo**
+- Porovnání posuvníkem (bod 3) – porovnání strategií vedle sebe už je; přidat by se dalo k pásu „Pod vodou“, až bude přesná křivka z obchodů.
+- Přepínač období All / 30 d / 7 d (body 4–5) – stejný důvod jako výběr období 12. 11. (jen `years` a řídká `curve`).
+- Výnos přepočtený na rok (CAGR) na ose – musel by se dopočítávat na stránce; lepší přidat pole do exportu `research/city_accounts.py`.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC – důvody beze změny (viz 5.–17. 11.).
