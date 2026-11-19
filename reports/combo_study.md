@@ -2,15 +2,10 @@
 
 Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných rodin nebo kontextu. Metoda, filtry a pravidla jsou stanoveny předem v hlavičce `research/experiments/combo_study.py`; data, náklady (MEXC 0,05 %/stranu), simulace a dělení IS (do 12/2023) / OOS (1/2024–6/2025) / HOLDOUT (7/2025–) jsou stejné jako v atlasu. Papírově, nic nejde na skutečné peníze. Nejde o finanční poradenství.
 
-- Hotových dílů: **10**, testovaných kombinací celkem (vč. samotných spouštěčů): **2040** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
-- Poslední díl 10: **pair 12H** (skupiny volatilita, momentum, sentiment), 252 kombinací + 12 spouštěčů samotných, 3 s; základní pravidlo splnilo 2, prošlo vč. citlivosti a režimů 2.
-- Mřížka (stanovena před výpočtem): spouštěče macd 5/35/5/signal · opp · long; price_ma sma/20 · opp · long; keltner 1.5 · opp · long; boll_break 20/2.0 · opp · long; ma_cross sma/10/30/confirm · opp · long; roc 20 · opp · long; ma_cross sma/50/60/confirm · trail · short; price_ma ema/100 · trail · short; macd 5/35/5/signal · opp_stop · short; rsi_mom 50 · opp_stop · short; supertrend 10/2.0 · trail · short; boll_break 20/2.0 · trail · short × filtry atrlo:0.3, atrlo:0.5, atrlo:0.7, atrhi:0.3, atrhi:0.5, atrhi:0.7, rsi:45, rsi:50, rsi:55, rsi:60, rsix:60, rsix:70, rsix:80, macd:sig, macd:zero, fng:30, fng:45, fng:60, fngg:40, fngg:55, fngg:70.
-- Další díl: **pair 1D** (skupiny trend, režim, objem).
-
-## Změny v registru v tomto běhu
-
-- 🆕 Kombinace: MACD 5 35 5 signal + MACD sig · 12H short → papír (combo_study: díl 10, OOS +0.15 R (t +2.1), HOLDOUT +0.20 R (t +2.5), spouštěč sám OOS +0.03 R); režimy: býčí, medvědí, boční; nahradila Kombinace: Bollinger průraz 50 2.5 + ATR pctl ≥ 0,3 · 2H long
-- 🆕 Kombinace: Bollinger průraz 20 2.0 + MACD zero · 12H long → papír (combo_study: díl 10, OOS +0.99 R (t +2.1), HOLDOUT +0.39 R (t +2.0), spouštěč sám OOS +0.76 R); režimy: býčí, medvědí, boční, panika; nahradila Kombinace: MACD 19 39 9 signal + RSI ≥ 50 · 6H short
+- Hotových dílů: **11**, testovaných kombinací celkem (vč. samotných spouštěčů): **2148** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
+- Poslední díl 11: **pair 1D** (skupiny trend, režim, objem), 99 kombinací + 9 spouštěčů samotných, 2 s; základní pravidlo splnilo 0, prošlo vč. citlivosti a režimů 0.
+- Mřížka (stanovena před výpočtem): spouštěče macd 12/26/9/signal · opp · long; roc 10 · opp · long; price_ma ema/10 · opp · long; donchian 20 · target · long; rsi_mom 55 · opp · long; ma_cross sma/5/30/confirm · target · long; rsi_mom 55 · opp_stop · short; price_ma sma/50 · opp_stop · short; macd 19/39/9/signal · opp_stop · short × filtry ema:50, ema:100, ema:200, d:50, d:200, reg:trend, reg:notpanic, reg:side, vol:1, vol:1.5, vol:2.
+- Další díl: **pair 1D** (skupiny volatilita, momentum, sentiment).
 
 ## Combo strategie v registru (10 aktivních, limit 10)
 
@@ -78,6 +73,17 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 | 12H | vol:1 | 10 | +0,08 | +0,14 | 83% | 0 |
 | 12H | vol:1.5 | 10 | +0,22 | +0,20 | 58% | 0 |
 | 12H | vol:2 | 10 | +0,41 | +0,36 | 50% | 0 |
+| 1D | d:200 | 8 | +0,10 | -0,19 | 11% | 0 |
+| 1D | d:50 | 8 | +0,00 | -0,13 | 11% | 0 |
+| 1D | ema:100 | 8 | +0,02 | -0,17 | 11% | 0 |
+| 1D | ema:200 | 8 | +0,11 | -0,19 | 0% | 0 |
+| 1D | ema:50 | 8 | +0,00 | -0,07 | 33% | 0 |
+| 1D | reg:notpanic | 8 | -0,00 | +0,18 | 100% | 0 |
+| 1D | reg:side | 8 | +0,09 | +0,02 | 56% | 0 |
+| 1D | reg:trend | 8 | +0,02 | -0,01 | 44% | 0 |
+| 1D | vol:1 | 8 | +0,12 | +0,17 | 56% | 0 |
+| 1D | vol:1.5 | 8 | +0,14 | +0,49 | 78% | 0 |
+| 1D | vol:2 | 8 | +0,22 | +1,16 | 89% | 0 |
 | 1H | atrhi:0.3 | 9 | +0,00 | +0,02 | 67% | 1 |
 | 1H | atrhi:0.5 | 9 | +0,04 | +0,03 | 58% | 1 |
 | 1H | atrhi:0.7 | 9 | +0,05 | +0,12 | 67% | 2 |
@@ -209,13 +215,13 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 
 ## Proč neprošly (nejčastější důvody)
 
-- pod p95 náhody: 1702×
-- OOS t < 2: 1429×
-- neporáží spouštěč o 0,05 R: 1321×
-- HOLDOUT ≤ 0: 575×
-- OOS ≤ 0: 353×
-- málo obchodů: 176×
-- IS ≤ 0: 143×
+- pod p95 náhody: 1793×
+- OOS t < 2: 1517×
+- neporáží spouštěč o 0,05 R: 1385×
+- HOLDOUT ≤ 0: 619×
+- OOS ≤ 0: 383×
+- málo obchodů: 218×
+- IS ≤ 0: 155×
 - reg: bez zlepšení v IS: 5×
 
 ## Plán studie
