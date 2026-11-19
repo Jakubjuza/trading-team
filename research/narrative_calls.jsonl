@@ -22,3 +22,4 @@
 {"type": "eval", "call_t": "2026-11-10T13:03:10.157092+00:00", "horizon_d": 7, "r_pct_dir": 12.55}
 {"type": "call", "t": "2026-11-17T16:16:49.676381+00:00", "dir": -1, "stage": 1, "p": 64172.5, "zone": "medvědí shoda", "net": -0.49, "trend": "sílí medvědí"}
 {"type": "eval", "call_t": "2026-11-10T16:04:53.740348+00:00", "horizon_d": 7, "r_pct_dir": 12.38}
+{"type": "eval", "call_t": "2026-11-12T11:22:11.285017+00:00", "horizon_d": 7, "r_pct_dir": 13.11}
