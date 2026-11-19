@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-19T00:55:13+00:00",
+ "updated": "2026-11-19T01:51:12+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -19,24 +19,24 @@
      "strategy": "donchian_1d+mtf",
      "since": "2026-10-30T07:00:00+00:00",
      "entry": 97.37,
-     "now": 73.65,
+     "now": 73.68,
      "stop": 97.37,
      "stop_orig": 98.99521429,
      "targets": [
       79.041,
       62.442
      ],
-     "r_now": 12.936,
+     "r_now": 12.927,
      "r_loss": 5.639,
      "r_gain": 16.385,
-     "pct_now": 24.36,
+     "pct_now": 24.33,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "vstup z nižšího timeframu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 646.8,
+     "usd_now": 646.35,
      "usd_loss": 281.95,
      "usd_gain": 819.25
     },
@@ -50,23 +50,23 @@
      "strategy": "donchian_1d",
      "since": "2026-11-05T00:00:00+00:00",
      "entry": 89.35,
-     "now": 73.65,
+     "now": 73.68,
      "stop": 89.35,
      "stop_orig": 98.7205,
      "targets": [
       70.609,
       51.868
      ],
-     "r_now": 1.838,
+     "r_now": 1.836,
      "r_loss": 1.0,
      "r_gain": 3.0,
-     "pct_now": 17.57,
+     "pct_now": 17.54,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 91.9,
+     "usd_now": 91.8,
      "usd_loss": 50.0,
      "usd_gain": 150.0
     },
@@ -80,24 +80,24 @@
      "strategy": "donchian_1d+mtf",
      "since": "2026-11-07T03:00:00+00:00",
      "entry": 90.0,
-     "now": 73.65,
+     "now": 73.68,
      "stop": 90.0,
      "stop_orig": 91.35,
      "targets": [
       70.609,
       51.868
      ],
-     "r_now": 13.237,
+     "r_now": 13.226,
      "r_loss": 7.182,
      "r_gain": 21.305,
-     "pct_now": 18.17,
+     "pct_now": 18.13,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "vstup z nižšího timeframu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 661.85,
+     "usd_now": 661.3,
      "usd_loss": 359.1,
      "usd_gain": 1065.25
     }
@@ -117,7 +117,7 @@
      "strategy": "donchian_1d",
      "since": "2026-11-06T00:01:15.440396+00:00",
      "entry": 0.181024,
-     "now": 0.151394,
+     "now": 0.151968,
      "stop": 0.17009136,
      "stop_orig": 0.20398255,
      "targets": [],
@@ -128,16 +128,16 @@
       0.15915871,
       0.14822607
      ],
-     "r_now": 1.153,
+     "r_now": 1.103,
      "r_loss": -0.476,
      "r_gain": null,
-     "pct_now": 16.37,
+     "pct_now": 16.05,
      "demo": false,
      "notes": [
       "4 kus(y) po 0.5 R",
       "bez pevného cíle – trailing 3 ATR"
      ],
-     "usd_now": 57.65,
+     "usd_now": 55.15,
      "usd_loss": -23.8,
      "usd_gain": null
     },
@@ -151,7 +151,7 @@
      "strategy": "pullback_1d",
      "since": "2026-11-06T00:01:15.440506+00:00",
      "entry": 0.07108,
-     "now": 0.05878,
+     "now": 0.05906,
      "stop": 0.06756214,
      "stop_orig": 0.07888179,
      "targets": [],
@@ -162,16 +162,16 @@
       0.06404429,
       0.06052643
      ],
-     "r_now": 1.8,
+     "r_now": 1.729,
      "r_loss": -0.451,
      "r_gain": null,
-     "pct_now": 17.3,
+     "pct_now": 16.91,
      "demo": false,
      "notes": [
       "4 kus(y) po 0.5 R",
       "bez pevného cíle – trailing 3 ATR"
      ],
-     "usd_now": 90.0,
+     "usd_now": 86.45,
      "usd_loss": -22.55,
      "usd_gain": null
     }
@@ -191,18 +191,18 @@
      "strategy": "Supertrend 10 3.0 · 6H short",
      "since": "2026-11-14T12:00:00+00:00",
      "entry": 7.488,
-     "now": 7.033,
+     "now": 7.038,
      "stop": 8.09491801,
      "targets": [
       6.58238064
      ],
-     "r_now": 0.74,
+     "r_now": 0.732,
      "r_loss": -1.003,
      "r_gain": 1.497,
-     "pct_now": 5.98,
+     "pct_now": 5.91,
      "demo": false,
      "notes": [],
-     "usd_now": 37.0,
+     "usd_now": 36.6,
      "usd_loss": -50.15,
      "usd_gain": 74.85
     },
@@ -216,18 +216,18 @@
      "strategy": "Bollinger průraz 50 2.5 · 4H short",
      "since": "2026-11-14T20:00:00+00:00",
      "entry": 64156.1,
-     "now": 63070.6,
+     "now": 63196.2,
      "stop": 66798.4096129,
      "targets": [
       60189.95356524
      ],
-     "r_now": 0.386,
+     "r_now": 0.339,
      "r_loss": -1.0,
      "r_gain": 1.5,
-     "pct_now": 1.59,
+     "pct_now": 1.4,
      "demo": false,
      "notes": [],
-     "usd_now": 19.3,
+     "usd_now": 16.95,
      "usd_loss": -50.0,
      "usd_gain": 75.0
     },
@@ -241,20 +241,20 @@
      "strategy": "Sweep & reclaim 55 · 4H long · boční",
      "since": "2026-11-05T20:00:00+00:00",
      "entry": 1.2072,
-     "now": 0.9676,
+     "now": 0.9682,
      "stop": null,
      "targets": [],
-     "r_now": -4.547,
+     "r_now": -4.535,
      "r_loss": null,
      "r_gain": null,
-     "pct_now": -19.95,
+     "pct_now": -19.9,
      "demo": false,
      "notes": [
       "výstup i opačným signálem",
       "bez pevného stopu",
       "bez pevného cíle"
      ],
-     "usd_now": -227.35,
+     "usd_now": -226.75,
      "usd_loss": null,
      "usd_gain": null
     }
@@ -262,7 +262,7 @@
   }
  ],
  "ensemble": {
-  "value": 4826.98,
+  "value": 4827.03,
   "start": 5000.0,
   "pct": -3.46,
   "cash": 4755.03,
@@ -271,22 +271,22 @@
    {
     "coin": "AVAX",
     "qty": 10.21762426,
-    "now": 7.042,
+    "now": 7.047,
     "avg": null,
-    "value": 71.95,
+    "value": 72.0,
     "pct": null
    }
   ]
  },
  "prices": {
-  "BTC": 63111.2,
-  "ETH": 1776.86,
-  "SOL": 73.65,
-  "XRP": 0.9687,
-  "ADA": 0.151394,
-  "LINK": 9.10012,
-  "AVAX": 7.042,
-  "DOGE": 0.05878
+  "BTC": 63216.3,
+  "ETH": 1784.68,
+  "SOL": 73.68,
+  "XRP": 0.96952,
+  "ADA": 0.151968,
+  "LINK": 9.11811,
+  "AVAX": 7.047,
+  "DOGE": 0.05906
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
