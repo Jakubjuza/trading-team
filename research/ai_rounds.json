@@ -235,6 +235,36 @@
    },
    "added": "ai10",
    "reason": "přidáno"
+  },
+  {
+   "n": 11,
+   "date": "2026-11-19",
+   "focus": "vše",
+   "seed": 20261119,
+   "tested": 4388,
+   "top_oos_ok": 12,
+   "random_oos_ok": 0,
+   "candidates": 2,
+   "best": "LONG když od EMA200 (ATR) > 70. percentil (2.54) a stažení ATR14/200 > 40. percentil (0.85) a hodina UTC > 50. percentil (12.00) · stop 3,0 ATR · držení 32 h",
+   "best_splits": {
+    "is": {
+     "n": 3059,
+     "mean_r": 0.191,
+     "t": 7.07
+    },
+    "oos": {
+     "n": 986,
+     "mean_r": 0.118,
+     "t": 2.83
+    },
+    "hold": {
+     "n": 827,
+     "mean_r": 0.057,
+     "t": 1.1
+    }
+   },
+   "added": "ai11",
+   "reason": "přidáno"
   }
  ],
  "registry": [
@@ -501,6 +531,52 @@
      "n": 1137,
      "mean_r": 0.047,
      "t": 1.59
+    }
+   }
+  },
+  {
+   "id": "ai11",
+   "name": "AI #11 · vše",
+   "round": 11,
+   "focus": "vše",
+   "added": "2026-11-19",
+   "genome": {
+    "conds": [
+     [
+      "ema200",
+      ">",
+      0.7
+     ],
+     [
+      "comp",
+      ">",
+      0.4
+     ],
+     [
+      "hour",
+      ">",
+      0.5
+     ]
+    ],
+    "dir": 1,
+    "hold": 32,
+    "stop": 3.0
+   },
+   "splits_at_add": {
+    "is": {
+     "n": 3059,
+     "mean_r": 0.191,
+     "t": 7.07
+    },
+    "oos": {
+     "n": 986,
+     "mean_r": 0.118,
+     "t": 2.83
+    },
+    "hold": {
+     "n": 827,
+     "mean_r": 0.057,
+     "t": 1.1
     }
    }
   }
