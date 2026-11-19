@@ -370,3 +370,26 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Přepínač období All / 30 d / 7 d (body 4–5) – stejný důvod jako výběr období 12. 11. (jen `years` a řídká `curve`).
 - Výnos přepočtený na rok (CAGR) na ose – musel by se dopočítávat na stránce; lepší přidat pole do exportu `research/city_accounts.py`.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC – důvody beze změny (viz 5.–17. 11.).
+
+## 2026-11-19 (denní běh designéra)
+
+**Nalezené prvky**
+1. Záložky, které se nevejdou: udržet je v jedné řadě a raději je posouvat (flex, `overflow-x: auto`, přichycení `scroll-snap` proximity, přechody na okrajích, posunout vybranou záložku do pohledu), nebo co se nevejde, dát do tlačítka „Více“ mimo řadu záložek; vybraný stav neoznačovat jen barvou – [Chrome for Developers: Modern web guidance – Tabs](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/tabs.md.txt) (bez data).
+2. Nápověda, že jde posouvat: u vodorovných pásů záložek/čipů přechod (maska) jen na té straně, kde ještě něco je; `scroll-padding` o šířku přechodu; když je posuvník skrytý, je nápověda povinná (s náhradním řešením bez animací řízených posunem) – [Chrome for Developers: Scrollability affordance hints](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-atoms/scrollability-affordance-hints.md.txt) (bez data), [shadcn/ui: scroll-fade](https://ui.shadcn.com/docs/utils/scroll-fade) (bez data).
+3. Vzor „Priority+“: položky navigace, které se nevejdou, se přesunou do nabídky „Více“ na konci a vrátí se, když je místo; měří se dostupná šířka, aktivní stav se přenáší do nabídky, některé položky lze připnout – [Tabler: Nav overflow (v1.7)](https://docs.tabler.io/ui/components/nav-overflow), [priority-plus (README)](https://cdn.jsdelivr.net/npm/priority-plus@1.5.1/README.md).
+4. Stavové „semafory“ kvality a čerstvosti dat a „naposledy / příště aktualizováno“ u přehledů – [Robert Sahlin: Data quality traffic lights](https://robertsahlin.substack.com/p/data-quality-traffic-lights), [Port roadmap: Last updated / Next update na dashboardech](https://roadmap.port.io/ideas/p/show-data-pull-status-last-updated-next-update-on-built-in-dora-dashboards) (obsah neověřen, jen z výsledků hledání).
+
+**Zjištěno při kontrole**: s 10 položkami (Trade City … Přehled) se horní lišta na desktopu nevešla – na 1280 px přetékala „Přehled“ přes souhrn „25 aktivních strategií“ a souhrn byl useknutý (lišta neuměla zúžit pás čtvrtí pod obsah).
+
+**Zapojeno – 🧭 horní lišta čtvrtí podle šířky** (oprava přetékání + bod 1–3)
+- Desktop (od 761 px), Priority+: když se čtvrti nevejdou, lišta nejdřív zúží tlačítka Prohlídka / Pozice / Hledat na ikony a skryje prostřední údaj souhrnu; teprve pak schovává čtvrti zprava a na konec pásu dá „Více ▾“ s počtem schovaných. Trade City je připnutá. Dnes: 1920 px vše, 1600 px 2 ve „Více“, 1280 px 3, 1000 px 6, 800 px 9.
+- Nabídka „Další čtvrti“ (sklo jako zbytek lišty, barevná tečka podle čtvrti): šipky ↑↓ / Home / End, Esc zavře a vrátí fokus na „Více“, klepnutí mimo zavře. Položka jen klikne na původní tlačítko čtvrti, takže všechny funkce, id a otevírání čtvrtí zůstávají beze změny. Přepočet při změně šířky (ResizeObserver) a po načtení písem.
+- Mobil (do 760 px): pás čtvrtí se dál posouvá, nově s přichycením k záložkám a přechodem jen na straně, kde ještě něco je (dřív pevný přechod vpravo i na konci pásu); záložka, na kterou přejde fokus, se posune do pohledu.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu; navíc šířky 800–1920 px: pás čtvrtí se nikdy nepřekrývá se souhrnem, „Více“ → Esc vrátí fokus, „Více“ → Likvidita otevře čtvrť Likvidita. Opraveno při kontrole: na 1600 px bylo ve „Více“ 6 čtvrtí, protože tlačítka měla ještě popisky (proto nejdřív zúžení tlačítek). Publikováno jako „Design 19. 11.“ (verze 38).
+
+**Odloženo**
+- Semafor čerstvosti pro všechny kolekce (bod 4) – kolekce `strategies` stále nemá pole `updated` (viz 8. 11.); štítky čerstvosti už jsou v Downtownu a Kronice.
+- Spodní navigace na mobilu – posuvný pás s nápovědou zatím stačí; důvody beze změny (viz 11. 11.).
+- Avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR – důvody beze změny (viz 5.–18. 11.).
