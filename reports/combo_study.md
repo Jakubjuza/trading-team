@@ -2,10 +2,10 @@
 
 Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných rodin nebo kontextu. Metoda, filtry a pravidla jsou stanoveny předem v hlavičce `research/experiments/combo_study.py`; data, náklady (MEXC 0,05 %/stranu), simulace a dělení IS (do 12/2023) / OOS (1/2024–6/2025) / HOLDOUT (7/2025–) jsou stejné jako v atlasu. Papírově, nic nejde na skutečné peníze. Nejde o finanční poradenství.
 
-- Hotových dílů: **11**, testovaných kombinací celkem (vč. samotných spouštěčů): **2148** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
-- Poslední díl 11: **pair 1D** (skupiny trend, režim, objem), 99 kombinací + 9 spouštěčů samotných, 2 s; základní pravidlo splnilo 0, prošlo vč. citlivosti a režimů 0.
-- Mřížka (stanovena před výpočtem): spouštěče macd 12/26/9/signal · opp · long; roc 10 · opp · long; price_ma ema/10 · opp · long; donchian 20 · target · long; rsi_mom 55 · opp · long; ma_cross sma/5/30/confirm · target · long; rsi_mom 55 · opp_stop · short; price_ma sma/50 · opp_stop · short; macd 19/39/9/signal · opp_stop · short × filtry ema:50, ema:100, ema:200, d:50, d:200, reg:trend, reg:notpanic, reg:side, vol:1, vol:1.5, vol:2.
-- Další díl: **pair 1D** (skupiny volatilita, momentum, sentiment).
+- Hotových dílů: **12**, testovaných kombinací celkem (vč. samotných spouštěčů): **2346** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
+- Poslední díl 12: **pair 1D** (skupiny volatilita, momentum, sentiment), 189 kombinací + 9 spouštěčů samotných, 3 s; základní pravidlo splnilo 1, prošlo vč. citlivosti a režimů 1.
+- Mřížka (stanovena před výpočtem): spouštěče macd 12/26/9/signal · opp · long; roc 10 · opp · long; price_ma ema/10 · opp · long; donchian 20 · target · long; rsi_mom 55 · opp · long; ma_cross sma/5/30/confirm · target · long; rsi_mom 55 · opp_stop · short; price_ma sma/50 · opp_stop · short; macd 19/39/9/signal · opp_stop · short × filtry atrlo:0.3, atrlo:0.5, atrlo:0.7, atrhi:0.3, atrhi:0.5, atrhi:0.7, rsi:45, rsi:50, rsi:55, rsi:60, rsix:60, rsix:70, rsix:80, macd:sig, macd:zero, fng:30, fng:45, fng:60, fngg:40, fngg:55, fngg:70.
+- Další díl: **deep 1H**.
 
 ## Combo strategie v registru (10 aktivních, limit 10)
 
@@ -73,14 +73,35 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 | 12H | vol:1 | 10 | +0,08 | +0,14 | 83% | 0 |
 | 12H | vol:1.5 | 10 | +0,22 | +0,20 | 58% | 0 |
 | 12H | vol:2 | 10 | +0,41 | +0,36 | 50% | 0 |
+| 1D | atrhi:0.3 | 8 | -0,08 | -0,11 | 22% | 0 |
+| 1D | atrhi:0.5 | 8 | -0,23 | -0,23 | 22% | 0 |
+| 1D | atrhi:0.7 | 8 | -0,19 | -0,38 | 11% | 0 |
+| 1D | atrlo:0.3 | 8 | +0,11 | +0,22 | 67% | 0 |
+| 1D | atrlo:0.5 | 8 | +0,11 | +0,22 | 56% | 0 |
+| 1D | atrlo:0.7 | 8 | +0,04 | +0,16 | 89% | 0 |
 | 1D | d:200 | 8 | +0,10 | -0,19 | 11% | 0 |
 | 1D | d:50 | 8 | +0,00 | -0,13 | 11% | 0 |
 | 1D | ema:100 | 8 | +0,02 | -0,17 | 11% | 0 |
 | 1D | ema:200 | 8 | +0,11 | -0,19 | 0% | 0 |
 | 1D | ema:50 | 8 | +0,00 | -0,07 | 33% | 0 |
+| 1D | fng:30 | 8 | -0,27 | -0,28 | 44% | 0 |
+| 1D | fng:45 | 8 | -0,16 | -0,21 | 44% | 0 |
+| 1D | fng:60 | 8 | -0,09 | -0,13 | 44% | 0 |
+| 1D | fngg:40 | 8 | +0,13 | -0,01 | 44% | 1 |
+| 1D | fngg:55 | 8 | +0,12 | +0,05 | 56% | 0 |
+| 1D | fngg:70 | 8 | +0,28 | +0,18 | 56% | 0 |
+| 1D | macd:sig | 8 | +0,04 | -0,01 | 56% | 0 |
+| 1D | macd:zero | 8 | -0,03 | -0,03 | 44% | 0 |
 | 1D | reg:notpanic | 8 | -0,00 | +0,18 | 100% | 0 |
 | 1D | reg:side | 8 | +0,09 | +0,02 | 56% | 0 |
 | 1D | reg:trend | 8 | +0,02 | -0,01 | 44% | 0 |
+| 1D | rsi:45 | 8 | +0,05 | -0,00 | 11% | 0 |
+| 1D | rsi:50 | 8 | +0,07 | +0,06 | 44% | 0 |
+| 1D | rsi:55 | 8 | +0,11 | +0,11 | 33% | 0 |
+| 1D | rsi:60 | 8 | +0,29 | -0,10 | 33% | 0 |
+| 1D | rsix:60 | 8 | -0,08 | +0,03 | 67% | 0 |
+| 1D | rsix:70 | 8 | -0,01 | -0,00 | 44% | 0 |
+| 1D | rsix:80 | 8 | -0,00 | -0,00 | 11% | 0 |
 | 1D | vol:1 | 8 | +0,12 | +0,17 | 56% | 0 |
 | 1D | vol:1.5 | 8 | +0,14 | +0,49 | 78% | 0 |
 | 1D | vol:2 | 8 | +0,22 | +1,16 | 89% | 0 |
@@ -215,13 +236,13 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 
 ## Proč neprošly (nejčastější důvody)
 
-- pod p95 náhody: 1793×
-- OOS t < 2: 1517×
-- neporáží spouštěč o 0,05 R: 1385×
-- HOLDOUT ≤ 0: 619×
-- OOS ≤ 0: 383×
-- málo obchodů: 218×
-- IS ≤ 0: 155×
+- pod p95 náhody: 1977×
+- OOS t < 2: 1679×
+- neporáží spouštěč o 0,05 R: 1521×
+- HOLDOUT ≤ 0: 698×
+- OOS ≤ 0: 449×
+- málo obchodů: 271×
+- IS ≤ 0: 178×
 - reg: bez zlepšení v IS: 5×
 
 ## Plán studie

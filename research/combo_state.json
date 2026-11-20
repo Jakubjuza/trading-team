@@ -1,7 +1,7 @@
 {
  "started": "2026-11-04",
- "next": 11,
- "total_tests": 2148,
+ "next": 12,
+ "total_tests": 2346,
  "parts": [
   {
    "no": 1,
@@ -1340,6 +1340,114 @@
    "seconds": 2,
    "n_basic": 0,
    "n_passed": 0
+  },
+  {
+   "no": 12,
+   "kind": "pair",
+   "tf": "1d",
+   "groups": [
+    "volatilita",
+    "momentum",
+    "sentiment"
+   ],
+   "grid": {
+    "triggers": [
+     {
+      "family": "macd",
+      "params": "12/26/9/signal",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.91
+     },
+     {
+      "family": "roc",
+      "params": "10",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.69
+     },
+     {
+      "family": "price_ma",
+      "params": "ema/10",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 5.45
+     },
+     {
+      "family": "donchian",
+      "params": "20",
+      "exit": "target",
+      "dir": "long",
+      "is_t": 5.23
+     },
+     {
+      "family": "rsi_mom",
+      "params": "55",
+      "exit": "opp",
+      "dir": "long",
+      "is_t": 4.91
+     },
+     {
+      "family": "ma_cross",
+      "params": "sma/5/30/confirm",
+      "exit": "target",
+      "dir": "long",
+      "is_t": 4.55
+     },
+     {
+      "family": "rsi_mom",
+      "params": "55",
+      "exit": "opp_stop",
+      "dir": "short",
+      "is_t": 0.75
+     },
+     {
+      "family": "price_ma",
+      "params": "sma/50",
+      "exit": "opp_stop",
+      "dir": "short",
+      "is_t": 0.42
+     },
+     {
+      "family": "macd",
+      "params": "19/39/9/signal",
+      "exit": "opp_stop",
+      "dir": "short",
+      "is_t": 0.06
+     }
+    ],
+    "filters": [
+     "atrlo:0.3",
+     "atrlo:0.5",
+     "atrlo:0.7",
+     "atrhi:0.3",
+     "atrhi:0.5",
+     "atrhi:0.7",
+     "rsi:45",
+     "rsi:50",
+     "rsi:55",
+     "rsi:60",
+     "rsix:60",
+     "rsix:70",
+     "rsix:80",
+     "macd:sig",
+     "macd:zero",
+     "fng:30",
+     "fng:45",
+     "fng:60",
+     "fngg:40",
+     "fngg:55",
+     "fngg:70"
+    ]
+   },
+   "n_combos": 189,
+   "n_baselines": 9,
+   "n_tests": 198,
+   "started": "2026-11-20T21:40:18+00:00",
+   "status": "hotovo",
+   "seconds": 3,
+   "n_basic": 1,
+   "n_passed": 1
   }
  ]
 }
