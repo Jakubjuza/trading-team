@@ -393,3 +393,25 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Semafor čerstvosti pro všechny kolekce (bod 4) – kolekce `strategies` stále nemá pole `updated` (viz 8. 11.); štítky čerstvosti už jsou v Downtownu a Kronice.
 - Spodní navigace na mobilu – posuvný pás s nápovědou zatím stačí; důvody beze změny (viz 11. 11.).
 - Avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR – důvody beze změny (viz 5.–18. 11.).
+
+## 2026-11-20 (denní běh designéra)
+
+**Nalezené prvky**
+1. Hlavička, která pozná, že je přilepená („stuck“), a změní vzhled (stín, pevné pozadí); `container-type: scroll-state` na přilepeném prvku, `overflow-anchor: none` na rodiči proti cukání, `scroll-padding-top` aspoň na výšku hlavičky, aby fokus nezajela pod ni (WCAG 2.4.11); bez podpory záložní IntersectionObserver – [Chrome for Developers: State-aware sticky headers](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-atoms/state-aware-sticky-headers.md.txt) (bez data), [modern-css.com: scroll-state() :stuck a :snapped (akt. 2. 11. 2026)](https://modern-css.com/sticky-snapped-styling-without-javascript/) (podpora jen Chrome/Edge 133+, „Limited availability“).
+2. Scrollspy / navigace po sekcích: odkazy na sekce, aktivní sekce označená `aria-current` (ne jen barvou), cílové nadpisy s `tabindex="-1"`, aby na ně po skoku přešel fokus – [Chrome for Developers: Scrollspy](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/scrollspy.md.txt) (bez data), [USWDS: In-page navigation (10/2026)](https://designsystem.digital.gov/components/in-page-navigation) (odkazy z nadpisů, nejméně 2 nadpisy), [Nord: Outline](https://nordhealth.design/raw/components/outline.md) (bez data; scrollspy uvnitř vlastního posuvného kontejneru).
+3. CSS anchor positioning pro tooltipy a popovery (`position-area`, `position-try-fallbacks`), podle článku Baseline od Firefoxu 147 (1/2026) – [buildmvpfast: CSS Anchor Positioning is Baseline (7/2026)](https://www.buildmvpfast.com/blog/css-anchor-positioning-baseline-delete-floating-ui-2026) (blog třetí strany).
+4. Bump chart: vývoj pořadí v čase, když záleží víc na pořadí než na hodnotě – [Perceptive Analytics: Bump charts (akt. 10/2025)](https://www.perceptive-analytics.com/bump-charts-when-rank-matters-more-than-value/).
+
+**Zapojeno – 📌 přilepená hlavička čtvrti** (všech 8 celostránkových čtvrtí: Žebříček, Downtown, Laboratoř, Mozek, AI Lab, Kronika, $1M Future, Likvidita)
+- Po posunu o kus dolů se hlavička čtvrti zúží na skleněnou lištu nahoře (rámeček jako horní lišta města): název čtvrti, tlačítko „↑ Nahoru“ (na mobilu jen šipka; vrátí na začátek a fokus na název) a Zavřít; „Ukázat ve městě“ zůstává na desktopu. Popisek nad názvem a štítek čerstvosti se v liště schovají, u horního okraje se hlavička vrátí do původní podoby (hystereze, aby necukala; jen když je čtvrť dost dlouhá).
+- Navigace po sekcích v liště (bod 2), když má čtvrť aspoň 2 sekce: krátké názvy z nadpisů (Laboratoř: Výnos × propad · Rok po roku · Laboratoř · Jádro města; dále AI Lab, $1M Future, Likvidita). Aktivní sekce má `aria-current="true"`, tečku a obrys (ne jen barvu), pás sekcí se k ní sám posune; klepnutí posune plynule (bez animace při `prefers-reduced-motion`) a fokus přejde na nadpis. Na mobilu pás sekcí na druhém řádku s přechodem na pravém okraji.
+- Tenký pruh průběhu čtení dole na liště (cyan → magenta) podle posunu čtvrti.
+- `scroll-padding-top` na čtvrtích, aby fokus nezajel pod lištu; `overflow-anchor: none`. Stav přilepení počítá malý skript z posunu (scroll-state queries mají jen Chrome/Edge, tak jednotné chování všude); na data nesahá.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu stránky ani čtvrtí; Laboratoř: lišta se přilepí, aktivní sekce sedí, klepnutí na „Rok po roku“ posune a zaostří nadpis, „↑ Nahoru“ vrátí na začátek a lišta se rozbalí; Žebříček a Downtown: lišta funguje bez pásu sekcí. Publikováno jako „Design 20. 11.“ (verze 39).
+
+**Odloženo**
+- Anchor positioning pro vysvětlivky (bod 3) – vysvětlivky už umístí skript spolehlivě i na starších prohlížečích; přínos jen v kódu, ne pro uživatele.
+- Bump chart pořadí v Žebříčku (bod 4) – kolekce `strategies` nemá historii pořadí; „Od minulé návštěvy“ ukazuje ▲▼ jen proti poslední návštěvě. Až bude denní snímek pořadí v exportu.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR, semafor čerstvosti pro `strategies` – důvody beze změny (viz 5.–19. 11.).
