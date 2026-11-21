@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-21T03:42:59+00:00",
+ "updated": "2026-11-21T04:38:58+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -19,23 +19,23 @@
      "strategy": "donchian_1d",
      "since": "2026-11-05T00:00:00+00:00",
      "entry": 89.35,
-     "now": 68.59,
+     "now": 66.27,
      "stop": 89.35,
      "stop_orig": 98.7205,
      "targets": [
       70.609,
       51.868
      ],
-     "r_now": 2.108,
+     "r_now": 2.232,
      "r_loss": 1.0,
      "r_gain": 3.0,
-     "pct_now": 23.23,
+     "pct_now": 25.83,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 105.4,
+     "usd_now": 111.6,
      "usd_loss": 50.0,
      "usd_gain": 150.0
     },
@@ -49,24 +49,24 @@
      "strategy": "donchian_1d+mtf",
      "since": "2026-11-07T03:00:00+00:00",
      "entry": 90.0,
-     "now": 68.59,
+     "now": 66.27,
      "stop": 90.0,
      "stop_orig": 91.35,
      "targets": [
       70.609,
       51.868
      ],
-     "r_now": 15.111,
+     "r_now": 15.971,
      "r_loss": 7.182,
      "r_gain": 21.305,
-     "pct_now": 23.79,
+     "pct_now": 26.37,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "vstup z nižšího timeframu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 755.55,
+     "usd_now": 798.55,
      "usd_loss": 359.1,
      "usd_gain": 1065.25
     }
@@ -86,7 +86,7 @@
      "strategy": "donchian_1d",
      "since": "2026-11-06T00:01:15.440396+00:00",
      "entry": 0.181024,
-     "now": 0.142277,
+     "now": 0.136101,
      "stop": 0.17009136,
      "stop_orig": 0.20398255,
      "targets": [],
@@ -97,16 +97,16 @@
       0.15915871,
       0.14822607
      ],
-     "r_now": 1.947,
+     "r_now": 2.485,
      "r_loss": -0.476,
      "r_gain": null,
-     "pct_now": 21.4,
+     "pct_now": 24.82,
      "demo": false,
      "notes": [
       "4 kus(y) po 0.5 R",
       "bez pevného cíle – trailing 3 ATR"
      ],
-     "usd_now": 97.35,
+     "usd_now": 124.25,
      "usd_loss": -23.8,
      "usd_gain": null
     },
@@ -120,7 +120,7 @@
      "strategy": "pullback_1d",
      "since": "2026-11-06T00:01:15.440506+00:00",
      "entry": 0.07108,
-     "now": 0.0543,
+     "now": 0.05203,
      "stop": 0.06490357,
      "stop_orig": 0.07888179,
      "targets": [],
@@ -131,16 +131,16 @@
       0.06404429,
       0.06052643
      ],
-     "r_now": 2.949,
+     "r_now": 3.531,
      "r_loss": 0.231,
      "r_gain": null,
-     "pct_now": 23.61,
+     "pct_now": 26.8,
      "demo": false,
      "notes": [
       "4 kus(y) po 0.5 R",
       "bez pevného cíle – trailing 3 ATR"
      ],
-     "usd_now": 147.45,
+     "usd_now": 176.55,
      "usd_loss": 11.55,
      "usd_gain": null
     }
@@ -160,19 +160,19 @@
      "strategy": "Kombinace: MACD 5 35 5 signal + MACD sig · 12H short",
      "since": "2026-11-20T12:00:00+00:00",
      "entry": 0.1431,
-     "now": 0.1422,
+     "now": 0.1363,
      "stop": 0.15356254,
      "targets": [],
-     "r_now": 0.072,
+     "r_now": 0.636,
      "r_loss": -1.0,
      "r_gain": null,
-     "pct_now": 0.53,
+     "pct_now": 4.65,
      "demo": false,
      "notes": [
       "výstup i opačným signálem",
       "bez pevného cíle"
      ],
-     "usd_now": 3.6,
+     "usd_now": 31.8,
      "usd_loss": -50.0,
      "usd_gain": null
     },
@@ -186,18 +186,18 @@
      "strategy": "Bollinger průraz 50 2.5 · 4H short",
      "since": "2026-11-20T16:00:00+00:00",
      "entry": 1607.93,
-     "now": 1620.38,
+     "now": 1572.17,
      "stop": 1699.35860087,
      "targets": [
       1470.90783645
      ],
-     "r_now": -0.154,
+     "r_now": 0.374,
      "r_loss": -1.001,
      "r_gain": 1.499,
-     "pct_now": -0.87,
+     "pct_now": 2.12,
      "demo": false,
      "notes": [],
-     "usd_now": -7.7,
+     "usd_now": 18.7,
      "usd_loss": -50.05,
      "usd_gain": 74.95
     },
@@ -211,18 +211,18 @@
      "strategy": "Bollinger průraz 50 2.5 · 4H short",
      "since": "2026-11-20T16:00:00+00:00",
      "entry": 0.8949,
-     "now": 0.9025,
+     "now": 0.8816,
      "stop": 0.94269333,
      "targets": [
       0.82345201
      ],
-     "r_now": -0.178,
+     "r_now": 0.26,
      "r_loss": -1.002,
      "r_gain": 1.498,
-     "pct_now": -0.95,
+     "pct_now": 1.39,
      "demo": false,
      "notes": [],
-     "usd_now": -8.9,
+     "usd_now": 13.0,
      "usd_loss": -50.1,
      "usd_gain": 74.9
     },
@@ -236,20 +236,20 @@
      "strategy": "Sweep & reclaim 55 · 4H long · boční",
      "since": "2026-11-05T20:00:00+00:00",
      "entry": 1.2072,
-     "now": 0.9025,
+     "now": 0.8816,
      "stop": null,
      "targets": [],
-     "r_now": -5.776,
+     "r_now": -6.171,
      "r_loss": null,
      "r_gain": null,
-     "pct_now": -25.34,
+     "pct_now": -27.07,
      "demo": false,
      "notes": [
       "výstup i opačným signálem",
       "bez pevného stopu",
       "bez pevného cíle"
      ],
-     "usd_now": -288.8,
+     "usd_now": -308.55,
      "usd_loss": null,
      "usd_gain": null
     }
@@ -265,14 +265,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 58630.5,
-  "ETH": 1620.19,
-  "SOL": 68.59,
-  "XRP": 0.90299,
-  "ADA": 0.142277,
-  "LINK": 8.49814,
-  "AVAX": 6.442,
-  "DOGE": 0.0543
+  "BTC": 56733.3,
+  "ETH": 1571.19,
+  "SOL": 66.27,
+  "XRP": 0.88148,
+  "ADA": 0.136101,
+  "LINK": 8.16974,
+  "AVAX": 6.194,
+  "DOGE": 0.05203
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
