@@ -279,6 +279,20 @@
    "best_splits": null,
    "added": null,
    "reason": "žádné pravidlo neprošlo přísným testem"
+  },
+  {
+   "n": 13,
+   "date": "2026-11-21",
+   "focus": "rychlé obchody 2–8 h",
+   "seed": 20261121,
+   "tested": 4135,
+   "top_oos_ok": 19,
+   "random_oos_ok": 0,
+   "candidates": 0,
+   "best": null,
+   "best_splits": null,
+   "added": null,
+   "reason": "žádné pravidlo neprošlo přísným testem"
   }
  ],
  "registry": [
