@@ -415,3 +415,28 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Anchor positioning pro vysvětlivky (bod 3) – vysvětlivky už umístí skript spolehlivě i na starších prohlížečích; přínos jen v kódu, ne pro uživatele.
 - Bump chart pořadí v Žebříčku (bod 4) – kolekce `strategies` nemá historii pořadí; „Od minulé návštěvy“ ukazuje ▲▼ jen proti poslední návštěvě. Až bude denní snímek pořadí v exportu.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR, semafor čerstvosti pro `strategies` – důvody beze změny (viz 5.–19. 11.).
+
+## 2026-11-21 (denní běh designéra)
+
+**Nalezené prvky**
+1. Skóre důvěry, které „ukazuje výpočet“: u čísla přepínač „Show the math“, rozpad na jednotlivé signály s pravidlem a hodnotou, seznam toho, co chybí, a upozornění, že příznaky popisují data, ne úmysl – [RNWY: profil agenta (skóre z 13. 11. 2026)](https://rnwy.com/explorer/base/17885).
+2. Stavový řádek na kartě agenta: stav, „poslední kontrola před X“, trendy za 30 dní a stupně certifikace s pevnými prahy – [AgentStatus: The agent marketplace problem (11/2026)](https://agentstatus.dev/blog/agent-marketplace-trust).
+3. Žebříček obchodníků se dvěma oddělenými měřítky (soutěžní pořadí × dlouhodobý postup), odznaky za milníky a sdílitelné karty profilu – [FX Replay: Battles leaderboard](https://www.fxreplay.com/learn/fx-replay-battles-leaderboard-more-than-just-a-high-score).
+4. Dashboard: jedna hlavní otázka, 3–5 hlavních čísel, akce u metriky, progresivní odhalení (souhrn → detail), prázdný stav jako navržená obrazovka – [SaaSFrame: SaaS dashboard design (akt. 12. 11. 2026)](https://www.saasframe.io/blog/the-anatomy-of-high-performance-saas-dashboard-design-2026-trends-patterns).
+5. Karta metriky: hodnota + odznak trendu se šipkou a tónem, celá dlaždice jako odkaz na detail, mřížka podle šířky kontejneru – [Shopify App Home: Metrics card](https://shopify.dev/docs/api/app-home/latest/patterns/compositions/metrics-card.md).
+6. Nové funkce platformy: `contrast-color()` Baseline, `ariaNotify()` – [web.dev: New to the web platform in April 2026](https://web.dev/blog/web-platform-04-2026).
+
+**Zapojeno – 🔍 Kontrola účtu s ukázaným výpočtem** (bod 1 + 2; na každé kartě účtu přes společnou `accCard`: Laboratoř, Žebříček – Karty, AI Lab, Mozek; $1M Future a Downtown ji nemají – jiný tvar dat)
+- Rozbalovací řádek „Kontrola účtu“: v souhrnu řada značek ✓ / ✕ / … (tvar nezávislý na barvě) a „X z N splněno · Y čeká na data“; po rozbalení každé pravidlo s hodnotami: test bez likvidace a vynulování, test aspoň 3 kalendářní roky, víc let v plusu než v minusu, papír ≥ 30 obchodů, propad papíru ≤ propad testu, série ztrát papíru ≤ série z testu. Bez papíru (srovnání bez mozku) a u denních účtů se papírová pravidla nezobrazují; bez papírového obchodu stav „čeká na data“.
+- Řádek čerstvosti (bod 2): papír od data, poslední papírový obchod, „data z“ (`updated`).
+- Žádné skóre ani známka, nic se nedopočítává – jen porovnání polí `backtest`/`live` (`liquidations`, `wipes`, `years`, `n_trades`, `max_dd_pct`, `lose_streak`, `last_trades`, `start`). Poznámka: „Kontrola jen porovnává čísla… není to doporučení.“ Pro čtečky obrazovky skrytý text Splněno / Nesplněno / Čeká na data.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu (jen zablokované fonty), bez vodorovného posunu; kontrola na 35 kartách Laboratoře, 5 v AI Lab, 2 v Mozku. Opraveno „−0,0 %“ u nulového propadu. Publikováno jako „Design 21. 11.“ (verze 40).
+
+**Odloženo**
+- Sdílitelná karta strategie (bod 3) – stránka nesmí spouštět stahování souborů a schránka funguje jen někde; zvážit textové shrnutí ke zkopírování.
+- Odznaky za milníky (bod 3) – herní prvek u obchodních výsledků by tlačil k honbě za sériemi; v rozporu s poctivým zobrazením.
+- Odznak trendu za 30 dní (bod 2, 5) – kolekce nemají historii metrik po dnech.
+- `contrast-color()` (bod 6) – barvy jsou ručně laděné pro jeden tmavý vzhled, přínos malý.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR, bump chart – důvody beze změny (viz 5.–20. 11.).
