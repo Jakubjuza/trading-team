@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-20T09:28:57+00:00",
+ "updated": "2026-11-21T08:36:02+00:00",
  "strategies": [
   {
    "id": "macd|19/39/9/signal|12h|none|opp|long",
@@ -228,7 +228,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.20 R (t +2.3), HOLDOUT +0.25 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 1,
+    "mean_r": 1.476,
+    "sum_r": 1.48,
+    "t": null,
+    "win": 1.0
+   }
   },
   {
    "id": "boll_break|20/2.5|4h|none|opp_stop|long",
@@ -346,7 +353,14 @@
      "status": "papír",
      "reason": "atlas: OOS +0.36 R (t +4.1), HOLDOUT +0.21 R"
     }
-   ]
+   ],
+   "paper": {
+    "n": 1,
+    "mean_r": 1.488,
+    "sum_r": 1.49,
+    "t": null,
+    "win": 1.0
+   }
   },
   {
    "id": "donchian|20|6h|d50|opp|long",
@@ -691,11 +705,11 @@
     }
    ],
    "paper": {
-    "n": 8,
-    "mean_r": -0.385,
-    "sum_r": -3.08,
-    "t": -1.04,
-    "win": 0.25
+    "n": 9,
+    "mean_r": -0.179,
+    "sum_r": -1.61,
+    "t": -0.46,
+    "win": 0.33
    }
   },
   {
