@@ -2,10 +2,10 @@
 
 Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných rodin nebo kontextu. Metoda, filtry a pravidla jsou stanoveny předem v hlavičce `research/experiments/combo_study.py`; data, náklady (MEXC 0,05 %/stranu), simulace a dělení IS (do 12/2023) / OOS (1/2024–6/2025) / HOLDOUT (7/2025–) jsou stejné jako v atlasu. Papírově, nic nejde na skutečné peníze. Nejde o finanční poradenství.
 
-- Hotových dílů: **12**, testovaných kombinací celkem (vč. samotných spouštěčů): **2346** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
-- Poslední díl 12: **pair 1D** (skupiny volatilita, momentum, sentiment), 189 kombinací + 9 spouštěčů samotných, 3 s; základní pravidlo splnilo 1, prošlo vč. citlivosti a režimů 1.
-- Mřížka (stanovena před výpočtem): spouštěče macd 12/26/9/signal · opp · long; roc 10 · opp · long; price_ma ema/10 · opp · long; donchian 20 · target · long; rsi_mom 55 · opp · long; ma_cross sma/5/30/confirm · target · long; rsi_mom 55 · opp_stop · short; price_ma sma/50 · opp_stop · short; macd 19/39/9/signal · opp_stop · short × filtry atrlo:0.3, atrlo:0.5, atrlo:0.7, atrhi:0.3, atrhi:0.5, atrhi:0.7, rsi:45, rsi:50, rsi:55, rsi:60, rsix:60, rsix:70, rsix:80, macd:sig, macd:zero, fng:30, fng:45, fng:60, fngg:40, fngg:55, fngg:70.
-- Další díl: **deep 1H**.
+- Hotových dílů: **13**, testovaných kombinací celkem (vč. samotných spouštěčů): **2653** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
+- Poslední díl 13: **deep 1H**, 306 kombinací + 1 spouštěčů samotných, 5 s; základní pravidlo splnilo 0, prošlo vč. citlivosti a režimů 0.
+- Mřížka (stanovena před výpočtem): nejlepší páry podle IS t: ma_cross:sma/30/200/confirm+rsi:50 · opp · long; ma_cross:sma/30/200/confirm+atrhi:0.7 · opp · long; ma_cross:sma/30/200/confirm+ema:100 · opp · long; ma_cross:sma/30/200/confirm+fngg:55 · opp · long; ma_cross:sma/30/200/confirm+atrhi:0.3 · opp · long; ma_cross:sma/30/200/confirm+fngg:40 · opp · long + druhý filtr (všechny skupiny kromě skupiny prvního filtru) + sousední hodnoty prvního filtru.
+- Další díl: **deep 2H**.
 
 ## Combo strategie v registru (10 aktivních, limit 10)
 
@@ -236,12 +236,12 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 
 ## Proč neprošly (nejčastější důvody)
 
-- pod p95 náhody: 1977×
-- OOS t < 2: 1679×
-- neporáží spouštěč o 0,05 R: 1521×
-- HOLDOUT ≤ 0: 698×
-- OOS ≤ 0: 449×
-- málo obchodů: 271×
+- pod p95 náhody: 2283×
+- OOS t < 2: 1975×
+- neporáží spouštěč o 0,05 R: 1727×
+- HOLDOUT ≤ 0: 804×
+- OOS ≤ 0: 469×
+- málo obchodů: 279×
 - IS ≤ 0: 178×
 - reg: bez zlepšení v IS: 5×
 
