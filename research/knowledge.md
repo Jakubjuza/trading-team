@@ -41,6 +41,12 @@ Pravidla:
   přes RePEc a shrnutí, ne plný text SSRN) – liší se rozsahem kanálů, cílovou volatilitou a rotací (u nás 10–160 dní, 40 %, jen long
   na pevném seznamu) – 1. 11. 2026. Od 26. 10. 2026 běží jako 🧭 Ensemble (papír + spotové demo).
 
+- **Atlas strategií (41 664 kombinací, 15 rodin, 15M–1D, poplatky MEXC 0,05 %/stranu)** – průrazové longy
+  (Bollinger, Keltner, Donchian, průraz s objemem) porážejí náhodu v OOS i HOLDOUT u 32–51 % kombinací (náhodou ~0,25 %);
+  návratové strategie u longu pod náhodou; shorty slabé; 15M po poplatcích ztrátové. Předem stanovený výběr splnil
+  jen long 12H MACD 19/39/9 (IS +0,78 / OOS +0,65 / HOLDOUT +0,19 R, nezávisle ověřeno) – `reports/strategy_atlas.md` –
+  27. 10. 2026. Kandidát na papírové ověření (H10).
+
 ## ❌ U nás vyvráceno (neopakovat naslepo)
 
 - **Mean reversion RSI(2) v trendu, denní** – Ø −0,10 R, horší než náhoda – `reports/adaptive.md`.
@@ -56,27 +62,6 @@ Pravidla:
   15 543 předpovědí: směr 51,5 % (statisticky nad 50 %, ale hrubá výhoda jen +0,02–0,03 % na obchod), velikost pohybu
   odhadne hůř než „cena se nezmění“ (MAE poměr 1,26); po nákladech 0,30 % −0,27 % na obchod, ani nad náhodou – NEPROJDE –
   `reports/kronos.md` – 6. 11. 2026. Podnět: virální příspěvek (getintoai); model [arXiv 2508.02739](https://arxiv.org/abs/2508.02739).
-
-<!-- combo-study:start -->
-- **Kombinace: filtr ATR (atrhi) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 12H** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 10, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 2H** – průměrně zhoršil OOS spouštěčů o -0,22 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,21 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 6H** – průměrně zhoršil OOS spouštěčů o -0,18 R (n spouštěčů 12, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,17 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-<!-- combo-study:end -->
-
-## 🧪 Vnější důkazy (u nás neověřeno)
-
-- **Vysoký carry (funding) předpovídá propady ceny** – [BIS WP 1087](https://www.bis.org/publications/working-paper-1087-crypto-carry).
-  → hypotéza H1.
-- **Proxy pozornosti investorů předpovídají výnosy kryptoměn** – [Liu & Tsyvinski 2021](https://ideas.repec.org/a/oup/rfinst/v34y2021i6p2689-2727..html).
-  → hypotéza H2 (chybí nám data pozornosti).
-- **Momentum bitcoinu trvá zhruba 1–8 týdnů, pak se částečně obrací** – [Hong 2017](https://www.doi.org/10.1007/s10799-016-0264-6).
-  Odpovídá našemu max. držení 20 dní; delší držení by podle toho nemělo pomáhat.
-- **Část výhody time-series momentum může pocházet ze škálování podle volatility** (kritika MOP 2012, shrnuto
-  [Alpha Architect](https://alphaarchitect.com/cross-asset-signals-and-time-series-momentum/)). U nás už riziko na obchod
-  = pevné R se stopem podle ATR – podobný efekt.
 
 - **15M vstup do začínajícího uptrendu po krachu a panice (vyšší maxima/minima, malé svíčky)** – 60 vstupů, trailing
   Ø −0,04 ± 0,42 R ≈ náhoda; nízký objem −0,36 R, cíle 10–20R se netrefí – `reports/recovery.md` – 25. 10. 2026.
@@ -100,15 +85,36 @@ Pravidla:
   HOLDOUT 7/2025– je efekt klesajícího trhu (náhodné shorty také v plusu). Longy mají trendový efekt nad náhodou, ale
   bez přísného potvrzení a s propady 100–300 R. Short MA 30 × 60 na 4H: 3 ze 72 variant kladné ve všech obdobích –
   `reports/ma_grid.md` – 27. 10. 2026.
-- ✅ **Atlas strategií (41 664 kombinací, 15 rodin, 15M–1D, poplatky MEXC 0,05 %/stranu)** – průrazové longy
-  (Bollinger, Keltner, Donchian, průraz s objemem) porážejí náhodu v OOS i HOLDOUT u 32–51 % kombinací (náhodou ~0,25 %);
-  návratové strategie u longu pod náhodou; shorty slabé; 15M po poplatcích ztrátové. Předem stanovený výběr splnil
-  jen long 12H MACD 19/39/9 (IS +0,78 / OOS +0,65 / HOLDOUT +0,19 R, nezávisle ověřeno) – `reports/strategy_atlas.md` –
-  27. 10. 2026. Kandidát na papírové ověření (H10).
 - **Stejné denní strategie na hlavních měnových párech** – OOS −0,24 R, pod náhodou – `reports/markets.md` – 25. 10. 2026.
   Na 8 tech akciích +0,27 R, ale náhodné vstupy +0,22 R (výběr vítězů) – výhoda strategie malá.
 - **Optimalizace výstupů a filtrů denních strategií (72 nastavení × 5 vah)** – walk-forward MAR 0,77 vs. dnešní 0,83,
   odložený rok bez rozdílu – `reports/optimize.md` – 25. 10. 2026. Výběr „nejlepšího“ z historie je přeladěný.
+- **Index nálady (trend, šíře trhu, volatilita, makro) jako předpověď směru BTC** – od 2022 korelace s výnosem
+  7/30/90 dní +0,03 až +0,09, pásma neseřazená; slouží jen jako popis nálady – `reports/mood.md` – 26. 10. 2026.
+- **Smart DCA (pool na propady) a lotový DCA bot (TP/SL na každý nákup)** – horší než obyčejné DCA na BTC/ETH/SOL ve
+  všech variantách (rolling 3 roky: smart DCA vyhrál v 0–20 % období) – test v chatu 26. 10. 2026.
+
+<!-- combo-study:start -->
+- **Kombinace: filtr ATR (atrhi) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 12H** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 10, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 2H** – průměrně zhoršil OOS spouštěčů o -0,22 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,21 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 6H** – průměrně zhoršil OOS spouštěčů o -0,18 R (n spouštěčů 12, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,17 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
+<!-- combo-study:end -->
+
+## 🧪 Vnější důkazy (u nás neověřeno)
+
+- **Vysoký carry (funding) předpovídá propady ceny** – [BIS WP 1087](https://www.bis.org/publications/working-paper-1087-crypto-carry).
+  → hypotéza H1.
+- **Proxy pozornosti investorů předpovídají výnosy kryptoměn** – [Liu & Tsyvinski 2021](https://ideas.repec.org/a/oup/rfinst/v34y2021i6p2689-2727..html).
+  → hypotéza H2 (chybí nám data pozornosti).
+- **Momentum bitcoinu trvá zhruba 1–8 týdnů, pak se částečně obrací** – [Hong 2017](https://www.doi.org/10.1007/s10799-016-0264-6).
+  Odpovídá našemu max. držení 20 dní; delší držení by podle toho nemělo pomáhat.
+- **Část výhody time-series momentum může pocházet ze škálování podle volatility** (kritika MOP 2012, shrnuto
+  [Alpha Architect](https://alphaarchitect.com/cross-asset-signals-and-time-series-momentum/)). U nás už riziko na obchod
+  = pevné R se stopem podle ATR – podobný efekt.
+
 - **Spouštěč vstupu na 15M (1H potvrzení → 15M obrat)** – za 2 roky +0,28 ± 0,25 R/signál nad dnešním 1H vstupem, kladný
   v obou polovinách a na 6/8 mincích, ale OOS horší (−0,15 vs. +0,12) – `reports/mtf15.md`. Nerozhodnuto → H5.
 
@@ -123,6 +129,11 @@ Pravidla:
   [Ye et al., arXiv 2605.16895](https://arxiv.org/abs/2605.16895) (otevřen jen abstrakt, detaily P1–P6 neověřeny) – 8. 11. 2026.
   Pro desk: náš postup (papírové obchody až po zápisu verdiktu, náklady započtené, srovnání s mechanickým signálem v H12)
   jde stejným směrem; verdikty hodnotit jen prospektivně.
+  Doplněno 22. 11. 2026: přehledová studie (literatura do 31. 8. 2026) neshledala žádnou AI architekturu (ML, foundation
+  modely, LLM, RL, agenti) s doloženou trvalou čistou alfou napříč režimy; pokrok je hlavně „před obchodem“ (předpověď,
+  text, workflow), chybí auditované záznamy živého kapitálu; spot, perpy a on-chain je nutné hodnotit zvlášť –
+  [Zhu & Cai, arXiv 2609.04917](https://arxiv.org/abs/2609.04917) (přehled, jen abstrakt; bez vlastních čísel).
+  Shoda s naším ❌ Kronos (`reports/kronos.md`).
 - **Parametrická „look-ahead“ předpojatost LLM** – model s trénovacími daty obsahujícími testované události „zná“ výsledky;
   oprava na vstupu nestačí, navržená korekce při dekódování (FinCAD) snížila vnitrosampleový výnos v průměru o 67 %, OOS
   se skoro nezměnil – [Li, Wang, Ma, arXiv 2605.24564, EMNLP 2026](https://arxiv.org/abs/2605.24564) (jen abstrakt; testováno
@@ -132,9 +143,26 @@ Pravidla:
 - **Snižování rizika při vysoké volatilitě zvyšuje Sharpe faktorových strategií** (trh, value, momentum, měnový carry),
   protože výnos s volatilitou proporčně neroste – [Moreira & Muir, Volatility-Managed Portfolios, NBER w22208 / JF 2017](https://www.nber.org/papers/w22208)
   (akcie a měny, ne krypto; otevřen abstrakt) – 15. 11. 2026. Pro desk: 🧭 Ensemble má cílovou volatilitu 40 %, ale
-  `reports/portfolio_review.md` neodděluje, kolik přidává samotné škálování → H13. Tip k ověření (neotevřeno, nezapsáno
-  jako důkaz): Cederburg et al., JFE 2020 uvádí, že v reálném čase volatility-managed verze 103 strategií často
-  nepřekonají původní.
+  `reports/portfolio_review.md` neodděluje, kolik přidává samotné škálování → H13.
+  **Protidůkaz (22. 11. 2026):** u 103 akciových strategií realistické out-of-sample verze s řízením volatility obvykle
+  dosáhly *nižšího* Sharpe a jistotního ekvivalentu než původní neřízené portfolio; alfy ze spanning regresí nejdou
+  v reálném čase využít kvůli strukturální nestabilitě – [Cederburg, O'Doherty, Wang, Yan, JFE 138(1) 2020, s. 95–117](https://ideas.repec.org/a/eee/jfinec/v138y2020i1p95-117.html)
+  (otevřen abstrakt; akcie, ne krypto). Pro desk: přínos škálování v 🧭 Ensemble nebrat jako samozřejmost – H13 rozhodne,
+  a to jen s parametrem škálování zvoleným předem (bez ladění na historii).
+
+- **Perpetual futures: odchylky od bezarbitrážní ceny jsou v kryptu velké (|ρ| ~60–90 % p.a.), ale zmenšují se ~11 % ročně
+  (po roce 2022 menší a klidnější); příspěvek fundingu k výnosu arbitráže se zmenšuje (u BTC v 2022 a 2023 záporný);
+  přímé poplatky dominují nepřímým nákladům a s vyššími poplatky je strategie aktivní jen 20 % času (BTC) místo 85 %;
+  výnos za 120 dní předpovídá odchylku, volatilita ne** – [He, Manela, Ross, von Wachter, Fundamentals of Perpetual Futures, arXiv 2212.06888 (v7, 9/2026)](https://arxiv.org/abs/2212.06888)
+  (otevřen abstrakt a HTML v5; data jedné burzy – Binance, vlastní předpoklady nákladů) – 22. 11. 2026.
+  Srovnání: ✅ částečná shoda s `reports/carry.md` – u nás carry 2026 nižší než 2025 u všech 8 mincí (2026: ADA −1,00 %,
+  ostatní +0,46 až +5,26 %; 2026 jen do 10/2026, report neuvádí, zda je roční přepočet), pravidlo vstupu > 10 % p.a.
+  přidalo málo; vzorek jen ~1 rok Hyperliquid. → H15.
+- **Bitcoin reaguje na inflační překvapení negativně, ale málo: −24 bp na 1 směrodatnou odchylku překvapení CPI; ostatní
+  hlavní kryptoměny na makrozprávy nereagují; úrokový kanál se nepotvrdil** – [Pinchuk, Bitcoin Does Not Hedge Inflation, arXiv 2301.10117](https://arxiv.org/abs/2301.10117)
+  (preprint bez recenze, jen abstrakt) – 22. 11. 2026. Pro desk: směrový efekt CPI je proti denní volatilitě BTC (jednotky %)
+  malý – events-analyst by CPI měl brát hlavně jako riziko knotu, ne jako směrový argument. Riziko knotu u CPI zatím
+  neměříme (`reports/events.md`: data vydání „se zatím neměří“; u FOMC 1,45× rozpětí) → H16.
 
 ## Metodika (proč testujeme přísně)
 
@@ -144,10 +172,6 @@ Pravidla:
 - **Při mnoha testech je potřeba vyšší laťka** (t > 3 místo 2) – [Harvey, Liu, Zhu 2016, RFS](https://www.nber.org/papers/w20592).
   → u nás: změna jen při OOS zlepšení ≥ 0,05 R, ≥ 100 OOS obchodů a výhodě nad náhodou.
 
-- **Index nálady (trend, šíře trhu, volatilita, makro) jako předpověď směru BTC** – od 2022 korelace s výnosem
-  7/30/90 dní +0,03 až +0,09, pásma neseřazená; slouží jen jako popis nálady – `reports/mood.md` – 26. 10. 2026.
-- **Smart DCA (pool na propady) a lotový DCA bot (TP/SL na každý nákup)** – horší než obyčejné DCA na BTC/ETH/SOL ve
-  všech variantách (rolling 3 roky: smart DCA vyhrál v 0–20 % období) – test v chatu 26. 10. 2026.
 
 ## Hypotézy k testu (fronta pro rutinu „Kontrola a ladění skeneru“)
 
@@ -164,8 +188,10 @@ Pravidla:
 | H9 | Short podle protnutí MA 30 × MA 60 na 4H v nejjednodušší podobě (EMA, signál „cross“, bez filtru, výstup opačné protnutí – zvoleno předem, ne podle výsledků) má výhodu nad náhodnými shorty mimo medvědí trh | uživatel 27. 10. 2026; mřížka `reports/ma_grid.md`: z 72 variant kladné ve všech obdobích jen 3, v HOLDOUT kladné i náhodné shorty | nová data od 27. 10. 2026 (papírově, bez peněz) | nerozhodnuto – IS/OOS záporné, vypadá jako efekt režimu |
 | H10 | Long 12H MACD (19, 39, 9): vstup při protnutí signální linie zespodu, výstup při opačném protnutí, riziko 2 ATR na velikost pozice, 8 mincí – vydělá na nových datech po poplatcích MEXC víc než náhodné vstupy | atlas 27. 10. 2026 (`reports/strategy_atlas.md`), jediná kombinace z 41 664, která splnila předem stanovené pravidlo; nezávisle ověřeno | nová data od 27. 10. 2026 (papírově) | kandidát na papírové ověření |
 | H11 | Ensemble (🧭) s kanály rozšířenými na 5–360 dní (7 kanálů místo 5) a stejnou cílovou volatilitou nemá horší OOS Sharpe než dnešních 5 kanálů 10–160 dní; zvoleno předem, bez ladění dalších parametrů | Zarattini, Pagani, Barbon (SFI RP 25-80) | denní data 8 mincí, `reports/portfolio_review.md` | k testu (přijmout jen při OOS Sharpe ≥ dnešní +0,1 a v sousedních nastaveních) |
-| H13 | 🧭 Ensemble se škálováním min(1; 40 % / roční vol) má OOS Sharpe aspoň o 0,1 vyšší než stejný ensemble s pevnou vahou 1/8 na minci (stejné kanály 10–160 dní, stejné signály, náklady 0,15 % z obratu, srovnání při stejné průměrné expozici); jinak škálování není zdroj výhody | Moreira & Muir 2017 (NBER w22208) | denní data 8 mincí, `research/experiments/ensemble.py` | k testu (zapsáno 15. 11. 2026) |
-| H14 | Short signály donchian_1d a pullback_1d vzniklé, když BTC za posledních 20 dní ztratil ≥ 15 % (BTC výnos 20D ≤ −15 %), mají Ø R o ≥ 0,15 R horší než ostatní shorty téže strategie (po nákladech); varianta „vynechat je“ se přijme jen při ≥ 100 OOS obchodech, výhodě nad náhodou a v sousedních prazích −10/−20 % | Daniel & Moskowitz 2016 (NBER w20439); naše 4 ztrátové shorty po výprodeji 29. 10. 2026 (`research/lessons.md`, slabý důkaz) | denní data 8 mincí 2016–2026 (`scanner/evaluate.py`) | k testu (zapsáno 15. 11. 2026); shortů může být málo – pak jen popis |
+| H13 | 🧭 Ensemble se škálováním min(1; 40 % / roční vol) má OOS Sharpe aspoň o 0,1 vyšší než stejný ensemble s pevnou vahou 1/8 na minci (stejné kanály 10–160 dní, stejné signály, náklady 0,15 % z obratu, srovnání při stejné průměrné expozici); jinak škálování není zdroj výhody | Moreira & Muir 2017 (NBER w22208); protidůkaz Cederburg et al. JFE 2020 (OOS u akcií spíš horší) | denní data 8 mincí, `research/experiments/ensemble.py` | k testu (zapsáno 15. 11. 2026; 22. 11. doplněn protidůkaz – cíl 40 % se při testu neladí) |
+| H14 | Short signály donchian_1d a pullback_1d vzniklé, když BTC za posledních 20 dní ztratil ≥ 15 % (BTC výnos 20D ≤ −15 %), mají Ø R o ≥ 0,15 R horší než ostatní shorty téže strategie (po nákladech); varianta „vynechat je“ se přijme jen při ≥ 100 OOS obchodech, výhodě nad náhodou a v sousedních prazích −10/−20 % | Daniel & Moskowitz 2016 (NBER w20439); naše 4 ztrátové shorty po výprodeji 29. 10. 2026 (`research/lessons.md`, slabý důkaz) | denní data 8 mincí 2016–2026 (`scanner/evaluate.py`) | k testu (zapsáno 15. 11. 2026); shortů může být málo – pak jen popis. 22. 11.: vlastní slabý důkaz se obrátil – denní shorty z 29. 10. skončily 3 ze 4 v zisku (`research/lessons.md`, 19. 11.); test stále stojí jen na historii |
+| H15 | Carry (long spot + short perp, pravidla z `reports/carry.md`: vstup 7denní funding > 10 % p.a., výstup < 0 %) jen když má mince výnos za 120 dní > 0 má vyšší poměr výnos p.a. / max. propad než stejný carry bez filtru; přijmout jen při zlepšení u ≥ 6 z 8 mincí a v sousedních oknech 90/150 dní, jinak zamítnout (práh 120 dní zvolen předem podle studie, neladit) | He, Manela, Ross, von Wachter (arXiv 2212.06888): výnos za 120 dní předpovídá odchylku perpu od spotu | funding Hyperliquid od 11/2024 + denní ceny 8 mincí (`research/carry.py`) | k testu (zapsáno 22. 11. 2026); vzorek ~1 rok – výsledek jen orientační, opakovat s delší historií |
+| H16 | V den vydání US CPI (8:30 New York) je rozpětí BTC 1H svíček v okně 8:30–10:30 NY ≥ 1,3× průměru stejného okna v běžné pracovní dny bez makro událostí (stejná metoda jako FOMC v `reports/events.md`); při ≥ 1,3× brát CPI jako riziko knotu jako FOMC, při < 1,15× ho events-analyst jako veto neuplatňuje, mezi tím beze změny | Pinchuk (arXiv 2301.10117): směrová reakce BTC na CPI malá (−24 bp/1 SD) – podstatné je riziko knotu, ne směr | termíny vydání CPI z oficiálního kalendáře BLS 2022–2026 (bls.gov – ověřit dostupnost), 1H svíčky BTC | k testu (zapsáno 22. 11. 2026); směr po CPI neměřit jako signál |
 | H12 | Stupně A/B head-traderu mají vyšší Ø R než všechny signály téže strategie bez AI filtru (rozdíl ≥ 0,15 R) | FINSABER (arXiv 2505.07078) | `verdicts.jsonl` × `outcomes.jsonl` | čeká na data (≥ 50 uzavřených obchodů s verdiktem) |
 
 ## Hodnocení agentů desku
@@ -176,3 +202,7 @@ Kontrola 8. 11. 2026: `outcomes.jsonl` 4 záznamy (3 z nich varianta „+mtf“ 
 6 záznamů (z toho 1 SKIPPED, 5 verdiktů: 3× C, 2× NO_TRADE); uzavřených obchodů s verdiktem ≤ 4 (potřeba ≥ 20) – nehodnotím.
 Kontrola 15. 11. 2026: beze změny – `outcomes.jsonl` 4 záznamy (3 signály: ETH, XRP, DOGE; ETH jako 1D i +mtf), `verdicts.jsonl`
 6 záznamů (1 SKIPPED, 5 verdiktů: 3× C, 2× NO_TRADE). Uzavřených obchodů s verdiktem 4 (3 unikátní signály), potřeba ≥ 20 – nehodnotím.
+Kontrola 22. 11. 2026: `outcomes.jsonl` 8 záznamů = 4 signály z 29. 10. (ETH, SOL, XRP – C; DOGE – NO_TRADE), každý jako 1D
+i +mtf; všechny 4 signály s verdiktem uzavřené (denní Ø +1,326 R, mtf Ø +2,225 R). Verdikt SOL short 5. 11. (NO_TRADE)
+zatím bez výsledku. Uzavřených obchodů s verdiktem 8 záznamů / 4 unikátní signály (vše jeden den, korelované), potřeba ≥ 20 – nehodnotím.
+Žádný stupeň A/B zatím nebyl, kalibraci nelze měřit.
