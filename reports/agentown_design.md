@@ -440,3 +440,26 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Odznak trendu za 30 dní (bod 2, 5) – kolekce nemají historii metrik po dnech.
 - `contrast-color()` (bod 6) – barvy jsou ručně laděné pro jeden tmavý vzhled, přínos malý.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR, bump chart – důvody beze změny (viz 5.–20. 11.).
+
+## 2026-11-22 (denní běh designéra)
+
+**Nalezené prvky**
+1. Tlačítko kopírovat: jedna sdílená funkce `navigator.clipboard.writeText` volaná přímo v kliknutí, popisek pojmenuje obsah, zpětná vazba v `role="status"` (ne jen barvou – mění se i ikona), tlačítko se během potvrzení nevypíná, poslední záloha přes skryté textové pole – [Chrome for Developers: Modern web guidance – Copy button](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/copy-button.md.txt) (bez data; přehled návodů publikován 10. 11. 2026).
+2. Scénář „Copy“: potvrzení až po skutečném zápisu (ne předem), ikona ✓ a „Copied!“ asi 2 s, chyba s ruční náhradou (označit a zkopírovat zkratkou), tlačítko vždy viditelné vedle obsahu – [Primer: Copy (scenario pattern)](https://primer.style/product/scenario-patterns/copy) (bez data).
+3. Kopírovací prvek: obsah + tlačítko + nápověda, varianty inline a blokový/rozbalovací, každé tlačítko jednoznačně pojmenované vůči svému obsahu – [PatternFly: Clipboard copy – design guidelines (v6.7)](https://www.patternfly.org/components/clipboard-copy/design-guidelines); tlačítko „Copy reference“ na kartách souhrnu, „Copied“ + skrytá hláška pro čtečky – [MOJ Design System: Copy button (přidáno 1/2026, experimentální)](https://design-patterns.service.justice.gov.uk/components/copy-button).
+4. Trvalé toasty (`popover="manual"`, `ariaNotify()` se záložní `aria-live` oblastí, nikdy přes modální okno, informace musí jít dohledat i bez toastu) – [Chrome for Developers: Persistent toast notifications](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/persistent-toast-notifications.md.txt) (bez data).
+5. Responzivní tabulka: obal s `role="region"` a `tabindex="0"`, přilepené záhlaví řádků i sloupců, pod 600 px šířky kontejneru skládání do karet přes `@container` – [Chrome for Developers: Responsive tables](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-atoms/responsive-table.md.txt) (bez data).
+
+**Zapojeno – 📋 Kopírovat shrnutí** (splněno odložené „textové shrnutí ke zkopírování“ z 21. 11. místo sdílitelné karty)
+- Na každé kartě účtu přes společnou `accCard` (Laboratoř, Žebříček – Karty, AI Lab, Mozek, $1M Future) pod „Kontrolou účtu“ tlačítko „Kopírovat shrnutí“; v Žebříčku v rozbaleném „Profilu strategie“ tlačítko „Kopírovat shrnutí strategie“. Popisek pro čtečky obsahuje název účtu/strategie.
+- Shrnutí je prostý text jen z polí databáze, nic se nedopočítává (kromě výnosu v % vkladu, který karta už ukazuje): účet = název, štítky, režim (zpětný test · historie, ne slib / papír živě / simulace), čistě a vloženo, max. propad, účet teď a max., obchody/měsíc, výhry, série ztrát, nejlepší/nejhorší měsíc, roky, 3 poslední obchody, od kdy a „data z“; u papíru pod 30 obchody věta „orientační výsledek, ne závěr“. Strategie = stav, TF, směr, typ, parametry, výstup, filtr, režimy, R na obchod ve vývoji / ověření / závěrečném testu (t, počet obchodů), papír, poslední změna. Na konci vždy „Jen popis dat, není to doporučení.“
+- Chování podle bodů 1–3: zápis do schránky přímo v kliknutí, ✓ a „Zkopírováno“ až po úspěchu (2 s), hláška v `role="status"`; když schránku rámec odmítne, zkusí `execCommand('copy')`, a když ani to ne, zobrazí pod tlačítkem označené textové pole s návodem (Ctrl/⌘ C, na telefonu podržet prst) a stav „Nejde zkopírovat“ (4 s). Animace ikony jen bez `prefers-reduced-motion`.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, npm i CDN v sandboxu blokované) a WebGL SwiftShader, data z exportů `research/*.json` přes zástupnou databázi, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu; Laboratoř 39 tlačítek, kopírování do schránky vrátí očekávaný text; se zablokovanou schránkou se ukáže označené pole (747 znaků); Žebříček – profil strategie kopíruje správný text. Opraveno při kontrole: výnos nad 1000 % se v textu psal bez mezer tisíců. Publikováno jako „Design 22. 11.“ (verze 41).
+
+**Odloženo**
+- Toasty (bod 4) – potvrzení u tlačítka stačí a stránka žádné jiné akce s výsledkem nemá; toast by duplikoval zpětnou vazbu.
+- Skládání tabulek do karet (bod 5) – tabulky Rok po roku a Testy · R se na mobilu vejdou nebo posouvají ve vlastním kontejneru; zvážit pro tabulku Ensemble v Pozicích.
+- Kopírování pro Downtown a Otevřené pozice – jiný tvar karet (ne `accCard`); doplnit, pokud se tlačítko osvědčí.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR, bump chart, odznaky – důvody beze změny (viz 5.–21. 11.).
