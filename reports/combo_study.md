@@ -2,10 +2,10 @@
 
 Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných rodin nebo kontextu. Metoda, filtry a pravidla jsou stanoveny předem v hlavičce `research/experiments/combo_study.py`; data, náklady (MEXC 0,05 %/stranu), simulace a dělení IS (do 12/2023) / OOS (1/2024–6/2025) / HOLDOUT (7/2025–) jsou stejné jako v atlasu. Papírově, nic nejde na skutečné peníze. Nejde o finanční poradenství.
 
-- Hotových dílů: **13**, testovaných kombinací celkem (vč. samotných spouštěčů): **2653** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
-- Poslední díl 13: **deep 1H**, 306 kombinací + 1 spouštěčů samotných, 5 s; základní pravidlo splnilo 0, prošlo vč. citlivosti a režimů 0.
-- Mřížka (stanovena před výpočtem): nejlepší páry podle IS t: ma_cross:sma/30/200/confirm+rsi:50 · opp · long; ma_cross:sma/30/200/confirm+atrhi:0.7 · opp · long; ma_cross:sma/30/200/confirm+ema:100 · opp · long; ma_cross:sma/30/200/confirm+fngg:55 · opp · long; ma_cross:sma/30/200/confirm+atrhi:0.3 · opp · long; ma_cross:sma/30/200/confirm+fngg:40 · opp · long + druhý filtr (všechny skupiny kromě skupiny prvního filtru) + sousední hodnoty prvního filtru.
-- Další díl: **deep 2H**.
+- Hotových dílů: **14**, testovaných kombinací celkem (vč. samotných spouštěčů): **2850** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
+- Poslední díl 14: **deep 2H**, 196 kombinací + 1 spouštěčů samotných, 3 s; základní pravidlo splnilo 0, prošlo vč. citlivosti a režimů 0.
+- Mřížka (stanovena před výpočtem): nejlepší páry podle IS t: ma_cross:sma/20/200/confirm+rsi:55 · opp · long; ma_cross:sma/20/200/confirm+macd:sig · opp · long; ma_cross:sma/20/200/confirm+rsi:50 · opp · long; ma_cross:sma/20/200/confirm+rsi:45 · opp · long; ma_cross:sma/20/200/confirm+ema:200 · opp · long; ma_cross:sma/20/200/confirm+ema:100 · opp · long + druhý filtr (všechny skupiny kromě skupiny prvního filtru) + sousední hodnoty prvního filtru.
+- Další díl: **deep 4H**.
 
 ## Combo strategie v registru (10 aktivních, limit 10)
 
@@ -236,12 +236,12 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 
 ## Proč neprošly (nejčastější důvody)
 
-- pod p95 náhody: 2283×
-- OOS t < 2: 1975×
-- neporáží spouštěč o 0,05 R: 1727×
-- HOLDOUT ≤ 0: 804×
-- OOS ≤ 0: 469×
-- málo obchodů: 279×
+- pod p95 náhody: 2474×
+- OOS t < 2: 2104×
+- neporáží spouštěč o 0,05 R: 1803×
+- HOLDOUT ≤ 0: 933×
+- OOS ≤ 0: 476×
+- málo obchodů: 292×
 - IS ≤ 0: 178×
 - reg: bez zlepšení v IS: 5×
 

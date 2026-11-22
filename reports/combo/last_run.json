@@ -1,29 +1,29 @@
 {
- "time": "2026-11-21T21:40:54+00:00",
+ "time": "2026-11-22T21:39:56+00:00",
  "changes": [],
  "error": null,
  "part": {
-  "no": 13,
+  "no": 14,
   "kind": "deep",
-  "tf": "1h",
+  "tf": "2h",
   "groups": null,
   "grid": {
    "base_pairs": [
-    "ma_cross:sma/30/200/confirm+rsi:50 · opp · long",
-    "ma_cross:sma/30/200/confirm+atrhi:0.7 · opp · long",
-    "ma_cross:sma/30/200/confirm+ema:100 · opp · long",
-    "ma_cross:sma/30/200/confirm+fngg:55 · opp · long",
-    "ma_cross:sma/30/200/confirm+atrhi:0.3 · opp · long",
-    "ma_cross:sma/30/200/confirm+fngg:40 · opp · long"
+    "ma_cross:sma/20/200/confirm+rsi:55 · opp · long",
+    "ma_cross:sma/20/200/confirm+macd:sig · opp · long",
+    "ma_cross:sma/20/200/confirm+rsi:50 · opp · long",
+    "ma_cross:sma/20/200/confirm+rsi:45 · opp · long",
+    "ma_cross:sma/20/200/confirm+ema:200 · opp · long",
+    "ma_cross:sma/20/200/confirm+ema:100 · opp · long"
    ],
    "second_filter_groups": "všechny skupiny kromě skupiny prvního filtru"
   },
-  "n_combos": 306,
+  "n_combos": 196,
   "n_baselines": 1,
-  "n_tests": 307,
-  "started": "2026-11-21T21:40:54+00:00",
+  "n_tests": 197,
+  "started": "2026-11-22T21:39:57+00:00",
   "status": "hotovo",
-  "seconds": 5,
+  "seconds": 3,
   "n_basic": 0,
   "n_passed": 0
  },

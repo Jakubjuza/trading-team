@@ -95,12 +95,12 @@ Pravidla:
   všech variantách (rolling 3 roky: smart DCA vyhrál v 0–20 % období) – test v chatu 26. 10. 2026.
 
 <!-- combo-study:start -->
-- **Kombinace: filtr ATR (atrhi) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 12H** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 10, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 2H** – průměrně zhoršil OOS spouštěčů o -0,22 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,21 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 6H** – průměrně zhoršil OOS spouštěčů o -0,18 R (n spouštěčů 12, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
-- **Kombinace: filtr F&G (fng) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,17 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-21.
+- **Kombinace: filtr ATR (atrhi) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-22.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 12H** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 10, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-22.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 2H** – průměrně zhoršil OOS spouštěčů o -0,22 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-22.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,21 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-22.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 6H** – průměrně zhoršil OOS spouštěčů o -0,18 R (n spouštěčů 12, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-22.
+- **Kombinace: filtr F&G (fng) jako potvrzení na 4H** – průměrně zhoršil OOS spouštěčů o -0,17 R (n spouštěčů 11, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-22.
 <!-- combo-study:end -->
 
 ## 🧪 Vnější důkazy (u nás neověřeno)
