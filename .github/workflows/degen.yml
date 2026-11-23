@@ -1,0 +1,79 @@
+name: Degen City – meme coiny (papír)
+
+# 🐸 Samostatné papírové město meme coinů na Solaně (degen/). ODDĚLENÉ od desku i Agentownu –
+# na skener, registr, riziko, demo ani peníze nesahá. Jeden běh ~5,5 h, průchod každých ~30 s,
+# na konci se sám znovu spustí (jako skener). Silné signály jdou na Telegram, jen jako papír.
+# HELIUS_API_KEY (zdarma na helius.dev) zapne plný on-chain rozbor; bez něj veřejné RPC s nízkým limitem.
+on:
+  schedule:
+    - cron: "17 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "Délka běhu v minutách (testovací běh = 3)"
+        default: "330"
+      telegram:
+        description: "Posílat upozornění na Telegram"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: degen-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  city:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r degen/requirements.txt
+      - name: Testy Degen City
+        run: python3 -m pytest degen/tests -q
+      - uses: actions/cache/restore@v4
+        with:
+          path: degen/cache
+          key: degen-state-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: degen-state-${{ github.ref_name }}-
+      - name: Průchody každých ~30 s
+        env:
+          HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DEGEN_TG: ${{ (github.event_name == 'schedule' || inputs.telegram) && github.ref_name == 'main' && '1' || '0' }}
+          MINUTES: ${{ inputs.minutes || '330' }}
+        run: |
+          git config user.name "trading-team degen"
+          git config user.email "degen@users.noreply.github.com"
+          end=$((SECONDS + MINUTES * 60))
+          last_commit=$SECONDS
+          while [ $SECONDS -lt $end ]; do
+            start=$SECONDS
+            timeout 120 python3 -m degen.city --once || echo "průchod selhal, pokračuji"
+            if [ $((SECONDS - last_commit)) -ge 900 ] || [ $SECONDS -ge $((end - 40)) ]; then
+              git add degen/city.json degen/persist.json 2>/dev/null; [ -f degen/trades.jsonl ] && git add degen/trades.jsonl
+              if ! git diff --cached --quiet; then
+                git commit -q -m "degen: stav města meme coinů"
+                for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done
+              fi
+              last_commit=$SECONDS
+            fi
+            sleep $(( 30 - (SECONDS - start) > 1 ? 30 - (SECONDS - start) : 1 ))
+          done
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: degen/cache
+          key: degen-state-${{ github.ref_name }}-${{ github.run_id }}
+      - name: Znovu spustit (navazující běh)
+        if: ${{ always() && github.ref_name == 'main' && (github.event_name == 'schedule' || inputs.minutes == '330') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run degen.yml --ref main
