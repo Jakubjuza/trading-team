@@ -1,13 +1,13 @@
 # 🐸 Degen City – papírové město meme coinů
 
-Samostatné město mimo desk. Vlastní kód (`degen/`) a vlastní workflow (`.github/workflows/degen.yml`). V Agentownu (https://claude.ai/artifact/HQXaGfrfq9XZhVcnFMmYi8) je to vlastní plovoucí ostrov **Degentown** bez mostu do ostatních čtvrtí (záložka Degentown, databáze `degen/state`). Záložní samostatná stránka: https://claude.ai/artifact/U3cHeroX6NrRWonhU31Zk6 (databáze `city/state`). Na skener, registr, riziko, demo účet ani peníze nesahá. Jen papír a upozornění na Telegram; nakupovat se dá jen ručně (např. přes vlastního Telegram bota).
+Samostatné město mimo desk. Vlastní kód (`degen/`) a vlastní workflow (`.github/workflows/degen.yml`). V Agentownu (https://claude.ai/artifact/HQXaGfrfq9XZhVcnFMmYi8) je to vlastní plovoucí ostrov **Degentown** bez mostu do ostatních čtvrtí (záložka Degentown, databáze `degen/state`). Na skener, registr, riziko, demo účet ani peníze nesahá. Jen papír a upozornění na Telegram; nakupovat se dá jen ručně (např. přes vlastního Telegram bota).
 
 Založeno 23. 11. 2026 na přání uživatele podle screenshotu „QuantumOrb / Solana bot“ (tvrzení +10 847 $ za 21 dní nejde ověřit, proto se tu všechno měří papírově a proti kontrolní skupině).
 
 ## Jak to běží
 
 - GitHub Actions: jeden běh ~5,5 h, průchod každých ~30 s, na konci se sám znovu spustí; záloha cron každé 2 h. Stav v cache (`degen/cache/state.json`), malá záloha v gitu (`degen/persist.json`), přehled pro stránku `degen/city.json` (commit každých 15 min), uzavřené obchody `degen/trades.jsonl`.
-- Agentown (kolekce `degen`, dokument `state`) se plní z `degen/city.json` naplánovanou úlohou (každou hodinu, celý soubor beze změn).
+- Agentown (kolekce `degen`, dokument `state`) se plní z `degen/city.json` naplánovanou úlohou „Degentown – přenos dat do Agentownu“ (každou hodinu, celý soubor beze změn; notifikace jen když přepočet stojí 6 h).
 - Ostrov Degentown v Agentownu: kulatý bonbónový ostrov s kupolí (střed x 0, z 340, bez mostu), raketa na rampě, Měsíc, orb posledních 400 coinů (blíž středu = vyšší skóre, zelená 85+, červená veto), pět budov = pět účtů (výška podle stavu účtu) a pobíhající vlastní meme zvířátka (žabáci, kočky, pejsci, křečci, tučňáci s brýlemi, čepicemi a řetězy).
 - Testovací běh: push na větev `claude/**` se změnou v `degen/` spustí 4minutový běh bez Telegramu.
 
