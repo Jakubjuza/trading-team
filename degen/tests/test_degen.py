@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from degen import city, onchain, paper, score, sources
+from degen import city, onchain, paper, postmortem, safety, score, sources
 
 MINT = "MiNT1111111111111111111111111111111111111pump"
 
@@ -112,6 +112,9 @@ def test_run_once_offline(tmp_path, monkeypatch):
         "top10": 0.12, "bundle": 0.01, "dev": 0.02, "buyers": [{"w": "W1", "slot": 1, "amt": 1}], "creator": "DEV",
         "funders": {"shared_max": 1, "creator_funded": False}})
     monkeypatch.setattr(city.tg, "send", lambda *a, **k: True)
+    monkeypatch.setattr(safety, "check", lambda rpc, t, with_rugcheck=True: {"checked": True, "vetoes": [], "danger": []})
+    monkeypatch.setattr(postmortem, "run", lambda rpc, t, n_tx=30, deadline=None: {
+        "cause": "dev", "text": "x", "sellers": 1, "dev_share": 1, "insider_share": 0, "top_share": 1, "liq_drop": None, "tx": 3})
     c1 = city.run_once(dry=True, now=now)
     assert c1["stack"][0]["verdict"] == "SKIP"            # tempo zatím 0 → pod 85
     c2 = city.run_once(dry=True, now=now + 30)             # MC 3× → skóre ≥ 85 → příkaz
@@ -122,3 +125,48 @@ def test_run_once_offline(tmp_path, monkeypatch):
     assert len(acc["filtr"]["open"]) == 1 and acc["filtr"]["cash"] < paper.START
     json.dumps(c3)
     assert (tmp_path / "persist.json").exists()
+
+
+def test_safety_mint_vetoes():
+    info = {"value": {"owner": safety.TOKEN_2022, "data": {"parsed": {"info": {
+        "mintAuthority": None, "freezeAuthority": "DEV",
+        "extensions": [{"extension": "permanentDelegate"}, {"extension": "transferFeeConfig",
+                        "state": {"newerTransferFee": {"transferFeeBasisPoints": 900}}}, {"extension": "metadataPointer"}]}}}}}
+    m = safety.parse_mint(info)
+    v = safety.mint_vetoes(m)
+    assert any("freeze" in x for x in v) and any("delegát" in x for x in v) and any("poplatek" in x for x in v)
+    clean = safety.parse_mint({"value": {"data": {"parsed": {"info": {"mintAuthority": None, "freezeAuthority": None}}}}})
+    assert safety.mint_vetoes(clean) == []
+
+
+def test_safety_lp_only_outside_pump():
+    rc = {"lp_locked": 0.0, "risks": []}
+    graduated = {"graduated": True, "dexes": ["raydium"]}
+    assert safety.lp_vetoes("AbcRaydiumToken111", graduated, rc)
+    assert safety.lp_vetoes("Abc111pump", graduated, rc) == []                       # pump.fun: LP spálené
+    assert safety.lp_vetoes("AbcRaydiumToken111", graduated, {"lp_locked": 100.0}) == []
+    assert safety.lp_vetoes("AbcRaydiumToken111", graduated, None)                    # nejde ověřit → nekoupit
+
+
+def test_postmortem_classify_dev_and_pool():
+    mk = lambda d: {"slot": 1, "time": 1, "signer": "x", "deltas": d}  # noqa: E731
+    txs = [mk({"POOL": (1e7), "DEV": -1e7}), mk({"POOL": 5e6, "DEV": -5e6}), mk({"POOL": 1e6, "A": -1e6}),
+           mk({"POOL": -2e6, "B": 2e6})]
+    r = postmortem.classify(txs, "DEV", set())
+    assert r["cause"] == "dev" and r["sellers"] == 2
+    r2 = postmortem.classify(txs, "ZZZ", {"DEV"})
+    assert r2["cause"] == "insider"
+    r3 = postmortem.classify(txs, "DEV", set(), liq_hist=[50000, 48000, 3000], pump_origin=False)
+    assert r3["cause"] == "lp"
+
+
+def test_postmortem_learns_veto():
+    xs = [{"crash": True, "f": {"dev5": True}} for _ in range(45)] + [{"crash": False, "f": {"dev5": True}} for _ in range(5)]
+    xs += [{"crash": i % 2 == 0, "f": {"dev5": False}} for i in range(150)]
+    p0, n0, table = postmortem.learn(xs)
+    row = next(r for r in table if r["key"] == "dev5")
+    assert row["state"] == "veto" and n0 == 200
+    assert postmortem.learned_vetoes(table, {"dev5": True})
+    assert postmortem.learned_vetoes(table, {"dev5": False}) == []
+    tok = {"score_mcap": 10000, "analyzed": 100, "hist": [[120, 9000, None], [200, 2500, None]]}
+    assert postmortem.crash_label(tok, 300) is True

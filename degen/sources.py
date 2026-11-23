@@ -234,5 +234,5 @@ class Rpc:
         return r or []
 
     def tx(self, sig):
-        return self.call("getTransaction", [sig, {"encoding": "jsonParsed", "maxSupportedTransactionVersion": 0,
+        return self.call("getTransaction", [sig, {"encoding": "jsonParsed", "maxSupportedTransactionVersion": 1,
                                                    "commitment": "confirmed"}])
