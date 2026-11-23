@@ -323,6 +323,36 @@
    },
    "added": "ai14",
    "reason": "přidáno"
+  },
+  {
+   "n": 15,
+   "date": "2026-11-23",
+   "focus": "jen long",
+   "seed": 20261123,
+   "tested": 4066,
+   "top_oos_ok": 20,
+   "random_oos_ok": 0,
+   "candidates": 5,
+   "best": "LONG když od EMA200 (ATR) > 70. percentil (2.54) a hodina UTC > 50. percentil (12.00) a výnos 1 h (σ) > 60. percentil (0.17) · stop 3,0 ATR · držení 32 h",
+   "best_splits": {
+    "is": {
+     "n": 3371,
+     "mean_r": 0.207,
+     "t": 7.48
+    },
+    "oos": {
+     "n": 1097,
+     "mean_r": 0.113,
+     "t": 2.76
+    },
+    "hold": {
+     "n": 890,
+     "mean_r": 0.078,
+     "t": 1.49
+    }
+   },
+   "added": "ai15",
+   "reason": "přidáno"
   }
  ],
  "registry": [
@@ -681,6 +711,52 @@
      "n": 886,
      "mean_r": 0.079,
      "t": 1.55
+    }
+   }
+  },
+  {
+   "id": "ai15",
+   "name": "AI #15 · jen long",
+   "round": 15,
+   "focus": "jen long",
+   "added": "2026-11-23",
+   "genome": {
+    "conds": [
+     [
+      "ema200",
+      ">",
+      0.7
+     ],
+     [
+      "hour",
+      ">",
+      0.5
+     ],
+     [
+      "r1z",
+      ">",
+      0.6
+     ]
+    ],
+    "dir": 1,
+    "hold": 32,
+    "stop": 3.0
+   },
+   "splits_at_add": {
+    "is": {
+     "n": 3371,
+     "mean_r": 0.207,
+     "t": 7.48
+    },
+    "oos": {
+     "n": 1097,
+     "mean_r": 0.113,
+     "t": 2.76
+    },
+    "hold": {
+     "n": 890,
+     "mean_r": 0.078,
+     "t": 1.49
     }
    }
   }
