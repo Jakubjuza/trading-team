@@ -50,3 +50,4 @@
 {"strat": "opice", "mint": "56shLmMehSqAcwoJxiQh6vU4c7ExcZFvHUTvnr6dpump", "symbol": "$GUESSWHO", "open": 1795465243.3658955, "close": 1795472460.7650585, "pnl": 5.38, "ret": 31.7, "why": "čas", "score": 55, "peak_x": 1.43, "entry_mcap": 21073}
 {"strat": "opice", "mint": "EAB4smDbHzDaPfjPRn1B6CMEtH7RitrudmFLW6Lapump", "symbol": "BGO", "open": 1795473031.4310517, "close": 1795473121.5224504, "pnl": -10.09, "ret": -62.7, "why": "stop", "score": null, "peak_x": 1.29, "entry_mcap": 7419}
 {"strat": "opice", "mint": "DK2qpthjzPZo46pBDvvDsKaeap8gMMcivcmERT2epump", "symbol": "Monkey", "open": 1795472910.6099865, "close": 1795473271.185157, "pnl": 10.86, "ret": 67.9, "why": "trailing", "score": null, "peak_x": 2.55, "entry_mcap": 5676}
+{"strat": "opice", "mint": "8hbgGTyFw4P8hEMmLbudYqcGzENb952wAa4xs2tFpump", "symbol": "STENKS", "open": 1795467479.856706, "close": 1795474697.7931554, "pnl": -1.58, "ret": -9.6, "why": "čas", "score": 27, "peak_x": 1.0, "entry_mcap": 8794}
