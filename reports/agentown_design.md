@@ -486,3 +486,15 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Revize prázdných stavů podle Carbonu (bod 3) – stávající prázdné stavy už vysvětlují, kdy data dorazí; projít je všechny najednou jako samostatný běh.
 - Hovercard / drill-down / světlý režim komponent (bod 4) – hovercard je podobný odloženým interest invokers; světlý režim důvody beze změny.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, porovnání pro Downtown, deep linking, benchmark BTC, CAGR, bump chart, odznaky, toasty – důvody beze změny (viz 5.–22. 11.).
+
+## 2026-11-23 – nové město Degentown (na přání uživatele)
+
+**Zadání**: meme coinové město jako další „bublina“ v Agentownu, jiné vzhledem, s pobíhajícími postavičkami, ale nespojené s ostatními čtvrtěmi.
+
+**Změněno**
+- Plovoucí kulatý ostrov Degentown (střed x 0, z 340, kupole r 58) **bez mostu**: tráva, fialová bonbónová skála s krystaly, lízátkové stromy, pěšiny, raketa na rampě (každých 24 s odstartuje), Měsíc, orb posledních 400 coinů z dat, nápis DEGENTOWN pixelovým písmem (Press Start 2P).
+- Pět budov = pět papírových účtů Degen City (Laboratoř skóre, Velrybí věž, Univerzita, Radnice, Klec opice), výška podle stavu účtu, cedulky s % a počtem obchodů.
+- 18 vlastních jednoduchých zvířátek (žabák, kočka, pejsek, křeček, tučňák; brýle, čepice, řetěz) chodí po ostrově; žádné známé meme postavy ani loga.
+- Záložka Degentown v horní liště a v paletě (Ctrl K), tabule s účty, rozhodovacím stackem, páskou obchodů, novými coiny, chytrými peněženkami, kalibrací a pravidly. Data z nové kolekce `degen` (dokument `state` = degen/city.json).
+
+**Ověření**: Playwright s Three.js r160 (z GitHubu) a SwiftShader, 1280 a 375 px: bez chyb konzole, tabule bez vodorovného posunu, „Ukázat ve městě“ přeletí na ostrov. Ostatní čtvrti, kolekce a capabilities beze změny. Publikováno jako „Degentown 23. 11.“ (verze 43).

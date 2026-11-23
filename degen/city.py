@@ -398,7 +398,7 @@ def alert(st, events, now, dry):
             f"CA: <code>{tg.h(mint)}</code>",
             "⚠️ Papírový test, ne rada. Většina meme coinů jde k nule – ruční nákup jen s penězi, které můžeš ztratit.",
         ]
-        btns = tg.links(mint) + ([("🐸 Degen City", os.environ["DEGEN_PAGE_URL"])] if os.environ.get("DEGEN_PAGE_URL") else [])
+        btns = tg.links(mint) + ([("🐸 Degentown", os.environ["DEGEN_PAGE_URL"])] if os.environ.get("DEGEN_PAGE_URL") else [])
         tg.send("\n".join(x for x in lines if x), btns) if not dry else print("\n".join(lines))
         st["alerts"].append(now)
 
