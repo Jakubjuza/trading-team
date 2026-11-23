@@ -2,10 +2,10 @@
 
 Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných rodin nebo kontextu. Metoda, filtry a pravidla jsou stanoveny předem v hlavičce `research/experiments/combo_study.py`; data, náklady (MEXC 0,05 %/stranu), simulace a dělení IS (do 12/2023) / OOS (1/2024–6/2025) / HOLDOUT (7/2025–) jsou stejné jako v atlasu. Papírově, nic nejde na skutečné peníze. Nejde o finanční poradenství.
 
-- Hotových dílů: **14**, testovaných kombinací celkem (vč. samotných spouštěčů): **2850** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
-- Poslední díl 14: **deep 2H**, 196 kombinací + 1 spouštěčů samotných, 3 s; základní pravidlo splnilo 0, prošlo vč. citlivosti a režimů 0.
-- Mřížka (stanovena před výpočtem): nejlepší páry podle IS t: ma_cross:sma/20/200/confirm+rsi:55 · opp · long; ma_cross:sma/20/200/confirm+macd:sig · opp · long; ma_cross:sma/20/200/confirm+rsi:50 · opp · long; ma_cross:sma/20/200/confirm+rsi:45 · opp · long; ma_cross:sma/20/200/confirm+ema:200 · opp · long; ma_cross:sma/20/200/confirm+ema:100 · opp · long + druhý filtr (všechny skupiny kromě skupiny prvního filtru) + sousední hodnoty prvního filtru.
-- Další díl: **deep 4H**.
+- Hotových dílů: **15**, testovaných kombinací celkem (vč. samotných spouštěčů): **3082** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
+- Poslední díl 15: **deep 4H**, 230 kombinací + 2 spouštěčů samotných, 3 s; základní pravidlo splnilo 1, prošlo vč. citlivosti a režimů 1.
+- Mřížka (stanovena před výpočtem): nejlepší páry podle IS t: macd:19/39/9/signal+rsi:45 · opp · long; ma_cross:sma/10/100/confirm+macd:sig · opp · long; ma_cross:sma/10/100/confirm+rsi:50 · opp · long; macd:19/39/9/signal+rsix:80 · opp · long; ma_cross:sma/10/100/confirm+rsi:60 · opp · long; ma_cross:sma/10/100/confirm+macd:zero · opp · long + druhý filtr (všechny skupiny kromě skupiny prvního filtru) + sousední hodnoty prvního filtru.
+- Další díl: **deep 6H**.
 
 ## Combo strategie v registru (10 aktivních, limit 10)
 
@@ -13,7 +13,7 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 |---|---|---|---|---|---|---|
 | Kombinace: Bollinger průraz 20 2.5 + trend EMA100 · 1H long | papír | +0,18 (+2,6) | +0,33 (+2,3) | +0,11 | býčí, medvědí, boční | 0 obch., Ø – R |
 | Kombinace: Průraz s objemem 55 2.5 + režim side · 1H short | papír | +0,23 (+2,1) | +0,23 (+2,2) | +0,09 | boční | 0 obch., Ø – R |
-| Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,3 · 1H long | papír | +0,22 (+3,4) | +0,32 (+2,8) | +0,11 | býčí, medvědí, boční, panika | 2 obch., Ø -0,47 R |
+| Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,3 · 1H long | papír | +0,22 (+3,4) | +0,32 (+2,8) | +0,11 | býčí, medvědí, boční, panika | 3 obch., Ø -0,42 R |
 | Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,7 · 1H long | papír | +0,26 (+2,7) | +0,38 (+2,7) | +0,11 | býčí, medvědí, boční, panika | 0 obch., Ø – R |
 | Kombinace: Bollinger průraz 50 2.5 + trend EMA200 · 2H long | papír | +0,58 (+2,2) | +0,75 (+2,3) | +0,46 | býčí, medvědí, boční, panika | 0 obch., Ø – R |
 | Kombinace: Bollinger průraz 50 2.5 + denní 50 · 2H long | papír | +0,60 (+2,2) | +1,25 (+2,8) | +0,46 | býčí, boční, panika | 0 obch., Ø – R |
@@ -236,12 +236,12 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 
 ## Proč neprošly (nejčastější důvody)
 
-- pod p95 náhody: 2474×
-- OOS t < 2: 2104×
-- neporáží spouštěč o 0,05 R: 1803×
-- HOLDOUT ≤ 0: 933×
-- OOS ≤ 0: 476×
-- málo obchodů: 292×
+- pod p95 náhody: 2698×
+- OOS t < 2: 2209×
+- neporáží spouštěč o 0,05 R: 1890×
+- HOLDOUT ≤ 0: 1033×
+- OOS ≤ 0: 478×
+- málo obchodů: 306×
 - IS ≤ 0: 178×
 - reg: bez zlepšení v IS: 5×
 
