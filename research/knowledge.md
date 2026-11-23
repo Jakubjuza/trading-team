@@ -93,6 +93,8 @@ Pravidla:
   7/30/90 dní +0,03 až +0,09, pásma neseřazená; slouží jen jako popis nálady – `reports/mood.md` – 26. 10. 2026.
 - **Smart DCA (pool na propady) a lotový DCA bot (TP/SL na každý nákup)** – horší než obyčejné DCA na BTC/ETH/SOL ve
   všech variantách (rolling 3 roky: smart DCA vyhrál v 0–20 % období) – test v chatu 26. 10. 2026.
+- **Vynechat víkendové vstupy (`skip_weekends`) u donchian_1d a pullback_1d (H3)** – OOS +0,06 až +0,10 R, ale IS horší a
+  zlepšení uvnitř CI na datech, z nichž podezření vzniklo – `reports/scanner_review_2026-11-23.md` – 23. 11. 2026.
 
 <!-- combo-study:start -->
 - **Kombinace: filtr ATR (atrhi) jako potvrzení na 1D** – průměrně zhoršil OOS spouštěčů o -0,24 R (n spouštěčů 8, IS také bez zlepšení) – `reports/combo_study.md` – 2026-11-22.
@@ -179,7 +181,7 @@ Pravidla:
 |---|---|---|---|---|
 | H1 | Long signál při 7denním fundingu > 30 % p.a. dopadá hůř než ostatní longy (→ snížit stupeň / vynechat) | BIS WP 1087 | funding Hyperliquid ~1 rok – málo signálů | čeká na data |
 | H2 | Prudký nárůst pozornosti (Google Trends / Wikipedie) před signálem zhoršuje výsledek longu | Liu & Tsyvinski 2021 | chybí zdroj dat | čeká na data |
-| H3 | Vstupy ze sobotní/nedělní denní svíčky (UTC) dopadají hůř; varianta `skip_weekends: true` zvlášť pro pullback_1d a donchian_1d (jiné parametry se nemění) zlepší OOS Ø R o ≥ 0,05 R při ≥ 100 OOS obchodech a výhodě nad náhodou | vlastní pohled 25. 10. 2026: pullback OOS všední +0,11 vs. víkend −0,22 ± 0,25 R (n=122), Donchian +0,28 vs. +0,07 ± 0,31 (n=75); za 10 let bez rozdílu (víkend +0,44 / +0,22) – jen podezření, ne důkaz | denní data 8 mincí 2016–2026 (`scanner/evaluate.py`) | k testu v rutině „Kontrola a ladění skeneru“ |
+| H3 | Vstupy ze sobotní/nedělní denní svíčky (UTC) dopadají hůř; varianta `skip_weekends: true` zvlášť pro pullback_1d a donchian_1d (jiné parametry se nemění) zlepší OOS Ø R o ≥ 0,05 R při ≥ 100 OOS obchodech a výhodě nad náhodou | vlastní pohled 25. 10. 2026: pullback OOS všední +0,11 vs. víkend −0,22 ± 0,25 R (n=122), Donchian +0,28 vs. +0,07 ± 0,31 (n=75); za 10 let bez rozdílu (víkend +0,44 / +0,22) – jen podezření, ne důkaz | denní data 8 mincí 2016–2026 (`scanner/evaluate.py`) | **neprošla** 23. 11. 2026: OOS Donchian +0,153 → +0,255 ± 0,22 R (n=147, náhoda +0,10), pullback +0,136 → +0,200 ± 0,20 R (n=196, náhoda +0,10), obě poloviny OOS i 8/8 a 7/8 mincí lepší, ale IS horší (−0,015 / −0,022 R) a OOS je stejný úsek, z něhož podezření vzniklo → config beze změny; opakovat jen na nových datech – `reports/scanner_review_2026-11-23.md` |
 | H4 | Sweep & reclaim na 1H (propíchnutí min/max 12 h a zavření zpět do 2 h) jako vstup pro denní signál je lepší než dnešní 1H vstup | video „timeframe ladder“ (raventraders) – jen tip | 15M OKX 11/2024–10/2026 | **neprošla** 25. 10. 2026: −0,03 ± 0,19 R/signál vs. C, IS −0,06 – `reports/mtf15.md` |
 | H5 | Spouštěč na 15M (1H close vs EMA20 → 15M dotek EMA20 → 15M obratová svíčka) je lepší než dnešní 1H vstup | test 25. 10. 2026 (`reports/mtf15.md`) | nová data od 26. 10. 2026 | nerozhodnuto: celé období +0,28 R/signál, OOS −0,15 vs. +0,12 – rozhodnout na nových datech (papírově) |
 | H6 | Donchian: celá pozice bez výběru na T1, držení až 60 dní, trailing 4 ATR, bez víkendových vstupů (pullback beze změny) má lepší poměr zisku k propadu než dnešní výstup | optimalizace 25. 10. 2026 (`reports/optimize.md`) – vzorec vybraný ve všech 5 krocích walk-forwardu, ale celý postup výběru dnešek neporazil | nová data od 26. 10. 2026 | nerozhodnuto – rozhodnout na nových datech (papírově) |
