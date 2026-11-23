@@ -45,6 +45,12 @@ jobs:
           path: degen/cache
           key: degen-state-${{ github.ref_name }}-${{ github.run_id }}
           restore-keys: degen-state-${{ github.ref_name }}-
+      - name: Diagnostika zdrojů (jen testovací běh)
+        if: ${{ github.event_name == 'push' }}
+        continue-on-error: true
+        env:
+          HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
+        run: timeout 120 python3 -m degen.probe
       - name: Průchody každých ~30 s
         env:
           HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
