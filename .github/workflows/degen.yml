@@ -5,6 +5,9 @@ name: Degen City – meme coiny (papír)
 # na konci se sám znovu spustí (jako skener). Silné signály jdou na Telegram, jen jako papír.
 # HELIUS_API_KEY (zdarma na helius.dev) zapne plný on-chain rozbor; bez něj veřejné RPC s nízkým limitem.
 on:
+  push:
+    branches: ["claude/**"]
+    paths: ["degen/**", ".github/workflows/degen.yml"]
   schedule:
     - cron: "17 */2 * * *"
   workflow_dispatch:
@@ -48,7 +51,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DEGEN_TG: ${{ (github.event_name == 'schedule' || inputs.telegram) && github.ref_name == 'main' && '1' || '0' }}
-          MINUTES: ${{ inputs.minutes || '330' }}
+          MINUTES: ${{ inputs.minutes || (github.event_name == 'push' && '4') || '330' }}
         run: |
           git config user.name "trading-team degen"
           git config user.email "degen@users.noreply.github.com"
