@@ -135,7 +135,8 @@ def analyze(rpc, tok, with_funders=True, deadline=None):
     res = {"t_sigs": len(sigs), "full_history": full_history, "top10": top10,
            "bundle": flow["bundle_share"] if flow else None, "dev": flow["dev_share"] if flow else None,
            "bundled_wallets": flow["bundled_wallets"] if flow else None,
-           "buyers": flow["buyers"] if flow else [], "creator": (flow or {}).get("creator") or tok.get("creator")}
+           "buyers": flow["buyers"] if flow else [], "creator": (flow or {}).get("creator") or tok.get("creator"),
+           "curve_owner": (flow or {}).get("curve_owner")}
     if with_funders and flow and rpc.left() > 50 and (deadline is None or time.time() < deadline):
         funders = {}
         for b in flow["buyers"][:FUNDER_WALLETS]:

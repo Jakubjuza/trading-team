@@ -18,7 +18,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from degen import onchain, paper, score, sources, tg  # noqa: E402
+from degen import onchain, paper, postmortem, safety, score, sources, tg  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 STATE = ROOT / "cache" / "state.json"
@@ -77,6 +77,13 @@ def init_state(st):
     st.setdefault("hourly", {})
     st.setdefault("alerts", [])
     st.setdefault("cycle", 0)
+    st.setdefault("pitva", [])
+    st.setdefault("pitva_queue", [])
+    st.setdefault("pitva_counts", {})
+    st.setdefault("crash_samples", [])
+    st.setdefault("learned", [])
+    st.setdefault("learn_log", [])
+    st.setdefault("safety_stats", {"checked": 0, "vetoed": 0, "unverified": 0, "reasons": {}})
     acc = st.setdefault("accounts", {})
     for k, *_ in STRATS:
         acc.setdefault(k, paper.new_account(k))
@@ -164,7 +171,7 @@ def track(st, now):
             t["grad_at"] = v.get("grad_at") or now
         h = t.setdefault("hist", [])
         if not h or now - h[-1][0] >= 60:
-            h.append([int(now), round(v["mcap"])])
+            h.append([int(now), round(v["mcap"]), round(v["liq"]) if v.get("liq") else None])
             if len(h) > 200:
                 t["hist"] = h[-200:]
     return mk
@@ -180,7 +187,9 @@ def rescore(st, tok, now):
     s, complete = score.total(ch)
     tok["ch"] = {k: (None if v is None else round(v, 2)) for k, v in ch.items()}
     tok["score"], tok["complete"] = s, complete
-    tok["vetoes"] = score.vetoes(tok.get("chain"), creator_count(st, tok))
+    tok["vetoes"] = (score.vetoes(tok.get("chain"), creator_count(st, tok))
+                     + postmortem.learned_vetoes(st.get("learned") or [], tok.get("feat"))
+                     + list((tok.get("safety") or {}).get("vetoes") or []))
     return s
 
 
@@ -219,6 +228,7 @@ def analyze_step(st, rpc, now, deadline=None):
         t["analyzed"] = now
         t["chain"] = chain or {}
         t["score_mcap"] = (t.get("mkt") or {}).get("mcap")
+        t["feat"] = postmortem.features(t, creator_count(st, t), now)
         done += 1
         hb["analyzed"] += 1
         rescore(st, t, now)
@@ -273,7 +283,35 @@ def signals_step(st, now):
     return sig
 
 
-def trade_step(st, mk, sig, now):
+def safety_gate(st, rpc, t, key, now, deadline):
+    """True = smí se koupit. Opice se kontroluje taky (měření), ale nákup se jí neblokuje."""
+    if "safety" not in t:
+        if rpc.left() < 10 or time.time() > deadline:
+            return key == "opice"
+        t["safety"] = safety.check(rpc, t)
+        ss = st["safety_stats"]
+        ss["checked"] += 1
+        if not t["safety"]["checked"]:
+            ss["unverified"] += 1
+        if t["safety"]["vetoes"]:
+            ss["vetoed"] += 1
+            for v in t["safety"]["vetoes"]:
+                k = v.split(" – ")[0].split(" (")[0][:60]
+                ss["reasons"][k] = ss["reasons"].get(k, 0) + 1
+        rescore(st, t, now)
+    if key == "opice":
+        return True
+    sf = t["safety"]
+    if sf["vetoes"] or not sf["checked"]:
+        if not t.get("safety_logged"):
+            t["safety_logged"] = True
+            hour_bucket(st, now)["vetoed"] += 1
+            push_stack(st, t, "VETO", "🛡️ " + (sf["vetoes"][0] if sf["vetoes"] else "bezpečnost mintu nejde ověřit"), now)
+        return False
+    return not t.get("vetoes")
+
+
+def trade_step(st, mk, sig, now, rpc=None, deadline=None):
     marks = {m: v["mcap"] for m, v in mk.items()}
     hb = hour_bucket(st, now)
     events, closed_all = [], []
@@ -288,8 +326,16 @@ def trade_step(st, mk, sig, now):
             st["tape"].append({"t": int(now), "kind": "sell", "strat": key, "symbol": c["symbol"], "mint": c["mint"],
                                "pnl": c["pnl"], "ret": c["ret"], "why": c["why"]})
             closed_all.append(c)
+            if c["ret"] <= -30:
+                st["pitva_queue"].append({"mint": c["mint"], "t": int(now), "why": f"{dict((k, n) for k, n, *_ in STRATS)[key]} {c['ret']:.0f} %",
+                                          "strat": key, "ret": c["ret"]})
+    deadline = deadline or (time.time() + 20)
     for key, t in sig:
         acc = st["accounts"][key]
+        if t["mint"] in acc["open"] or t["mint"] in acc["pending"] or t["mint"] in acc.get("done", {}):
+            continue
+        if rpc is not None and not safety_gate(st, rpc, t, key, now, deadline):
+            continue
         if paper.order(acc, t["mint"], t.get("symbol") or "?", key, t.get("mkt"), now, t.get("score")):
             hb["signals"] += 1
             events.append((key, t))
@@ -307,7 +353,8 @@ def label_step(st, now):
             continue
         m0 = t["score_mcap"]
         lab = None
-        for ts, mc in t.get("hist", []):
+        for row in t.get("hist", []):
+            ts, mc = row[0], row[1]
             if ts < t["analyzed"]:
                 continue
             if mc >= LABEL_TP * m0:
@@ -323,6 +370,60 @@ def label_step(st, now):
         t["label"] = lab
         st["labels"] = (st["labels"] + [{"t": int(now), "score": t.get("score"), "complete": t.get("complete"),
                                           "veto": bool(t.get("vetoes")), "ch": t.get("ch"), "label": lab}])[-5000:]
+
+
+def crash_step(st, now):
+    """Štítek „rychlý pád“ pro učení + zařazení pádů do pitvy (max 12 za hodinu)."""
+    recent = [q for q in st["pitva"][-40:] if now - q["t"] < 3600] + [q for q in st["pitva_queue"] if now - q["t"] < 3600]
+    for t in st["tokens"].values():
+        if not t.get("analyzed") or "crash" in t or not t.get("feat"):
+            continue
+        c = postmortem.crash_label(t, now)
+        if c is None:
+            continue
+        t["crash"] = c
+        st["crash_samples"] = (st["crash_samples"] + [{"t": int(now), "crash": c, "f": t["feat"]}])[-4000:]
+        if c and len(recent) < 12 and not any(q["mint"] == t["mint"] for q in st["pitva_queue"]):
+            st["pitva_queue"].append({"mint": t["mint"], "t": int(now), "why": "rychlý pád po rozboru"})
+            recent.append(st["pitva_queue"][-1])
+    old = {r["key"]: r["state"] for r in st.get("learned") or []}
+    p0, n0, table = postmortem.learn(st["crash_samples"])
+    st["learned"], st["learn_base"] = table, {"p0": p0, "n": n0}
+    changes = []
+    for r in table:
+        if r["state"] != old.get(r["key"], "sleduje se") and (r["state"] == "veto" or old.get(r["key"]) == "veto"):
+            changes.append(r)
+            st["learn_log"] = (st["learn_log"] + [{"t": int(now), "key": r["key"], "name": r["name"],
+                                                   "from": old.get(r["key"], "sleduje se"), "to": r["state"],
+                                                   "n": r["n"], "k": r["k"], "p0": p0}])[-50:]
+    return changes
+
+
+def pitva_step(st, rpc, now, deadline):
+    done = 0
+    keep = []
+    for q in st["pitva_queue"]:
+        t = st["tokens"].get(q["mint"])
+        if not t or now - q["t"] > 3600:
+            continue
+        if done >= 1 or rpc.left() < 60 or time.time() > deadline - 5:
+            keep.append(q)
+            continue
+        res = postmortem.run(rpc, t, deadline=deadline)
+        done += 1
+        sf = t.get("safety") or {}
+        rec = {"t": int(now), "mint": q["mint"], "symbol": t.get("symbol") or "?", "why": q["why"], "strat": q.get("strat"),
+               "ret": q.get("ret"), "cause": res["cause"], "text": res["text"], "sellers": res["sellers"],
+               "dev_share": res["dev_share"], "insider_share": res["insider_share"], "top_share": res["top_share"],
+               "liq_drop": res["liq_drop"], "tx": res["tx"], "score": t.get("score"),
+               "age_min": round(age(t, now) / 60, 1),
+               "peak_x": round((t.get("peak") or 0) / t["mcap0"], 2) if t.get("mcap0") else None,
+               "feat": [k for k, v in (t.get("feat") or {}).items() if v],
+               "safety": (sf.get("vetoes") or []) + (["RugCheck: " + ", ".join(sf["danger"][:3])] if sf.get("danger") else [])}
+        st["pitva"] = (st["pitva"] + [rec])[-200:]
+        st["pitva_counts"][res["cause"]] = st["pitva_counts"].get(res["cause"], 0) + 1
+    st["pitva_queue"] = keep[-50:]
+    return done
 
 
 def wallet_step(st, now):
@@ -495,13 +596,26 @@ def build_city(st, rpc, now, page_url=None):
                            "shared_funder": score.VETO_SHARED_FUNDER, "serial": score.VETO_SERIAL},
                   "paper": {"start": paper.START, "size": paper.RISK_FRAC, "fee": paper.FEE, "tx": paper.TX_USD,
                             "max_open": paper.MAX_OPEN, "exits": paper.RULES}},
+        "pitva": {
+            "recent": st["pitva"][-25:][::-1], "counts": st["pitva_counts"], "queue": len(st["pitva_queue"]),
+            "causes": postmortem.CAUSES,
+            "learn": {"p0": (st.get("learn_base") or {}).get("p0"), "n": (st.get("learn_base") or {}).get("n", 0),
+                      "rule": f"rychlý pád = MC ≤ {postmortem.CRASH_X * 100:.0f} % ceny při rozboru do {postmortem.CRASH_MIN} min; "
+                              f"veto, když ≥ {postmortem.LEARN_MIN_N} coinů se znakem a dolní mez 95% intervalu > průměr + "
+                              f"{postmortem.LEARN_MARGIN * 100:.0f} bodů",
+                      "table": st.get("learned") or []},
+            "log": st["learn_log"][-10:][::-1],
+            "safety": st["safety_stats"],
+        },
         "note": "Jen papírové obchody a měření. Ne finanční poradenství.",
     }
 
 
 def persist(st):
     """Malá záloha do gitu (přežije ztrátu cache): účty, peněženky s ≥ 2 nákupy, štítky, tvůrci ne."""
-    keep = {k: v for k, v in st.items() if k in ("accounts", "labels", "hourly", "stack", "tape", "summary_day")}
+    keep = {k: v for k, v in st.items() if k in ("accounts", "labels", "hourly", "stack", "tape", "summary_day", "pitva",
+                                                "pitva_counts", "crash_samples", "learned", "learn_base", "learn_log",
+                                                "safety_stats")}
     keep["wallets"] = {w: s for w, s in st["wallets"].items() if s["n"] >= 2}
     keep["labels"] = st["labels"][-3000:]
     keep["tokens"] = {m: t for m, t in st["tokens"].items() if m in open_mints(st)}
@@ -521,10 +635,17 @@ def run_once(dry=False, now=None):
     analyze_step(st, rpc, now, deadline=t0 + 45)
     t3 = time.time()
     sig = signals_step(st, now)
-    events, closed = trade_step(st, mk, sig, now)
+    events, closed = trade_step(st, mk, sig, now, rpc, deadline=t0 + 55)
     label_step(st, now)
+    learned_changes = crash_step(st, now)
+    pitva_step(st, rpc, now, deadline=t0 + 70)
     wallet_step(st, now)
     alert(st, events, now, dry)
+    for r in learned_changes:
+        msg = (f"🐸 <b>DEGENTOWN · {'nové naučené veto' if r['state'] == 'veto' else 'naučené veto zrušeno'}</b>\n{tg.h(r['name'])}\n"
+               f"Rychlý pád u {r['k']}/{r['n']} coinů se znakem ({(r['rate'] or 0) * 100:.0f} %) proti průměru "
+               f"{(st['learn_base']['p0'] or 0) * 100:.0f} %. Platí jen pro papírové účty.")
+        tg.send(msg) if not dry else print(msg)
     daily_summary(st, now, dry)
     prune(st, now)
     STATE.parent.mkdir(parents=True, exist_ok=True)
