@@ -463,3 +463,26 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Skládání tabulek do karet (bod 5) – tabulky Rok po roku a Testy · R se na mobilu vejdou nebo posouvají ve vlastním kontejneru; zvážit pro tabulku Ensemble v Pozicích.
 - Kopírování pro Downtown a Otevřené pozice – jiný tvar karet (ne `accCard`); doplnit, pokud se tlačítko osvědčí.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, interest invokers, deep linking, benchmark BTC, CAGR, bump chart, odznaky – důvody beze změny (viz 5.–21. 11.).
+
+## 2026-11-23 (denní běh designéra)
+
+**Nalezené prvky**
+1. In-app changelog „Co je nového“: jedno stálé místo pro změny + jeden vstup s klidnou tečkou nepřečtených, otevírá ho uživatel (modální okno samo jen u velkých změn), záznamy s datem, skupiny Nové / Vylepšeno / Opraveno, u každé funkce cesta „Vyzkoušet“, poctivý stav přečteno/nepřečteno, který po otevření opravdu zmizí; oddělit od notifikací a logu aktivit – [SaaSUI: SaaS changelog & product updates UX patterns (10. 8. 2026)](https://www.saasui.design/blog/saas-changelog-product-updates-ux-patterns), [Carbon: Show what's new](https://preview.carbondesignsystem.com/building-experiences/onboard/tutorials/show-whats-new-to-maintain-user-engagement), [LaunchNotes: In-app What's New patterns](https://www.launchnotes.com/release-notes/in-app).
+2. Přístupná řaditelná tabulka: `<button>` v `<th>`, `aria-sort` jen na řazeném sloupci, porovnání přes `Intl.Collator` / `data-value`, přesun existujících řádků (`moveBefore()`), jedno skryté `role="status"` oznámení, fokus zůstane na tlačítku – [Chrome for Developers: Sortable table](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/sortable-table.md.txt) (bez data; přehled návodů publikován 10. 11. 2026), [W3C APG: Sortable table example](https://www.w3.org/WAI/ARIA/apg/example-index/table/sortable-table.html).
+3. Prázdné stavy: nahrazují celý prvek (u tabulky i záhlaví), tři typy – bez dat / po akci uživatele / chyba, kladný nadpis, jedna hlavní akce, bez slepých uliček a žargonu, u více prázdných stavů na obrazovce jen terciární tlačítka – [Carbon Design System: Empty states (akt. 11. 8. 2026)](https://carbondesignsystem.com/patterns/empty-states-pattern/).
+4. Nové návody Modern Web Guidance (hovercard, stack drill-down, navigation drawer, component-specific light/dark theme) – [Chrome for Developers: Modern web guidance – guides (10. 11. 2026)](https://developer.chrome.com/docs/modern-web-guidance/guides.md.txt).
+
+**Zapojeno – ✨ Co je nového** (bod 1)
+- Nové tlačítko ✨ v horní liště (jen ikona, vlevo od Prohlídky) s fialovou tečkou, když od poslední návštěvy přibyla změna; popisek pro čtečky „– N nepřečtené“. Nic samo nevyskakuje.
+- Dialog ve stylu Zkratek: záznamy po dnech (15.–23. 11.) s datem, štítkem Nové / Vylepšeno / Opraveno, jednou větou a tlačítkem „Vyzkoušet: Laboratoř / Žebříček / Pozice / Zkratky →“ (klikne na původní tlačítko čtvrti, takže všechny funkce a id zůstávají). U dnů od minulé návštěvy štítek „nové“, nahoře „Od tvé poslední návštěvy: N dny se změnami“. Otevřením se vše označí za přečtené (`localStorage` klíč `agentown-news-seen-v1`, jen tento prohlížeč; bez úložiště se stránka chová, jako by bylo vše nové, nic nespadne).
+- Položka „Co je nového“ v paletě Ctrl K (skupina Nápověda). Esc zavře a vrátí fokus na tlačítko.
+- Obsah jsou jen popisy změn stránky z tohoto logu – žádná čísla ani výsledky strategií. Poznámka v dialogu odkazuje na úplný log v repozitáři.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu stránky, lišty ani dialogu; tečka při první návštěvě → po otevření a i po obnovení stránky zmizí; „Vyzkoušet: Pozice“ otevře Otevřené pozice, „Vyzkoušet: Laboratoř“ otevře Laboratoř; paleta „novinky“ → dialog. Mobilní lišta stejně vysoká jako dřív (137 px). Daň: na 1000 a 1280 px jde do „Více ▾“ o jednu čtvrť víc (7 a 4 místo 6 a 3), na 1600/1920 beze změny. Publikováno jako „Design 23. 11.“ (verze 42).
+
+**Odloženo**
+- Řaditelné tabulky (bod 2) – vhodné pro tabulku Ensemble v Pozicích a „Rok po roku“; ve snímku publikace nejsou pozice (plní je hodinová úloha), takže by se nedalo ověřit s daty. Příště s ukázkovým exportem `research/positions.json`.
+- Revize prázdných stavů podle Carbonu (bod 3) – stávající prázdné stavy už vysvětlují, kdy data dorazí; projít je všechny najednou jako samostatný běh.
+- Hovercard / drill-down / světlý režim komponent (bod 4) – hovercard je podobný odloženým interest invokers; světlý režim důvody beze změny.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, porovnání pro Downtown, deep linking, benchmark BTC, CAGR, bump chart, odznaky, toasty – důvody beze změny (viz 5.–22. 11.).
