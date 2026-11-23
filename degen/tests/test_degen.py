@@ -107,7 +107,7 @@ def test_run_once_offline(tmp_path, monkeypatch):
     monkeypatch.setattr(sources, "pump_latest", lambda: [dict(coin)])
     monkeypatch.setattr(sources, "gecko_new", lambda pages=1: [])
     monkeypatch.setattr(sources, "dex_tokens", lambda mints: {MINT: dict(mkt)} if MINT in mints else {})
-    monkeypatch.setattr(onchain, "analyze", lambda rpc, t, with_funders=True: {
+    monkeypatch.setattr(onchain, "analyze", lambda rpc, t, with_funders=True, deadline=None: {
         "top10": 0.12, "bundle": 0.01, "dev": 0.02, "buyers": [{"w": "W1", "slot": 1, "amt": 1}], "creator": "DEV",
         "funders": {"shared_max": 1, "creator_funded": False}})
     monkeypatch.setattr(city.tg, "send", lambda *a, **k: True)

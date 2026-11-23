@@ -2,6 +2,7 @@
 
 Parsovací funkce jsou čisté (testy v degen/tests). Jeden rozbor stojí ~35–40 RPC dotazů.
 """
+import time
 from collections import Counter
 
 EARLY_TX = 25          # kolik nejstarších transakcí mintu projít
@@ -113,7 +114,7 @@ def funder_stats(funders, creator):
             "creator_funded": bool(creator and creator in vals)}
 
 
-def analyze(rpc, tok, with_funders=True):
+def analyze(rpc, tok, with_funders=True, deadline=None):
     """Plný rozbor; vrací dict nebo None, když RPC nedává data."""
     mint = tok["mint"]
     sigs = [s for s in rpc.sigs(mint, 1000) if s.get("err") is None]
@@ -135,7 +136,7 @@ def analyze(rpc, tok, with_funders=True):
            "bundle": flow["bundle_share"] if flow else None, "dev": flow["dev_share"] if flow else None,
            "bundled_wallets": flow["bundled_wallets"] if flow else None,
            "buyers": flow["buyers"] if flow else [], "creator": (flow or {}).get("creator") or tok.get("creator")}
-    if with_funders and flow and rpc.left() > 50:
+    if with_funders and flow and rpc.left() > 50 and (deadline is None or time.time() < deadline):
         funders = {}
         for b in flow["buyers"][:FUNDER_WALLETS]:
             ws = rpc.sigs(b["w"], FRESH_LIMIT)

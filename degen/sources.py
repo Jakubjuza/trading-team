@@ -200,7 +200,7 @@ class Rpc:
         for attempt in range(2):
             try:
                 r = requests.post(self.url, json={"jsonrpc": "2.0", "id": 1, "method": method, "params": params},
-                                  timeout=20, headers={"Content-Type": "application/json"})
+                                  timeout=8, headers={"Content-Type": "application/json"})
                 time.sleep(self.pause)
                 if r.status_code == 429:
                     time.sleep(2 + 3 * attempt)

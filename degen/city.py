@@ -193,8 +193,10 @@ def push_stack(st, tok, verdict, reason, now):
     }])[-60:]
 
 
-def analyze_step(st, rpc, now):
+def analyze_step(st, rpc, now, deadline=None):
     hb = hour_bucket(st, now)
+    per_cycle = ANALYZE_PER_CYCLE if rpc.kind == "helius" else 1
+    deadline = deadline or (time.time() + 40)
     cands = []
     for t in st["tokens"].values():
         if t.get("analyzed") or t.get("skip"):
@@ -212,9 +214,9 @@ def analyze_step(st, rpc, now):
         # kontrolní opice: deterministický náhodný vzorek z předfiltru
         if int(hashlib.sha1(t["mint"].encode()).hexdigest(), 16) % 25 == 0:
             t["signals"].setdefault("opice", now)
-        if done >= ANALYZE_PER_CYCLE or rpc.left() < 60:
+        if done >= per_cycle or rpc.left() < 60 or time.time() > deadline:
             continue
-        chain = onchain.analyze(rpc, t)
+        chain = onchain.analyze(rpc, t, deadline=deadline)
         t["analyzed"] = now
         t["chain"] = chain or {}
         t["score_mcap"] = (t.get("mkt") or {}).get("mcap")
@@ -510,10 +512,14 @@ def run_once(dry=False, now=None):
     now = time.time() if now is None else now
     st = init_state(load_state())
     st["cycle"] += 1
+    t0 = time.time()
     rpc = sources.Rpc(st)
     discover(st, now, st["cycle"])
+    t1 = time.time()
     mk = track(st, now)
-    analyze_step(st, rpc, now)
+    t2 = time.time()
+    analyze_step(st, rpc, now, deadline=t0 + 45)
+    t3 = time.time()
     sig = signals_step(st, now)
     events, closed = trade_step(st, mk, sig, now)
     label_step(st, now)
@@ -535,7 +541,7 @@ def run_once(dry=False, now=None):
         persist(st)
     print(f"cyklus {st['cycle']}: sledováno {len(st['tokens'])}, trh {len(mk)}, signály {len(sig)}, "
           f"příkazy {len(events)}, uzavřeno {len(closed)}, RPC {rpc.b['used']}/{rpc.limit} ({rpc.kind}), "
-          f"zdroje {sources.STATUS}")
+          f"zdroje {sources.STATUS}, čas objev {t1 - t0:.0f}s trh {t2 - t1:.0f}s rozbor {t3 - t2:.0f}s celkem {time.time() - t0:.0f}s")
     return city
 
 
