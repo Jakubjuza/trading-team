@@ -51,6 +51,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DEGEN_TG: ${{ (github.event_name == 'schedule' || inputs.telegram) && github.ref_name == 'main' && '1' || '0' }}
+          DEGEN_PAGE_URL: https://claude.ai/artifact/U3cHeroX6NrRWonhU31Zk6
           MINUTES: ${{ inputs.minutes || (github.event_name == 'push' && '4') || '330' }}
         run: |
           git config user.name "trading-team degen"

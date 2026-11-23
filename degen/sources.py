@@ -203,18 +203,19 @@ class Rpc:
                                   timeout=8, headers={"Content-Type": "application/json"})
                 time.sleep(self.pause)
                 if r.status_code == 429:
+                    STATUS["rpc_last_error"] = f"{method}: HTTP 429"
                     time.sleep(2 + 3 * attempt)
                     continue
                 j = r.json()
                 if "error" in j:
                     self.b["errors"] += 1
-                    STATUS["rpc"] = f"chyba {str(j['error'].get('message', ''))[:60]}"
+                    STATUS["rpc_last_error"] = f"{method}: {str(j['error'].get('message', ''))[:80]}"
                     return None
                 STATUS["rpc"] = f"ok ({self.kind})"
                 return j.get("result")
             except Exception as e:
                 self.b["errors"] += 1
-                STATUS["rpc"] = f"chyba {type(e).__name__}"
+                STATUS["rpc_last_error"] = f"{method}: {type(e).__name__}"
                 time.sleep(1)
         return None
 

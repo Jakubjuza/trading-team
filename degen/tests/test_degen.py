@@ -106,17 +106,19 @@ def test_run_once_offline(tmp_path, monkeypatch):
            "symbol": "FROG", "name": "Frog", "twitter": True, "telegram": True, "website": True}
     monkeypatch.setattr(sources, "pump_latest", lambda: [dict(coin)])
     monkeypatch.setattr(sources, "gecko_new", lambda pages=1: [])
-    monkeypatch.setattr(sources, "dex_tokens", lambda mints: {MINT: dict(mkt)} if MINT in mints else {})
+    seq = iter([7000, 21000, 22000])
+    monkeypatch.setattr(sources, "dex_tokens", lambda mints: {MINT: dict(mkt, mcap=next(seq))} if MINT in mints else {})
     monkeypatch.setattr(onchain, "analyze", lambda rpc, t, with_funders=True, deadline=None: {
         "top10": 0.12, "bundle": 0.01, "dev": 0.02, "buyers": [{"w": "W1", "slot": 1, "amt": 1}], "creator": "DEV",
         "funders": {"shared_max": 1, "creator_funded": False}})
     monkeypatch.setattr(city.tg, "send", lambda *a, **k: True)
     c1 = city.run_once(dry=True, now=now)
-    assert c1["stack"][0]["verdict"] == "BUY"
-    acc = {a["key"]: a for a in c1["accounts"]}
-    assert acc["filtr"]["pending"] == 1
-    c2 = city.run_once(dry=True, now=now + 30)
+    assert c1["stack"][0]["verdict"] == "SKIP"            # tempo zatím 0 → pod 85
+    c2 = city.run_once(dry=True, now=now + 30)             # MC 3× → skóre ≥ 85 → příkaz
     acc = {a["key"]: a for a in c2["accounts"]}
+    assert acc["filtr"]["pending"] == 1
+    c3 = city.run_once(dry=True, now=now + 60)
+    acc = {a["key"]: a for a in c3["accounts"]}
     assert len(acc["filtr"]["open"]) == 1 and acc["filtr"]["cash"] < paper.START
-    json.dumps(c2)
+    json.dumps(c3)
     assert (tmp_path / "persist.json").exists()

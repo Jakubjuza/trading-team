@@ -25,7 +25,6 @@ STATE = ROOT / "cache" / "state.json"
 PERSIST = ROOT / "persist.json"
 CITY = ROOT / "city.json"
 TRADES = ROOT / "trades.jsonl"
-PAGE_URL = "https://claude.ai/artifact/degen-city"   # přepíše se v city.json, až bude stránka publikovaná
 
 STRATS = [
     # klíč, název, budova ve městě, popis
@@ -117,9 +116,9 @@ def discover(st, now, cycle):
         if t.get("created") and now - t["created"] > 2 * 3600 and t["src"] == "pump":
             continue
         t["first_seen"] = now
-        t["mcap0"] = t.get("mcap_usd")
-        t["hist"] = [[int(now), round(t["mcap_usd"])]] if t.get("mcap_usd") else []
-        t["peak"] = t.get("mcap_usd") or 0
+        t["mcap0"] = None            # první cena z DexScreeneru (stejná definice MC jako dál)
+        t["hist"] = []
+        t["peak"] = 0
         t["signals"] = {}
         st["tokens"][t["mint"]] = t
         new += 1
@@ -399,7 +398,8 @@ def alert(st, events, now, dry):
             f"CA: <code>{tg.h(mint)}</code>",
             "⚠️ Papírový test, ne rada. Většina meme coinů jde k nule – ruční nákup jen s penězi, které můžeš ztratit.",
         ]
-        tg.send("\n".join(x for x in lines if x), tg.links(mint)) if not dry else print("\n".join(lines))
+        btns = tg.links(mint) + ([("🐸 Degen City", os.environ["DEGEN_PAGE_URL"])] if os.environ.get("DEGEN_PAGE_URL") else [])
+        tg.send("\n".join(x for x in lines if x), btns) if not dry else print("\n".join(lines))
         st["alerts"].append(now)
 
 
