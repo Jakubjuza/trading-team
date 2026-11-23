@@ -145,6 +145,7 @@ def test_safety_lp_only_outside_pump():
     assert safety.lp_vetoes("AbcRaydiumToken111", graduated, rc)
     assert safety.lp_vetoes("Abc111pump", graduated, rc) == []                       # pump.fun: LP spálené
     assert safety.lp_vetoes("AbcRaydiumToken111", graduated, {"lp_locked": 100.0}) == []
+    assert safety.lp_vetoes("AbcRaydiumToken111", graduated, None)                    # nejde ověřit → nekoupit
 
 
 def test_postmortem_classify_dev_and_pool():

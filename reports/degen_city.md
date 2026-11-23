@@ -54,3 +54,20 @@ Signál Filtru, Kopírky, Graduace nebo Shody → zpráva s CA (ťuknutím zkop�
 - pump.fun API je neoficiální a může se změnit nebo blokovat; pak objevování jede přes GeckoTerminal.
 - Papír neumí přesně simulovat frontrunning, MEV ani skutečný skluz v prvních sekundách; čísla budou spíš optimistická.
 - Veřejné RPC stačí jen na málo rozborů; bez Helius klíče je většina skóre „neúplná“ a Filtr ani Kopírka skoro nenakupují.
+
+## 🛡️ Bezpečnost před nákupem a 🔎 pitva pádů (23. 11. 2026, na přání uživatele)
+
+**Proč to vzniklo**: první dva papírové obchody (SIIA −83 % za 30 s, Bra −56 % za 52 s) spadly hned po vstupu.
+
+**Co platí o „vybrání likvidity“**
+- Na pump.fun (bonding curve) likviditu vybrat nejde – SOL drží program; po graduaci na PumpSwap se LP tokeny pálí (RugCheck u obou coinů ukázal LP zamčené/spálené 100 %). Rychlý pád tam znamená, že tvůrce, bundly, snajpři nebo raní kupci prodali do křivky.
+- Skutečné vybrání likvidity hrozí u coinů spuštěných přímo na Raydium/Meteora/Orca (Degentown je najde přes GeckoTerminal) s nezamčeným LP.
+- „Nejde prodat“ = freeze authority nebo zrádná rozšíření Token-2022 (trvalý delegát, transfer hook, nepřevoditelný token, zmrazené účty, vysoký poplatek za převod).
+
+**Tvrdé veto před každým papírovým nákupem** (`degen/safety.py`, ~2 RPC dotazy + RugCheck): mint authority aktivní, freeze authority aktivní, zrádná rozšíření Token-2022, poplatek za převod > 5 %, coin mimo pump.fun s LP zamčeným < 90 % nebo neověřitelným, tvůrce drží ≥ 10 %, tvůrce už dřív rugoval (RugCheck). Když mint nejde ověřit, nekupuje se. Kontrolní opice se kontroluje taky, ale kupuje dál (měří, kolik kontrola ušetří).
+
+**Pitva** (`degen/postmortem.py`): po každém obchodu −30 % a horším a u rychlých pádů rozebraných coinů (max 12 za hodinu) se projde posledních ~30 transakcí → příčina: prodal tvůrce / raní kupci a bundly / jedna velryba / odliv kupců / vybraná likvidita (pokles likvidity poolu ≥ 80 % mimo pump.fun).
+
+**Učení s pravidlem stanoveným předem**: každý rozebraný coin si uloží 11 znaků z okamžiku rozboru (dev ≥ 5 %, top 10 ≥ 25 %, bundly ≥ 10 %, ≥ 3 peněženky v bloku spuštění, společný financovatel, bez sítí, sériový tvůrce, převaha prodejů, rozbor < 3 min, MC < 8 k$, už 3× od startu). Po 30 min dostane štítek „rychlý pád“ (MC ≤ 30 % ceny při rozboru). Znak se stane **naučeným vetem**, když ho má ≥ 40 coinů a dolní mez 95% Wilsonova intervalu podílu pádů je o ≥ 10 bodů nad průměrem; zruší se, když to přestane platit. Každá změna jde na Telegram a do logu.
+
+**Hypotéza k testu (zatím nezapnuto)**: „nečekat zbytečně dlouho“ – kratší časový stop (např. 30 min místo 120) a výstup, když tvůrce začne prodávat. Měří se přes pitvy a štítky; zapne se jen po testu.

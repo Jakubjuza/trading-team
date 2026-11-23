@@ -71,7 +71,11 @@ jobs:
               for f in degen/city.json degen/persist.json degen/trades.jsonl; do if [ -f "$f" ]; then git add "$f"; fi; done
               if ! git diff --cached --quiet; then
                 git commit -q -m "degen: stav města meme coinů"
-                for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin HEAD:"${GITHUB_REF_NAME}" && break; sleep 5; done
+                for i in 1 2 3; do
+                  if git pull -q --rebase -X theirs origin "${GITHUB_REF_NAME}"; then git push -q origin HEAD:"${GITHUB_REF_NAME}" && break
+                  else git rebase --abort 2>/dev/null || true; fi
+                  sleep 5
+                done
               fi
               last_commit=$SECONDS
             fi

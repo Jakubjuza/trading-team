@@ -9,7 +9,8 @@ Tvrdé veto (nekoupit nikdy):
 - freeze authority existuje (tvůrce může zmrazit tvoje tokeny → nejde prodat),
 - Token-2022: permanent delegate, transfer hook, non-transferable, výchozí zmrazený účet, pausable, poplatek za převod > 5 %,
 - coin mimo pump.fun na DEX poolu, kde je LP zamčené/spálené < 90 % (RugCheck),
-- tvůrce pořád drží ≥ 10 % zásoby.
+- tvůrce pořád drží ≥ 10 % zásoby,
+- tvůrce už dřív rugoval jiné coiny (RugCheck „Creator history of rugged tokens“).
 """
 import time
 
@@ -84,12 +85,16 @@ def rugcheck(mint, timeout=8):
 
 def lp_vetoes(mint, mkt, rc):
     """Vybrání likvidity hrozí jen mimo pump.fun: pool na Raydium/Meteora/Orca bez zamčeného/spáleného LP."""
-    if not mkt or not mkt.get("graduated") or not rc:
+    if not mkt or not mkt.get("graduated"):
         return []
     pump_origin = mint.endswith(PUMP_SUFFIX) or "pumpswap" in (mkt.get("dexes") or [])
     if pump_origin:
         return []
-    if rc.get("lp_locked") is not None and rc["lp_locked"] < LP_LOCK_MIN:
+    if not rc:
+        return ["mimo pump.fun a RugCheck nedostupný – zamčení LP nejde ověřit"]
+    if rc.get("lp_locked") is None:
+        return ["mimo pump.fun a zamčení LP nejde ověřit"]
+    if rc["lp_locked"] < LP_LOCK_MIN:
         return [f"likvidita jde vybrat – LP zamčené/spálené jen {rc['lp_locked']:.0f} %"]
     return []
 
@@ -114,6 +119,8 @@ def check(rpc, tok, with_rugcheck=True):
     vet = mint_vetoes(m)
     rc = rugcheck(mint) if with_rugcheck else None
     vet += lp_vetoes(mint, tok.get("mkt"), rc)
+    if any("rugged" in (x.get("name") or "").lower() for x in (rc or {}).get("risks", [])):
+        vet.append("tvůrce už dřív rugoval jiné coiny (RugCheck)")
     creator = (tok.get("chain") or {}).get("creator") or tok.get("creator")
     dh = dev_hold(rpc, creator, mint)
     if dh is not None and dh >= DEV_HOLD_VETO:
