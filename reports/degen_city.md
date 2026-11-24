@@ -71,3 +71,16 @@ Signál Filtru, Kopírky, Graduace nebo Shody → zpráva s CA (ťuknutím zkop�
 **Učení s pravidlem stanoveným předem**: každý rozebraný coin si uloží 11 znaků z okamžiku rozboru (dev ≥ 5 %, top 10 ≥ 25 %, bundly ≥ 10 %, ≥ 3 peněženky v bloku spuštění, společný financovatel, bez sítí, sériový tvůrce, převaha prodejů, rozbor < 3 min, MC < 8 k$, už 3× od startu). Po 30 min dostane štítek „rychlý pád“ (MC ≤ 30 % ceny při rozboru). Znak se stane **naučeným vetem**, když ho má ≥ 40 coinů a dolní mez 95% Wilsonova intervalu podílu pádů je o ≥ 10 bodů nad průměrem; zruší se, když to přestane platit. Každá změna jde na Telegram a do logu.
 
 **Hypotéza k testu (zatím nezapnuto)**: „nečekat zbytečně dlouho“ – kratší časový stop (např. 30 min místo 120) a výstup, když tvůrce začne prodávat. Měří se přes pitvy a štítky; zapne se jen po testu.
+
+## ⚙️ Motor v2 – papír už neumí „vydělat“ na vybrané likviditě (24. 11. 2026, upozornil uživatel)
+
+**Co se stalo**: Graduace ukazovala ~2,1 mil. $ „realizováno“ z 1 000 $. Dva obchody (FIONA +7 978 722 %, 英伟达CEO +1 721 572 %) a CEO (+478 %) tvořily skoro celý zisk. Ověřeno 24. 11. (DexScreener + RugCheck z GitHub Actions): všechny tři coiny mají pool na PumpSwapu s **likviditou 0 $** a MC 5–42 $. Nešlo o coiny z pump.fun (mint nekončí „pump“) – pool založil někdo ručně a LP měl v rukou, takže ho mohl vybrat. Když likvidita zmizela, zbytkový pool ukázal nesmyslnou cenu (MC až 6,7 mld. $) a motor v1 „prodal“ za tuhle MC. Takový zisk nešel vybrat – uživatel měl pravdu.
+
+**Chyby a opravy**
+1. Motor v1 počítal prodej jako MC × počet tokenů s malým skluzem. Motor v2 (`degen/paper.py`) počítá nákup i prodej přes hloubku poolu (konstantní součin): víc, než je v poolu na straně SOL, vybrat nejde; u bonding curve se skutečné SOL dopočítá z virtuálních rezerv. Likvidita pod 500 $ nebo coin bez dat 15 min = pozice se počítá jako 0.
+2. Velikost pozice: nejvýš 3 % quote strany poolu (v1 nechala složené úročení vrazit 50 000 $ do poolu s 20 000 $).
+3. Hodnota účtu a otevřených pozic = kolik by šlo opravdu vybrat, ne MC.
+4. Bezpečnost: pool na PumpSwapu se už nebere jako „pump.fun s spáleným LP“ – za bezpečný se považuje jen mint končící „pump“. Ručně založené pooly projdou kontrolou LP (zamčené/spálené ≥ 90 %, jinak veto; RugCheck „LP Unlocked“ = veto).
+5. Graduace bere jen skutečné graduace z pump.fun (mint končí „pump“).
+
+**Účty restartovány** 24. 11. na 1 000 $ (motor v2); souhrn v1 je v `archive` v city.json a na tabuli Degentownu. Staré řádky v `degen/trades.jsonl` nemají pole `engine` (v1), nové mají `engine: 2`.

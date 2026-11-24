@@ -209,3 +209,11 @@ def test_engine_reset_archives_v1(tmp_path, monkeypatch):
     city.init_state(st)
     assert st["engine"] == paper.ENGINE and st["accounts"]["graduace"]["cash"] == paper.START
     assert st["archive"][0]["accounts"]["graduace"]["realized_v1"] == 2_000_000.0
+
+
+def test_pumpswap_pool_of_foreign_mint_needs_lp_check():
+    """FIONA: mint bez „pump“, pool na PumpSwapu, LP v rukou zakladatele → musí projít kontrolou LP."""
+    mk = {"graduated": True, "dexes": ["pumpswap"], "dex": "pumpswap"}
+    assert safety.lp_vetoes("AbLxBtGUK61tnigtqQQm1m6JfkypUS2fXXM3rbxzRSN", mk, {"lp_locked": 0.0, "risks": []})
+    assert safety.lp_vetoes("AbLxBtGUK61tnigtqQQm1m6JfkypUS2fXXM3rbxzRSN", mk, None)
+    assert safety.lp_vetoes("Abc111pump", mk, {"lp_locked": 0.0, "risks": []}) == []

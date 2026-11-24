@@ -33,7 +33,7 @@ STRATS = [
     ("kopie", "Kopírka peněženek", "🐋 Velrybí věž",
      "Mezi prvními kupci je ověřená chytrá peněženka (≥ 3 rané nákupy, ≥ 2 coiny 5×). Vstup se zpožděním."),
     ("graduace", "Graduace", "🎓 Univerzita",
-     "Coin právě opustil bonding curve (PumpSwap/Raydium), likvidita ≥ 20 k$, nákupy převažují."),
+     "Coin z pump.fun právě opustil bonding curve (LP spálené), likvidita ≥ 20 k$, nákupy převažují."),
     ("shoda", "Shoda signálů", "🤝 Radnice",
      "Kupuje jen, když se během 30 min shodnou aspoň 2 ze 3 strategií výše."),
     ("opice", "Kontrolní opice", "🐒 Klec",
@@ -280,7 +280,8 @@ def signals_step(st, now):
             if hits and not veto and a <= 20 * 60:
                 t["signals"].setdefault("kopie", now)
                 t["smart_hits"] = hits[:5]
-        if t.get("grad_seen") and m.get("graduated"):
+        # graduace = coin z pump.fun opustil křivku (mint končí „pump“); ručně založené pooly jiných mintů se nepočítají
+        if t.get("grad_seen") and m.get("graduated") and t["mint"].endswith("pump"):
             ga = now - (t.get("grad_at") or t["grad_seen"])
             if (ga <= 1800 and (m.get("liq") or 0) >= 20000 and (m.get("buys5") or 0) >= 20
                     and m["buys5"] >= 1.3 * (m.get("sells5") or 0) and (m.get("vol1h") or 0) >= 30000

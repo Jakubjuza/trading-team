@@ -89,7 +89,9 @@ def lp_vetoes(mint, mkt, rc):
            and x.get("level") == "danger"]
     if not mkt:
         return out
-    pump_origin = mint.endswith(PUMP_SUFFIX) or "pumpswap" in (mkt.get("dexes") or [])
+    # jen coin spuštěný na pump.fun (mint končí „pump“) má po graduaci LP spálené; pool na PumpSwapu/Raydiu
+    # založený ručně pro jiný mint má LP v rukou zakladatele (FIONA, CEO, 英伟达CEO 23.–24. 11.: likvidita → 0 $)
+    pump_origin = mint.endswith(PUMP_SUFFIX)
     on_curve = (mkt.get("dex") in ("pumpfun", "pump-fun", "pump.fun")) and not mkt.get("graduated")
     if (pump_origin and not out) or on_curve:
         return out
