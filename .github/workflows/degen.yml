@@ -63,7 +63,7 @@ jobs:
           git config user.name "trading-team degen"
           git config user.email "degen@users.noreply.github.com"
           end=$((SECONDS + MINUTES * 60))
-          last_commit=$SECONDS
+          last_commit=-1000   # první průchod se uloží hned (čerstvá data po restartu)
           while [ $SECONDS -lt $end ]; do
             start=$SECONDS
             timeout 150 python3 -m degen.city --once || echo "průchod selhal, pokračuji"
@@ -77,7 +77,7 @@ jobs:
                   sleep 5
                 done
               fi
-              last_commit=$SECONDS
+              last_commit=-1000   # první průchod se uloží hned (čerstvá data po restartu)
             fi
             sleep $(( 30 - (SECONDS - start) > 1 ? 30 - (SECONDS - start) : 1 ))
           done
