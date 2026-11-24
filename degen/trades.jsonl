@@ -56,3 +56,4 @@
 {"strat": "opice", "mint": "4PJuzpdfb8TK4euu47opDpUt59VThHCE9HALWrFJWvSh", "symbol": "Datacat", "open": 1795476917.3176339, "close": 1795476947.977996, "pnl": -12.16, "ret": -76.4, "why": "stop", "score": null, "peak_x": 1.0, "entry_mcap": 4}
 {"strat": "opice", "mint": "HNEc1MXJUAeqPL8i1PuXbBHj1JZ4YAVkJdqBY3H3kXVD", "symbol": "NVIDIA", "open": 1795469820.631871, "close": 1795477037.807643, "pnl": 3.46, "ret": 21.7, "why": "čas", "score": null, "peak_x": 1.78, "entry_mcap": 18387}
 {"strat": "graduace", "mint": "F2v18Dw4nXCKkLWAhPaKefQ9FdKBZPjdShcbjQXqfvf", "symbol": "PEPE", "open": 1795463620.401566, "close": 1795478028.840075, "pnl": 7.14, "ret": 33.6, "why": "čas", "score": 53, "peak_x": 1.48, "entry_mcap": 57605}
+{"strat": "opice", "mint": "FRhANw9pR3rMYjWYVP5odvt4dXR2eWcu9UrMd1TfBLWc", "symbol": "PEPE", "open": 1795471381.0009375, "close": 1795478619.2975357, "pnl": 6.16, "ret": 38.6, "why": "čas", "score": null, "peak_x": 2.06, "entry_mcap": 8187}
