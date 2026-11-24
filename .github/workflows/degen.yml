@@ -77,7 +77,7 @@ jobs:
                   sleep 5
                 done
               fi
-              last_commit=-1000   # první průchod se uloží hned (čerstvá data po restartu)
+              last_commit=$SECONDS
             fi
             sleep $(( 30 - (SECONDS - start) > 1 ? 30 - (SECONDS - start) : 1 ))
           done
