@@ -2,9 +2,9 @@
  "scores": {
   "Analytici (Google News)": {
    "hit30": 1,
-   "hit7": 101,
+   "hit7": 102,
    "n30": 1,
-   "n7": 208
+   "n7": 209
   },
   "Bitcoin Magazine": {
    "hit7": 9,
@@ -20,7 +20,7 @@
   },
   "CryptoSlate": {
    "hit7": 22,
-   "n7": 40
+   "n7": 41
   },
   "Decrypt": {
    "hit7": 10,
