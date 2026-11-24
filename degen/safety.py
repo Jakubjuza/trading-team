@@ -85,11 +85,18 @@ def rugcheck(mint, timeout=8):
 
 def lp_vetoes(mint, mkt, rc):
     """Vybrání likvidity hrozí jen mimo pump.fun: pool na Raydium/Meteora/Orca bez zamčeného/spáleného LP."""
-    if not mkt or not mkt.get("graduated"):
-        return []
-    pump_origin = mint.endswith(PUMP_SUFFIX) or "pumpswap" in (mkt.get("dexes") or [])
-    if pump_origin:
-        return []
+    out = [f"RugCheck: {x['name']}" for x in (rc or {}).get("risks", []) if "lp unlocked" in (x.get("name") or "").lower()
+           and x.get("level") == "danger"]
+    if not mkt:
+        return out
+    # jen coin spuštěný na pump.fun (mint končí „pump“) má po graduaci LP spálené; pool na PumpSwapu/Raydiu
+    # založený ručně pro jiný mint má LP v rukou zakladatele (FIONA, CEO, 英伟达CEO 23.–24. 11.: likvidita → 0 $)
+    pump_origin = mint.endswith(PUMP_SUFFIX)
+    on_curve = (mkt.get("dex") in ("pumpfun", "pump-fun", "pump.fun")) and not mkt.get("graduated")
+    if (pump_origin and not out) or on_curve:
+        return out
+    if out:
+        return out
     if not rc:
         return ["mimo pump.fun a RugCheck nedostupný – zamčení LP nejde ověřit"]
     if rc.get("lp_locked") is None:

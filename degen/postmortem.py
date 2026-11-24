@@ -163,7 +163,7 @@ def run(rpc, tok, n_tx=30, deadline=None):
     ch = tok.get("chain") or {}
     insiders = {b["w"] for b in ch.get("buyers") or []}
     liq = [r[2] for r in tok.get("hist", []) if len(r) > 2]
-    pump_origin = mint.endswith("pump") or "pumpswap" in ((tok.get("mkt") or {}).get("dexes") or [])
+    pump_origin = mint.endswith("pump")
     res = classify(parsed, ch.get("creator") or tok.get("creator"), insiders, liq[-10:], pump_origin,
                    pools_known=[ch["curve_owner"]] if ch.get("curve_owner") else ())
     res["tx"] = len([p for p in parsed if p])

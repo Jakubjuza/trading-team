@@ -33,7 +33,7 @@ STRATS = [
     ("kopie", "Kopírka peněženek", "🐋 Velrybí věž",
      "Mezi prvními kupci je ověřená chytrá peněženka (≥ 3 rané nákupy, ≥ 2 coiny 5×). Vstup se zpožděním."),
     ("graduace", "Graduace", "🎓 Univerzita",
-     "Coin právě opustil bonding curve (PumpSwap/Raydium), likvidita ≥ 20 k$, nákupy převažují."),
+     "Coin z pump.fun právě opustil bonding curve (LP spálené), likvidita ≥ 20 k$, nákupy převažují."),
     ("shoda", "Shoda signálů", "🤝 Radnice",
      "Kupuje jen, když se během 30 min shodnou aspoň 2 ze 3 strategií výše."),
     ("opice", "Kontrolní opice", "🐒 Klec",
@@ -85,8 +85,20 @@ def init_state(st):
     st.setdefault("learn_log", [])
     st.setdefault("safety_stats", {"checked": 0, "vetoed": 0, "unverified": 0, "reasons": {}})
     acc = st.setdefault("accounts", {})
+    if acc and st.get("engine") != paper.ENGINE:
+        # motor v1 počítal prodej jen podle MC, bez hloubky poolu → nereálné zisky (prodej do vybrané likvidity)
+        st.setdefault("archive", []).append({
+            "engine": st.get("engine", 1), "until": int(time.time()),
+            "accounts": {k: {"equity_v1": round(a["cash"] + sum(p["invested"] for p in a["open"].values()), 2),
+                             "realized_v1": round(a["realized"], 2), "n": a["n"], "wins": a["wins"]} for k, a in acc.items()},
+            "why": "Motor v1 prodával za market cap bez ohledu na likviditu poolu. Když z poolu zmizela likvidita, "
+                   "MC vyskočila do nesmyslných hodnot a papír „prodal“ za ni – zisk, který nešel vybrat. Účty restartovány."})
+        acc.clear()
+    st["engine"] = paper.ENGINE
     for k, *_ in STRATS:
-        acc.setdefault(k, paper.new_account(k))
+        if k not in acc:
+            acc[k] = paper.new_account(k)
+            acc[k]["since"] = int(time.time())
     return st
 
 
@@ -268,7 +280,8 @@ def signals_step(st, now):
             if hits and not veto and a <= 20 * 60:
                 t["signals"].setdefault("kopie", now)
                 t["smart_hits"] = hits[:5]
-        if t.get("grad_seen") and m.get("graduated"):
+        # graduace = coin z pump.fun opustil křivku (mint končí „pump“); ručně založené pooly jiných mintů se nepočítají
+        if t.get("grad_seen") and m.get("graduated") and t["mint"].endswith("pump"):
             ga = now - (t.get("grad_at") or t["grad_seen"])
             if (ga <= 1800 and (m.get("liq") or 0) >= 20000 and (m.get("buys5") or 0) >= 20
                     and m["buys5"] >= 1.3 * (m.get("sells5") or 0) and (m.get("vol1h") or 0) >= 30000
@@ -312,7 +325,6 @@ def safety_gate(st, rpc, t, key, now, deadline):
 
 
 def trade_step(st, mk, sig, now, rpc=None, deadline=None):
-    marks = {m: v["mcap"] for m, v in mk.items()}
     hb = hour_bucket(st, now)
     events, closed_all = [], []
     for key, *_ in STRATS:
@@ -340,7 +352,7 @@ def trade_step(st, mk, sig, now, rpc=None, deadline=None):
             hb["signals"] += 1
             events.append((key, t))
     for key, *_ in STRATS:
-        paper.mark_curve(st["accounts"][key], marks, now)
+        paper.mark_curve(st["accounts"][key], mk, now)
     st["tape"] = st["tape"][-120:]
     hb["trades"] += len(closed_all)
     return events, closed_all
@@ -551,23 +563,28 @@ def calibration(st):
 def build_city(st, rpc, now, page_url=None):
     hrs = [st["hourly"][k] for k in sorted(st["hourly"])][-24:]
     tot = {k: sum(h.get(k, 0) for h in hrs) for k in ("launches", "analyzed", "passed", "vetoed", "signals", "trades")}
-    marks = {m: (t.get("mkt") or {}).get("mcap") for m, t in st["tokens"].items() if t.get("mkt")}
+    mkts = {m: t["mkt"] for m, t in st["tokens"].items() if t.get("mkt")}
     accs = []
     for key, name, bld, desc in STRATS:
         a = st["accounts"][key]
-        eq = paper.equity(a, marks)
+        eq = paper.equity(a, mkts)
         opens = []
         for p in a["open"].values():
-            mc = marks.get(p["mint"]) or p["last_mcap"]
+            m = mkts.get(p["mint"]) or p.get("last_mkt") or {}
+            mc = m.get("mcap") or p["last_mcap"]
+            val = paper.pos_value(p, m)
             opens.append({"mint": p["mint"], "symbol": p["symbol"], "t": int(p["t_open"]), "invested": p["invested"],
                           "remaining": p["remaining"], "entry_mcap": round(p["fill_mcap"]), "mcap": round(mc),
-                          "ret": round((mc / p["entry_mcap"] - 1) * 100, 1), "tp1": p["tp1"], "score": p.get("score")})
+                          "liq": round(m["liq"]) if m.get("liq") else None, "value": round(val, 2),
+                          "ret": round((val / (p["invested"] * p["remaining"]) - 1) * 100, 1) if p["remaining"] else 0,
+                          "tp1": p["tp1"], "score": p.get("score")})
         tr = a["trades"]
         accs.append({"key": key, "name": name, "building": bld, "desc": desc, "start": paper.START,
                      "equity": round(eq, 2), "cash": round(a["cash"], 2), "realized": round(a["realized"], 2),
                      "fees": round(a["fees"], 2), "n": a["n"], "wins": a["wins"], "open": opens,
                      "pending": len(a["pending"]), "curve": a["curve"][-200:], "trades": tr[-15:][::-1],
-                     "best": max((t["ret"] for t in tr), default=None), "worst": min((t["ret"] for t in tr), default=None)})
+                     "best": max((t["ret"] for t in tr), default=None), "worst": min((t["ret"] for t in tr), default=None),
+                     "since": a.get("since")})
     feed = sorted(st["tokens"].values(), key=lambda t: -t["first_seen"])[:30]
     feed = [{"mint": t["mint"], "symbol": t.get("symbol") or "?", "mcap": round((t.get("mkt") or {}).get("mcap") or t.get("mcap0") or 0),
              "x": round(((t.get("mkt") or {}).get("mcap") or 0) / t["mcap0"], 2) if t.get("mcap0") and t.get("mkt") else None,
@@ -607,13 +624,14 @@ def build_city(st, rpc, now, page_url=None):
             "log": st["learn_log"][-10:][::-1],
             "safety": st["safety_stats"],
         },
+        "engine": paper.ENGINE, "archive": st.get("archive", [])[-3:],
         "note": "Jen papírové obchody a měření. Ne finanční poradenství.",
     }
 
 
 def persist(st):
     """Malá záloha do gitu (přežije ztrátu cache): účty, peněženky s ≥ 2 nákupy, štítky, tvůrci ne."""
-    keep = {k: v for k, v in st.items() if k in ("accounts", "labels", "hourly", "stack", "tape", "summary_day", "pitva",
+    keep = {k: v for k, v in st.items() if k in ("accounts", "labels", "hourly", "stack", "tape", "summary_day", "pitva", "engine", "archive",
                                                 "pitva_counts", "crash_samples", "learned", "learn_base", "learn_log",
                                                 "safety_stats")}
     keep["wallets"] = {w: s for w, s in st["wallets"].items() if s["n"] >= 2}
@@ -653,8 +671,9 @@ def run_once(dry=False, now=None):
     if closed:
         with TRADES.open("a") as fh:
             for c in closed:
-                fh.write(json.dumps({k: c[k] for k in ("strat", "mint", "symbol", "open", "close", "pnl", "ret",
-                                                       "why", "score", "peak_x", "entry_mcap")}, ensure_ascii=False) + "\n")
+                fh.write(json.dumps({k: c.get(k) for k in ("strat", "mint", "symbol", "open", "close", "pnl", "ret",
+                                                           "why", "score", "peak_x", "entry_mcap", "entry_liq", "engine")},
+                                    ensure_ascii=False) + "\n")
     page = os.environ.get("DEGEN_PAGE_URL") or None
     city = build_city(st, rpc, now, page)
     CITY.write_text(json.dumps(city, ensure_ascii=False, separators=(",", ":")))
