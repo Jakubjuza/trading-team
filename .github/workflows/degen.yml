@@ -50,7 +50,8 @@ jobs:
         continue-on-error: true
         env:
           HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
-        run: timeout 120 python3 -m degen.probe
+          DEGEN_PROBE_MINTS: AbLxBtGUK61tnigtqQQm1m6JfkypUS2fXXM3rbxzRSN,EMeVacSXQiLV7xtCLy1ZghVLMtiutrUFE4JeixV3rrTX,3FZ5kPrH5aC8ETyRe7hdKPQbyrU5UU3ZSQRYDWZdRVXV
+        run: timeout 150 python3 -m degen.probe
       - name: Průchody každých ~30 s
         env:
           HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}

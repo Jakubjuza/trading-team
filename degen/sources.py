@@ -115,6 +115,15 @@ def gecko_new(pages=1):
 
 # ---------------------------------------------------------------- DexScreener (trh)
 
+def _sol_px(p):
+    """Cena SOL v USD z páru coin/SOL (priceUsd / priceNative)."""
+    q = ((p.get("quoteToken") or {}).get("symbol") or "").upper()
+    pu, pn = _f(p.get("priceUsd")), _f(p.get("priceNative"))
+    if q in ("SOL", "WSOL") and pu and pn:
+        return pu / pn
+    return None
+
+
 def pick_pair(pairs):
     """Z párů jednoho tokenu vybere ten s největší likviditou/objemem a sečte nákupy/prodeje přes všechny páry."""
     if not pairs:
@@ -134,6 +143,7 @@ def pick_pair(pairs):
     return {
         "mcap": _f(best.get("marketCap")) or _f(best.get("fdv")),
         "price": _f(best.get("priceUsd")),
+        "sol_px": _sol_px(best),
         "liq": _f((best.get("liquidity") or {}).get("usd")),
         "buys5": buys, "sells5": sells, "vol5": vol_m5, "vol1h": vol_h1,
         "dex": (best.get("dexId") or "").lower(), "dexes": sorted(dexes),

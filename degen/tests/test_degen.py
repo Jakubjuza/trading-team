@@ -88,7 +88,7 @@ def test_paper_stop_and_stale():
     c1 = paper.manage(acc, {"A": {"mcap": 5000}}, "opice", now=20)
     assert c1[0]["why"] == "stop" and c1[0]["ret"] < -50
     c2 = paper.manage(acc, {}, "opice", now=10 + paper.STALE_EXIT + 1)
-    assert c2[0]["why"] == "bez dat" and c2[0]["ret"] < -70
+    assert c2[0]["why"].startswith("bez dat") and c2[0]["ret"] <= -99
     assert acc["cash"] < paper.START
 
 
@@ -170,3 +170,42 @@ def test_postmortem_learns_veto():
     assert postmortem.learned_vetoes(table, {"dev5": False}) == []
     tok = {"score_mcap": 10000, "analyzed": 100, "hist": [[120, 9000, None], [200, 2500, None]]}
     assert postmortem.crash_label(tok, 300) is True
+
+
+def test_v2_no_profit_from_drained_pool():
+    """Případ FIONA: MC vyskočí 100 000× nad vybraným poolem – papír nesmí „vydělat“ víc, než v poolu je."""
+    acc = paper.new_account("graduace")
+    mk0 = {"mcap": 60000, "liq": 40000, "graduated": True, "dex": "raydium"}
+    assert paper.order(acc, "F", "FIONA", "graduace", mk0, now=0)
+    paper.fill_pending(acc, {"F": mk0}, now=30)
+    inv = acc["open"]["F"]["invested"]
+    closed = paper.manage(acc, {"F": {"mcap": 6.7e9, "liq": 300, "graduated": True, "dex": "raydium"}}, "graduace", now=60)
+    assert closed and closed[0]["why"].startswith("likvidita zmizela")
+    assert closed[0]["pnl"] < 0 and acc["cash"] < paper.START          # nic se nevydělalo
+    assert inv <= 0.03 * 20000 + 1e-6
+
+
+def test_v2_size_capped_by_pool_and_tp_bounded():
+    acc = paper.new_account("graduace")
+    acc["cash"] = 1_000_000.0                                           # i velký účet nesmí vrazit 2 % do mělkého poolu
+    mk = {"mcap": 20000, "liq": 2000, "graduated": True, "dex": "raydium"}
+    assert paper.order(acc, "X", "X", "graduace", mk, now=0)
+    assert acc["pending"]["X"]["size"] <= 30.0 + 1e-6                     # 3 % z quote strany (1 000 $)
+    paper.fill_pending(acc, {"X": mk}, now=30)
+    big = {"mcap": 2e7, "liq": 2000, "graduated": True, "dex": "raydium"}   # 1000× cena, ale pool pořád 1 000 $ na straně SOL
+    paper.manage(acc, {"X": big}, "graduace", now=60)
+    assert acc["cash"] - 1_000_000.0 < 1000                               # víc než quote strana poolu nevybereš
+
+
+def test_v2_curve_pool_from_mcap():
+    q, cap = paper.pool({"mcap": 28 * 150, "sol_px": 150.0, "dex": "pumpfun", "graduated": False})
+    assert abs(q / 150 - 30) < 1 and cap < 1 * 150                          # čerstvá křivka: ~30 virtuálních SOL, skoro nic skutečného
+
+
+def test_engine_reset_archives_v1(tmp_path, monkeypatch):
+    st = {"accounts": {"graduace": dict(paper.new_account("graduace"), realized=2_000_000.0, cash=2_001_000.0, n=39)}}
+    st.pop("engine", None)
+    st["accounts"]["graduace"].pop("engine", None)
+    city.init_state(st)
+    assert st["engine"] == paper.ENGINE and st["accounts"]["graduace"]["cash"] == paper.START
+    assert st["archive"][0]["accounts"]["graduace"]["realized_v1"] == 2_000_000.0
