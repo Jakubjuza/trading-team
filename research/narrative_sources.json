@@ -2,9 +2,9 @@
  "scores": {
   "Analytici (Google News)": {
    "hit30": 2,
-   "hit7": 105,
+   "hit7": 107,
    "n30": 8,
-   "n7": 213
+   "n7": 215
   },
   "Bitcoin Magazine": {
    "hit7": 11,
@@ -13,8 +13,8 @@
   "CoinDesk": {
    "hit30": 0,
    "hit7": 55,
-   "n30": 1,
-   "n7": 80
+   "n30": 2,
+   "n7": 81
   },
   "Cointelegraph": {
    "hit30": 0,
@@ -27,7 +27,9 @@
    "n7": 43
   },
   "Decrypt": {
+   "hit30": 1,
    "hit7": 11,
+   "n30": 1,
    "n7": 21
   },
   "Telegram @WatcherGuru": {
