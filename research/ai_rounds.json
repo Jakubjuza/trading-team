@@ -383,6 +383,36 @@
    },
    "added": "ai16",
    "reason": "přidáno"
+  },
+  {
+   "n": 17,
+   "date": "2026-11-25",
+   "focus": "jen short",
+   "seed": 20261125,
+   "tested": 4397,
+   "top_oos_ok": 10,
+   "random_oos_ok": 0,
+   "candidates": 1,
+   "best": "SHORT když hodina UTC < 30. percentil (7.00) a stažení ATR14/200 < 20. percentil (0.71) a den v týdnu < 50. percentil (3.00) · stop 1,0 ATR · držení 32 h",
+   "best_splits": {
+    "is": {
+     "n": 1387,
+     "mean_r": 0.454,
+     "t": 5.04
+    },
+    "oos": {
+     "n": 386,
+     "mean_r": 0.574,
+     "t": 2.6
+    },
+    "hold": {
+     "n": 169,
+     "mean_r": 0.264,
+     "t": 1.13
+    }
+   },
+   "added": "ai17",
+   "reason": "přidáno místo AI #11 · vše"
   }
  ],
  "registry": [
@@ -653,52 +683,6 @@
    }
   },
   {
-   "id": "ai11",
-   "name": "AI #11 · vše",
-   "round": 11,
-   "focus": "vše",
-   "added": "2026-11-19",
-   "genome": {
-    "conds": [
-     [
-      "ema200",
-      ">",
-      0.7
-     ],
-     [
-      "comp",
-      ">",
-      0.4
-     ],
-     [
-      "hour",
-      ">",
-      0.5
-     ]
-    ],
-    "dir": 1,
-    "hold": 32,
-    "stop": 3.0
-   },
-   "splits_at_add": {
-    "is": {
-     "n": 3059,
-     "mean_r": 0.191,
-     "t": 7.07
-    },
-    "oos": {
-     "n": 986,
-     "mean_r": 0.118,
-     "t": 2.83
-    },
-    "hold": {
-     "n": 827,
-     "mean_r": 0.057,
-     "t": 1.1
-    }
-   }
-  },
-  {
    "id": "ai14",
    "name": "AI #14 · pomalé obchody 16–32 h",
    "round": 14,
@@ -833,6 +817,52 @@
      "n": 808,
      "mean_r": 0.101,
      "t": 1.84
+    }
+   }
+  },
+  {
+   "id": "ai17",
+   "name": "AI #17 · jen short",
+   "round": 17,
+   "focus": "jen short",
+   "added": "2026-11-25",
+   "genome": {
+    "conds": [
+     [
+      "hour",
+      "<",
+      0.3
+     ],
+     [
+      "comp",
+      "<",
+      0.2
+     ],
+     [
+      "dow",
+      "<",
+      0.5
+     ]
+    ],
+    "dir": -1,
+    "hold": 32,
+    "stop": 1.0
+   },
+   "splits_at_add": {
+    "is": {
+     "n": 1387,
+     "mean_r": 0.454,
+     "t": 5.04
+    },
+    "oos": {
+     "n": 386,
+     "mean_r": 0.574,
+     "t": 2.6
+    },
+    "hold": {
+     "n": 169,
+     "mean_r": 0.264,
+     "t": 1.13
     }
    }
   }
