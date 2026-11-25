@@ -3,11 +3,13 @@
   "Analytici (Google News)": {
    "hit30": 2,
    "hit7": 107,
-   "n30": 8,
+   "n30": 9,
    "n7": 215
   },
   "Bitcoin Magazine": {
+   "hit30": 0,
    "hit7": 11,
+   "n30": 2,
    "n7": 26
   },
   "CoinDesk": {
@@ -29,7 +31,7 @@
   "Decrypt": {
    "hit30": 1,
    "hit7": 11,
-   "n30": 1,
+   "n30": 2,
    "n7": 21
   },
   "Telegram @WatcherGuru": {
@@ -47,11 +49,15 @@
    "n7": 13
   },
   "Telegram @wublockchainenglish": {
+   "hit30": 0,
    "hit7": 19,
+   "n30": 1,
    "n7": 29
   },
   "The Block": {
+   "hit30": 0,
    "hit7": 10,
+   "n30": 1,
    "n7": 16
   }
  }
