@@ -26,7 +26,7 @@
   },
   "CryptoSlate": {
    "hit7": 22,
-   "n7": 44
+   "n7": 45
   },
   "Decrypt": {
    "hit30": 1,
@@ -41,8 +41,8 @@
    "n7": 26
   },
   "Telegram @cointelegraph": {
-   "hit7": 13,
-   "n7": 18
+   "hit7": 14,
+   "n7": 19
   },
   "Telegram @glassnode": {
    "hit7": 9,
@@ -56,9 +56,9 @@
   },
   "The Block": {
    "hit30": 0,
-   "hit7": 10,
+   "hit7": 11,
    "n30": 2,
-   "n7": 16
+   "n7": 18
   }
  }
 }
