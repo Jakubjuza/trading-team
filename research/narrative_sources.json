@@ -1,9 +1,9 @@
 {
  "scores": {
   "Analytici (Google News)": {
-   "hit30": 4,
+   "hit30": 6,
    "hit7": 108,
-   "n30": 17,
+   "n30": 19,
    "n7": 220
   },
   "Bitcoin Magazine": {
@@ -15,7 +15,7 @@
   "CoinDesk": {
    "hit30": 0,
    "hit7": 56,
-   "n30": 3,
+   "n30": 4,
    "n7": 82
   },
   "Cointelegraph": {
