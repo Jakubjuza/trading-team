@@ -413,6 +413,36 @@
    },
    "added": "ai17",
    "reason": "přidáno místo AI #11 · vše"
+  },
+  {
+   "n": 18,
+   "date": "2026-11-26",
+   "focus": "rychlé obchody 2–8 h",
+   "seed": 20261126,
+   "tested": 4691,
+   "top_oos_ok": 19,
+   "random_oos_ok": 0,
+   "candidates": 2,
+   "best": "LONG když BTC 1 h (σ) < 20. percentil (-0.56) a stažení ATR14/200 > 90. percentil (1.43) a od EMA200 (ATR) > 60. percentil (1.25) · stop 3,0 ATR · držení 8 h",
+   "best_splits": {
+    "is": {
+     "n": 2258,
+     "mean_r": 0.092,
+     "t": 6.95
+    },
+    "oos": {
+     "n": 541,
+     "mean_r": 0.07,
+     "t": 2.57
+    },
+    "hold": {
+     "n": 377,
+     "mean_r": 0.066,
+     "t": 2.04
+    }
+   },
+   "added": "ai18",
+   "reason": "přidáno místo AI #17 · jen short"
   }
  ],
  "registry": [
@@ -821,48 +851,48 @@
    }
   },
   {
-   "id": "ai17",
-   "name": "AI #17 · jen short",
-   "round": 17,
-   "focus": "jen short",
-   "added": "2026-11-25",
+   "id": "ai18",
+   "name": "AI #18 · rychlé obchody 2–8 h",
+   "round": 18,
+   "focus": "rychlé obchody 2–8 h",
+   "added": "2026-11-26",
    "genome": {
     "conds": [
      [
-      "hour",
-      "<",
-      0.3
-     ],
-     [
-      "comp",
+      "btc1z",
       "<",
       0.2
      ],
      [
-      "dow",
-      "<",
-      0.5
+      "comp",
+      ">",
+      0.9
+     ],
+     [
+      "ema200",
+      ">",
+      0.6
      ]
     ],
-    "dir": -1,
-    "hold": 32,
-    "stop": 1.0
+    "dir": 1,
+    "hold": 8,
+    "stop": 3.0
    },
    "splits_at_add": {
     "is": {
-     "n": 1387,
-     "mean_r": 0.454,
-     "t": 5.04
+     "n": 2258,
+     "mean_r": 0.092,
+     "t": 6.95
     },
     "oos": {
-     "n": 386,
-     "mean_r": 0.574,
-     "t": 2.6
+     "n": 541,
+     "mean_r": 0.07,
+     "t": 2.57
     },
     "hold": {
-     "n": 169,
-     "mean_r": 0.264,
-     "t": 1.13
+     "n": 377,
+     "mean_r": 0.066,
+     "t": 2.04
     }
    }
   }
