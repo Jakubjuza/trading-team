@@ -3,7 +3,7 @@
   "Analytici (Google News)": {
    "hit30": 4,
    "hit7": 108,
-   "n30": 16,
+   "n30": 17,
    "n7": 220
   },
   "Bitcoin Magazine": {
@@ -14,9 +14,9 @@
   },
   "CoinDesk": {
    "hit30": 0,
-   "hit7": 55,
+   "hit7": 56,
    "n30": 3,
-   "n7": 81
+   "n7": 82
   },
   "Cointelegraph": {
    "hit30": 0,
@@ -30,9 +30,9 @@
   },
   "Decrypt": {
    "hit30": 1,
-   "hit7": 11,
+   "hit7": 12,
    "n30": 2,
-   "n7": 21
+   "n7": 22
   },
   "Telegram @WatcherGuru": {
    "hit30": 1,
