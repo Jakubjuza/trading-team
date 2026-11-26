@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-25T23:43:19+00:00",
+ "updated": "2026-11-26T00:00:19+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -9,36 +9,6 @@
    "key": "core",
    "name": "Jádro",
    "positions": [
-    {
-     "id": "SOL/USDT|1d|short|donchian_breakout|2026-11-05T00:00:00+00:00",
-     "part": "core",
-     "symbol": "SOL/USDT",
-     "coin": "SOL",
-     "dir": "short",
-     "tf": "1d",
-     "strategy": "donchian_1d",
-     "since": "2026-11-05T00:00:00+00:00",
-     "entry": 89.35,
-     "now": 70.57,
-     "stop": 89.35,
-     "stop_orig": 98.7205,
-     "targets": [
-      70.609,
-      51.868
-     ],
-     "r_now": 2.002,
-     "r_loss": 1.0,
-     "r_gain": 3.0,
-     "pct_now": 21.02,
-     "demo": false,
-     "notes": [
-      "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
-      "po T1 trailing 3 ATR"
-     ],
-     "usd_now": 100.1,
-     "usd_loss": 50.0,
-     "usd_gain": 150.0
-    },
     {
      "id": "SOL/USDT|1d|short|donchian_breakout|2026-11-05T00:00:00+00:00|mtf",
      "part": "core",
@@ -49,24 +19,24 @@
      "strategy": "donchian_1d+mtf",
      "since": "2026-11-07T03:00:00+00:00",
      "entry": 90.0,
-     "now": 70.57,
+     "now": 70.49,
      "stop": 90.0,
      "stop_orig": 91.35,
      "targets": [
       70.609,
       51.868
      ],
-     "r_now": 14.378,
+     "r_now": 14.408,
      "r_loss": 7.182,
      "r_gain": 21.305,
-     "pct_now": 21.59,
+     "pct_now": 21.68,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "vstup z nižšího timeframu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 718.9,
+     "usd_now": 720.4,
      "usd_loss": 359.1,
      "usd_gain": 1065.25
     }
@@ -75,76 +45,7 @@
   {
    "key": "pyramid",
    "name": "Pyramida",
-   "positions": [
-    {
-     "id": "pyr|ADA/USDT|1d|short|donchian_breakout|2026-11-05T00:00:00+00:00",
-     "part": "pyramid",
-     "symbol": "ADA/USDT",
-     "coin": "ADA",
-     "dir": "short",
-     "tf": "1d",
-     "strategy": "donchian_1d",
-     "since": "2026-11-06T00:01:15.440396+00:00",
-     "entry": 0.181024,
-     "now": 0.145855,
-     "stop": 0.17009136,
-     "stop_orig": 0.20398255,
-     "targets": [],
-     "units": 4,
-     "unit_entries": [
-      0.181024,
-      0.17009136,
-      0.15915871,
-      0.14822607
-     ],
-     "r_now": 1.635,
-     "r_loss": -0.476,
-     "r_gain": null,
-     "pct_now": 19.43,
-     "demo": false,
-     "notes": [
-      "4 kus(y) po 0.5 R",
-      "bez pevného cíle – trailing 3 ATR"
-     ],
-     "usd_now": 81.75,
-     "usd_loss": -23.8,
-     "usd_gain": null
-    },
-    {
-     "id": "pyr|DOGE/USDT|1d|short|pullback|2026-11-05T00:00:00+00:00",
-     "part": "pyramid",
-     "symbol": "DOGE/USDT",
-     "coin": "DOGE",
-     "dir": "short",
-     "tf": "1d",
-     "strategy": "pullback_1d",
-     "since": "2026-11-06T00:01:15.440506+00:00",
-     "entry": 0.07108,
-     "now": 0.05609,
-     "stop": 0.06490357,
-     "stop_orig": 0.07888179,
-     "targets": [],
-     "units": 4,
-     "unit_entries": [
-      0.07108,
-      0.06756214,
-      0.06404429,
-      0.06052643
-     ],
-     "r_now": 2.49,
-     "r_loss": 0.231,
-     "r_gain": null,
-     "pct_now": 21.09,
-     "demo": false,
-     "notes": [
-      "4 kus(y) po 0.5 R",
-      "bez pevného cíle – trailing 3 ATR"
-     ],
-     "usd_now": 124.5,
-     "usd_loss": 11.55,
-     "usd_gain": null
-    }
-   ]
+   "positions": []
   },
   {
    "key": "lab",
@@ -160,20 +61,20 @@
      "strategy": "Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,3 · 1H long",
      "since": "2026-11-25T19:00:00+00:00",
      "entry": 9.082,
-     "now": 9.035,
+     "now": 9.054,
      "stop": null,
      "targets": [],
-     "r_now": -0.229,
+     "r_now": -0.152,
      "r_loss": null,
      "r_gain": null,
-     "pct_now": -0.62,
+     "pct_now": -0.41,
      "demo": false,
      "notes": [
       "výstup i opačným signálem",
       "bez pevného stopu",
       "bez pevného cíle"
      ],
-     "usd_now": -11.45,
+     "usd_now": -7.6,
      "usd_loss": null,
      "usd_gain": null
     }
@@ -189,14 +90,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 60117.1,
-  "ETH": 1686.74,
-  "SOL": 70.57,
-  "XRP": 0.93732,
-  "ADA": 0.145855,
-  "LINK": 9.03294,
-  "AVAX": 6.61,
-  "DOGE": 0.05609
+  "BTC": 60451.5,
+  "ETH": 1697.14,
+  "SOL": 70.49,
+  "XRP": 0.93784,
+  "ADA": 0.146075,
+  "LINK": 9.03995,
+  "AVAX": 6.62,
+  "DOGE": 0.05585
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
