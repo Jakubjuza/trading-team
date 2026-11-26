@@ -498,3 +498,14 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Záložka Degentown v horní liště a v paletě (Ctrl K), tabule s účty, rozhodovacím stackem, páskou obchodů, novými coiny, chytrými peněženkami, kalibrací a pravidly. Data z nové kolekce `degen` (dokument `state` = degen/city.json).
 
 **Ověření**: Playwright s Three.js r160 (z GitHubu) a SwiftShader, 1280 a 375 px: bez chyb konzole, tabule bez vodorovného posunu, „Ukázat ve městě“ přeletí na ostrov. Ostatní čtvrti, kolekce a capabilities beze změny. Publikováno jako „Degentown 23. 11.“ (verze 43).
+
+## 2026-11-26 – 🔧 Opravna AI Labu a ⏳ Test v čase (na přání uživatele)
+
+**Zadání**: AI má vzít strategie, které neprošly testem, a zkusit je upravit tak, aby prošly; strategie se mají testovat na různých datech z různých období, ne jen na jednom rozdělení a jednom timeframu. Rozhodnutí uživatele: nový test platí jen pro nové a opravené strategie, jako neviděná data se přidají další mince z OKX.
+
+**Změněno**
+- `research/ai_repair.py` (pravidla stanovená předem v hlavičce, testy `tests/test_ai_repair.py`): **Test v čase** = roky 2019 → dnes, režimy BTC (býčí/medvědí/boční/panika), stejné pravidlo na 2H a 4H a 16 nových mincí (LTC, BCH, DOT, TRX, ATOM, ETC, UNI, FIL, NEAR, AAVE, XLM, ALGO, SAND, MANA, CRV, EOS; jen s historií ≥ 3 roky). **Opravna** = každá neprošlá strategie (Ozvěna BTC, Tichý průraz, Hodiny trhu, Rotace síly a od kola 18 nejlepší pravidlo neúspěšného kola) dostane jeden pokus: předem dané varianty, výběr jen podle let 2019–2023, rozhoduje ověření, závěrečný test a Test v čase (na nových mincích t ≥ 2,5). Výsledky `research/ai_repair.json`, `reports/ai_repair.md`, Telegram.
+- `research/ai_lab.py`: od kola 18 musí nová strategie z kola projít i Testem v čase; kolo ukládá `repair_genome` (nejlepší podle učení); prošlé opravy se přidají jako „🔧 … (oprava)“ s papírem od data opravy; `ai_lab.json` má nový seznam `repairs`. Stávající strategie beze změny.
+- Workflow „AI Lab“: krok Opravna před kolem, cache nových mincí `/tmp/extra` (klíč `ai-extra-`), časový limit 210 min.
+
+**Ověření**: pytest (204 testů) na syntetických datech; původní nastavení v Opravně dává přesně stejné obchody jako AI Lab. Na skutečných datech poběží poprvé v nočním běhu Actions (tady chybí přístup k datům burzy).

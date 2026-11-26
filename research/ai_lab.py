@@ -43,6 +43,11 @@ Stanoveno PŘEDEM (8. 11. 2026), před prvním spuštěním na datech:
     Ø R > 0 v IS, v OOS s t ≥ 2,5 a v HOLDOUT s t ≥ 1 (přísnější než první kolo kvůli opakovanému testování), když kolo
     porazí svou náhodnou kontrolu a pravidlo tam ještě není. Nejvýš 10 strategií z kol; při plném počtu nová nahradí
     nejslabší jen s vyšším min(OOS t, HOLDOUT t). Kola se zapisují do research/ai_rounds.json, přidání jde na Telegram.
+  Test v čase a Opravna (doplněno 26. 11. 2026 na přání uživatele, pravidla v hlavičce research/ai_repair.py):
+    od kola 18 musí nová strategie z kola projít navíc Testem v čase (roky 2019 → dnes, režimy BTC, 2H a 4H, nové
+    mince mimo těch 8); stávající strategie zůstávají podle pravidel výše. Kolo si uloží nejlepší pravidlo podle učení
+    (repair_genome), aby ho Opravna mohla zkusit opravit, když kolo nic nepřidá. Prošlé opravy se přidají jako
+    „🔧 … (oprava)“ a obchodují papírově od data opravy.
   PROJDE (strategie se stopem): Ø R > 0 v IS, OOS i HOLDOUT a OOS t ≥ 2. Alokační: Sharpe > 0 ve všech třech
     obdobích a OOS Sharpe ≥ 1. Neprošlé zůstávají na stránce jako pokus, s jasným štítkem.
 
@@ -73,6 +78,7 @@ HOLDS, STOPS = [2, 4, 8, 16, 32], [1.0, 1.5, 2.0, 3.0]
 SPACE = {"dirs": [1, -1], "holds": HOLDS}           # prostor genomů (kola výzkumu ho zužují podle zaměření)
 ROUNDS = ROOT / "research" / "ai_rounds.json"
 MAX_AI = 10
+TT_FROM_ROUND = 18      # od tohoto kola musí nová strategie projít i Testem v čase (research/ai_repair.py)
 FOCUS = [("vše", {"dirs": [1, -1], "holds": HOLDS}), ("jen short", {"dirs": [-1], "holds": HOLDS}),
          ("rychlé obchody 2–8 h", {"dirs": [1, -1], "holds": [2, 4, 8]}), ("pomalé obchody 16–32 h", {"dirs": [1, -1], "holds": [16, 32]}),
          ("jen long", {"dirs": [1], "holds": HOLDS})]
@@ -368,7 +374,7 @@ def load_rounds():
         return {"rounds": [], "registry": []}
 
 
-def run_round(frames, F, base_winner=None, send=None):
+def run_round(frames, F, base_winner=None, send=None, tt=None):
     """Jedno kolo průběžného výzkumu: evoluce se zaměřením, přísný test, případně přidání do registru AI Labu."""
     global SPACE
     R = load_rounds()
@@ -382,16 +388,25 @@ def run_round(frames, F, base_winner=None, send=None):
     known = {key(x["genome"]) for x in R["registry"]} | ({key(base_winner)} if base_winner else set())
     cands = [x for x in evo["top"] if round_pass(x["splits"]) and key(x["genome"]) not in known]
     sane = evo["top_oos_ok"] > evo["random_oos_ok"]
+    tt_fail, tt_res = 0, None
+    if tt is not None and n >= TT_FROM_ROUND and sane:            # Test v čase (od kola 18): první kandidát podle síly, který projde
+        ok = []
+        for x in sorted(cands, key=lambda x: -strength(x["splits"])):
+            res = tt(x["genome"])
+            if res["pass"]:
+                tt_res = res; ok = [x]; break
+            tt_fail += 1
+        cands = ok
     best = max(cands, key=lambda x: strength(x["splits"]), default=None)
     added, reason = None, ""
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     if not sane:
         reason = f"kolo neporazilo náhodnou kontrolu ({evo['top_oos_ok']} × {evo['random_oos_ok']} z {TOP_K})"
     elif best is None:
-        reason = "žádné pravidlo neprošlo přísným testem"
+        reason = (f"žádné pravidlo neprošlo Testem v čase ({tt_fail} zkoušeno)" if tt_fail else "žádné pravidlo neprošlo přísným testem")
     else:
         entry = {"id": f"ai{n}", "name": f"AI #{n} · {focus}", "round": n, "focus": focus, "added": today,
-                 "genome": best["genome"], "splits_at_add": best["splits"]}
+                 "genome": best["genome"], "splits_at_add": best["splits"], **({"time_test": tt_res} if tt_res else {})}
         if len(R["registry"]) < MAX_AI:
             R["registry"].append(entry); added = entry["id"]; reason = "přidáno"
         else:
@@ -404,7 +419,8 @@ def run_round(frames, F, base_winner=None, send=None):
     R["rounds"].append({"n": n, "date": today, "focus": focus, "seed": SEED + n, "tested": evo["tested"],
                         "top_oos_ok": evo["top_oos_ok"], "random_oos_ok": evo["random_oos_ok"], "candidates": len(cands),
                         "best": genome_text(best["genome"], thr) if best else None,
-                        "best_splits": best["splits"] if best else None, "added": added, "reason": reason})
+                        "best_splits": best["splits"] if best else None, "added": added, "reason": reason,
+                        "repair_genome": evo["top"][0]["genome"] if evo["top"] else None, "time_tested": tt_fail + (1 if tt_res else 0)})
     ROUNDS.write_text(json.dumps(R, ensure_ascii=False, indent=1, default=str) + "\n", encoding="utf-8")
     print(f"kolo {n} ({focus}): {reason}", flush=True)
     if added and send:
@@ -454,7 +470,13 @@ def main():
                 from scanner.notify import telegram as send
         except Exception:
             send = None
-        run_round(frames, F, (evo.get("winner") or {}).get("genome"), send)
+        tt = None
+        if len(load_rounds()["rounds"]) + 1 >= TT_FROM_ROUND:
+            from research import ai_repair as rp
+            ex = sys.argv[sys.argv.index("--extra") + 1] if "--extra" in sys.argv else "/tmp/extra"
+            world = rp.World.build(frames, F, thr, Path(ex))
+            tt = lambda g: world.time_test({"kind": "genome", "genome": g})
+        run_round(frames, F, (evo.get("winner") or {}).get("genome"), send, tt)
     R = load_rounds()
 
     S = []
@@ -468,15 +490,16 @@ def main():
                   "backtest": ca.account([t for t in tr if t["entry"] >= ca._ts(ACC_START)], start=ACC_START),
                   "live": ca.account([t for t in tr if t["entry"] >= ca._ts(lf)], start=lf)})
 
-    def ret_strategy(sid, name, tag, how, tf, r, kind="vlastní nápad", extra=None):
+    def ret_strategy(sid, name, tag, how, tf, r, kind="vlastní nápad", extra=None, live_from=LIVE_START, oos_min=1.0):
         st = ret_split(r)
         r = (1 + r).resample("1D").prod() - 1                     # účet z denních výnosů
-        ok = all((st[k]["sharpe"] or -1) > 0 for k in ("is", "oos", "hold")) and (st["oos"]["sharpe"] or 0) >= 1
+        ok = all((st[k]["sharpe"] or -1) > 0 for k in ("is", "oos", "hold")) and (st["oos"]["sharpe"] or 0) >= oos_min
+        live_from = max(live_from, LIVE_START)
         S.append({"id": sid, "name": name, "tag": tag, "how": how, "tf": tf, "kind": kind, "type": "ret",
                   "splits": st, "pass": bool(ok), **(extra or {}),
                   "backtest": ca.returns_account(r, start=ACC_START),
-                  "live": ca.returns_account(r, start=LIVE_START) if (r.index >= ca._ts(LIVE_START)).any() else
-                  ca.summarize([], [], ca._ts(LIVE_START), now)})
+                  "live": ca.returns_account(r, start=live_from) if (r.index >= ca._ts(live_from)).any() else
+                  ca.summarize([], [], ca._ts(live_from), now)})
 
     r_strategy("a1", "Ozvěna BTC", "altcoiny dobíhají BTC · 1H", "Když BTC za hodinu skočí o ≥ 2σ a altcoin se pohne méně než o polovinu, vstup do altcoinu ve směru BTC; stop 1,5 ATR, nejvýš 4 h.", "1h", a1_echo(frames, F))
     r_strategy("a2", "Tichý průraz", "stažený trh se vylomí · 1H", "Po stažení volatility (ATR14/ATR200 < 0,65) průraz 48h maxima/minima ve směru denního trendu; stop 2 ATR, posuvný 2,5 ATR, nejvýš 72 h.", "1h", a2_quiet(frames, F))
@@ -491,8 +514,28 @@ def main():
         r_strategy(e["id"], e["name"], f"kolo výzkumu {e['round']} · přidáno {e['added']} · 1H", genome_text(e["genome"], thr), "1h",
                    run_genome(frames, F, e["genome"], thr), kind=f"evoluce · kolo {e['round']}", live_from=e["added"], strict=True,
                    extra={"added": e["added"], "round": e["round"]})
+    repairs = []
+    try:
+        from research import ai_repair as rp
+        repairs = rp.load().get("repairs", [])
+    except Exception as exc:
+        print(f"Opravna: {exc}", flush=True)
+    for x in repairs:                                             # prošlé opravy obchodují papírově od data opravy
+        if not x.get("pass"):
+            continue
+        sp = x["spec"]
+        tag = f"oprava strategie {x['orig_name']} · {x['date']} · {x.get('n_variants')} variant"
+        extra = {"added": x["date"], "repair_of": x["of"], "time_test": x.get("time_test")}
+        if rp.kind_type(sp) == "ret":
+            ret_strategy(x["id"], x["name"], tag, x["text"], "4h" if sp["kind"] == "a4" else "1h", rp.run_spec(sp, frames, F, thr),
+                         kind="oprava", extra=extra, live_from=x["date"], oos_min=1.5)
+        else:
+            r_strategy(x["id"], x["name"], tag, rp.spec_text(sp, thr), "1h", rp.run_spec(sp, frames, F, thr), kind="oprava",
+                       live_from=x["date"], strict=True, extra=extra)
     out = {"updated": now.strftime("%Y-%m-%dT%H:%M+00:00"), "live_start": LIVE_START, "acc_start": ACC_START,
            "strategies": S,
+           "repairs": [{k: x.get(k) for k in ("id", "of", "orig_name", "date", "text", "n_variants", "split_ok", "pass")}
+                       | {"checks": (x.get("time_test") or {}).get("checks")} for x in repairs],
            "research": {"rounds": R["rounds"][-15:][::-1], "n_rounds": len(R["rounds"]), "registry_n": len(R["registry"]), "max": MAX_AI,
                         "next_focus": FOCUS[len(R["rounds"]) % len(FOCUS)][0]},
            "evolution": {"tested": evo["tested"], "pop": POP, "gens": GENS, "top_oos_ok": evo["top_oos_ok"], "top_k": TOP_K,
@@ -529,6 +572,13 @@ def write_md(o):
     for x in e["top"]:
         L.append(f"| {x['rule']} | {_f(x['fitness'])} | {_f(x['splits']['oos']['mean_r'])} ({_f(x['splits']['oos']['t'])}) | {_f(x['splits']['hold']['mean_r'])} ({_f(x['splits']['hold']['t'])}) |")
     rs = o.get("research") or {}
+    if o.get("repairs"):
+        L += ["", "## 🔧 Opravna", "", "Jeden pokus o opravu na každou neprošlou strategii, podrobnosti v `reports/ai_repair.md`.", "",
+              "| Strategie | Datum | Variant | Ověření a závěr | Test v čase | Výsledek |", "|---|---|---|---|---|---|"]
+        for x in o["repairs"]:
+            ck = x.get("checks") or {}
+            L.append(f"| {x['orig_name']} | {x['date']} | {x['n_variants']} | {'✅' if x['split_ok'] else '❌'} | {sum(ck.values())}/4 | "
+                     f"{'✅ projde' if x['pass'] else '❌ neprojde'} |")
     L += ["", "## Průběžný výzkum (kola evoluce)", "", f"Kol celkem {rs.get('n_rounds', 0)}, strategií z kol {rs.get('registry_n', 0)}/{rs.get('max', MAX_AI)}, "
           f"další zaměření: {rs.get('next_focus', '–')}.", "", "| Kolo | Datum | Zaměření | Vyzkoušeno | Prošlo ověřením (náhoda) | Výsledek |", "|---|---|---|---|---|---|"]
     for r in rs.get("rounds", []):
