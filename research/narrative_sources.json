@@ -3,7 +3,7 @@
   "Analytici (Google News)": {
    "hit30": 6,
    "hit7": 108,
-   "n30": 21,
+   "n30": 22,
    "n7": 220
   },
   "Bitcoin Magazine": {
@@ -27,8 +27,8 @@
   "CryptoSlate": {
    "hit30": 0,
    "hit7": 23,
-   "n30": 1,
-   "n7": 47
+   "n30": 2,
+   "n7": 48
   },
   "Decrypt": {
    "hit30": 1,
@@ -58,9 +58,9 @@
   },
   "The Block": {
    "hit30": 0,
-   "hit7": 11,
+   "hit7": 12,
    "n30": 2,
-   "n7": 20
+   "n7": 21
   }
  }
 }
