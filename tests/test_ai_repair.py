@@ -89,3 +89,10 @@ def test_round_with_time_test(monkeypatch, tmp_path):
     r = R["rounds"][-1]
     assert r["repair_genome"] is not None and r["added"] is None
     assert r["time_tested"] == len(calls)
+
+
+def test_paused_main_does_nothing(monkeypatch):
+    called = []
+    monkeypatch.setattr(rp, "PAUSED", True)
+    monkeypatch.setattr(rp.al, "load", lambda cache: called.append(cache))
+    assert rp.main() == 0 and called == []

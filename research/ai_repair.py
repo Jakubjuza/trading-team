@@ -61,6 +61,10 @@ OUT_MD = ROOT / "reports" / "ai_repair.md"
 EXTRA = ["LTC", "BCH", "DOT", "TRX", "ATOM", "ETC", "UNI", "FIL", "NEAR", "AAVE", "XLM", "ALGO", "SAND", "MANA", "CRV", "EOS"]
 MIN_YEARS_HIST = 3
 TT_FROM_ROUND = 18
+# ⏸ POZASTAVENO 26. 11. 2026 na přání uživatele po auditu přeučení (dokument „Agentown – audit přeučení strategií“):
+# Opravna ani Test v čase v nočních kolech AI Labu se nespouštějí, kód a pravidla zůstávají beze změny.
+# Znovu zapnout = PAUSED = False (až po schváleném návrhu nápravy).
+PAUSED = True
 TFS = ["2h", "4h"]
 GRIDS = {
     "a1": [{"kind": "a1", "z": z, "lag": lag, "stop": s, "hold": h}
@@ -414,6 +418,9 @@ def todo(ai_lab_json, rounds):
 
 
 def main():
+    if PAUSED:
+        print("Opravna je pozastavená (PAUSED = True v research/ai_repair.py) – nic se nespouští.", flush=True)
+        return 0
     cache = Path(sys.argv[1] if len(sys.argv) > 1 else "/tmp/cache")
     extra_cache = Path(sys.argv[2] if len(sys.argv) > 2 else "/tmp/extra")
     try:

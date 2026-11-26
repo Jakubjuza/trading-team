@@ -42,7 +42,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python3 research/ai_repair.py /tmp/cache /tmp/extra
+        run: mkdir -p /tmp/extra && python3 research/ai_repair.py /tmp/cache /tmp/extra   # pozastaveno: PAUSED v research/ai_repair.py
       - name: AI Lab (kolo výzkumu + přepočet)
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

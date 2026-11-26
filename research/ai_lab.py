@@ -471,8 +471,8 @@ def main():
         except Exception:
             send = None
         tt = None
-        if len(load_rounds()["rounds"]) + 1 >= TT_FROM_ROUND:
-            from research import ai_repair as rp
+        from research import ai_repair as rp
+        if len(load_rounds()["rounds"]) + 1 >= TT_FROM_ROUND and not rp.PAUSED:   # Test v čase je s Opravnou pozastavený
             ex = sys.argv[sys.argv.index("--extra") + 1] if "--extra" in sys.argv else "/tmp/extra"
             world = rp.World.build(frames, F, thr, Path(ex))
             tt = lambda g: world.time_test({"kind": "genome", "genome": g})
