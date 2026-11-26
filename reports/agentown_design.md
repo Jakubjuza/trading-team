@@ -509,3 +509,33 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Workflow „AI Lab“: krok Opravna před kolem, cache nových mincí `/tmp/extra` (klíč `ai-extra-`), časový limit 210 min.
 
 **Ověření**: pytest (204 testů) na syntetických datech; původní nastavení v Opravně dává přesně stejné obchody jako AI Lab. Na skutečných datech poběží poprvé v nočním běhu Actions (tady chybí přístup k datům burzy).
+
+## 2026-11-26 (denní běh designéra)
+
+**Nalezené prvky**
+1. Řaditelná tabulka: `<button>` v záhlaví sloupce, `aria-sort` jen na řazeném sloupci, jedno skryté `role="status"` oznámení, fokus zůstane na tlačítku – [Chrome for Developers: Sortable table](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/sortable-table.md.txt) (přehled návodů publikován 10. 11. 2026), [Chrome: Handling dynamic user-triggered changes to sort order](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/dynamic-sort.md.txt), [W3C APG: Sortable table example](https://www.w3.org/WAI/ARIA/apg/example-index/table/sortable-table.html).
+2. Prázdné stavy: tři typy (bez dat / po akci uživatele / chyba), kladný nadpis, krátké vysvětlení, jedna hlavní akce bez slepé uličky, při více prázdných stavech na obrazovce jen terciární tlačítka, prázdný stav nahrazuje celý prvek – [Carbon Design System: Empty states (akt. 11. 8. 2026)](https://carbondesignsystem.com/patterns/empty-states-pattern/).
+3. „Zero results“ vs. „empty“: nadpis „No matches“, vysvětlení filtru, vedlejší tlačítko „Clear filter“, vždy počet položek – [Cloudscape: Empty states](https://cloudscape.design/patterns/general/empty-states/) (publikováno 2020, stále platný vzor).
+4. Varianty prázdného stavu (no-results, blank slate, error), hledaný výraz v uvozovkách, akce jako skutečné tlačítko, nejvýš jedna hlavní + jedna vedlejší, po asynchronní změně filtru `aria-live="polite"` – [Vercel Design: Empty state](https://vercel.com/design/empty-state) (bez data).
+5. Nápovědy, že jde obsah posouvat (měkký přechod na okraji) – [Chrome: Scrollability affordance hints](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-atoms/scrollability-affordance-hints.md.txt), [Soft edge content fade](https://developer.chrome.com/docs/modern-web-guidance/guides/visual-design/soft-edge-content-fade.md.txt).
+6. Trendové shrnutí 2026: agentní panely, multimodální vyhledávání, hlas, přístupnost jako výchozí – [DEV: Five UI/UX patterns quietly defining 2026 (5. 5. 2026)](https://dev.to/teriann_boisvert_5a7ad677/five-uiux-patterns-quietly-defining-2026-and-the-products-already-shipping-them-1mal) (názorový článek jednotlivce).
+
+**Zapojeno – ↕ řazení „Rok po roku“ podle roku** (bod 1; splněno odložené „řaditelné tabulky“ z 23. 11. – Rok po roku má data ve snímku publikace)
+- V Laboratoři je každý rok v záhlaví tabulky tlačítko: 1. klepnutí seřadí účty od nejlepšího výnosu v tom roce, 2. od nejhoršího, 3. vrátí řazení podle celkového výsledku testu (výchozí). Šipka ↕ / ▼ / ▲ a podtržení sloupce (ne jen barva), buňky řazeného roku mají obrys. `aria-sort` jen na řazeném sloupci, popisek tlačítka říká, co klepnutí udělá, skryté `role="status"` oznámí nové pořadí, fokus zůstane na tlačítku.
+- Pod legendou věta „Seřazeno podle roku X · od nejlepšího · účty, které ten rok neběžely, jsou na konci“ a tlačítko „Zpět na celkový výsledek“ (na mobilu je sloupec názvů skrytý, proto návrat i tady). Bez řazení nápověda „Klepnutím na rok seřadíš…“. „Zobrazit všech N účtů“ funguje dál (při řazení „prvních 12“).
+- Řadí se jen hodnoty z pole `backtest.years` kolekce účtů, nic se nedopočítává.
+
+**Zapojeno – 🫙 prázdné stavy** (body 2–4)
+- Nová společná komponenta: ikona (hledání / čekání / chyba), nadpis, jedna věta, nejvýš jedno terciární tlačítko, `role="status"`.
+- Žebříček: „Hledání nic nenašlo“ s hledaným výrazem v uvozovkách a počtem strategií + tlačítko „Zrušit hledání a filtry“; „Filtrům nic neodpovídá – zapnuté čipy vyřadily všech N strategií“ + „Zrušit filtry“ (vynuluje hledání, timeframe, směr, papír, sledované; fokus do hledání). Kronika: „Filtrům nic neodpovídá“ + „Zrušit filtry“ (fokus na první čip).
+- Stavy načítání s nadpisem: Žebříček, Downtown, účty Laboratoře, Mozek, AI Lab; porovnání strategií „Žádný rozdíl“.
+- Záznam 26. 11. v okně ✨ Co je nového.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu stránky ani Laboratoře; klepnutí na ’22 → `aria-sort="descending"`, pořadí podle roku 2022 (+148, +57, +52…), oznámení i fokus sedí; druhé klepnutí → vzestupně; „Zpět na celkový výsledek“ vrátí výchozí řazení; Žebříček – hledání „zzqxw“ → nový prázdný stav, tlačítko vynuluje hledání a seznam se vrátí. Publikováno jako „Design 26. 11.“ (verze 46).
+
+**Odloženo**
+- Nápovědy posouvání / měkký okraj (bod 5) – pás sekcí v liště už přechod na okraji má; tabulky se na mobilu vejdou bez posunu.
+- Řazení tabulky Ensemble v Pozicích – ve snímku publikace stále nejsou pozice (plní je hodinová úloha), nedá se ověřit s daty.
+- Trendy z bodu 6 (hlas, kamera, prostorové UI) – pro Agentown bez přínosu.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, deep linking, benchmark BTC, CAGR, bump chart, odznaky, toasty, hovercard – důvody beze změny (viz 5.–23. 11.).
