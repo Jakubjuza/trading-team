@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-26T00:55:19+00:00",
+ "updated": "2026-11-26T01:50:20+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -19,24 +19,24 @@
      "strategy": "donchian_1d+mtf",
      "since": "2026-11-07T03:00:00+00:00",
      "entry": 90.0,
-     "now": 70.49,
+     "now": 70.79,
      "stop": 90.0,
      "stop_orig": 91.35,
      "targets": [
       70.609,
       51.868
      ],
-     "r_now": 14.408,
+     "r_now": 14.297,
      "r_loss": 7.182,
      "r_gain": 21.305,
-     "pct_now": 21.68,
+     "pct_now": 21.34,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "vstup z nižšího timeframu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 720.4,
+     "usd_now": 714.85,
      "usd_loss": 359.1,
      "usd_gain": 1065.25
     }
@@ -61,20 +61,20 @@
      "strategy": "Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,3 · 1H long",
      "since": "2026-11-25T19:00:00+00:00",
      "entry": 9.082,
-     "now": 9.054,
+     "now": 9.112,
      "stop": null,
      "targets": [],
-     "r_now": -0.152,
+     "r_now": 0.085,
      "r_loss": null,
      "r_gain": null,
-     "pct_now": -0.41,
+     "pct_now": 0.23,
      "demo": false,
      "notes": [
       "výstup i opačným signálem",
       "bez pevného stopu",
       "bez pevného cíle"
      ],
-     "usd_now": -7.6,
+     "usd_now": 4.25,
      "usd_loss": null,
      "usd_gain": null
     }
@@ -90,14 +90,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 60451.5,
-  "ETH": 1697.14,
-  "SOL": 70.49,
-  "XRP": 0.93784,
-  "ADA": 0.146075,
-  "LINK": 9.03995,
-  "AVAX": 6.62,
-  "DOGE": 0.05585
+  "BTC": 60483.9,
+  "ETH": 1698.32,
+  "SOL": 70.79,
+  "XRP": 0.94093,
+  "ADA": 0.146703,
+  "LINK": 9.10908,
+  "AVAX": 6.648,
+  "DOGE": 0.05643
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
