@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-26T15:37:37+00:00",
+ "updated": "2026-11-26T16:33:17+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -19,24 +19,24 @@
      "strategy": "donchian_1d+mtf",
      "since": "2026-11-07T03:00:00+00:00",
      "entry": 90.0,
-     "now": 71.07,
+     "now": 71.04,
      "stop": 90.0,
      "stop_orig": 91.35,
      "targets": [
       70.609,
       51.868
      ],
-     "r_now": 14.193,
+     "r_now": 14.204,
      "r_loss": 7.182,
      "r_gain": 21.305,
-     "pct_now": 21.03,
+     "pct_now": 21.07,
      "demo": false,
      "notes": [
       "T1 dosažen – polovina vybrána, stop zbytku na vstupu",
       "vstup z nižšího timeframu",
       "po T1 trailing 3 ATR"
      ],
-     "usd_now": 709.65,
+     "usd_now": 710.2,
      "usd_loss": 359.1,
      "usd_gain": 1065.25
     }
@@ -90,14 +90,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 60766.7,
-  "ETH": 1698.09,
-  "SOL": 71.07,
-  "XRP": 0.94968,
-  "ADA": 0.148709,
-  "LINK": 9.18269,
-  "AVAX": 6.599,
-  "DOGE": 0.05698
+  "BTC": 60624.6,
+  "ETH": 1693.14,
+  "SOL": 71.04,
+  "XRP": 0.94753,
+  "ADA": 0.148457,
+  "LINK": 9.19665,
+  "AVAX": 6.587,
+  "DOGE": 0.05671
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
