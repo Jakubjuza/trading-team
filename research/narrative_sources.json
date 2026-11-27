@@ -4,13 +4,13 @@
    "hit30": 9,
    "hit7": 111,
    "n30": 34,
-   "n7": 229
+   "n7": 230
   },
   "Bitcoin Magazine": {
    "hit30": 0,
    "hit7": 14,
    "n30": 5,
-   "n7": 31
+   "n7": 32
   },
   "CoinDesk": {
    "hit30": 3,
@@ -22,7 +22,7 @@
    "hit30": 0,
    "hit7": 21,
    "n30": 4,
-   "n7": 39
+   "n7": 40
   },
   "CryptoSlate": {
    "hit30": 0,
@@ -38,13 +38,15 @@
   },
   "Telegram @WatcherGuru": {
    "hit30": 1,
-   "hit7": 24,
+   "hit7": 26,
    "n30": 2,
-   "n7": 26
+   "n7": 31
   },
   "Telegram @cointelegraph": {
-   "hit7": 14,
-   "n7": 21
+   "hit30": 0,
+   "hit7": 15,
+   "n30": 1,
+   "n7": 22
   },
   "Telegram @glassnode": {
    "hit7": 10,
