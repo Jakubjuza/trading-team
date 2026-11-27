@@ -26,9 +26,9 @@
   },
   "CryptoSlate": {
    "hit30": 0,
-   "hit7": 23,
+   "hit7": 24,
    "n30": 2,
-   "n7": 51
+   "n7": 52
   },
   "Decrypt": {
    "hit30": 1,
@@ -49,7 +49,9 @@
    "n7": 22
   },
   "Telegram @glassnode": {
+   "hit30": 1,
    "hit7": 10,
+   "n30": 1,
    "n7": 15
   },
   "Telegram @wublockchainenglish": {
