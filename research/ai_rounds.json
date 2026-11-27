@@ -443,6 +443,59 @@
    },
    "added": "ai18",
    "reason": "přidáno místo AI #17 · jen short"
+  },
+  {
+   "n": 19,
+   "date": "2026-11-27",
+   "focus": "pomalé obchody 16–32 h",
+   "seed": 20261127,
+   "tested": 4122,
+   "top_oos_ok": 15,
+   "random_oos_ok": 0,
+   "candidates": 2,
+   "best": "LONG když od EMA200 (ATR) > 70. percentil (2.54) a od EMA200 (ATR) > 70. percentil (2.54) a hodina UTC > 50. percentil (12.00) · stop 3,0 ATR · držení 32 h",
+   "best_splits": {
+    "is": {
+     "n": 3684,
+     "mean_r": 0.181,
+     "t": 7.02
+    },
+    "oos": {
+     "n": 1186,
+     "mean_r": 0.116,
+     "t": 2.95
+    },
+    "hold": {
+     "n": 954,
+     "mean_r": 0.053,
+     "t": 1.09
+    }
+   },
+   "added": null,
+   "reason": "registr plný a kandidát není silnější než nejslabší",
+   "repair_genome": {
+    "conds": [
+     [
+      "btc1z",
+      "<",
+      0.2
+     ],
+     [
+      "comp",
+      ">",
+      0.8
+     ],
+     [
+      "ema200",
+      ">",
+      0.6
+     ]
+    ],
+    "dir": 1,
+    "hold": 16,
+    "stop": 3.0
+   },
+   "time_tested": 0
   }
  ],
  "registry": [
