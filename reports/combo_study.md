@@ -2,10 +2,10 @@
 
 Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných rodin nebo kontextu. Metoda, filtry a pravidla jsou stanoveny předem v hlavičce `research/experiments/combo_study.py`; data, náklady (MEXC 0,05 %/stranu), simulace a dělení IS (do 12/2023) / OOS (1/2024–6/2025) / HOLDOUT (7/2025–) jsou stejné jako v atlasu. Papírově, nic nejde na skutečné peníze. Nejde o finanční poradenství.
 
-- Hotových dílů: **17**, testovaných kombinací celkem (vč. samotných spouštěčů): **3605** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
-- Poslední díl 17: **deep 12H**, 282 kombinací + 3 spouštěčů samotných, 2 s; základní pravidlo splnilo 1, prošlo vč. citlivosti a režimů 0.
-- Mřížka (stanovena před výpočtem): nejlepší páry podle IS t: macd:5/35/5/signal+rsix:80 · opp · long; macd:5/35/5/signal+rsi:45 · opp · long; price_ma:sma/20+rsi:45 · opp · long; macd:5/35/5/signal+atrlo:0.7 · opp · long; price_ma:sma/20+rsix:80 · opp · long; boll_break:20/2.0+rsi:60 · opp · long + druhý filtr (všechny skupiny kromě skupiny prvního filtru) + sousední hodnoty prvního filtru.
-- Další díl: **deep 1D**.
+- Hotových dílů: **18**, testovaných kombinací celkem (vč. samotných spouštěčů): **3878** – při tolika testech projde pravidlem i něco čistě náhodou, proto jen papír.
+- Poslední díl 18: **deep 1D**, 271 kombinací + 2 spouštěčů samotných, 2 s; základní pravidlo splnilo 0, prošlo vč. citlivosti a režimů 0.
+- Mřížka (stanovena před výpočtem): nejlepší páry podle IS t: macd:12/26/9/signal+rsix:80 · opp · long; roc:10+rsi:45 · opp · long; roc:10+rsi:50 · opp · long; macd:12/26/9/signal+vol:1 · opp · long; macd:12/26/9/signal+rsi:45 · opp · long; macd:12/26/9/signal+fngg:40 · opp · long + druhý filtr (všechny skupiny kromě skupiny prvního filtru) + sousední hodnoty prvního filtru.
+- Další díl: **sens 1H**.
 
 ## Combo strategie v registru (10 aktivních, limit 10)
 
@@ -236,13 +236,13 @@ Průběžná studie: spouštěč z atlasu + 1–2 potvrzení/filtry z jiných ro
 
 ## Proč neprošly (nejčastější důvody)
 
-- pod p95 náhody: 3202×
-- OOS t < 2: 2523×
-- neporáží spouštěč o 0,05 R: 2135×
-- HOLDOUT ≤ 0: 1208×
-- OOS ≤ 0: 501×
-- málo obchodů: 346×
-- IS ≤ 0: 178×
+- pod p95 náhody: 3438×
+- OOS t < 2: 2723×
+- neporáží spouštěč o 0,05 R: 2256×
+- HOLDOUT ≤ 0: 1378×
+- OOS ≤ 0: 533×
+- málo obchodů: 521×
+- IS ≤ 0: 180×
 - reg: bez zlepšení v IS: 5×
 
 ## Plán studie
