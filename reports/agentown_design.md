@@ -539,3 +539,29 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - Řazení tabulky Ensemble v Pozicích – ve snímku publikace stále nejsou pozice (plní je hodinová úloha), nedá se ověřit s daty.
 - Trendy z bodu 6 (hlas, kamera, prostorové UI) – pro Agentown bez přínosu.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, deep linking, benchmark BTC, CAGR, bump chart, odznaky, toasty, hovercard – důvody beze změny (viz 5.–23. 11.).
+
+## 2026-11-27 (denní běh designéra)
+
+**Nalezené prvky**
+1. Komponenta „Trace“: seznam kroků agenta, každý řádek s ikonou stavu (běží / chyba / čeká), nadpisem, volitelným popisem a rozbalením do detailu – [shadcn/ui changelog: Trace, Code Block a AI Elements (10/2026)](https://ui.shadcn.com/docs/changelog/2026-10-ai-elements).
+2. Stagger animace (postupný nástup položek) a „Search hidden content“ (`hidden="until-found"`) v katalogu návodů – [Chrome for Developers: Modern Web Guidance guides (akt. 10. 11. 2026)](https://developer.chrome.com/docs/modern-web-guidance/guides).
+3. Animace řízené posunem jsou Baseline (Firefox 159), `margin-trim`, typovaná aritmetika v `calc()` – [web.dev: New to the web platform in October 2026 (akt. 2. 11. 2026)](https://web.dev/blog/web-platform-10-2026).
+4. Dashboard: jedna hlavní otázka, 3–5 hlavních čísel, akce u metriky, graf podle otázky („když je nutné najet myší, graf selhal“) – [SaaSFrame: SaaS dashboard design (akt. 12. 11. 2026)](https://www.saasframe.io/blog/saas-dashboard-design-examples).
+5. Důvěryhodný track record: propad stejně viditelně jako zisk, ztrátová období se neschovávají, ověřitelný zdroj – [MQL5 blog: Why I finally published every trading account (8/2026)](https://www.mql5.com/en/blogs/post/773638).
+
+**Zapojeno – 🧬 Stopa kol výzkumu v AI Labu** (bod 1 + 2; splněno odložené „stopa akcí AI“ ze 17. 11. – kola výzkumu jsou proběhlé kroky AI)
+- Sekce „Průběžný výzkum“: místo prostého číslovaného seznamu časová osa kol (nejnovější nahoře) se svislou linkou a ikonou stavu tvarem i barvou: ✓ přidáno do AI Labu, ◐ kandidát bez přidání, ○ nic neprošlo; nahoře čárkovaný řádek „Kolo N+1 · zaměření · čeká na noc“ (z `next_focus`).
+- Na řádku: kolo + zaměření, štítek stavu, datum, důvod z databáze, odkaz „→ název strategie“ (nebo „už v AI Labu není“, když ji později nahradilo novější kolo) a dvě krátké lišty „vyšlechtěná X/30 prošlo ověřením“ × „náhodná Y/30 (kontrola)“.
+- Rozbalovací „Detail kola“: vyzkoušená pravidla, počet kandidátů, seed, nejlepší pravidlo a tabulka učení / ověření / závěr (Ø R, t, počet obchodů z `best_splits`).
+- Filtrovací čipy Vše / Přidáno / Kandidát / Nic neprošlo s počty, zobrazeno posledních 8 kol + „Ukázat všech N kol“ (`aria-expanded`), fokus zůstává na ovládacím prvku.
+- Postupný nástup řádků (stagger přes `sibling-index()`), jen v prohlížečích, které ho umí, a bez omezeného pohybu; bez podpory se řádky prostě zobrazí.
+- Záznam 27. 11. v okně ✨ Co je nového (tlačítko „Vyzkoušet: AI Lab“).
+- Všechno jen z polí `research.rounds` kolekce `ailab` (`n`, `date`, `focus`, `reason`, `added`, `candidates`, `tested`, `top_oos_ok`, `random_oos_ok`, `best`, `best_splits`, `seed`), nic se nedopočítává. Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny.
+
+**Ověření**: Playwright se skutečnou Three.js r160 (sparse klon z GitHubu, CDN v sandboxu blokované) a WebGL SwiftShader, data AI Labu z databáze (18 kol, 15 v historii), 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu, bez vodorovného posunu stránky ani čtvrti; 8 kol + čekající, filtr „Nic neprošlo“ → 4 kola, „Ukázat všech“ → 15 + čekající, detail kola s tabulkou se na mobilu vejde. Publikováno jako „Design 27. 11.“ (verze 47).
+
+**Odloženo**
+- `hidden="until-found"` (bod 2) – rozbalovací části jsou `<details>`, které prohlížeče při hledání na stránce už otevírají; přínos malý.
+- `margin-trim`, typovaná aritmetika (bod 3) – nejsou ve všech prohlížečích / přínos jen v kódu.
+- Stopa kol pro $1M Future – má vlastní řadu čtverečků kol; sjednotit, pokud se stopa v AI Labu osvědčí.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, deep linking, benchmark BTC, CAGR, bump chart, odznaky, toasty, hovercard – důvody beze změny (viz 5.–23. 11.).
