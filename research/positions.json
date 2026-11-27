@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-27T18:50:07+00:00",
+ "updated": "2026-11-27T19:45:47+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -30,14 +30,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 59945.1,
-  "ETH": 1672.73,
-  "SOL": 72.0,
-  "XRP": 0.9477,
-  "ADA": 0.149629,
-  "LINK": 9.38879,
-  "AVAX": 6.586,
-  "DOGE": 0.05785
+  "BTC": 59895.7,
+  "ETH": 1671.67,
+  "SOL": 71.97,
+  "XRP": 0.95034,
+  "ADA": 0.149449,
+  "LINK": 9.40065,
+  "AVAX": 6.648,
+  "DOGE": 0.05771
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
