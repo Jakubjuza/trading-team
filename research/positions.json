@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-27T15:58:06+00:00",
+ "updated": "2026-11-27T16:00:06+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -29,73 +29,21 @@
      "strategy": "Kombinace: Bollinger průraz 20 2.5 + ATR pctl ≥ 0,3 · 1H long",
      "since": "2026-11-25T19:00:00+00:00",
      "entry": 9.082,
-     "now": 9.175,
+     "now": 9.327,
      "stop": null,
      "targets": [],
-     "r_now": 0.343,
+     "r_now": 0.964,
      "r_loss": null,
      "r_gain": null,
-     "pct_now": 0.92,
+     "pct_now": 2.6,
      "demo": false,
      "notes": [
       "výstup i opačným signálem",
       "bez pevného stopu",
       "bez pevného cíle"
      ],
-     "usd_now": 17.15,
+     "usd_now": 48.2,
      "usd_loss": null,
-     "usd_gain": null
-    },
-    {
-     "id": "vol_break|55/2.5|1h|none|trail|long|DOGE|2026-11-27T02:00:00+00:00",
-     "part": "lab",
-     "symbol": "DOGE/USDT",
-     "coin": "DOGE",
-     "dir": "long",
-     "tf": "1h",
-     "strategy": "Průraz s objemem 55 2.5 · 1H long",
-     "since": "2026-11-27T02:00:00+00:00",
-     "entry": 0.0575,
-     "now": 0.05672,
-     "stop": 0.05657807,
-     "targets": [],
-     "r_now": -0.918,
-     "r_loss": -1.011,
-     "r_gain": null,
-     "pct_now": -1.46,
-     "demo": false,
-     "notes": [
-      "trailing 3 ATR – stop se posouvá za cenou",
-      "bez pevného cíle"
-     ],
-     "usd_now": -45.9,
-     "usd_loss": -50.55,
-     "usd_gain": null
-    },
-    {
-     "id": "vol_break|55/2.5|1h|none|trail|long|SOL|2026-11-27T02:00:00+00:00",
-     "part": "lab",
-     "symbol": "SOL/USDT",
-     "coin": "SOL",
-     "dir": "long",
-     "tf": "1h",
-     "strategy": "Průraz s objemem 55 2.5 · 1H long",
-     "since": "2026-11-27T02:00:00+00:00",
-     "entry": 72.38,
-     "now": 70.9,
-     "stop": 71.09719858,
-     "targets": [],
-     "r_now": -1.22,
-     "r_loss": -1.008,
-     "r_gain": null,
-     "pct_now": -2.14,
-     "demo": false,
-     "notes": [
-      "trailing 3 ATR – stop se posouvá za cenou",
-      "bez pevného cíle"
-     ],
-     "usd_now": -61.0,
-     "usd_loss": -50.4,
      "usd_gain": null
     }
    ]
@@ -110,14 +58,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 59176.8,
-  "ETH": 1653.75,
-  "SOL": 71.19,
-  "XRP": 0.93876,
-  "ADA": 0.146629,
-  "LINK": 9.19068,
-  "AVAX": 6.555,
-  "DOGE": 0.05681
+  "BTC": 60127.7,
+  "ETH": 1673.21,
+  "SOL": 72.15,
+  "XRP": 0.95341,
+  "ADA": 0.148713,
+  "LINK": 9.32717,
+  "AVAX": 6.649,
+  "DOGE": 0.05778
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
