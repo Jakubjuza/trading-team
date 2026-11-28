@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-27T23:26:48+00:00",
+ "updated": "2026-11-28T00:00:49+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -18,7 +18,33 @@
   {
    "key": "lab",
    "name": "Laboratoř",
-   "positions": []
+   "positions": [
+    {
+     "id": "ma_cross|sma/30/60/cross|4h|none|target|long|ADA|2026-11-27T20:00:00+00:00",
+     "part": "lab",
+     "symbol": "ADA/USDT",
+     "coin": "ADA",
+     "dir": "long",
+     "tf": "4h",
+     "strategy": "Protnutí průměrů sma 30 60 cross · 4H long",
+     "since": "2026-11-27T20:00:00+00:00",
+     "entry": 0.1485,
+     "now": 0.1485,
+     "stop": 0.14120107,
+     "targets": [
+      0.1594484
+     ],
+     "r_now": -0.02,
+     "r_loss": -1.0,
+     "r_gain": 1.5,
+     "pct_now": -0.1,
+     "demo": false,
+     "notes": [],
+     "usd_now": -1.0,
+     "usd_loss": -50.0,
+     "usd_gain": 75.0
+    }
+   ]
   }
  ],
  "ensemble": {
@@ -30,14 +56,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 59742.1,
-  "ETH": 1657.44,
-  "SOL": 71.53,
-  "XRP": 0.94531,
-  "ADA": 0.147862,
-  "LINK": 9.30512,
-  "AVAX": 6.59,
-  "DOGE": 0.05751
+  "BTC": 59918.5,
+  "ETH": 1662.93,
+  "SOL": 71.66,
+  "XRP": 0.94899,
+  "ADA": 0.148238,
+  "LINK": 9.36226,
+  "AVAX": 6.6,
+  "DOGE": 0.05759
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
