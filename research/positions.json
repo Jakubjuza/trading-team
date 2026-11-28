@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-28T06:27:24+00:00",
+ "updated": "2026-11-28T07:23:11+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -29,18 +29,18 @@
      "strategy": "Protnutí průměrů sma 30 60 cross · 4H long",
      "since": "2026-11-27T20:00:00+00:00",
      "entry": 0.1485,
-     "now": 0.1459,
+     "now": 0.1464,
      "stop": 0.14120107,
      "targets": [
       0.1594484
      ],
-     "r_now": -0.377,
+     "r_now": -0.308,
      "r_loss": -1.0,
      "r_gain": 1.5,
-     "pct_now": -1.85,
+     "pct_now": -1.51,
      "demo": false,
      "notes": [],
-     "usd_now": -18.85,
+     "usd_now": -15.4,
      "usd_loss": -50.0,
      "usd_gain": 75.0
     }
@@ -56,14 +56,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 59730.5,
-  "ETH": 1657.49,
-  "SOL": 71.22,
-  "XRP": 0.9467,
-  "ADA": 0.145883,
-  "LINK": 9.16395,
-  "AVAX": 6.506,
-  "DOGE": 0.0568
+  "BTC": 59751.0,
+  "ETH": 1657.52,
+  "SOL": 71.45,
+  "XRP": 0.94656,
+  "ADA": 0.146569,
+  "LINK": 9.16446,
+  "AVAX": 6.54,
+  "DOGE": 0.05693
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
