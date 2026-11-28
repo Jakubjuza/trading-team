@@ -1,6 +1,6 @@
 {
  "id": "state",
- "updated": "2026-11-28T10:47:09+00:00",
+ "updated": "2026-11-28T11:42:22+00:00",
  "risk_usd": 50.0,
  "account_size": 10000,
  "risk_pct": 0.5,
@@ -29,18 +29,18 @@
      "strategy": "Protnutí průměrů sma 30 60 cross · 4H long",
      "since": "2026-11-28T04:00:00+00:00",
      "entry": 0.05697,
-     "now": 0.05677,
+     "now": 0.05669,
      "stop": 0.05449703,
      "targets": [
       0.06067946
      ],
-     "r_now": -0.104,
+     "r_now": -0.136,
      "r_loss": -1.0,
      "r_gain": 1.5,
-     "pct_now": -0.45,
+     "pct_now": -0.59,
      "demo": false,
      "notes": [],
-     "usd_now": -5.2,
+     "usd_now": -6.8,
      "usd_loss": -50.0,
      "usd_gain": 75.0
     },
@@ -54,18 +54,18 @@
      "strategy": "Protnutí průměrů sma 30 60 cross · 4H long",
      "since": "2026-11-27T20:00:00+00:00",
      "entry": 0.1485,
-     "now": 0.1462,
+     "now": 0.1457,
      "stop": 0.14120107,
      "targets": [
       0.1594484
      ],
-     "r_now": -0.335,
+     "r_now": -0.404,
      "r_loss": -1.0,
      "r_gain": 1.5,
-     "pct_now": -1.65,
+     "pct_now": -1.99,
      "demo": false,
      "notes": [],
-     "usd_now": -16.75,
+     "usd_now": -20.2,
      "usd_loss": -50.0,
      "usd_gain": 75.0
     }
@@ -81,14 +81,14 @@
   "held": []
  },
  "prices": {
-  "BTC": 59592.4,
-  "ETH": 1653.69,
-  "SOL": 71.02,
-  "XRP": 0.94115,
-  "ADA": 0.146216,
-  "LINK": 9.16035,
-  "AVAX": 6.527,
-  "DOGE": 0.05682
+  "BTC": 59273.6,
+  "ETH": 1646.45,
+  "SOL": 70.74,
+  "XRP": 0.93819,
+  "ADA": 0.145508,
+  "LINK": 9.16217,
+  "AVAX": 6.486,
+  "DOGE": 0.05678
  },
  "note": "Papírové pozice skeneru. Možná ztráta = do stopu, možný zisk = do posledního cíle; USD = R × riziko na obchod z nastavení skeneru, bez poplatků (laboratoř teď po poplatcích). Ceny = poslední uzavřené svíčky. Nejde o finanční poradenství."
 }
