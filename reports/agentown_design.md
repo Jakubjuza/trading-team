@@ -565,3 +565,32 @@ Stav stránky při založení logu (5. 11. 2026): 3D noční město (Three.js) s
 - `margin-trim`, typovaná aritmetika (bod 3) – nejsou ve všech prohlížečích / přínos jen v kódu.
 - Stopa kol pro $1M Future – má vlastní řadu čtverečků kol; sjednotit, pokud se stopa v AI Labu osvědčí.
 - Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, deep linking, benchmark BTC, CAGR, bump chart, odznaky, toasty, hovercard – důvody beze změny (viz 5.–23. 11.).
+
+## 2026-11-28 (denní běh designéra)
+
+**Nalezené prvky**
+1. Nastavení hustoty obsahu Pohodlná / Kompaktní: jedno nastavení pro celou službu, uložené pro uživatele, výchozí pohodlná (kompaktní může zhoršit čitelnost a trefování blízkých cílů), kompaktní jen zmenšuje mezery uvnitř a mezi komponentami – [Cloudscape: Density settings (publ. 3. 6. 2022)](https://cloudscape.design/patterns/general/density-settings/), [Cloudscape: Content density (publ. 1. 6. 2022)](https://cloudscape.design/foundation/visual-foundation/content-density/).
+2. `corner-shape` (squircle / superellipse, bevel, notch, scoop) – rohy, které následuje i rámeček a stín; experimentální, jen Chromium – [Chrome for Developers: What's new in web UI (I/O 2026, 1. 7. 2026)](https://developer.chrome.com/blog/new-in-web-ui-io26).
+3. Ze stejného přehledu: `dialog closedby="any"` (zavření klepnutím mimo bez JS), `contrast-color()`, `<meta name="text-scale">` (kořenové písmo podle nastavení OS), view transitions omezené na prvek, animace spouštěné posunem (jen Chrome/Edge 146) – tamtéž.
+4. „Data-dense utilitarian UI“ – kompaktní obrazovky pro expertní práci – [daisyUI: 18 UI design trends for 2026](https://trends.daisyui.com/ui-design-trends-2026/) (bez data, katalog stylů).
+5. Mobil 2026: tmavý režim jako primární paleta s vrstvami povrchu, spodní listy v dosahu palce, sklo jen pro překryvy – [Muzli: Mobile app design trends 2026 (6. 4. 2026)](https://muz.li/blog/whats-changing-in-mobile-app-design-ui-patterns-that-matter-in-2026/) (názorový článek).
+6. Rozložení R-násobků obchodů (histogram) v deníku obchodů – [TradesViz: Returns distribution](https://www.tradesviz.com/glossary/returns-distribution/), [Tradezella: R Multiple report](https://intercom.help/tradezella-4066d388d93c/en/articles/6509413-reports-risk-section) (dokumentace prodejců).
+
+**Zapojeno – 📐 Kompaktní zobrazení** (bod 1 + 4)
+- V hlavičce všech 9 celostránkových čtvrtí (Žebříček, Downtown, Laboratoř, Mozek, AI Lab, Kronika, $1M Future, Likvidita, Degentown) tlačítko s proužky vedle „Zavřít“ (`aria-pressed`, ikona 3 → 5 proužků a obrys, ne jen barva; funguje i v přilepené hlavičce). Jedno nastavení pro celé město, výchozí pohodlné; volba se pamatuje jen v tomto prohlížeči (`localStorage` klíč `agentown-density-v1`, bez úložiště prostě pohodlné). Skryté `role="status"` oznámí přepnutí.
+- Kompaktní režim zmenší mezery a výšky: řádky žebříčku, karty účtů (výnos × riziko, křivka, Pod vodou, Forma), dlaždice souhrnu, Kronika, stopa AI Labu, Pozice, Rok po roku, Likvidita, $1M Future, Mozek; vysvětlivka pod pásem Formy se skryje (zůstává řádek s detailem obchodu). Tlačítka a ovládací prvky si nechávají velikost pro dotyk. Na desktopu karty od 270 px.
+- Položka v paletě Ctrl K (skupina Nápověda) „Kompaktní zobrazení“ / „Pohodlné zobrazení“ podle stavu. Záznam 28. 11. v okně ✨ Co je nového.
+
+**Zapojeno – rohy „squircle“** (bod 2)
+- Karty, dlaždice, řádky žebříčku, Forma, pozice, tabulky a na desktopu i okna (paleta, porovnání, Co je nového, Pozice) mají plynulé zaoblení `corner-shape: squircle` – jen pod `@supports`, ostatní prohlížeče beze změny. Mobilní okna přes celou obrazovku a spodní panel beze změny.
+- Databáze (kolekce, pole, čtení), capabilities, čtvrti, odkazy i 3D město beze změny; žádná nová čísla.
+
+**Ověření**: Playwright (Chromium 158) se skutečnou Three.js r160 (sparse klon z GitHubu) a WebGL SwiftShader, data ze snímku databáze (strategies, accounts, downtown, ailab, positions, degen), 1280 a 375 px, tmavý i světlý systémový režim (vzhled záměrně jen tmavý): bez chyb skriptu (jen zablokovaná písma z Google Fonts v sandboxu), bez vodorovného posunu stránky, Laboratoře, Žebříčku ani okna Co je nového; 9 tlačítek hustoty; první karta Laboratoře 1081 → 973 px (mobil 1056 → 919 px); volba platí v Žebříčku a přežije obnovení stránky; paleta „hustota“ ukáže „Pohodlné zobrazení“ a Enter přepne zpět; `corner-shape` se použije (superellipse(2)). Opraveno při kontrole: na mobilu se tlačítko hustoty a „Zavřít“ skládaly pod sebe – teď v jednom řádku. Publikováno jako „Design 28. 11.“ (verze 48).
+
+**Odloženo**
+- `dialog closedby="any"` (bod 3) – všechna okna už zavírá klepnutí mimo přes skript; přínos jen v kódu.
+- `<meta name="text-scale">` (bod 3) – stránka má velikosti písma v px, takže by nic neudělal; vyžadoval by převod celé typografie na rem.
+- `contrast-color()`, view transitions omezené na prvek, animace spouštěné posunem (bod 3) – bez viditelného přínosu / jen Chromium.
+- Histogram R-násobků (bod 6) – karty mají jen posledních 12 obchodů (`last_trades`); rozložení by potřebovalo nové pole v exportu `research/city_accounts.py`.
+- Trendy z bodu 5 – tmavý vzhled, spodní panel a sklo už stránka má.
+- Spodní navigace na mobilu, avatary, měsíční mapa výnosů, výběr období, světlý režim, porovnání pro Downtown, deep linking, benchmark BTC, CAGR, bump chart, odznaky, toasty, hovercard – důvody beze změny (viz 5.–27. 11.).
