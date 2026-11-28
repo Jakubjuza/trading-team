@@ -1,10 +1,10 @@
 {
  "scores": {
   "Analytici (Google News)": {
-   "hit30": 10,
+   "hit30": 11,
    "hit7": 111,
-   "n30": 40,
-   "n7": 240
+   "n30": 41,
+   "n7": 241
   },
   "Bitcoin Magazine": {
    "hit30": 0,
@@ -25,9 +25,9 @@
    "n7": 41
   },
   "CryptoSlate": {
-   "hit30": 0,
+   "hit30": 1,
    "hit7": 25,
-   "n30": 2,
+   "n30": 3,
    "n7": 53
   },
   "Decrypt": {
@@ -52,7 +52,7 @@
    "hit30": 1,
    "hit7": 10,
    "n30": 1,
-   "n7": 15
+   "n7": 16
   },
   "Telegram @wublockchainenglish": {
    "hit30": 2,
