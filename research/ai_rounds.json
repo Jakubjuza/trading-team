@@ -496,6 +496,54 @@
     "stop": 3.0
    },
    "time_tested": 0
+  },
+  {
+   "n": 20,
+   "date": "2026-11-28",
+   "focus": "jen long",
+   "seed": 20261128,
+   "tested": 4267,
+   "top_oos_ok": 14,
+   "random_oos_ok": 1,
+   "candidates": 1,
+   "best": "LONG když od EMA50 (ATR) > 50. percentil (0.07) a od EMA200 (ATR) > 70. percentil (2.54) a výnos 4 h (σ) > 90. percentil (1.07) · stop 3,0 ATR · držení 32 h",
+   "best_splits": {
+    "is": {
+     "n": 3012,
+     "mean_r": 0.2,
+     "t": 6.76
+    },
+    "oos": {
+     "n": 976,
+     "mean_r": 0.118,
+     "t": 2.65
+    },
+    "hold": {
+     "n": 827,
+     "mean_r": 0.059,
+     "t": 1.07
+    }
+   },
+   "added": null,
+   "reason": "registr plný a kandidát není silnější než nejslabší",
+   "repair_genome": {
+    "conds": [
+     [
+      "btc24z",
+      ">",
+      0.9
+     ],
+     [
+      "r1z",
+      "<",
+      0.3
+     ]
+    ],
+    "dir": 1,
+    "hold": 32,
+    "stop": 2.0
+   },
+   "time_tested": 0
   }
  ],
  "registry": [
